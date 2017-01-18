@@ -3,8 +3,9 @@
  */
 'use strict';
 
-const express = require('express'),
-    router = express.Router();
+const express = require('express');
+
+let router = express.Router();
 
 router.use('/', require('./users'));
 

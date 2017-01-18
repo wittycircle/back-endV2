@@ -27,6 +27,8 @@ app.use('*', (err, req, res, next) => {
 router.use(logger('dev'));
 router.use(require('./app/routes/index'));
 
+app.use(router);
+
 let server = http.createServer(app);
 
 server.listen(app.get('port'), () => {

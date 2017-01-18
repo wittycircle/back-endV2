@@ -14,6 +14,10 @@ exports.getUser = id => {
     return db.select(['profile_id']).from(TABLES.USERS).where({'id': id});
 };
 
+exports.getUsers = () => {
+    return db.select('*').from(TABLES.USERS);
+};
+
 exports.getUserProfile = id => {
     exports.getUser(id).then(user => {
         return getProfileOfUser(user.id);
