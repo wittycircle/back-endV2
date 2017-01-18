@@ -3,16 +3,9 @@
  */
 'use strict';
 
-module.exports = app => {
-    const express = require('express');
+const express = require('express'),
+    router = express.Router();
 
-    fs
-        .readdirSync(__dirname)
-        .filter(file => {
-            return (file.indexOf('.') !== 0) && (file !== 'index.js')
-        })
-        .forEach(file => {
-            app.use(require(file)(app.Router()));
-        });
+router.use('/', require('./users'));
 
-};
+module.exports = router;

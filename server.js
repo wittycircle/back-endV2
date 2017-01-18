@@ -5,9 +5,11 @@
 
 const http = require('http'),
     express = require('express'),
+    router = express.Router(),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    path = require('path');
+    path = require('path'),
+    _ = require('lodash');
 
 let app = express();
 
@@ -17,43 +19,16 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use('*', (err, req, res, next) => {
+    console.log(err);
+    next();
+});
+
+router.use(logger('dev'));
+router.use(require('./app/routes/index'));
+
 let server = http.createServer(app);
 
 server.listen(app.get('port'), () => {
     console.log('Server listening on port ' + app.get('port'));
 });
-
-const users = require('./app/models/users');
-
-const router = express.Router();
-
-
-router.get('/users', (req, res, next) => {
-    users.findAll((err, results) => {
-        if (err)
-            throw err;
-        else
-            res.send(results);
-    }, ['email', 'username']);
-});
-
-
-router.param('id', (req, res, next, id) => {
-    users.findById((err, results) => {
-        if (err)
-            throw err;
-        else {
-            req.user = results;
-            next();
-        }
-    }, id)
-});
-
-router.get('/users/:id', (req, res, next) => {
-    if (req.user)
-        res.send(req.user);
-    else
-        throw 'tg';
-});
-
-app.use(router);
