@@ -13,11 +13,15 @@ const http = require('http'),
 
 let app = express();
 
+
 app.set('port', process.env.PORT || 3000);
-app.use(logger('dev'));
-app.use(express.static(__dirname + '/public'));
+// app.use(logger('dev'));
+app.use(express.static(__dirname + '/Public/app/'))
+app.use(express.static(__dirname + '/Public/'))
+app.use(express.static(__dirname + '/Public/app/styles/css'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(require('./app/config/custom_validator.js'))
 
 app.use('*', (err, req, res, next) => {
     console.log(err);
@@ -27,8 +31,9 @@ app.use('*', (err, req, res, next) => {
 router.use(logger('dev'));
 router.use(require('./app/routes/index'));
 
-app.use(router);
 
+
+app.use(router)
 let server = http.createServer(app);
 
 server.listen(app.get('port'), () => {

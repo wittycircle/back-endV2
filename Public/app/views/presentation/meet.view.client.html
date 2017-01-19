@@ -1,0 +1,478 @@
+<div id="meet-body-page">
+    <div data-ng-include="'views/mobiles/meet-mobile-modal.view.client.html'"></div>
+
+    <div id="pffs" class="presentation-forced animated bounceIn" style="display: none" ng-if="!meet.logIn && !mobile">
+        <div class="presentation-forced-signup">
+            <h5>Let us find the people you might need. Join us now.</h5>
+            <ul>
+                <li class="presentation-forced-signup-mail" ng-controller="PopUpCtrl" ng-click="popSwL()"><img src="/images/mailbox-icon-w.png" alt="mailbox"></li>
+                <a href="/auth/google" target="_self"><li class="presentation-forced-signup-google"><img src="/images/social_media/newgoogle-logo.svg"></li></a>
+                <a href="/auth/facebook" target="_self"><li class="presentation-forced-signup-facebook"><i class="fa fa-facebook" style="color: white"></i></li></a>
+            </ul>   
+        </div>
+    </div>
+
+    <div class="body-page">
+        <div class="home-video-bg" ng-if="!mobile">
+            <video preload="none" poster="/images/poster/poster_meet.jpg" loop muted autoplay>
+                <source src="/images/videos/Meet.mp4" type="video/mp4">
+            </video>
+            </div>
+            <div class="meet-image-bg presentation-image-bg"></div>
+
+            <div class="meet-component presentation-component">
+                <div class="meet-title presentation-title">
+                    <h2>Who could help you?</h2>
+                </div>
+                <div id="meet-search1">
+                    <div class="meet-search1-text">
+                        <h2>Someone skilled in</h2>
+                    </div>
+                    <div id="mslist" class="meet-skill-list animated fadeIn" ng-repeat="skill in meet.skillList">
+                        <div id="mslist" class="meet-skill-tag searchbox">
+                            <h2 id="mslist">{{skill.sName}}</h2>
+                            <div id="mslist" class="meet-skill-cross" ng-click="meet.removeSkill(skill.sName)">
+                                <img id="mslist" src="/images/cross-icon.svg">
+                            </div>
+                        </div>
+                        <span id="mslist" ng-hide="$last">,</span>
+                        <span id="mComma" ng-if="$last && !meet.fullList">,</span>
+                    </div>
+                    <div id="msdrop1" class="meet-search1-dropdown" ng-show="!meet.fullList">
+                        <div class="meet-search1-anyskill inputfield" ng-show="!meet.fullList">
+                            <input auto-complete id="input-msa" class="animated fadeIn" onfocus="getDropdown()" onfocusout="hideDropdown()" onmouseover="changePlh()" onmouseout="normalPlh()" type="text" oninput="getSearchBox()" ng-model="meet.skillName">
+                            <label id="labelText" class="animated fadeIn" style="display: block">Anything</label>
+                            <label id="labelText2" class="animated fadeIn" style="display: none">add skill</label>
+                        </div>
+                        <aside id="msabox1" class="meet-search1-popularskills downbox" style="display: none">
+                            <ul>
+                                <h3>Popular skills:</h3>
+                                <li ng-repeat="skill in meet.skills | limitTo: 5" ng-click="meet.searchSkill(skill.name)">{{skill.name}}</li>
+                            </ul>
+                        </aside>
+                        <aside id="msabox2" class="meet-search1-downbox1 downbox" style="display: none">
+                            <ul>
+                                <li ng-click="meet.searchSkill(skillS.name)" ng-repeat="skillS in meet.skills | wordsFilter: meet.skillName | limitTo: 5">{{skillS.name}}</li>
+                                <span ng-show="(meet.skills | filter: meet.skillName).length === 0">No skill found...</span>
+                            </ul>
+                        </aside>
+                    </div>
+
+                    <div id="msdrop1m" class="meet-search1-dropdown-mobile searchbox" ng-click="meet.openmmodal(1)">
+                        <h2 ng-if="!meet.skillListM.length">Anything</h2>
+                        <div ng-if="!meet.skillListM.length" class="meet-cross-bg"></div>
+                        <div ng-if="meet.skillListM[0]" class="meet-skillList">
+                            <h2>{{meet.skillListM | sortSkill: meet.skillListM}}</h2>
+                        </div>
+                    </div>
+                    <div class="meet-search1-text2">
+                        <h2 ng-if="meet.mHelp !== 'Anything'">looking to</h2>
+                        <h2 ng-if="meet.mHelp === 'Anything'">looking for</h2>
+                    </div>
+
+                    <!-- DIV general en display inline block si tu veux que le text soit sur la meme ligne avec d'autre text-->
+                    <div id="msat" class="meet-search1-dropdown" ng-click="meet.openmmodal(2)">
+
+                        <!-- DIV display title doit etre dans la div general-->
+                        <div id="msat" class="meet-search-anything searchbox">
+                            <h2 id="msat" >{{meet.mHelp}}</h2>
+                            <img id="msat" src="/images/arrow-down-icon-w.svg">
+                        </div>
+
+                        <!-- DIV dropdown  doit etre dans la div general en position absolute-->
+                        <aside id="msdbox2" class="meet-search1-downbox2 downbox" style="display: none">
+                            <ul>
+                                <li ng-click="meet.getAnything('Discover new things')" >Discover new things</li>
+                                <li ng-click="meet.getAnything('Join projects')" >Join projects</li>
+                                <li ng-click="meet.getAnything('Find teammates')">Find teammates</li>
+                                <li>Get freelance misson <sup>soon</sup></li>
+                            </ul>
+                        </aside>
+
+                    </div>
+
+                    <div class="meet-search2-anylocation inputfield">
+                         <div class="meet-search2-text2" style="margin-left: 10px;">
+                            <h2>near</h2>
+                        </div>
+                        <input id="msai" type="text" pre-go-location="" types="['geocode']" placeholder="Any location" ng-model="meetLocation">
+                    </div>
+                </div>
+            </div>
+
+            <section id="meet-body-content">
+                <div id="ldm" class="loader" style="display: block"></div>
+                <div id="mbd" class="meet-body-container presentation-body-container animated fadeIn">
+                    <div class="meet-body-title presentation-body-title" ng-if="meet.cardProfiles && !searchSk && !searchAl">
+                        <h4>Browse <span>the users below</span> or filter them using our magic tool above.</h4>
+                    </div>
+                    <div class="meet-body-cards" ng-if="meet.cardProfiles && !searchSk && !searchAl">
+                        <div class="meet-body-card profile-card" ng-repeat="cardProfile in meet.cardProfiles | limitTo: limitc" ng-if="cardProfile.cover_picture_cards" ng-if="!cardProfile.fake">
+                            <a ng-href="/{{cardProfile.username}}" class="card-click-zone" target="_blank">
+                                <div class="card-rank" ng-if="cardProfile.myRank">
+                                    <span>#{{cardProfile.myRank}}</span>
+                                </div>
+                                <div class="card-picture" ng-style="{'background-image': 'url({{ resizePic(cardProfile.cover_picture_cards, 205, 40, 'fill') }})'}">
+                                    <div ng-hide="!cardProfile.profile_picture" class="card-profile-picture"
+                                    ng-style="{'background-image': 'url({{ resizePic(cardProfile.profile_picture, 60, 60, 'fill') }})'}">
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <h4>{{cardProfile.first_name}} {{cardProfile.last_name}}</h4>
+                                    <div class="card-location">
+                                        <h6>{{cardProfile.location_city}}<i data-ng-hide="!cardProfile.location_country">,</i> {{cardProfile.location_country}}</h6>
+                                    </div>
+                                    <div class="card-description">
+                                        <p ng-bind-html="cardProfile.description | cut:true:56:' ...'"></p>
+                                    </div>
+                                    <div class="card-profile-skills">
+                                        <ul>
+                                            <li ng-repeat="profileSkill in cardProfile.skills">{{profileSkill.skill_name | cut:true:20:' ...'}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="card-follow">
+                            <div class="card-followers card-follow-square">
+                                <p ng-bind="cardProfile.followers"></p>
+                                <h6>followers</h6>
+                            </div>
+                            <div class="card-following card-follow-square">
+                                <p ng-bind="cardProfile.following"></p>
+                                <h6>following</h6>
+                            </div>
+                            <div id="cfs{{$index}}" class="card-plus card-follow-square" data-ng-click="meet.followUserFromCard(cardProfile.id, $index, $event)">
+                                <div data-ng-show="!meet.followed[$index]" class="tooltipw">Follow?</div>
+                                <div data-ng-show="meet.followed[$index]" class="tooltipw">Unfollow?</div>
+                                <i id="fop{{$index}}" data-ng-show="!meet.followed[$index]" class="fa fa-plus"></i>
+                                <i id="foc{{$index}}" data-ng-hide="!meet.followed[$index]" class="fa fa-check"></i>
+                            </div>
+                        </div>
+                        </div>
+
+                        <!-- <div class="meet-body-loadmore presentation-body-loadmore" ng-if="meet.cardProfiles">
+                            <button type="button" data-ng-click="meet.expand(8)">Load more</button>
+                        </div> -->
+                    </div>
+
+                <div class="meet-search-sal" ng-if="meet.cardProfiles && searchSk && !searchAl">
+                <div ng-if="$index <= limitSkp" class="meet-search-sal-cards" ng-repeat="cardsFound in meet.cardProfiles track by $index">
+                    <div ng-if="$index <= limitSk" class="meet-search-sal-display" ng-repeat="cardProfiles in cardsFound" style="padding-left: 20px">
+                        <div class="meet-search-found" ng-if="noAl && $parent.$parent.$first">
+                            <h2>People skilled in <span ng-repeat="skill in cardProfiles[0]"><span style="border-bottom: 1px solid black">{{skill}}</span><span ng-if="!$last">, </span></span></h2>
+                        </div>
+                        <div class="meet-search-found" ng-if="!noAl && cardsFound.length === 3">
+                            <!-- <h2>People skilled in <span style="border-bottom: 1px solid black">Javascript</span>, <span style="border-bottom: 1px solid black">Design</span>, <span style="border-bottom: 1px solid black">Social Network Marketing</span> looking to join project in Paris, France</h2> -->
+<!--                                 <h2>People looking to <u>"status"</u> in "city"</h2>
+-->                                <!-- <h2>People from "city"</h2>
+                            <h2>People from "country"</h2>
+                            <h2>People from everywhere</h2> -->
+                            <h2 ng-if="cardProfiles.length && $index === 1">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> looking to {{meet.mHelp}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 2">People skilled in <span ng-repeat="skillAll in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAll}}</span><span ng-if="!$last">, </span></span></h2>
+                        </div>
+                        <div class="meet-search-found" ng-if="!noAl && cardsFound.length === 4">
+                            <h2 ng-if="cardProfiles.length && $index === 1">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> in {{fCity}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 2">People skilled in <span ng-repeat="skillAll in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAll}}</span><span ng-if="!$last">, </span></span> in {{fCountry}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 3">People skilled in <span ng-repeat="skillAll in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAll}}</span><span ng-if="!$last">, </span></span> in the rest of the world</h2>
+                        </div>
+                        <div class="meet-search-found" ng-if="!noAl && cardsFound.length === 7">
+                            <h2 ng-if="cardProfiles.length && $index === 1">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> looking to {{meet.mHelp}} in {{fCity}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 2">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> looking to {{meet.mHelp}} in {{fCountry}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 3">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> looking to {{meet.mHelp}} in the rest of the world</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 4">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> in {{fCity}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 5">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> in {{fCountry}}</h2>
+                            <h2 ng-if="cardProfiles.length && $index === 6">People skilled in <span ng-repeat="skillAl in cardsFound[0].skills"><span style="border-bottom: 1px solid black">{{skillAl}}</span><span ng-if="!$last">, </span></span> in the rest of the world</h2>
+                        </div>
+                        <div class="meet-body-cards" ng-repeat="cardProfile in cardProfiles | limitTo: limitSk1 track by $index">
+                            <div class="meet-body-card profile-card" ng-if="cardProfile.profiles.cover_picture_cards && cardProfiles !== 'none'">
+                                <a ng-href="/{{cardProfile.username}}" class="card-click-zone" target="_blank">
+                                    <div class="card-rank" ng-if="cardProfile.myRank">
+                                        <span>#{{cardProfile.myRank}}</span>
+                                    </div>
+                                    <div class="card-picture" ng-style="{'background-image': 'url({{ resizePic(cardProfile.profiles.cover_picture_cards, 205, 40, 'fill') }})'}">
+                                        <div ng-hide="!cardProfile.profiles.profile_picture" class="card-profile-picture"
+                                        ng-style="{'background-image': 'url({{ resizePic(cardProfile.profiles.profile_picture, 60, 60, 'fill') }})'}">
+                                    </div>
+                                    </div>
+                                    <div class="card-info">
+                                        <h4>{{cardProfile.profiles.first_name}} {{cardProfile.profiles.last_name}}</h4>
+                                        <div class="card-location">
+                                            <h6>{{cardProfile.profiles.location_city}}<i data-ng-hide="!cardProfile.profiles.location_country">,</i> {{cardProfile.profiles.location_country}}</h6>
+                                        </div>
+                                        <div class="card-description">
+                                            <p ng-bind-html="cardProfile.profiles.description | cut:true:56:' ...'"></p>
+                                        </div>
+                                        <div class="card-profile-skills">
+                                            <ul>
+                                                <li ng-repeat="searchSkill in cardProfile.skill">{{searchSkill | cut:true:20:' ...'}}</li>
+                                                <li ng-repeat="profileSkill in cardProfile.skills track by $index">{{profileSkill | cut:true:20:' ...'}}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="card-follow">
+                                    <div class="card-followers card-follow-square">
+                                        <p ng-bind="cardProfile.followers"></p>
+                                        <h6>followers</h6>
+                                    </div>
+                                    <div class="card-following card-follow-square">
+                                        <p ng-bind="cardProfile.following"></p>
+                                        <h6>following</h6>
+                                    </div>
+                                    <div id="cfs{{$index}}" class="card-plus card-follow-square" data-ng-click="meet.followUserFromCard(cardProfile.profiles.id, $index, $event)">
+                                        <div data-ng-show="!meet.followed[$index]" class="tooltipw">Follow?</div>
+                                        <div data-ng-show="meet.followed[$index]" class="tooltipw">Unfollow?</div>
+                                        <i id="fop{{$index}}" data-ng-show="!meet.followed[$index]" class="fa fa-plus"></i>
+                                        <i id="foc{{$index}}" data-ng-hide="!meet.followed[$index]" class="fa fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="meet-search-al" ng-if="meet.cardProfiles && !searchSk && searchAl">
+                    <div ng-if="$index <= limitAl" class="meet-search-al-cards" ng-repeat="cardProfiles in meet.cardProfiles track by $index" style="padding-left: 20px">
+                            <div class="meet-search-found" ng-if="meet.cardProfiles.length === 2">
+                                <!-- <h2>People skilled in <span style="border-bottom: 1px solid black">Javascript</span>, <span style="border-bottom: 1px solid black">Design</span>, <span style="border-bottom: 1px solid black">Social Network Marketing</span> looking to join project in Paris, France</h2> -->
+<!--                                 <h2>People looking to <u>"status"</u> in "city"</h2>
+ -->                                <!-- <h2>People from "city"</h2>
+                                <h2>People from "country"</h2>
+                                <h2>People from everywhere</h2> -->
+                                <h2 ng-if="cardProfiles.length && $index === 0">People looking to {{meet.mHelp}}</h2>
+                                <h2 ng-if="$index === 1">People from everywhere</h2>
+                            </div>
+                            <div class="meet-search-found" ng-if="meet.cardProfiles.length === 3">
+                                <h2 ng-if="cardProfiles.length && $index === 0">People from {{fCity}}</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 1">People from {{fCountry}}</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 2">People in the rest of the world</h2>
+                            </div>
+                            <div class="meet-search-found" ng-if="meet.cardProfiles.length === 6">
+                                <h2 ng-if="cardProfiles.length && $index === 0">People looking to {{meet.mHelp}} in {{fCity}}</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 1">People looking to {{meet.mHelp}} in {{fCountry}}</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 2">People looking to {{meet.mHelp}} in the rest of the world</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 3">People from {{fCity}}</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 4">People from {{fCountry}}</h2>
+                                <h2 ng-if="cardProfiles.length && $index === 5">People in the rest of the world</h2>
+                            </div>
+                            <div class="meet-body-cards" style="display: inline-block; padding-left: 0; margin-bottom: 20px;" ng-repeat="cardProfile in cardProfiles | limitTo: limitAl1 track by $index">
+                                <!-- <h1 style="color: black; width: 1000px" ng-if="meet.cardProfiles.length > 1 && $index === 0 && cardProfiles.length">{{ ::cardProfile}}</h1> -->
+                                <div class="meet-body-card profile-card" ng-if="cardProfile.cover_picture_cards">
+                                    <a ng-href="/{{cardProfile.username}}" class="card-click-zone" target="_blank">
+                                        <div class="card-rank" ng-if="cardProfile.myRank">
+                                            <span>#{{cardProfile.myRank}}</span>
+                                        </div>
+                                        <div class="card-picture" ng-style="{'background-image': 'url({{ resizePic(cardProfile.cover_picture_cards, 205, 40, 'fill') }})'}">
+                                            <div ng-hide="!cardProfile.profile_picture" class="card-profile-picture"
+                                            ng-style="{'background-image': 'url({{ resizePic(cardProfile.profile_picture, 60, 60, 'fill') }})'}">
+                                        </div>
+                                        </div>
+                                        <div class="card-info">
+                                            <h4>{{cardProfile.first_name}} {{cardProfile.last_name}}</h4>
+                                            <div class="card-location">
+                                                <h6>{{cardProfile.location_city}}<i data-ng-hide="!cardProfile.location_country">,</i> {{cardProfile.location_country}}</h6>
+                                            </div>
+                                            <div class="card-description">
+                                                <p ng-bind-html="cardProfile.description | cut:true:76:' ...'"></p>
+                                            </div>
+                                            <div class="card-profile-skills">
+                                                <ul>
+                                                    <li ng-repeat="profileSkill in cardProfile.skills">{{profileSkill.skill_name | cut:true:20:' ...'}}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="card-follow">
+                                        <div class="card-followers card-follow-square">
+                                            <p ng-bind="cardProfile.followers"></p>
+                                            <h6>followers</h6>
+                                        </div>
+                                        <div class="card-following card-follow-square">
+                                            <p ng-bind="cardProfile.following"></p>
+                                            <h6>following</h6>
+                                        </div>
+                                        <div id="cfs{{$index}}" class="card-plus card-follow-square" data-ng-click="meet.followUserFromCard(cardProfile.id, $index, $event)">
+                                            <div data-ng-show="!meet.followed[$index]" class="tooltipw">Follow?</div>
+                                            <div data-ng-show="meet.followed[$index]" class="tooltipw">Unfollow?</div>
+                                            <i id="fop{{$index}}" data-ng-show="!meet.followed[$index]" class="fa fa-plus"></i>
+                                            <i id="foc{{$index}}" data-ng-hide="!meet.followed[$index]" class="fa fa-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                </section>
+            </div>
+        </div>
+        <div id="ldmis" class="loader" style="display: none; margin-top: 20px"></div>
+                </div>
+
+    <script>
+
+    $(document).ready(function() {
+        function initPage() {
+            var check = 0;
+            $(window).scrollTop(0);
+                $(window).scroll(function() {
+                    if ($(window).scrollTop() > 300 && check === 0) {
+                        $('#pffs').css('display', 'block');
+                    }
+                    if ($(window).scrollTop() <= 300 && check === 1) {
+                        check = 0;
+                        $('#pffs').css('display', 'none');
+                    }
+                });
+        }; setTimeout(function(){ initPage() }, 1000);
+    });
+
+    var x = $(window).width();
+    var val = {};
+    var scope = angular.element($("#meet-body-page")).scope();
+    //console.log(scope.asd.skillList);
+
+    $("#msai").focus(function() {
+        if ($(this).val()) {
+            val.text = $(this).val();
+            val.width = Number($(this).width()) + 20;
+            $(this).val("");
+            $(this).css("width", "200px");
+        }
+    });
+    if (x > 736) {
+
+        $("#msai").on('mouseover', function() {
+            if ($(this).val()) {
+                val.text = $(this).val();
+                val.width = Number($(this).width()) + 20;
+                $(this).val("");
+                $(this).css("width", "200px");
+            }
+        });
+
+        $("#msai").on('mouseout', function() {
+            if (!$(this).is(':focus')) {
+                if (val.text && val.width) {
+                    $(this).val(val.text);
+                    $(this).css("width", val.width.toString() + "px");
+                }
+            }
+        });
+
+        $("#msai").focusout(function() {
+            if (val.text && val.width) {
+                $(this).val(val.text);
+                $(this).css("width", val.width.toString() + "px");
+            }
+        });
+
+        window.onmouseover = function(e) {
+            if (scope.meet.skillList.length > 0) {
+                if (e.target.id === 'mslist' || e.target.id === 'input-msa' || e.target.id === 'msa') {
+                    if (document.getElementById('input-msa')) {
+                        document.getElementById('input-msa').style.display = "block";
+                        document.getElementById('msdrop1').style.display = "inline-block";
+                        if (document.getElementById('mComma'))
+                        document.getElementById('mComma').style.display = "inline-block";
+                    }
+                }
+            }
+        };
+
+        /*** Skill DOM ***/
+        document.getElementById('meet-body-page').onclick = function(e) {
+            if (scope.meet.skillList.length > 0) {
+                if (e.target.id !== 'mslist' || e.target.id !== 'input-msa' || e.target.id !== 'msa' || e.target.id !== 'input-msa2') {
+                    if (document.getElementById('input-msa')) {
+                        document.getElementById('input-msa').style.display = "none";
+                        document.getElementById('msdrop1').style.display = "none";
+                        if (document.getElementById('mComma'))
+                        document.getElementById('mComma').style.display = "none";
+                    }
+
+                }
+            }
+
+            /*** ----- section meet ----- ***/
+            if (e.target.id === 'msat' && document.getElementById('msdbox2').style.display === "none") {
+                document.getElementById('msdbox2').style.display = "block";
+                document.querySelectorAll("#msat img")[0].style.transform = "rotate(-180deg)";
+            } else {
+                if (document.getElementById('msdbox2')) {
+                    document.getElementById('msdbox2').style.display = "none";
+                    document.querySelectorAll("#msat img")[0].style.transform = "rotate(0)";
+                }
+            }
+
+            //*** add skill ***//
+            if ((e.target.id === 'input-msa2' || e.target.id === 'input-msa') && document.getElementById('msabox1').style.display === "none" && document.getElementById('msabox2').style.display === "none") {
+        $("msabox1").show();
+            } else {
+                if (document.getElementById('msabox1'))
+                document.getElementById('msabox1').style.display = "none";
+            }
+        };
+
+        function changePlh() {
+            if (document.getElementById('labelText'))
+            {
+                document.getElementById('labelText').style.display = "none";
+                document.getElementById('labelText2').style.display = "block";
+            }
+        };
+
+        function normalPlh() {
+            if (document.getElementById('labelText')) {
+                document.getElementById('labelText').style.display = "block";
+                document.getElementById('labelText2').style.display = "none";
+            }
+        };
+
+        function getDropdown() {
+            document.getElementById("input-msa").onmouseout = function() {changePlh()};
+            if (document.getElementById('labelText')) {
+                document.getElementById('labelText').style.display = "none";
+                document.getElementById('labelText2').style.display = "block";
+                document.getElementById('labelText2').style.color = "#999999";
+            }
+            document.getElementById('input-msa').id = "input-msa2";
+        };
+
+        function hideDropdown() {
+            document.getElementById('input-msa2').id = "input-msa";
+            if (document.getElementById('labelText')) {
+                document.getElementById('labelText').style.display = "block";
+                document.getElementById('labelText2').style.display = "none";
+                document.getElementById('labelText2').style.color = "white";
+            }
+            document.getElementById("input-msa").onmouseout = function() {normalPlh()};
+            // document.getElementById("input-msa").onmouseover = "changePlh()";
+            // document.getElementById("input-msa").onmouseout = "normalPlh()";
+        };
+
+        function getSearchBox() {
+            var value = document.getElementById('input-msa2').value;
+
+            if (value) {
+                if (document.getElementById('labelText')) {
+                    document.getElementById('labelText').style.display = "none";
+                    document.getElementById('labelText2').style.display = "none";
+                    document.getElementById('labelText').id = "labelNoText";
+                    document.getElementById('labelText2').id = "labelNoText2";
+                }
+                document.getElementById('msabox1').style.display = "none";
+                document.getElementById('msabox2').style.display = "block";
+            } else {
+                document.getElementById('labelNoText').id = "labelText";
+                document.getElementById('labelNoText2').id = "labelText2";
+                document.getElementById('labelText2').style.display = "block";
+                document.getElementById('msabox2').style.display = "none";
+                document.getElementById('msabox1').style.display = "block";
+            }
+        };
+    }
+
+    </script>
+</div>
+<div data-ng-include="'views/bfooter/bfooter-3.view.client.html'"></div>

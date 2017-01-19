@@ -1,0 +1,238 @@
+#footer-page {
+	background-color: #222222;
+	height: 100%;
+	width: 100%;
+	border-top: 1px solid #767373;
+	text-align: center;
+
+	.footer-global {
+		max-width: 955px;
+		margin-left: auto;
+		margin-right: auto;
+
+		.footer-info-section {
+			margin-top: 45px;
+			border-bottom: 1px solid black;
+			text-align: left;
+
+			.footer-about {
+				display: inline-block;
+				text-align: left;
+				width: 220px;
+				margin-right: 40px;
+			}
+
+			.footer-explore {
+				display: inline-block;
+				text-align: left;
+
+				ul {
+					display: inline-block;
+					width: 150px;
+				}
+
+				.footer-explore-more {
+					float: right;
+				}
+			}
+
+			.footer-meet {
+				display: inline-block;
+				text-align: left;
+
+				ul {
+					display: inline-block;
+					width: 150px;
+				}
+
+				.footer-meet-more {
+					float: right;
+				}
+			}
+
+			.footer-size {
+				position: initial;
+				margin-top: 20px;
+				margin-bottom: 40px;
+				vertical-align: top;
+				padding-left: 15px;
+				padding-right: 15px;
+
+				h5 {
+					font-family: 'FreigSem';
+					margin-bottom: 10px;
+					font-size: 18px;
+				}
+				li {
+					cursor: pointer;
+					color: white;
+					font-family: 'FreigLight';
+					font-size: 14px;
+				}
+				li:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+
+		.footer-brand-copyright {
+
+			padding: 0 15px 60px 15px;
+			margin-top: 20px;
+			text-align: left;
+
+			.footer-brand-logo {
+				display: inline-block;
+				margin-right: 10px;
+				figure {
+					img {
+						width: 76px;
+						height: auto;
+					}
+				}
+			}
+
+			.footer-copyright {
+				display: inline-block;
+				padding-right: 10px;
+				padding-left: 10px;
+				span {
+					font-family: 'FreigLight';
+					font-size: 14px;
+					color: white;
+				}
+			}
+
+			.footer-social-media {
+				display: inline-block;
+				position: relative;
+				top: 6px;
+				float: right;
+				margin-right: 10px;
+				margin-left: 10px;
+
+				li {
+
+					display: inline-block;
+					a {
+						width: 24px;
+						height: 24px;
+						margin-right: 6px;
+						margin-left: 6px;
+					}
+
+					a.fb-logo  {
+						display: block;
+						background-image: url('/images/social_media/facebook-logo.png');
+						background-size: 11px;
+						background-repeat: no-repeat;
+						background-position: center;
+					}
+					a.tw-logo  {
+						display: block;
+						position: relative;
+						top: 2px;
+						background-image: url('/images/social_media/twitter-logo.png');
+						background-size: 100%;
+						background-repeat: no-repeat;
+					}
+					a.gp-logo  {
+						display: block;
+						background-image: url('/images/social_media/googleplus-logo.png');
+						background-size: 100%;
+						background-repeat: no-repeat;
+					}
+					a.ln-logo  {
+						display: block;
+						background-image: url('/images/social_media/linkedin-logo.png');
+						background-size: 100%;
+						background-repeat: no-repeat;
+					}
+				}
+			}
+		}
+	}
+}
+
+/*********************** MEDIA QUERIES MOBILE WIDTH \*320px to 800px*\ **************************/
+
+@media only screen and (max-width: 736px) {
+	#footer-page {
+		.footer-global {
+			.footer-info-section {
+				margin-top: 0px;
+				padding: 0 20px;
+				text-align: left;
+				border-bottom: none;
+
+				h5 {
+					background-image: url('/images/arrow-down-icon-w.svg');
+					background-repeat: no-repeat;
+					background-position: 99% 50%;
+				}
+
+				.footer-about {
+					margin-right: 0;
+				}				
+
+				.footer-explore {
+					ul {
+						width: 130px;
+					}
+
+					.footer-explore-more {
+						float: none
+					}
+				}
+
+				.footer-meet {
+					ul {
+						width: 130px;
+					}
+
+					.footer-meet-more {
+						position: relative;
+						float: none;
+						bottom: 17.5px;
+					}
+				}
+
+				.footer-size { 
+					width: 100%;
+					margin-top: 0px;
+					margin-bottom: 0px;
+					border-bottom: 1px solid black;
+					padding: 0;
+					h5 {
+						margin: 20px 0;
+					}
+				}
+
+				.footer-list {
+					display: none;
+					margin-bottom: 20px;
+				}
+			}
+
+			.footer-brand-copyright {
+				text-align: center;
+				padding: 0 15px 20px 15px;
+
+				.footer-brand-logo {
+					display: block;
+					margin: 0 0 10px 0;
+				}
+
+				.footer-copyright {
+					display: block;
+					margin-bottom: 10px;
+				}
+
+				.footer-social-media {
+					display: block;
+					float: none;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,129 @@
+<section id="learn-body-page">
+
+	<div class="learn-header-title-video" style="z-index: 100">
+		<h1>Learn</h1>
+		<h3>Ressources, stories, interviews & curated content from our community</h3>
+	</div>
+	<div id="hvbg" class="home-video-bg">
+		<video poster="/images/backgrounds/background-learn.jpg" loop muted autoplay>
+			<source src="/images/videos/Learn.mp4" type="video/mp4" />
+		</video>
+	</div>
+
+	<div class="learn-header">
+		<div class="learn-header-title">
+			<h1>Learn</h1>
+		</div>
+		<div class="learn-header-text">
+			<h3>Ressources, stories, interviews & curated content from our community</h3>
+		</div>
+		<!-- <div class="learn-header-tag">
+			<ul>
+				<li ng-repeat="headTag in headTags" ng-click="getArticleByTag(headTag)">#{{headTag}}</li>
+			</ul>
+		</div> -->
+	</div>
+
+	<div ui-view>
+		<div class="learn-corp">
+			<article class="learn-corp-article">
+				<div class="learn-corp-article-title">
+					<div class="lcatl lcat">
+						<h2>All stories</h2>
+						<a data-ui-sref=".new" ng-if="logUser.moderator || logUser.ambassador">Add new article</a>
+					</div>
+
+					<div class='lcatr lcat'>
+						<h4 id="lcatrh4">{{ a_rank }}</h4>
+						<img id="lcatrddimg" src="/images/arrow-down-icon-b.svg" alt="arrow">
+						<div class="lcatr-dropdown" style="display: none">
+							<ul>
+								<li ng-click="getArticleByRank(1)">most recent</li>
+								<li ng-click="getArticleByRank(2)">most viewed</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="learn-corp-article-article" ng-repeat="article in articles track by $index">
+					<section class="lcaahead">
+						<div class="lcaaheada">
+							<div class="lcaaheadai">
+								<a ng-href="/{{article.username}}"><img ng-src="{{article.profile.profile_picture}}" atl="profile-img"></a>
+							</div>
+
+							<div class="lcaaheadan">
+								<a ng-href="/{{article.username}}"><h5>{{article.profile.first_name}} {{article.profile.last_name}}</h5></a>
+								<div class="lcaaheadans">
+									<span ng-bind="article.creation_date"></span>
+									<span style="margin-left: 5px">{{article.read_time}} mins read</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="lcaaheadt">
+							<div class="lcaaheadtt">
+								<ul class="di">
+									<li ng-repeat="tag in article.tags">#{{tag.tag_name}}</li>
+								</ul>
+
+								<span class="di"><i class="fa fa-heart" ng-class="article.likedArticle ? 'fa-heart-red' : 'fa-heart-white'" ng-click="postLikeArticle($index, article.id)" aria-hidden="true"></i> {{article.numberOfLike}}</span>
+							</div>
+
+							<div class="lcaaheadtb">
+								<a href="/learn/article/id/{{article.article_id}}"><span>{{article.numCom}} comments</span></a>
+							</div>
+						</div>
+					</section>
+
+					<a ng-href="/learn/article/id/{{article.article_id}}/{{encodeTitle(article.title)}}"><article class="lcaadoc">
+						<h2 ng-bind="article.title"></h2>
+						<div class="lcaadocimg"><img ng-if="article.picture" ng-src="{{article.picture}}"></div>
+						<div class="lcaadoctext" ng-bind-html="article.text"></div>
+						<a style="margin-top: 10px" ng-click="loadArticle($index)" ng-href="/learn/article/id/{{article.article_id}}/{{encodeTitle(article.title)}}">Read more...</a>
+					</article></a>
+				</div>
+			</article>
+
+			<aside class="learn-corp-aside">
+				<div class="learn-corp-aside-title">
+					<h2># trending</h2>
+				</div>
+
+				<div class="learn-corp-aside-article" ng-repeat="tArticle in tArticles track by $index">
+					<div class="lcaaimg">
+						<img ng-src="{{tArticle.profile.profile_picture}}">
+					</div>
+
+					<div class="lcaainfo">
+						<a ng-href="/learn/article/id/{{tArticle.article_id}}/{{encodeTitle(tArticle.title)}}"><h5 ng-bind="tArticle.title"></h5></a>
+						<div class="lcaainfon">
+							<span>{{tArticle.profile.first_name}} {{tArticle.profile.last_name}}</span>
+							<span><i class="fa fa-heart" ng-class="tArticle.likedArticle ? 'fa-heart-red' : 'fa-heart-white'" ng-click="postLikeTrendingArticle($index, tArticle.id)" aria-hidden="true"></i> {{tArticle.numberOfLike}}</span>
+						</div>
+
+						<div class="lcaainfot">
+							<ul>
+								<li ng-repeat="tTag in tArticle.tags">#{{tTag.tag_name}}</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</aside>
+		</div>
+	</div>
+</section>
+<script>
+	$(document).ready(function() {
+		$(this).on("click", function(e) {
+			if (e.target.id === "lcatrh4") {
+				$(".lcatr-dropdown").css("display", "block");
+				$("#lcatrddimg").css("transform", "rotate(-180deg)");
+			} else {
+				$(".lcatr-dropdown").css("display", "none");
+				$("#lcatrddimg").css("transform", "rotate(0deg)");
+			}
+		});		
+	});
+</script>

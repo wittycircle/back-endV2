@@ -5,7 +5,7 @@
 'use strict';
 
 module.exports = {
-    mandrill: {
+     mandrill: {
         template_name: 'new-message',
         template_content: [
             {'name': 'new-message'},

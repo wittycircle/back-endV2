@@ -1,0 +1,120 @@
+
+<section id="project_feedback">
+	<div class="project_feedback_header">
+		<h1 class="freigLight inline">Discussion</h1>
+		<div id="askq" class="pfh_add inline">
+			<span class="freigSem"><i class="fa fa-plus" aria-hidden="true"></i> Ask question</span>
+		</div>
+
+		<div id="pfa" class="project_feedback_ask">
+			<label class="freigBook">Title</label>
+			<input class="freigBook" type="text" placeholder="What is your question ?..." ng-model="vm.askTitle"/>
+			<label class="freigBook">Comments</label>
+			<textarea redactor ng-model="vm.askComment" placeholder="Add some comments"></textarea>
+			<div class="pfa-button">
+				<button ng-click="vm.publishQuestion()">Publish</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="project_feedback_body">
+		<div class="project_feedback_comments">
+			<div class="project_feedback_main">
+				<div ng-repeat="discussion in vm.discussions track by $index" class="pfm_title">
+
+					<div class="pfmt_list inline">
+						<div class="pfmt_img inline">
+							<img ng-src="{{discussion.user_info.picture}}">
+						</div>
+						<div class="pfmt_info inline">
+							<h4 class="freigSem" ng-bind="discussion.title"></h4>
+							<a ng-href="/{{discussion.user_info.username}}" class="p-info inline">{{discussion.user_info.first_name}} {{discussion.user_info.last_name}}</a><span>{{discussion.creation_date | wittyDateFilter}}</span>
+						</div>
+						<div class="pfmt_setting inline" ng-if="vm.loggedUser && (vm.loggedUser.id === discussion.user_id)">
+							<span ng-click="vm.initDiscussionValue(discussion.title, discussion.message); vm.displayEdit('#pfmmodif-', $index)"><img src="/images/picto-edit-b.svg"></span>
+							<span ng-click="vm.deleteDiscussion(discussion.user_id, discussion.id, $index)"><i class="fa fa-trash"></i></span>
+						</div>
+						<div class="pfm-comments">
+							<div class="pfm-comment">
+								<p class="p-text freigBook" ng-bind-html="discussion.message"></p>
+							</div>
+							<div id="{{ 'pfmmodif-' + $index}}" class="pfm-modify project_feedback_ask">
+								<label class="freigBook">Title</label>
+								<input class="freigBook" type="text" placeholder="What is your question ?..." ng-model="vm.updateAskTitle"/>
+								<label class="freigBook">Comments</label>
+								<textarea redactor ng-model="vm.updateAskComment" placeholder="Add some comments"></textarea>
+								<div class="pfa-button">
+									<button ng-click="vm.updateDiscussion(discussion.id, discussion.user_id, $index)">Publish</button>
+								</div>
+							</div>
+							<div class="pfm-action">
+								<span ng-if="!discussion.myLike" ng-click="vm.getVoteDiscussion(discussion.id, $index)" style="font-family: Arial; font-size: 12px"><img class="pfm-vote-image" src="/images/arrow-up-icon-g.svg" alt="up"> {{discussion.numLike}}</span>
+								<span ng-if="discussion.myLike" ng-click="vm.getVoteDiscussion(discussion.id, $index)" style="font-family: Arial; font-size: 12px; color: #504F4F"><img class="pfm-vote-image" src="/images/arrow-up-icon-moreg.svg" alt="up"> {{discussion.numLike}}</span>
+								<span id="pfmare" ng-click="vm.displayEdit('#pfmarea-', $index)"><i class="fa fa-reply" aria-hidden="true"></i> Reply</span>
+							</div>
+							<div id="{{ 'pfmarea-' + $index }}" class="pfm-reply-ask">
+								<textarea redactor ng-model="vm.commentInAsk" placeholder="Add some comments"></textarea>
+								<div class="pfmrs-button">
+									<button ng-click="vm.publishReply(discussion.id, $index)">Reply</button>
+								</div>
+							</div>
+
+							<div ng-repeat="comment in discussion.comments" class="project_feedback_comments">
+								<div class="pfc_info inline">
+									<div class="pfc_img inline">
+										<img ng-src="{{comment.user_info2.picture}}">
+									</div>
+									<a ng-href="/{{comment.user_info2.username}}" class="p-info inline">{{comment.user_info2.first_name}} {{comment.user_info2.last_name}}</a><span>{{comment.creation_date | wittyDateFilter}}</span>
+									<div ng-show="vm.loggedUser && (vm.loggedUser.id === comment.user_id)" class="pfmt_setting inline">
+										<span ng-click="vm.initReplyValue(comment.message); vm.displayEdit('#pfmup-', $index, $parent.$index)"><img src="/images/picto-edit-b.svg"></span>
+										<span ng-click="vm.deleteReply(comment.user_id, comment.id, $index, $parent.$index)"><i class="fa fa-trash"></i></span>
+									</div>
+									<div class="pfm-comments pfm-comments2">
+										<div class="pfm-comment inline">
+											<p class="p-text freigBook" ng-bind-html="comment.message"></p>
+										</div>
+
+										<div class="pfm-action">
+											<span ng-show="!comment.myRLike" ng-click="vm.getVoteReply(comment.id, $index, $parent.$index)" style="font-family: Arial; font-size: 12px"><img class="pfm-vote-image" src="/images/arrow-up-icon-g.svg" alt="up"> {{comment.numRLike}}</span>
+											<span ng-show="comment.myRLike" ng-click="vm.getVoteReply(comment.id, $index, $parent.$index)" style="font-family: Arial; color: #504F4F/ font-size: 12px"><img class="pfm-vote-image" src="/images/arrow-up-icon-moreg.svg" alt="up"> {{comment.numRLike}}</span>
+										</div>
+									</div>
+								</div>
+								<div id="{{ 'pfmup-' + $index + '-' + $parent.$index }}" class="pfm-updateReply pfm-reply-ask">
+									<textarea redactor ng-model="vm.updateCommentInAsk" placeholder="Add some comments"></textarea>
+									<div class="pfmrs-button">
+										<button ng-click="vm.updateReply(comment.id, comment.user_id, $index, $parent.$index)">Reply</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+<script>
+
+	$(document).ready(function() {
+		$('#pfa').css('display', 'none');
+		$('#pfmarea').css('display', 'none');
+
+		$(this).click(function(e) {
+			if ( $('#askq').is(e.target) || $('#askq').has(e.target).length ) {
+				$('#pfa').slideDown(200);
+			} else {
+				if (!$('#pfa').is(e.target) && !$('#pfa').has(e.target).length )
+					$('#pfa').slideUp(200);
+			}
+
+			// if ( $('#pfmare').is(e.target) || $('#pfmare').has(e.target).length || $('#pfmarea').is(e.target) || $('#pfmarea').has(e.target).length )
+			// 	$('#pfmarea').slideDown(200);
+			// else
+			// 	$('#pfmarea').slideUp(200);
+
+		});
+	});
+</script>

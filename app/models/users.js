@@ -24,10 +24,12 @@ exports.getUserProfile = id => {
     })
 };
 
+exports.getUserShare = id => {
+	return db.select(['social_share']).from(TABLES.USERS).where({'id': id});
+};
+
+
 exports.updateUserShare = id => {
     return db.update({social_share: 1}).from(TABLES.USERS).where({id: id});
 };
 
-exports.getUserShare = id => {
-    return db.update
-}
