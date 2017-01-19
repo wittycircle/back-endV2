@@ -37,14 +37,14 @@ exports.ensureModerator = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    passport.authenticate('local-login', (err, user) => {
+    passport.authenticate('local-login', function(err, user) {
         if (err || !user)
             return res.send({success: false});
-        req.logIn(user, err => {
+        req.logIn(user, function(err) {
             if (err)
                 res.send({success: false}); //todo login failure report
             else {
-                return res.send({
+                res.send({
                     success: true,
                     user: _.pick(user, ['id', 'email', 'profile_id', 'username', 'moderator', 'ambassador'])
                 });
@@ -57,7 +57,7 @@ exports.logout = (req, res) => {
     if (!req.isAuthenticated())
         res.send({message: 'User is not logged in'}); //todo security?
     else
-        req.session.destroy(err => {
+        req.session.destroy(function(err) {
             if (err) throw err;
             res.send({success: true});
         })

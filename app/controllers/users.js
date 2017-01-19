@@ -6,7 +6,7 @@
 
 const user = require('../models/users');
 
-exports.getUser = (req, res, next) => {
+exports.getUser = (req, res) => {
     user.getUser(req.user_id).then(user => {
         res.send(user)
     }).catch(err => {
@@ -14,7 +14,7 @@ exports.getUser = (req, res, next) => {
     });
 };
 
-exports.getUsers = (req, res, next) => {
+exports.getUsers = (req, res) => {
     user.getUsers().then(users => {
         res.send(users)
     }).catch(err => {
@@ -22,7 +22,7 @@ exports.getUsers = (req, res, next) => {
     });
 };
 
-exports.getUserShare = (req, res, next) => {
+exports.getUserShare = (req, res) => {
     // req.checkParams('user_id', 'username must be an integer.').isInt();
     // const errors = req.validationErrors(true);
     // if (errors)
@@ -39,7 +39,7 @@ exports.getUserShare = (req, res, next) => {
     });
 };
 
-exports.getUserByEmail = (req, res, next) => {
+exports.getUserByEmail = (req, res) => {
     user.getUserByEmail(req.user_email).then(user => {
         if (user.length === 0)
             res.send({success: false});

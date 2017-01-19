@@ -30,7 +30,12 @@ app.use('*', (err, req, res, next) => {
     next();
 });
 
+app.use(require('./app/config/custom_validator'));
+
 router.use(logger('dev'));
+
+app.use(require('./app/dev/debug').resDebugger);
+
 router.use(require('./app/routes/index'));
 app.use(router);
 
