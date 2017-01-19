@@ -4,8 +4,7 @@
 
 'use strict';
 
-const user = require('../models/users'),
-    _ = require('lodash');
+const user = require('../models/users');
 
 exports.getUser = (req, res, next) => {
     user.getUser(req.user_id).then(user => {
@@ -29,7 +28,7 @@ exports.getUserShare = (req, res, next) => {
           if (social_share.length === 0)
             res.send({success: false})
           else
-            res.send(social_share)
+            res.send({success: true})
         }).catch(err => {throw err})
     // }
 }

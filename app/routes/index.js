@@ -9,5 +9,6 @@ let router = express.Router();
 
 
 router.use(require('./users'));
+router.use(require('./profiles'));
 
 module.exports = router;
