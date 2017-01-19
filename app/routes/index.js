@@ -9,9 +9,5 @@ let router = express.Router();
 
 
 router.use(require('./users'));
-router.route('/').get((req, res) => {
-res.sendFile('Public/app/index.html', {root: __dirname + '/../../'})
-})
-
 
 module.exports = router;

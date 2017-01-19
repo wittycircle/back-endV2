@@ -15,12 +15,13 @@ let app = express();
 
 
 app.set('port', process.env.PORT || 3000);
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.static(__dirname + '/Public/app/'))
 app.use(express.static(__dirname + '/Public/'))
 app.use(express.static(__dirname + '/Public/app/styles/css'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(require('./app/config/custom_validator.js'))
 
 app.use('*', (err, req, res, next) => {
     console.log(err);
