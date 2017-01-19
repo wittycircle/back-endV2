@@ -1,0 +1,65 @@
+<div class="main-login-page-bg">
+<section id="main-login-page" data-ng-controller="LoginCtrl">
+    <div class="login-modal-social signup-login-social">
+        <h4>Log in with a social network:</h4>
+        <div class="fb-login">
+            <a href="/auth/facebook" target="_self">
+                <button><i class="fa fa-facebook" style="color: white"></i>Log in with Facebook</button>
+            </a>
+        </div>
+        <div class="go-login">
+            <a href="/auth/google" target="_self">
+                <button class="go-login"><img src="/images/social_media/newgoogle-logo.svg">Log in with Google</button>
+            </a>
+        </div>
+    </div>
+    <div class="login-modal-old signup-login-old">
+        <div class="old-dash"></div>
+        <h4>Or the old-fashioned way:</h4>
+        <div class="old-dash"></div>
+    </div>
+    <form>
+        <div class="login-modal-email">
+            <p ng-if="!lf">Incorrect password/email</p>
+            <div class="email-input">
+                <input type="text" class="modal-input" ng-model='email' placeholder="E-mail address"/>
+                <p ng-if='!lef'>This is a required field</p>
+            </div>
+            <div class="password-input">
+                <input type='password' class="modal-input" ng-model='password' placeholder="Password"/>
+                <p ng-if='!lpf'>This is a required field</p>
+            </div>
+            <div class="forgot-password">
+                <p data-ng-click="showResetPassword()" data-ng-bind="TextReset"></p>
+            </div>
+            <div class="email-input" data-ng-show="showReset">
+                <input type="text" ng-model='ereset' placeholder="E-mail used for your account"/>
+            </div>
+            <div data-ng-show="validateReset === true">
+                <span class="validate-p" data-ng-bind="textValidateReset">
+            </div>
+            <div data-ng-show="validateReset === 2">
+                <p class="validate-p" data-ng-bind="textValidateReset"></p>
+            </div>
+        </div>
+        <div class="login-modal-footer">
+            <button ng-click='login()' data-ng-bind="textButton"></button>
+            <h4>Don't have an account yet? <strong><u><a href="/register">Sign up</a></u></strong></h4>
+        </div>
+    </form>
+</section>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#header-content').css("backgroundColor", "white");
+        $('#header-content').css("borderBottom", "1px solid #e5e5e5");
+        $('#hbp').attr("src", "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-b_ejb1po.svg");
+        $('#hnl').attr("class", "header-nav-list2");
+        $('#hsb').css("height", "48px");
+        $('#notif-w-i').attr("src", "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-b_swhyaz.png");
+        $('#notif-m-i').attr("src", "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-b_lbsllf.svg");
+        $('#c-img').attr("src", "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-b_opi301.svg");
+        $('.header-log-dropdown').first().css("color", "#999999");
+        $('#hnlog').attr("class", "header-nav-log2");
+    });
+</script>

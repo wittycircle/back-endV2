@@ -1,0 +1,250 @@
+<div id="messages-body-page" ng-if="!mobile">
+	<message-modal></message-modal>
+	<section id="messages-page">
+		<header id="messages-header" ng-style="{'background-image': 'url({{ backPic }})'}">
+			<div class="filter"></div>
+			<div class="message-header-component">
+				<div class="messages-header-title">
+					<h1>Messages</h1>
+				</div>
+				<div id="mhn" class="messages-header-new" onmouseover="changeImgSrc()" onmouseout="RechangeImgSrc()" ng-click="getListUser()">
+					<a><img id="mhnImg" src="/images/write-icon.svg">New message</a>
+				</div>
+			</div>
+		</header>
+
+		<section id="messages-body">
+			<div class="messages-component">
+				<div class="messages-contact-list">
+					<div class="messages-search">
+						<input type="search" placeholder="Search users or messages" ng-model="searchContact">
+					</div>
+
+					<div class="messages-contact">
+						<div class="messages-list" onclick="scrollToBottom()" ng-class="{ 'actives' : tab === dialogue.id, 'unread-active' : !dialogue.read && dialogue.sender !== currentUsername }" ng-repeat="dialogue in dialogues | filter: searchContact " ng-click="showMessage(dialogue)">
+							<div class="messages-list-picture">
+								<img ng-src="{{ resizePic(dialogue.pic, 50, 50, 'fill') }}" alt="profile-picture">
+							</div>
+							<div class="messages-list-object">
+								<div class="messages-list-user">
+									<i ng-if="onlineUser[dialogue.to_username]" class="online-icon"></i>
+									<i ng-if="!onlineUser[dialogue.to_username]" class="offline-icon"></i>
+									<h4>{{dialogue.to_username}}</h4>
+								</div>
+								<div class="messages-list-text">
+									<div class="messages-main-text" ng-bind-html="dialogue.last_message"></div>
+								</div>
+								<span>{{dialogue.date}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="messages-conversation">
+					<div class="messages-conversation-header">
+						<div class="messages-conversation-left">
+							<div ng-if="profile_user_picture" class="messages-header-picture">
+								<a ng-href="/{{nameuser}}"> <img style="width: 35px, height: 35px" ng-src="{{ resizePic(profile_user_picture, 35, 35, 'fill') }}"></a>
+							</div>
+							<div ng-if="name" class="messages-header-title">
+								<h4>Conversation with {{name}}</h4>
+							</div>
+							<div ng-if="!name" class="messages-header-newTitle">
+								<h4>New conversation</h4>
+							</div>
+						</div>
+						<div id="mhop" ng-class="{ 'messages-header-option': name, 'messages-header-option2': !name }">
+							<div id="mhop" class="messages-option-action">
+								<a id="mhop" href="">Actions</a>
+								<span id="mhop"><img id="mhop-i" src="/images/arrow-down-icon-b.svg"></span>
+							</div>
+							<div id="mobox" class="messages-option-dropdown" style="display: none;">
+		<!-- <li>Print conversation</li>
+	--><li id="mcdc">Delete conversation</li>
+		<!-- <li>Block {{name}}</li>
+		<li>Report {{name}}</li> -->
+	</div>
+</div>
+</div>
+<div id="mcb" class="messages-conversation-body">
+	<div class="messages-cb-texto" ng-repeat="message in messages track by $index" ng-if="showAcceptItem(message)">
+		<div class="messages-texto-picture">
+			<img ng-if="my_id === message.from_user_id" ng-src="{{ resizePic(profile_my_picture, 50, 50, 'fill') }}">
+			<a ng-href="/{{nameuser}}"><img ng-if="my_id !== message.from_user_id" ng-src="{{ resizePic(profile_user_picture, 50, 50, 'fill') }}"></a>
+		</div>
+		<div class="messages-texto">
+			<div class="messages-texto-name">
+				<h4>{{message.from_username}}</h4>
+				<span>{{message.creation_date }}</span>
+			</div>
+			<div class="messages-texto-text">
+				<div class="messages-text" ng-bind-html=" transformHtml(message.message)"></div>
+				<div class="messages-text-help-demand" ng-if="message.ask_for_help === 1 && message.to_user_id === my_id">
+					<h5>Do you want to help?</h5>
+					<span ng-click="acceptHelpMessage($index, message.id, true, message.from_user_id, message.ask_project_id)"><i class="fa fa-check" aria-hidden="true"></i> Yes</span>
+					<span ng-click="acceptHelpMessage($index, message.id, false, message.from_user_id, message.ask_project_id)"><i class="fa fa-times" aria-hidden="true"></i> No</span>
+				</div>
+				<div class="messages-text-help-pending" ng-if="message.ask_for_help === 1 && message.from_user_id === my_id">
+					<i>{{name}} did not answer yet...</i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="messages-cb-texto" ng-repeat="liveMessage in liveMessages track by $index">
+		<div class="messages-texto-picture">
+			<img ng-src="{{ resizePic(liveMessage.from_picture, 50, 50, 'fill') }}">
+		</div>
+		<div class="messages-texto">
+			<div class="messages-texto-name">
+				<h4>{{liveMessage.from_username}}</h4>
+				<span>{{liveMessage.date}}</span>
+			</div>
+			<div class="messages-texto-text">
+				<div class="messages-text" ng-bind-html="transformHtml(liveMessage.message)"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="messages-cb-texto" ng-repeat="offMessage in offMessages track by $index">
+		<div class="messages-texto-picture">
+			<img ng-src="{{ resizePic(offMessage.from_picture, 50, 50, 'fill') }}">
+		</div>
+		<div class="messages-texto">
+			<div class="messages-texto-name">
+				<h4>{{offMessage.from_username}}</h4>
+				<span>{{offMessage.date}}</span>
+			</div>
+			<div class="messages-texto-text">
+				<div class="messages-text" ng-bind-html="transformHtml(offMessage.message)"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="messages-conversation-textarea">
+	<div class="textarea-box">
+		<textarea placeholder="Write a reply..." ng-keyup="keyPress($event.keyCode, username, nameuser)" ng-model="socket.message" redactor></textarea>
+	</div>
+	<div id="textbtn" class="textarea-button">
+		<button type="submit" ng-click="socket(username, nameuser)">Send</button>
+	</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</div>
+
+<div id="messages-body-page-mobile">
+
+	<section id="messages-body-list-mobile">
+		<div id="mslm" class="messages-search-list-mobile">
+			<input type="search" placeholder="Search users or messages" ng-model="searchContact" />
+			<div id="nmmobile" class="new-messages-mobile">
+				<img src="/images/write-icon-g.svg" alt="new message">
+			</div>
+			<div class="new-messages-home" ng-click="showHomeMobile()"><i class="fa fa-home" aria-hidden="true"></i></div>
+		</div>
+
+		<div id="messlist" class="messages-convers-list-mobile">
+			<div class="messages-list" ng-class="{ 'actives' : tab === dialogue.id, 'unread-active' : !dialogue.read && dialogue.sender !== currentUsername }" ng-repeat="dialogue in dialogues | filter: searchContact " ng-click="showMessage(dialogue)">
+
+				<div class="messages-list-picture">
+					<img ng-src="{{ dialogue.pic }}" alt="profile-picture">
+				</div>
+
+				<div class="messages-list-object">
+					<div class="messages-list-user">
+						<i ng-if="onlineUser[dialogue.to_username]" class="online-icon"></i>
+						<i ng-if="!onlineUser[dialogue.to_username]" class="offline-icon"></i>
+						<h4>{{dialogue.to_username}}</h4>
+					</div>
+					<div class="messages-list-text">
+						<div ng-bind-html="transformHtml(dialogue.last_message)"></div>
+					</div>
+					<span>{{dialogue.date}}</span>
+				</div>
+
+			</div>
+		</div>
+	</section>
+</div>
+<script>
+	var x = $(window).width();
+
+	if (x >= 736) {
+
+		setTimeout(function() {
+			var h = document.getElementById('mcb');
+			if (h) {
+				h.scrollTop = h.scrollHeight;
+			}
+		}, 1000);
+
+		function scrollToBottom() {
+			setTimeout(function() {
+				var h = document.getElementById('mcb');
+				if (h) {
+					h.scrollTop = h.scrollHeight;
+				}
+			}, 200);
+		}
+
+		function changeImgSrc() {
+			document.getElementById('mhnImg').src = "/images/write-icon-b.svg";
+		};
+
+		function RechangeImgSrc() {
+			document.getElementById('mhnImg').src = "/images/write-icon.svg";
+		};
+
+		$(document).ready(function() {
+			$(this).on('click', function(e) {
+				var container = $("#mhn");
+				if (container.is(e.target) || container.has(e.target).length > 0) {
+					$('#messages-newpost-modal').show();
+                	$('#messages-modal-searchArea').show();
+				}
+			});
+		});
+
+	} else {
+
+		$('#headerCore').hide();
+		$('#footerCore').hide();
+
+		$(document).ready(function() {
+			var list = $('.messages-convers-list-mobile'),
+			mbmm = document.getElementById('messages-body-messages-mobile'),
+			mblm = $('#messages-body-list-mobile'),
+			messlist = $('#messlist'),
+			nmmobile = $('#nmmobile'),
+			footer = document.getElementById('footerCore'),
+			header = document.getElementById('headerCore');
+
+			messlist.on('click', function() {
+				classie.remove( document.getElementById('messages-body-messages-mobile'), 'left-to-right-message');
+				classie.add( document.getElementById('messages-body-messages-mobile'), 'right-to-left-message');
+				$('#messages-body-messages-mobile').show()
+				$('#body-section').hide();
+			});
+
+			nmmobile.click(function() {
+				$('.new-messages-modal-mobile').show();
+				$('#body-section').hide();
+			});
+
+	  // $(window).scroll(function () {
+	  // if ($(this).scrollTop() >= 85) {
+	  // classie.add(mslm, 'body-fixed');
+	  // list.css('padding-top', '54px');
+	  // } else {
+	  // classie.remove(mslm, 'body-fixed');
+	  // list.css('padding-top', '0px');
+	  // }
+	  // });
+		});
+	}
+</script>

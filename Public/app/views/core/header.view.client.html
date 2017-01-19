@@ -1,0 +1,617 @@
+<header id="header-section" data-ng-controller="HeaderCtrl">
+    <section id="header-content" class="cbp-spmenu-push">
+        <div id="hsmobile" class="header-searchBar-mobile">
+            <figure>
+                <img id="hsmobileimg" src="/images/search-icon-w.svg">
+            </figure>
+        </div>
+
+        <div class="header-brand" role="navigation">
+            <figure class="header-brand-picture">
+                <a href="/"><img id="hbp" src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-w_qtyz0j.svg" alt="wittycircle-logo"></a>
+            </figure>
+        </div>
+
+        <div class="header-navigation">
+            <ul id="hnl" class="header-nav-list">
+                <li class="normal" ><a href="/discover">Discover</a></li>
+                <li class="normal"><a href="/meet" >Meet</a></li>
+                <div class="list-soon">
+                    <li class="normal"><a href="/learn">Learn</a></li>
+                </div>
+                <div class="strong-start">
+                    <li ng-click="goToStart()"><a><strong>Post a project</strong></a></li>
+                </div>
+            </ul>
+
+            <div id='hsb' class="header-searchBar">
+                <label for="iff"></label>
+                <input id="iff" type="search" placeholder="Search for people, projects and ideas..." name="search" ng-model="searchNameHeader" oninput="showFindField()" autocomplete="off">
+            </div>
+        </div>
+
+        <div id="showRightPush" class="header-log-off-mobile">
+            <div ng-if="notifBubble || numberNotif" class="header-mobile-bubble"></div>
+            <img id="srpimg" src="/images/littleman-w.svg">
+        </div>
+        <nav md-swipe-right="onSwipeRight()" class="header-log-aside cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s2">
+<!--            <h3>Menu</h3> -->
+            <div class="log-of" ng-hide="log">
+                <a id="mologin" href="">Log In</a>
+                <a id="mosignup" href="">Join us</a>
+            </div>
+            <div class="log-on" ng-hide="!log">
+                <div class="log-on-list">
+                    <h2>{{user.first_name}} {{user.last_name}}</h2>
+                        <img ng-if="user.profile_picture" id="hlogavatar" class="header-log-avatar" ng-src="{{ resizePic(user.profile_picture, 90, 90, 'fill') }}" alt="profile-avatar" data-ui-sref="profile({username: user.username})">
+                    <div class="log-on-notifs">
+                        <a id="loma" class="log-on-mail" href="/messages">
+                            <div ng-if="numberNotif" class="log-mobile-buble">{{numberNotif}}</div>
+                            <img src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-b_lbsllf.svg" alt="notif-mail" />
+                        </a>
+                        <div id="lono" class="log-on-notif">
+                            <div ng-if="notifBubble" class="log-mobile-buble">{{notifBubble}}</div>
+                            <img src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-b_swhyaz.png" alt="notif-notif" />
+                        </div>
+                    </div>
+                    <ul id="hmmenu" class="header-mobile-menu">
+                        <li><a href="" data-ui-sref="profile({username: user.username})">My Profile</a></li>
+                        <li ng-if="moderator" ><a href="/admin/panel">Admin Panel</a></li>
+                        <li><a href="/my-projects">Projects</a></li>
+                        <li><a href="/statistics">Statistics</a></li>
+                        <li><a href="/setting">Settings</a></li>
+                        <li><a ng-click="logout()">Log out</a></li>
+                    </ul>
+                </div>
+            </div>
+            <md-divider></md-divider>
+        </nav>
+        <nav class="header-log-off" ng-hide="log">
+            <ul id='hnlog' class="header-nav-log">
+                <li class="lsu"><a href="" id="mologin">Log In</a></li>
+                <li class="lsu"><a href="" id="mosignup" ng-click="opensignup('lg'); updateUrlSignup()">Join us</a></li>
+            </ul>
+        </nav>
+        <hr />
+
+        <nav id="hlon" class="header-log-on" ng-hide="!log">
+            <div class="header-notif-mail">
+                <div id="hlogn" class="header-log-notif header-notification" ng-click="hideNotifBubble()">
+                    <img id="notif-w-i" src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-w_wslyzh.png" alt="notif-waves">
+                    <div id="notifBubble" class="header-bubble" ng-if="!hideNBubble" style="display: none">{{notifBubble}}</div>
+                </div>
+                <div id="hlogm" class="header-log-mailbox header-notification">
+                    <img id="notif-m-i" src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-w_sji3lw.png" alt="notif-mailbox">
+                    <div id="notifMailbox" class="header-bubble-mailbox">{{numberNotif}}</div>
+                </div>
+            </div>
+            <div id="hlo" class="header-user" ng-class="{'header-user2': !user.profile_picture}">
+                <figure ng-if="user.profile_picture" id="hlo" class="header-log-avatar">
+                    <img id="hlo" ng-src="{{ resizePic(user.profile_picture, 36, 36, 'fill') }}" alt="profile-avatar">
+                </figure>
+                <a id="hlo" class="header-log-dropdown" id="dropdownMenu1">
+                {{user.first_name}} {{user.last_name}}
+                    <span class="caret-home"><img id="c-img" src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-w_csniet.svg" alt="caret-icon"></span>
+                </a>
+                <ul id="hdmenu" class="header-dropdown-menu" style="display: none;">
+                    <li><a href="" data-ui-sref="profile({username: user.username})">My Profile</a></li>
+                    <li ng-if="moderator" ><a href="/admin/panel">Admin Panel</a></li>
+                    <li><a href="/my-projects">Projects</a></li>
+                    <li><a href="/statistics">Statistics</a></li>
+                    <li><a href="/setting">Settings</a></li>
+                    <li><a ng-click="logout()">Log out</a></li>
+                </ul>
+            </div>
+            <div id="hdropm" class="header-dropdown-mailbox header-dropdownBox" onmouseover="preventScroll()" onmouseout="allowScroll()" style="display: none;">
+                <div class="header-dropdown-head">
+                    <a class="header-see-all" href="/messages">See All</a>
+                    <a id="hnmmopen" class="header-new-message">Write A New Message</a>
+                </div>
+                <div class="header-dropdown-lists">
+                    <div ng-if="!dialogues.length" class="header-noMessage-text">
+                        <p>No message yet</p>
+                    </div>
+                    <div class="header-dropdown-list" href ng-click="showMessagePage(dialogue)" class='mnd-all' ng-class="{ 'unread-active' : !dialogue.read && dialogue.sender != currentUsername }" ng-repeat="dialogue in dialogues track by $index">
+                        <div class="header-list-picture">
+                            <img ng-if="dialogue.pic" ng-src="{{ resizePic(dialogue.pic, 48, 48, 'fill') }}" alt="header-message-avatar">
+                        </div>
+                        <div class="header-list-message">
+                            <h4>{{dialogue.to_username}}</h4>
+                            <div class="text-html-header" ng-bind-html="dialogue.last_message"></div>
+                            <span>{{dialogue.date}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="hdropn" class="header-dropdown-notif header-dropdownBox" onmouseover="preventScroll()" onmouseout="allowScroll()" style="display: none;">
+                <div class="header-dropdown-head">
+                    <h4>Notifications</h4>
+                    <h4 ng-if="notifBubble">({{notifBubble}})</h4>
+                    <h5 id="hmaar" ng-click="getAllRead()">Mark As All Read <i ng-if="checkRead" class="fa fa-check"></i></h5>
+                </div>
+                <div class="header-dropdown-lists">
+                    <div ng-if="!listNotifs.length" class="header-noNotif-text">
+                        <p>Nothing happened yet</p>
+                    </div>
+                    <div class="header-dropdown-list" href ng-click="showUserProfile(listNotif.user_notif_id, listNotif.user_followed_id, listNotif.type_notif, listNotif.project_id, listNotif.id, listNotif.n_read, $index)" ng-repeat="listNotif in listNotifs" ng-class="{ 'unread-active' : !listNotif.n_read }">
+                        <div class="header-list-picture">
+                            <img ng-src="{{ resizePic(listNotif.pic, 48, 48, 'fill') }}" alt="header-notif-avatar">
+                        </div>
+                        <div class="header-list-message hlm-notif">
+                            <h4>{{listNotif.user_notif_username}} 
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'u_follow'">is now following you.</span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'view'">viewed your profile.</span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'p_follow'">upvoted <strong>{{listNotif.project_title}}</strong></span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'p_user_follow'">upvoted <strong>{{listNotif.project_title}}</strong> </span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'u_user_follow'">is now following <strong>{{listNotif.user_followed_name}}</strong></span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'p_involve'">invited you to join <strong>{{listNotif.project_title}}</strong></span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'p_discuss'">asked a question about <strong>{{listNotif.project_title}}</strong></span>
+                            <span class="hlmspan" ng-if="listNotif.type_notif === 'p_discuss_reply'">commented on <strong>{{listNotif.project_title}}</strong> question</span>
+                            </h4>
+                            <p>{{listNotif.date_of_view}}<p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="header-navigation-mobile">
+            <ul id="hnmid" class="header-nav-list">
+                <li class="left" ><a href="/discover">Discover</a></li>
+                <li class="normal"><a href="/meet" >Meet</a></li>
+                <li class="normal"><a href="/learn">Learn</a></li>
+                <li class="right" ng-click="goToStart()"><a><strong>Start</strong></a></li>
+            </ul>
+        </div>
+    </section>
+    <section id="header-findField" class="animated fadeInDown">
+        <div class="header-find-projects">
+            <div class="header-find-title">
+                <h1>Projects</h1>
+            </div>
+            <div class="header-find-list" ng-repeat="projectHit in projectHits | limitTo : 5" ng-if="projectHit.project_visibility">
+          <a ng-href="/project/{{ projectHit.public_id }}/{{ encodeUrl(projectHit.title) }}">
+                <div ng-if="projectHit.picture_card" class="header-findProject-picture" ng-style="{'background-image': 'url({{ resizePic(projectHit.picture_card, 60, 60, 'fill') }})'}"></div>
+                <div ng-if="!projectHit.picture_card && projectHit.status === 'Idea'" class="header-findProject-picture" style="background-image: url('/images/Thumbnail_Idea.svg');"></div>
+                <div ng-if="!projectHit.picture_card && projectHit.status === 'Drafted project'" class="header-findProject-picture" style="background-image: url('/images/Thumbnail_Drafted.svg');"></div>
+                <div ng-if="!projectHit.picture_card && projectHit.status === 'Beta project'" class="header-findProject-picture" style="background-image: url('/images/Thumbnail_Beta.svg');"></div>
+                <div ng-if="!projectHit.picture_card && projectHit.status === 'Live project'" class="header-findProject-picture" style="background-image: url('/images/Thumbnail_Live.svg');"></div>
+                <div class="header-findProject-content">
+                    <div class="header-findProject-title">
+                        <h2>{{projectHit.title}}</h2>
+                    </div>
+                    <div class='header-findProject-tag'>
+                        <img src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/tag-icon_ruk5r2.png" alt="tag-icon">
+                        <h3>{{projectHit.category_name}}</h3>
+                    </div>
+                </div>
+        </a>
+            </div>
+            <div class="header-find-seemore">
+                <a href="/discover">See more projects</a>
+            </div>
+        </div>
+
+        <div class="header-find-people">
+            <div class="header-find-title">
+                <h1>People</h1>
+            </div>
+            <div class="header-find-list" ng-repeat="peopleHit in peopleHits | limitTo : 5" ng-click="goToProfile(peopleHit.id)" ng-if="peopleHit.profile_picture_icon" >
+                <div class="header-findPeople-picture" ng-style="{'background-image': 'url({{ resizePic(peopleHit.profile_picture_icon, 60, 60, 'fill') }})'}"></div>
+                <div class="header-findPeople-content">
+                    <div class="header-findPeople-name">
+                        <h4>{{peopleHit.first_name}} {{peopleHit.last_name}}</h4>
+                    </div>
+                    <div class="header-findPeople-location">
+                        <h6>{{peopleHit.location_city}}<i ng-hide="!peopleHit.location_country">,</i> {{peopleHit.location_country}}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="header-find-seemore">
+                <a href="/meet">See more people</a>
+            </div>
+        </div>
+    </section>
+    <home-message-modal></home-message-modal>
+
+    <script>
+        var y           = $(window).width();
+            iffCon      = $('#iff'),
+            mbody       = $('#main-body'),
+            headerCon   = document.getElementById('header-section'),
+            hcontent    = document.getElementById('header-content'),
+            hdmenu      = document.getElementById('hdmenu'),
+            hdropm      = document.getElementById('hdropm'),
+            hdropn      = document.getElementById('hdropn'),
+            hbp         = document.getElementById('hbp'),
+            hnl         = document.getElementById('hnl'),
+            hsb         = document.getElementById('hsb'),
+            notifWI     = document.getElementById('notif-w-i'),
+            notifMI     = document.getElementById('notif-m-i'),
+            hlDrop      = document.getElementsByClassName('header-log-dropdown'),
+            hff         = document.getElementById('header-findField'),
+            hnlog       = document.getElementById('hnlog'),
+            cImg        = document.getElementById('c-img'),
+            bodypos     = document.body.style.position,
+            bodyover    = document.body.style.overflow;
+
+        /*  mixpanel.track_links("#hnl a", "click nav link", {
+            "referrer": document.referrer
+        }); */
+
+
+        if (window.location.href === "http://localhost/discover" || window.location.href === "http://localhost/meet")
+            headerCon.style.position = "fixed";
+        else
+            headerCon.style.position = "absolute";
+
+        $(document).ready(function() {
+
+            if (y >= 736) {
+                var messCon     = document.getElementById('messages-body-page');
+
+                window.onclick = function(e) {
+                    var eTarget     = e.target.id;
+
+                    var messCon     = document.getElementById('messages-body-page');
+
+                    /* Message DOM variable */
+
+                    if (messCon) {
+                        var mobox       = document.getElementById('mobox'),
+                            mhopI       = document.getElementById('mhop-i'),
+                            mnmodal     = document.getElementById('messages-newpost-modal'),
+                            mmsearch    = document.getElementById('messages-modal-searchArea'),
+                            mmnew       = document.getElementById('messages-modal-newMessageArea'),
+                            mcdmodal    = document.getElementById('messages-confirmDelete-modal');
+                    }
+                    /*** ----- section header ----- ***/
+                    if (headerCon) {
+                        if (eTarget === "hlo" && hdmenu.style.display === "none") {
+                            cImg.style.transform = "rotate(180deg)";
+                            hdmenu.style.display = "block";
+                        } else {
+                            cImg.style.transform = "rotate(0)";
+                            hdmenu.style.display = "none";
+                        }
+
+                        /*** ----- section modal log ----- ***/
+                        // if (eTarget === "mologin" && document.getElementById('main-login-modal')) {
+                        //  if (document.getElementById('main-login-modal').style.display === "none") {
+                        //      document.getElementById('main-login-modal').className = "animated fadeIn";
+                        //      document.getElementById('main-login-modal').style.display = "block";
+                        //  } else {
+                        //      document.getElementById('main-login-modal').className = "animated fadeOut";
+                        //      document.getElementById('main-login-modal').style.display = "none";
+                        //  }
+                        // }
+
+                        /*** ----- section meet ----- ***/
+                        if (e.target.id === 'msat' && document.getElementById('msdbox2').style.display === "none") {
+                            document.getElementById('msdbox2').style.display = "block";
+                            document.querySelectorAll("#msat img")[0].style.transform = "rotate(-180deg)";
+                        } else {
+                            if (document.getElementById('msdbox2')) {
+                                document.getElementById('msdbox2').style.display = "none";
+                                document.querySelectorAll("#msat img")[0].style.transform = "rotate(0)";
+                            }
+                        }
+
+                        //*** add skill ***//
+                        if ((e.target.id === 'input-msa2' || e.target.id === 'input-msa') && document.getElementById('msabox1').style.display === "none" && document.getElementById('msabox2').style.display === "none") {
+                            document.getElementById('msabox1').style.display = "block";
+                        } else {
+                            if (document.getElementById('msabox1'))
+                                document.getElementById('msabox1').style.display = "none";
+                        }
+
+                        /*** section mailbox ***/
+                        if ((eTarget === "hlogm" || eTarget === "notif-m-i" || eTarget === "notifMailbox") && hdropm.style.display === "none") {
+                            hdropm.style.display = "block";
+                        } else {
+                            hdropm.style.display = "none";
+                        }
+
+                        /*** section notif ***/
+                        if ((eTarget === "hlogn" || eTarget === "notif-w-i" || eTarget === "notifBubble" || eTarget === "hmaar") && hdropn.style.display === "none") {
+                            hdropn.style.display = "block";
+                        } else {
+                            hdropn.style.display = "none";
+                        }
+
+
+                        if (messCon) {
+                            /*** ------ section message ------ ***/
+                            if (eTarget === "mhop" && mobox) {
+                                mobox.style.display = "block";
+                                mhopI.style.transform = "rotate(180deg)";
+                            } else {
+                                if (mobox) {
+                                    mobox.style.display = "none";
+                                    mhopI.style.transform = "rotate(0)";
+                                }
+                            }
+
+                            /*** section messaging modal ***/
+
+                            // message modal
+                            // if (mnmodal && eTarget === 'mhn' || eTarget === 'mmo' || eTarget === 'mmoinput') {
+                            //     mnmodal.style.display = "block";
+                            // } else {
+                            //     if (mnmodal) {
+                            //         mnmodal.style.display = "none";
+                            //         mmsearch.style.display = "block";
+                            //         mmnew.style.display = "none";
+                            //     }
+                            // }
+
+                            // confirm delete modal
+                            if (eTarget === 'mcdm' || eTarget === 'mcdc' && mcdmodal) {
+                                mcdmodal.style.display = "block";
+                            } else {
+                                if (mcdmodal)
+                                    mcdmodal.style.display = "none";
+                            }
+                        }
+                    }
+                }
+
+                /*** Search Field Header ***/
+                mbody.on('click', function(e) {
+                    var iffVal      = $('#iff').val();
+                    if (headerCon) {
+                        if (iffVal && iffCon.is(e.target)) {
+                            hcontent.style.backgroundColor = "white";
+                            hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-b_ejb1po.svg";
+                            hnl.className = "header-nav-list2";
+                            hsb.className = "header-searchBar2";
+                            notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-b_swhyaz.png";
+                            notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-b_lbsllf.svg";
+                            cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-b_opi301.svg";
+                            hlDrop[0].style.color = "#999999";
+                            hff.style.display = "block";
+                            hnlog.className = "header-nav-log2";
+                        } else {
+                            // hcontent.style.backgroundColor = "transparent";
+                            // hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-w_qtyz0j.svg";
+                            // hnl.className = "header-nav-list";
+                            // hsb.className = "header-searchBar";
+                            // notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-w_wslyzh.png";
+                            // notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-w_sji3lw.png";
+                            // cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-w_csniet.svg";
+                            // hlDrop[0].style.color = "white";
+                            hff.style.display = "none";
+                            // hnlog.className = "header-nav-log";
+                        }
+                    }
+
+                $('#hnmmopen').on('click', function() {
+                    $('#messages-newpost-modal').show();
+                    $('#messages-modal-searchArea').show();
+                });
+
+                });
+            } else {
+                var bodyJq          = $( 'body' ),
+                    hmmobile        = $( '#hmmobile' ),
+                    hnmobile        = $( '#hnmobile' ),
+                    hmmenu          = $( '#hmmenu' ),
+                    loma            = $( '#loma' ),
+                    lono            = $( '#lono' ),
+                    hsmobile        = $( '#hsmobile' ),
+                    hsfmobile       = $( '#hsfmobile' ),
+                    classTog        = classie.toggle,
+                    menuRight       = document.getElementById( 'cbp-spmenu-s2' ),
+                    showRightPush   = document.getElementById( 'showRightPush' ),
+                    cLogin          = document.getElementById('mologin'),
+                    cSignUp         = document.getElementById('mosignup'),
+                    hsfm            = document.getElementById('hsfmobile'),
+                    body            = document.body;
+
+                function disableOther( button ) {
+                    if( button !== 'showRightPush' ) {
+                        classTog( showRightPush, 'disabled' );
+                    }
+                };
+
+                showRightPush.onclick = function() {
+                    classTog( this, 'active' );
+                    classTog( body, 'cbp-spmenu-push-toleft' );
+                    classTog( menuRight, 'cbp-spmenu-open' );
+                    if (bodyJq.hasClass("cbp-spmenu-push-toleft"))
+                        bodyJq.css('overflow-y', 'hidden');
+                    else
+                        bodyJq.css('overflow-y', 'auto');
+                    disableOther( 'showRightPush' );
+                };
+
+                cLogin.onclick = function() {
+                    classTog( this, 'active' );
+                    $('#main-login-modal').show();
+                    classTog( body, 'cbp-spmenu-push-toleft' );
+                    classTog( menuRight, 'cbp-spmenu-open' );
+                    bodyJq.css('overflow-y', 'auto');
+                    disableOther( 'showRightPush' );
+                };
+
+                cSignUp.onclick = function() {
+                    classTog( this, 'active' );
+                    $('#main-signup-modal').show();
+                    classTog( body, 'cbp-spmenu-push-toleft' );
+                    classTog( menuRight, 'cbp-spmenu-open' );
+                    bodyJq.css('overflow-y', 'auto');
+                    disableOther( 'showRightPush' );
+                }
+
+                // $( '#cbp-spmenu-s2' ).on("swiperight", function() {
+                //     classTog( this, 'active' );
+                //     classTog( body, 'cbp-spmenu-push-toleft' );
+                //     classTog( menuRight, 'cbp-spmenu-open' );
+                //     bodyJq.css('overflow-y', 'auto');
+                //     disableOther( 'showRightPush' );
+                // });
+
+                hmmenu.on('click', function() {
+                    classTog( this, 'active' );
+                    classTog( body, 'cbp-spmenu-push-toleft' );
+                    classTog( menuRight, 'cbp-spmenu-open' );
+                    bodyJq.css('overflow-y', 'auto');
+                    disableOther( 'showRightPush' );
+                });
+
+                loma.on('click', function() {
+                    classTog( this, 'active' );
+                    classTog( body, 'cbp-spmenu-push-toleft' );
+                    classTog( menuRight, 'cbp-spmenu-open' );
+                    bodyJq.css('overflow-y', 'auto');
+                    disableOther( 'showRightPush' );
+                });
+
+                lono.on('click', function() {
+                    classTog( this, 'active' );
+                    classTog( body, 'cbp-spmenu-push-toleft' );
+                    classTog( menuRight, 'cbp-spmenu-open' );
+                    bodyJq.css('overflow-y', 'auto');
+                    disableOther( 'showRightPush' );
+                    $('#body-section').hide();
+                    hnmobile.show();
+                });
+
+                $( '#hsmobile' ).on('click', function() {
+                    $('#body-section').hide();
+                    $( '#hsfmobile' ).show();
+                });
+
+                 $( '.header-log-aside' ).on('click', function(e) {
+                    if (e.target.id === "hlogavatar") {
+                        classTog( body, 'cbp-spmenu-push-toleft' );
+                        classTog( menuRight, 'cbp-spmenu-open' );
+                        bodyJq.css('overflow-y', 'auto');
+                        disableOther( 'showRightPush' );
+                    }
+                });
+            }
+
+        });
+
+        function showFindField() {
+            var iffVal      = $('#iff').val();
+            if (iffVal) {
+                hcontent.style.backgroundColor = "white";
+                hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-b_ejb1po.svg";
+                hnl.className = "header-nav-list2";
+                hsb.className = "header-searchBar2";
+                notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-b_swhyaz.png";
+                notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-b_lbsllf.svg";
+                cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-b_opi301.svg";
+                hlDrop[0].style.color = "#999999";
+                hff.style.display = "block";
+                hnlog.className = "header-nav-log2";
+            } else if (location.pathname === "/login" || location.pathname === "/register") {
+                hff.style.display = "none";
+            } else if ($(window).scrollTop() === 0 && (location.pathname !== "/login" && location.pathname !== "/register")) {
+                hcontent.style.backgroundColor = "transparent";
+                hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-w_qtyz0j.svg";
+                hnl.className = "header-nav-list";
+                hsb.className = "header-searchBar";
+                notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-w_wslyzh.png";
+                notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-w_sji3lw.png";
+                cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-w_csniet.svg";
+                hlDrop[0].style.color = "white";
+                hff.style.display = "none";
+                hnlog.className = "header-nav-log";
+            }
+        };
+
+        function headerMove(display) {
+            if (display) {
+                hcontent.style.backgroundColor = "white";
+                hcontent.style.borderBottom = "1px solid #e5e5e5";
+                hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-b_ejb1po.svg";
+                hnl.className = "header-nav-list2";
+                hsb.className = "header-searchBar2";
+                notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-b_swhyaz.png";
+                notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-b_lbsllf.svg";
+                cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-b_opi301.svg";
+                hlDrop[0].style.color = "#999999";
+                hnlog.className = "header-nav-log2";
+            } else {
+                hcontent.style.backgroundColor = "transparent";
+                hcontent.style.borderBottom = "none";
+                hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-w_qtyz0j.svg";
+                hnl.className = "header-nav-list";
+                hsb.className = "header-searchBar";
+                notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-w_wslyzh.png";
+                notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-w_sji3lw.png";
+                cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-w_csniet.svg";
+                hlDrop[0].style.color = "white";
+                hnlog.className = "header-nav-log";
+            }
+            // } else {
+            //     hcontent.style.backgroundColor = "transparent";
+            //     hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-w_qtyz0j.svg";
+            //     hnl.className = "header-nav-list";
+            //     hsb.className = "header-searchBar";
+            //     notifWI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/waves-icon-w_wslyzh.png";
+            //     notifMI.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/mailbox-icon-w_sji3lw.png";
+            //     cImg.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/arrow-down-icon-w_csniet.svg";
+            //     hlDrop[0].style.color = "white";
+            //     hff.style.display = "none";
+            //     hnlog.className = "header-nav-log";
+            // }
+        };
+
+        function headerMoveMobile(display) {
+            if (display) {
+                hcontent.style.backgroundColor = "white";
+                hcontent.style.borderBottom = "1px solid #e5e5e5";
+                hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-b_ejb1po.svg";
+                document.getElementById('srpimg').src = "/images/littleman.svg";
+                document.getElementById('hsmobileimg').src = "/images/search-icon-b.svg";
+                document.getElementById('hnmid').className = "header-nav-list mobile-color-a";
+            } else {
+                hcontent.style.backgroundColor = "transparent";
+                hcontent.style.borderBottom = "none";
+                hbp.src = "https://res.cloudinary.com/dqpkpmrgk/image/upload/v1457892593/witty-logo-icon-w_qtyz0j.svg";
+                document.getElementById('srpimg').src = "/images/littleman-w.svg";
+                document.getElementById('hsmobileimg').src = "/images/search-icon-w.svg";
+                document.getElementById('hnmid').className = "header-nav-list";
+            }
+        };
+
+        var check = 0;
+        $(window).scroll(function() {
+            if (window.location.href === "http://localhost/discover" || window.location.href === "http://localhost/meet") {
+                if (y >= 736) {
+                    if ($(window).scrollTop() > 1 && !check) {
+                        check = 1;
+                        headerMove(true);
+                    }
+                    if ($(window).scrollTop() === 0 && check === 1) {
+                        check = 0;
+                        headerMove(false);
+                    }
+                } else {
+                    if ($(window).scrollTop() > 1 && !check) {
+                        check = 1;
+                        headerMoveMobile(true);
+                    }
+                    if ($(window).scrollTop() === 0 && check === 1) {
+                        check = 0;
+                        headerMoveMobile(false);
+                    }
+                }
+            }
+        });
+
+        function preventScroll() {
+            bodypos = "fixed";
+            bodyover = "scroll";
+        };
+
+        function allowScroll() {
+            bodypos = "static";
+        };
+
+    </script>
+</header>

@@ -1,0 +1,182 @@
+<section id="setting-page" class="animated fadeIn">
+
+	<section class="statistics-suggestion-new" ng-if="firstVisit">
+		<div id="sdm" class="suggestion-box suggestion-about-profile animated fadeInDown">
+			<i class="fa fa-question-circle"></i> <span>... and find all your profile details here</span>
+		</div>
+
+		<div id="sbp" class="suggestion-box suggestion-discover-meet animated fadeInDown">
+			<i class="fa fa-question-circle"></i> <span> Discover people and projects that may need you</span>
+		</div>
+
+		<div id="spp" class="suggestion-box suggestion-post-project animated fadeInDown">
+			<i class="fa fa-question-circle"></i> <span> Share what you have in mind so our community can help you</span>
+		</div>
+	</section>
+	
+	<header id="setting-header" ng-style="{'background-image': 'url({{ resizePic(backPic, 1200, 410, 'fill') }})'}" style="height: 180px">
+		<div class="setting-filter" style="height: 180px"></div>
+		<div class="setting-header-title">
+			<h1>Statistics</h1>
+		</div>
+	</header>
+
+	<section class="setting-invite-modal" style="z-index: 10000000">
+		<div id="sinvitem" class="setting-invite-modal-block" style="display: none">
+			<div class="setting-invite-modal-head">
+				<h4>Invite friends</h4>
+			</div>
+			
+			<div class="setting-invite-modal-body" ngf-drop="loadCsvFile(csvFile)" ng-model="csvFile" ngf-drag-over-class="dragover" ngf-multiple="false" ngf-allow-dir="false" ngf-pattern="text/csv" accept="text/csv" ngf-max-size="5MB">
+				<input type="text" placeholder="name@mail.com" ng-model="email" ng-keyup="addEmailToList($event.keyCode, email)"/>
+				<p style="color: #999999">Enter email addresses separated by comma or import your csv file.</p>
+				<p class="simbpress">Press enter to send an invitation</p>
+				<p ng-if="errorMail">Email address not valid</p>
+			</div>
+
+			<div class="setting-invite-modal-list" ng-if="mailList.length">
+				<div class="setting-invite-modal-list-email">
+					<li ng-repeat="mail in mailList track by $index" >{{mail}} <img src="/images/cross-icon.svg" ng-click="removeMailFromList($index)"></li>
+				</div>
+			</div>
+			<button ng-if="mailList.length" type="button" ng-click="sendInvitation()">{{inviteW}} <i class="fa fa-check" ng-if="sended"></i></button>
+		</div>
+	</section>
+
+	<section id="setting-body">
+
+		<div class="setting-ranking setting-box">
+			<h3>The <b>more</b> you contribute, the <b>more</b> your profile will be showcased to people you might need.</h3>
+			<section class="setting-ranking-up">
+				<aside class="setting-ranking-graph-mobile">
+					<canvas ng-if="myCompareRank" id="myCanvas" width="{{wwidth}}" height="200"></canvas>
+					<h2>Your current ranking: <span class="srg-myrank">#{{myRank}}<span> <span ng-if="myCompareRank > 0" class="srg-compare">( {{myCompareRank}}<img src="/images/Upvote_Icon.svg" alt="rank-up-down" style="margin-left: 3px"/> )</span> <span ng-if="!myCompareRank" class="srg-compare">( - )</span></h2>
+					<h5 ng-if="myRank === '-'">We rank users with more than 1000 pts. Complete your profile now and get connected to 38x more people and projects.</h5>
+				</aside>
+
+				<aside class="setting-ranking-psi">
+					<div class="setting-ranking-profile">
+						<div class="tooltipw" style="margin-left: -45px">Complete your profile (+1000)</div>
+						<span class="srpsi-text">Full profile</span>
+						<span class="srpsi-number">{{pRank.profilePercentage}}% <span class="srpsi-number-est" ng-if="pRank.profilePercentage">(+{{pRank.profilePercentage * 10}})</span></span>
+					</div>
+
+					<div class="setting-ranking-social">
+						<div class="tooltipw" style="margin-left: -75px">Share the project to your network (+400)</div>
+						<span class="srpsi-text">Social Sharing</span>
+						<span class="srpsi-number" ng-if="pRank.socialPercentage">Yes <span class="srpsi-number-est" ng-if="pRank.socialPercentage">(+{{pRank.profilePercentage * 4}})</span></span>
+						<span class="srpsi-number" ng-if="!pRank.socialPercentage">No <span class="srpsi-number-est" ng-if="pRank.socialPercentage">(+{{pRank.profilePercentage * 4}})</span></span>
+					</div>
+
+					<div class="setting-ranking-share" ng-controller="PopUpCtrl">
+						<div id="fshare" class="fb-share" ng-click="facebookShare('Wittycircle | Where the world meets entrepreneurs', 'https://www.wittycircle.com', 'http://res.cloudinary.com/dqpkpmrgk/image/upload/v1476481759/Capture_d_e%CC%81cran_2016-10-14_a%CC%80_11.51.00_xdd1hm.png', 'Nobody can build great things alone. Share your ideas or projects on Wittycircle and be connected to the right people, at the right time.')">
+
+						  <a target="_self">
+						    <button><i class="fa fa-facebook" style="color: white"></i>Share on Facebook</button>
+						  </a>
+						</div>
+						<div id="twshare" class="tw-share">
+						  <a href="https://twitter.com/intent/tweet?text=Just joined @wittycircle, where the world meets&hashtags=entrepreneurs url=https://www.wittycircle.com">
+						    <button class="tw-share"><i class="fa fa-twitter"></i> Share on Twitter</button>
+						  </a>
+			 			</div>
+					</div>
+
+					<div class="setting-ranking-invitation">
+						<div class="sri-title">
+							<div class="tooltipw" style="margin-left: -78px">Share the project to your friends (+500)</div>
+							<span class="srpsi-text">Invitations</span>
+
+							<span class="srpsi-number">{{pRank.successInvitation}} <span ng-if="pRank.successInvitation" style="font-weight: 500">(+{{pRank.successInvitation * 500}})</span></span>
+
+						</div>
+
+						<div class="sri-box">
+							<div class="sri-box-illustre-img" ng-if="pRank.successInvitation">
+								<span ng-repeat="inviteUser in pRank.inviteUsers" ><a ng-href="{{inviteUser.username}}"><img ng-src="{{ resizePic(inviteUser.profile_picture, 34, 34, 'fill') }}" alt="profile_picture"/></a></span>
+							</div>
+							<span id="srpsib" class="srpsi-button"> <img src="/images/mailbox-icon-b-3.svg" />Tell a friend</span>
+						</div>
+					</div>
+				</aside>
+
+				<aside class="setting-ranking-graph">
+					<canvas id="myCanvas" width="350" height="200"></canvas>
+					<h2>Your current ranking: <span class="srg-myrank">#{{myRank}}<span> <span ng-if="myCompareRank > 0" class="srg-compare">( {{myCompareRank}}<img src="/images/Upvote_Icon.svg" alt="rank-up-down" style="margin-left: 3px"/> )</span> <span ng-if="!myCompareRank" class="srg-compare">( - )</span></h2>
+					<h5 ng-if="myRank === '-'">We rank users with more than 1000 pts. Complete your profile now and get connected to 38x more people and projects.</h5>
+				</aside>
+
+			</section>
+
+			<section class="setting-ranking-down">
+				<h4>Here is how your ranking is measured:</h4>
+				<ul class="srd-ul">
+					<li>
+						<div class="tooltipw" style="margin-left: -43px">Number of public projects (+200)</div>
+						<div class="srpsi-text">Started projects</div> <div class="srpsi-number">{{pRank.startedProject}} <div class="srpsi-number-est" ng-if="pRank.startedProject">(+{{pRank.startedProject * 200}})</div> </div>
+</li>
+					<li><div class="tooltipw" style="margin-left: -40px">Number of feedback you gave (+15)</div><div class="srpsi-text">Project feedback</div> <div class="srpsi-number">{{pRank.feedbackProject}} <div class="srpsi-number-est" ng-if="pRank.feedbackProject">(+{{pRank.feedbackProject * 15}})</div> </div></li>
+					<li><div class="tooltipw" style="margin-left: -46px">Number of time you helped a project (+100)</div><div class="srpsi-text">Project contributions</div> <div class="srpsi-number">0</div></li>
+				</ul>
+
+				<ul class="srd-ul">
+					<li><div class="tooltipw" style="margin-left: -60px">Number of people you follow (+1)</div><div class="srpsi-text">Following</div> <div class="srpsi-number">{{pRank.followUser}} <div class="srpsi-number-est" ng-if="pRank.followUser">(+{{pRank.followUser}})</div></div></li>
+					<li><div class="tooltipw" style="margin-left: -70px">Number of people following you (+2)</div><div class="srpsi-text">Followers</div> <div class="srpsi-number">{{pRank.userFollowed}} <div class="srpsi-number-est" ng-if="pRank.userFollowed">(+{{pRank.userFollowed * 2}})</div></div> </li>
+					<li><div class="tooltipw" style="margin-left: -50px">Number of projects you upvoted (+15)</div><div class="srpsi-text">Upvoted projects</div> <div class="srpsi-number">{{pRank.upvotedProject}} <div class="srpsi-number-est" ng-if="pRank.upvotedProject">(+{{pRank.upvotedProject * 15}})</div></div></li>
+				</ul>
+
+				<ul class="srd-ul">
+					<li><div class="tooltipw" style="margin-left: -45px">Number of messages you received (+2)</div><div class="srpsi-text">Messages received</div> <div class="srpsi-number">{{pRank.receivedMessage}} <div class="srpsi-number-est" ng-if="pRank.receivedMessage">(+{{pRank.receivedMessage * 2}})</div></div></li>
+					<li><div class="tooltipw" style="margin-left: -90px">Number of people who viewed your profile (+0.5)</div><div class="srpsi-text">Profile views</div> <div class="srpsi-number">{{pRank.profileViews}} <div class="srpsi-number-est" ng-if="pRank.profileViews">(+{{pRank.profileViews * 0.5}})</div></div> </li>
+					<li><div class="tooltipw" style="margin-left: -30px">Number of recurring session (+50)</div><div class="srpsi-text">Recurring sessions</div> <div class="srpsi-number">1 <div class="srpsi-number-est" ng-if="pRank.profileViews">(+50)</div></div></li>
+				</ul>
+			</section>
+		</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+
+		$(this).click(function(e) {
+			if (e.target.id === "srpsib") {
+				$("#sinvitem").fadeIn(200);
+			} else {
+				if (!$("#sinvitem").is(e.target) && $("#sinvitem").has(e.target).length === 0) {
+					$("#sinvitem").fadeOut(200);
+				}
+			}
+		});
+
+		function hideDiscover() {
+			$('#sbp').attr('class', 'suggestion-box suggestion-discover-meet animated fadeOutUp');
+		};
+
+		function hideProject() {
+			$('#spp').attr('class', 'suggestion-box suggestion-post-project-nodelay animated fadeOutUp');
+		};
+
+		function hideProfile() {
+			$('#sdm').attr('class', 'suggestion-box suggestion-about-profile-nodelay animated fadeOutUp');
+		};
+
+		setTimeout(function() {
+			hideDiscover();
+			setTimeout(function() {
+				hideProject();
+				setTimeout(function() {
+					hideProfile();
+				}, 5000);
+			}, 5000);
+		}, 5000);
+
+
+		$("#srpsib")
+        .mouseover(function() { 
+            $("#srpsib img").attr("src", "/images/mailbox-icon-w-5.svg");
+        })
+        .mouseout(function() {
+            $("#srpsib img").attr("src", "/images/mailbox-icon-b-3.svg");
+        });
+
+	});
+</script>

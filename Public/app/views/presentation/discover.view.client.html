@@ -1,0 +1,390 @@
+<div id="discover-body-page">
+	<div data-ng-include="'views/mobiles/discover-mobile-modal.view.client.html'"></div>
+
+	<div id="pffs" class="presentation-forced animated bounceIn" style="display: none" ng-if="!discover.logIn && !mobile">
+		<div class="presentation-forced-signup">
+	  		<h5>Let us find the projects you could help. Join us now.</h5>
+	  		<ul>
+	  			<li class="presentation-forced-signup-mail" ng-controller="PopUpCtrl" ng-click="popSwL()"><img src="/images/mailbox-icon-w.png" alt="mailbox"></li>
+	  			<a href="/auth/google" target="_self"><li class="presentation-forced-signup-google"><img src="/images/social_media/newgoogle-logo.svg"></li></a>
+	  			<a href="/auth/facebook" target="_self"><li class="presentation-forced-signup-facebook"><i class="fa fa-facebook" style="color: white"></i></li></a>
+	  		</ul>	
+	  	</div>
+	</div>
+
+	<div class="body-page">
+		<div class="home-video-bg" ng-if="!mobile">
+			<video poster="/images/poster/poster_discover.jpg" loop muted autoplay>
+	    		  <source src="/images/videos/Discover.mp4" type="video/mp4">
+	  		</video>
+	  	</div>
+	  	<div class="discover-image-bg presentation-image-bg"></div>
+
+
+	  	<div class="discover-component presentation-component">
+	  		<div class="discover-title presentation-title">
+	  			<h2>What projects could you help?</h2>
+	  		</div>
+
+	  		<div class="discover-search1">
+	  			<div class="discover-search1-dropdown discover-search1-dropdown1-mobile">
+	  				<div id="dsa" class="discover-search1-ap searchbox" ng-click="discover.opendmodal(1)">
+	  					<h2 id="dsa">{{discover.cProject}}</h2>
+						<img id="dsa" src="/images/arrow-down-icon-w.svg">
+					</div>
+					<aside id="dsd" class="discover-search1-downbox1" style="display: none">
+						<ul>
+							<li ng-click="discover.getProject('Idea', 1)">Ideas</li>
+							<li ng-click="discover.getProject('Drafted project', 2)">Drafted projects</li>
+							<li ng-click="discover.getProject('Beta project', 3)">Beta projects</li>
+							<li ng-click="discover.getProject('Live project', 4)">Live projects</li>
+							<li ng-click="discover.getProject('all', 5)">All projects</li>
+						</ul>
+					</aside>
+				</div>
+				<div class="discover-search1-text">
+					<h2>about</h2>
+				</div>
+				<div class="discover-search1-dropdown discover-search1-dropdown2-mobile" ng-click="discover.opendmodal(2)">
+					<div id="dst" class="discover-search1-technology searchbox">
+						<h2 id="dst">{{discover.ctgName}}</h2>
+						<img id="dst" src="/images/arrow-down-icon-w.svg">
+					</div>
+					<aside id="dsd2" class="discover-search1-downbox2" style="display: none">
+						<ul>
+							<li ng-repeat="category in discover.categories" ng-click="discover.getCategory(category.name)">{{category.name}}</li>
+						</ul>
+					</aside>
+				</div>
+	  		</div>
+
+	  		<div class="discover-search2">
+	  			<div class="discover-search2-text">
+						<h2 class="discover-search2-textarticle">looking for </h2>
+						<h2 class="discover-search2-textarticle" ng-if="discover.cHelp === 'Mentor' || discover.cHelp === 'Teammate'"> a</h2>
+				</div>
+				<div class="discover-search2-dropdown" ng-click="discover.opendmodal(3)">
+					<div id="dsa2" class="discover-search2-ah searchbox">
+						<h2 id="dsa2">{{discover.cHelp}}</h2>
+						<img id="dsa2" src="/images/arrow-down-icon-w.svg">
+					</div>
+					<aside id="dsd3" class="discover-search2-downbox" style="display: none">
+						<ul>
+							<!-- <li ng-repeat="help in helps" ng-click="discover.getHelp(help)" ng-disabled="help === 'Freelancer' || help === 'Fundings'">{{help}}<sup ng-if="help == 'Freelancer' || help == 'Fundings'">soon</sup></li> -->
+							<li ng-click="discover.getHelp('Teammate')">Teammate</li>
+							<li>Freelancer<sup>soon</sup></li>
+							<li ng-click="discover.getHelp('Feedback')">Feedback</li>
+							<li ng-click="discover.getHelp('Mentor')">Mentor</li>
+							<li ng-click="discover.getHelp('Tips')">Tips</li>
+							<li>Fundings<sup>soon</sup></li>
+							<li ng-click="discover.getHelp('Any help')">Any help</li>
+						</ul>
+					</aside>
+				</div>
+				<div id="dstext" class="discover-search2-text animated fadeIn">
+					<h2 ng-if="discover.cHelp !== 'Teammate'">in</h2>
+					<h2 ng-if="discover.cHelp === 'Teammate'">skilled in</h2>
+				</div>
+				<div id="dslist" class="discover-skill-list animated fadeIn" ng-repeat="skill in discover.skillList">
+					<div id="dslist" class="discover-skill-tag searchbox">
+						<h2 id="dslist">{{skill.sName}}</h2>
+						<div id="dslist" class="discover-skill-cross" ng-click="discover.removeSkill(skill.sName)">
+							<img id="dslist" src="/images/cross-icon.svg">
+						</div>
+					</div>
+					<span id="dslist" ng-hide="$last">,</span>
+					<span id="dComma" ng-if="$last && !discover.fullList">,</span>
+				</div>
+				<div id="dsdrop1" class="discover-search2-dropdown2" ng-show="!discover.fullList && !displaySk" >
+					<div class="discover-search2-anyskill inputfield" ng-show="!discover.fullList">
+						<input id="input-dsa" class="animated fadeIn" onfocus="getDropdown()" onfocusout="hideDropdown()" onmouseover="changePlh()" onmouseout="normalPlh()" type="search" oninput="getSearchBox()" ng-model="discover.skillName">
+						<label id="labelText" class="animated fadeIn" style="display: block">Anything</label>
+						<label id="labelText2" class="animated fadeIn" style="display: none">add skill</label>
+					</div>
+					<aside id="dsabox1" class="discover-search2-popularskills downbox" style="display: none">
+						<ul>
+							<h3>Popular skills:</h3>
+							<li ng-repeat="skill in discover.skills | limitTo: 5" ng-click="discover.searchSkill(skill.name)">{{skill.name}}</li>
+						</ul>
+					</aside>
+					<aside id="dsabox2" class="discover-search2-downbox1 downbox" style="display: none">
+						<ul>
+							<li ng-click="discover.searchSkill(skillS.name)" ng-repeat="skillS in discover.skills | wordsFilter: discover.skillName | limitTo: 5">{{ skillS.name}}</li>
+							<span ng-show="!(discover.skills | filter: discover.skillName).length">No skill found...</span>
+						</ul>
+					</aside>
+				</div>
+				<div id="dsdrop1m" class="discover-search2-dropdown2-mobile searchbox" ng-click="discover.opendmodal(4)">
+					<h2 ng-if="!discover.skillListM.length">Anything</h2>
+					<img ng-if="!discover.skillListM.length" src="/images/arrow-down-icon-w.svg">
+					<div ng-if="discover.skillListM[0]" class="discover-skillList">
+						<h2>
+							{{discover.skillListM | sortSkill: discover.skillListM}}
+						</h2>
+					</div>
+				</div>
+				<div class="bomobi discover-search2-text">
+					<h2>near</h2>
+				</div>
+				<div class="discover-search2-anylocation inputfield">
+					<input id="dsai" type="text" pre-dis-location="" types="['geocode']" placeholder="Any location" ng-model="discoverLocation">
+				</div>
+	  		</div>
+	  	</div>
+	</div>
+	<section id="discover-body-content">
+		<div id="hoho" class="loader" style="display: block"></div>
+		<div id="haha" class="discover-body-container presentation-body-container animated fadeIn">
+			<div class="discover-body-title presentation-body-title">
+				<h4>Browse <span>the projects below</span> or filter them using our magic tool above. Upvotes and last 24h activity do the ranking.</h4>
+			</div>
+			<div class="discover-body-list">
+				
+				<div class="discover-body-card project-card animated fadeIn" ng-repeat="card in discover.cards | limitTo: discover.limit track by $index"  ng-if="card.picture_card">
+					<div class="card-tag" ng-click="discover.getTagCag(card.category_name)">
+						<div class="card-tag-content">
+							<div class="card-tag-bg"></div>
+							<img src="/images/tag-icon.png">
+							<h5>{{card.category_name}}</h5>
+						</div>
+					</div>
+					<div class="card-vote" ng-click="discover.voteProjectCard(card.public_id, $index)">
+						<div class="card-vote-bg"></div>
+						<img ng-if="!card.check_vote" src="/images/Upvote_Icon_w.svg">
+						<img ng-if="card.check_vote" src="/images/Upvote_Icon.svg">
+						<span ng-bind="card.vote"></span>
+					</div>
+					<a class="card-project-page" ng-href="/project/{{ card.public_id }}/{{ discover.encodeUrl(card.title) }}" target="_blank">
+						<div ng-if="card.picture_card" class="card-picture" ng-style="{'background-image': 'url(' + card.picture_card + ')'}"></div>
+						<div ng-if="!card.picture_card" class="card-picture" ng-style="{'background-image': 'url(https://res.cloudinary.com/dqpkpmrgk/image/upload/v1456744591/no-bg_k0b9ob.jpg)'}"></div>
+						<div class="card-info">
+							<div class="card-title-space">
+								<h4>{{card.title}}</h4>
+							</div>
+							<div class="card-status">
+								<span>
+									<img ng-if="card.status == 'Live project'" src="/images/live-picto.svg" alt="status-picture"/>
+									<img ng-if="card.status == 'Idea'" src="/images/idea-picto.svg" alt="status-picture"/>
+									<img ng-if="card.status == 'Drafted project'" src="/images/drafted-picto.svg" alt="status-picture"/>
+									<img ng-if="card.status == 'Beta project'" src="/images/beta-picto.svg" alt="status-picture"/>
+									{{card.status}}
+								</span>
+							</div>
+							<div class="card-location">
+								<span><img src="/images/location-picto.svg" alt="location-picture" />{{card.location_city}}<i ng-hide="!card.location_country">,</i> {{card.location_country}}</span>
+							</div>
+							<div class="card-description-text">
+								<p>{{card.description}}</p>
+							</div>
+							<div class="card-info-by">
+								<figure class="card-info-by-picture">
+									<img ng-src="{{ card.pic }}" alt="card-foot-picture">
+								</figure>
+								<h6>{{card.creator_user_name}}<h6 ng-if="card.usersIn.length">& {{card.usersIn.length}} more</h6></h6>
+							</div>
+						</div>
+					</a>
+				</div>
+
+				<div ng-if="discover.allowExpand" class="discover-body-loadmore presentation-body-loadmore">
+					<button type="button" ng-click="discover.expand()">Load more</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		
+		$(document).ready(function() {
+			var check = 0;
+			function initPage() {
+				$(window).scrollTop(0);
+					$(window).scroll(function() {
+		                if ($(window).scrollTop() > 300 && check === 0) {
+		                	check = 1;
+		                    $('#pffs').css('display', 'block');
+		                }
+		                if ($(window).scrollTop() <= 300 && check === 1) {
+		                	check = 0;
+		                	$('#pffs').css('display', 'none');
+		                }
+		        	});
+			}; setTimeout(function(){ initPage() }, 1000);
+		});
+
+		var x = $(window).width();
+		var val = {};
+		var scope = angular.element($("#discover-body-page")).scope();
+
+		$("#dsai").focus(function() {
+			if ($(this).val()) {
+				val.text = $(this).val();
+				val.width = Number($(this).width()) + 20;
+				$(this).val("");
+				$(this).css("width", "200px");
+			}
+		});
+
+		if (x > 736) {
+
+			$("#dsai").on('mouseover', function() {
+				if ($(this).val()) {
+					val.text = $(this).val();
+					val.width = Number($(this).width()) + 20;
+					$(this).val("");
+					$(this).css("width", "200px");
+				}
+			});
+
+			$("#dsai").on('mouseout', function() {
+				if (!$(this).is(':focus')) {
+					if (val.text && val.width) {
+						$(this).val(val.text);
+						$(this).css("width", val.width.toString() + "px");
+					}
+				}
+			});
+
+			$("#dsai").focus(function() {
+				if ($(this).val()) {
+					val.text = $(this).val();
+					val.width = Number($(this).width()) + 20;
+					$(this).val("");
+					$(this).css("width", "200px");
+				}
+			});
+
+			$("#dsai").focusout(function() {
+				if (val.text && val.width) {
+					$(this).val(val.text);
+					$(this).css("width", val.width.toString() + "px");
+				}
+			});
+
+			window.onmouseover = function(e) {
+				if (scope.discover.skillList.length > 0) {
+					if (e.target.id === 'dslist' || e.target.id === 'input-dsa' || e.target.id === 'dsa') {
+						if (document.getElementById('input-dsa')) {
+							document.getElementById('input-dsa').style.display = "block";
+							document.getElementById('dsdrop1').style.display = "inline-block";
+						if (document.getElementById('dComma'))
+							document.getElementById('dComma').style.display = "inline-block";
+						}
+					}
+				}
+			};
+		}
+
+		document.getElementById('discover-body-page').onclick = function(e) {
+			if (x > 736) {
+				/*** DownBox DOM ***/
+				if (e.target.id === 'dsa' && document.getElementById('dsd').style.display === "none") {
+					document.getElementById('dsd').style.display = "block";
+					document.querySelectorAll("#dsa img")[0].style.transform = "rotate(-180deg)";
+				} else {
+					if (document.getElementById('dsd')) {
+						document.getElementById('dsd').style.display = "none";
+						document.querySelectorAll("#dsa img")[0].style.transform = "rotate(0deg)";
+					}
+				}
+
+				if (e.target.id === 'dst' && document.getElementById('dsd2').style.display === "none") {
+					document.getElementById('dsd2').style.display = "block";
+					document.querySelectorAll("#dst img")[0].style.transform = "rotate(-180deg)";
+				} else {
+					if (document.getElementById('dsd2')) {
+						document.getElementById('dsd2').style.display = "none";
+						document.querySelectorAll("#dst img")[0].style.transform = "rotate(0deg)";
+					}
+				}
+
+				if (e.target.id === 'dsa2' && document.getElementById('dsd3').style.display === "none") {
+					document.getElementById('dsd3').style.display = "block";
+					document.querySelectorAll("#dsa2 img")[0].style.transform = "rotate(-180deg)";
+				} else {
+					if (document.getElementById('dsd3')) {
+						document.getElementById('dsd3').style.display = "none";
+						document.querySelectorAll("#dsa2 img")[0].style.transform = "rotate(0deg)";
+					}
+				}
+
+				if (e.target.id === 'input-dsa2') {
+					document.getElementById('dsabox1').style.display = "block";
+				} else {
+					document.getElementById('dsabox1').style.display = "none";
+				}
+
+				/*** Skill DOM ***/
+				if (scope.discover.skillList.length > 0) {
+					if (e.target.id !== 'dslist' || e.target.id !== 'input-dsa' || e.target.id !== 'dsa' || e.target.id !== 'input-dsa2')
+						if (document.getElementById('input-dsa')) {
+							document.getElementById('input-dsa').style.display = "none";
+							document.getElementById('dsdrop1').style.display = "none";
+							if (document.getElementById('dComma'))
+								document.getElementById('dComma').style.display = "none";
+					}
+				}
+			}
+		};
+
+		function changePlh() {
+			if (document.getElementById('labelText'))
+			{
+				document.getElementById('labelText').style.display = "none";
+				document.getElementById('labelText2').style.display = "block";
+			}
+		};
+
+		function normalPlh() {
+			if (document.getElementById('labelText')) {
+				document.getElementById('labelText').style.display = "block";
+				document.getElementById('labelText2').style.display = "none";
+			}
+		};
+
+		function getDropdown() {
+			document.getElementById("input-dsa").onmouseout = function() {changePlh()};
+			if (document.getElementById('labelText')) {
+				document.getElementById('labelText').style.display = "none";
+				document.getElementById('labelText2').style.display = "block";
+				document.getElementById('labelText2').style.color = "#999999";
+			}
+			document.getElementById('input-dsa').id = "input-dsa2";
+		};
+
+		function hideDropdown() {
+			document.getElementById('input-dsa2').id = "input-dsa";
+			if (document.getElementById('labelText')) {
+				document.getElementById('labelText').style.display = "block";
+				document.getElementById('labelText2').style.display = "none";
+				document.getElementById('labelText2').style.color = "white";
+			}
+			document.getElementById("input-dsa").onmouseout = function() {normalPlh()};
+			// document.getElementById("input-dsa").onmouseover = "changePlh()";
+			// document.getElementById("input-dsa").onmouseout = "normalPlh()";
+		};
+
+		function getSearchBox() {
+			var val = document.getElementById('input-dsa2').value;
+
+			if (val) {
+				if (document.getElementById('labelText')) {
+					document.getElementById('labelText').style.display = "none";
+					document.getElementById('labelText2').style.display = "none";
+					document.getElementById('labelText').id = "labelNoText";
+					document.getElementById('labelText2').id = "labelNoText2";
+				}
+				document.getElementById('dsabox1').style.display = "none";
+				document.getElementById('dsabox2').style.display = "block";
+			} else {
+				document.getElementById('labelNoText').id = "labelText";
+				document.getElementById('labelNoText2').id = "labelText2";
+				document.getElementById('labelText2').style.display = "block";
+				document.getElementById('dsabox2').style.display = "none";
+				document.getElementById('dsabox1').style.display = "block";
+			}
+		};
+	</script>
+</div>
+
+<div data-ng-include="'views/bfooter/bfooter-2.view.client.html'"></div>
