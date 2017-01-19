@@ -6,16 +6,16 @@
 
 const { db, TABLES } = require('./index');
 
-const getProfileOfUser = id => {
-    return db.select(['id', 'first_name', 'last_name']).from(TABLES.USER_PROFILES).where({'id': id});
+const getProfileOfUser = (id) => {
+    return db.from(TABLES.USER_PROFILES).where({id: id});
 };
 
 exports.getUser = id => {
-    return db.select(['profile_id']).from(TABLES.USERS).where({'id': id});
+    return db.from(TABLES.USERS).where({id: id});
 };
 
 exports.getUsers = () => {
-    return db.select('*').from(TABLES.USERS);
+    return db.from(TABLES.USERS);
 };
 
 exports.getUserProfile = id => {
@@ -28,7 +28,11 @@ exports.getUserShare = id => {
 	return db.select(['social_share']).from(TABLES.USERS).where({'id': id});
 };
 
-
 exports.updateUserShare = id => {
     return db.update({social_share: 1}).from(TABLES.USERS).where({id: id});
 };
+
+exports.getUserByEmail = email => {
+    return db.select(['id', 'profile_id']).from(TABLES.USERS).where({email: email});
+};
+
