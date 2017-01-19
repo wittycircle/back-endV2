@@ -2,11 +2,14 @@
  * Created by rdantzer on 18/01/17.
  */
 
-const profiles = require('../models/profiles');
+const profiles = require('../models/profiles'),
+	_ = require('lodash');
 
-const send_success = (err, res) => {
-	if (err) throw err;
-	else {
+const send_success = (res, data) => {
+	if (_.isEmpty(data)) {
+		res.send({success: false})
+	}
+	else{
 		res.send({success: true})
 	}
 }
@@ -23,8 +26,8 @@ exports.updateProfileLocation = function(req, res) {
     if (errors) return res.status(400).send(errors);
     else {
     	profiles.updateProfileFromUser(req.body, req.user.id)
-    		.then(send_success)
-    		// .catch(err => {throw "nope"})
+    		.then(res.send({success: true}))
+    		.catch(err => {throw "Error updating profile"})
     }
 };
 
@@ -39,14 +42,14 @@ exports.updateProfilePicture = function(req, res) {
     else {
         if (req.user.moderator) {
         	profiles.updateProfilePicture(req.body.picture, req.body.profile_id)
-        	.then(send_success)
-        	.catch(err => {throw "no"})
+    		.then(res.send({success: true}))
+        	.catch(err => {throw "Error updating profile picture"})
         } else {
         	let object = req.body.picture || req.body;
         	console.log("else")
         	profiles.updateProfileFromUser(object, req.user.id)
-        	.then(send_success('toto', res))
-        	.catch(err => {throw "nope nope"})
+			.then(res.send({success: true}))
+        	.catch(err => {throw "Error updating profile"})
         }
     }
 };

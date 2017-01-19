@@ -8,9 +8,11 @@ const { db, TABLES } = require('./index'),
 	 user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
-	return db(TABLES.USER_PROFILES)
+	return db
 		.update(body)
-		.whereIn('id', user.getUser(id))
+		.whereIn('id', function() {
+			this.select('profile_id').from(TABLES.USERS).where({'id':id})
+		}).from(TABLES.USER_PROFILES)
 	}
  
 exports.updateProfilePicture = (body, id) => {
