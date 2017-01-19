@@ -55,7 +55,7 @@ exports.login = (req, res, next) => {
 
 exports.logout = (req, res) => {
     if (!req.isAuthenticated())
-        res.send({message: 'User is not logged in'}) //todo security?
+        res.send({message: 'User is not logged in'}); //todo security?
     else
         req.session.destroy(err => {
             if (err) throw err;
