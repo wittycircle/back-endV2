@@ -28,8 +28,11 @@ exports.getUserShare = id => {
 	return db.select(['social_share']).from(TABLES.USERS).where({'id': id});
 };
 
-
 exports.updateUserShare = id => {
     return db.update({social_share: 1}).from(TABLES.USERS).where({id: id});
+};
+
+exports.getUserByEmail = email => {
+    return db.select(['id', 'profile_id']).from(TABLES.USERS).where({email: email});
 };
 

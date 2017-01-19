@@ -16,9 +16,12 @@ router.param('user_id', function (req, res, next, user_id) {
 
 router.route('/users')
     .get(users.getUsers);
+
 router.route('/user/:user_id')
     .get(users.getUser);
+
 router.route('/share/:user_id')
-	.get(users.getUserShare)
+	.get(users.getUserShare);
+
 
 module.exports = router;

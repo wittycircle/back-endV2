@@ -9,5 +9,6 @@ let router = express.Router();
 
 
 router.use(require('./users'));
+router.use('/api', require('./auth'));
 
 module.exports = router;
