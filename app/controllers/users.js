@@ -83,9 +83,9 @@ exports.getUserFromProfile = (req, res) => {
 }
 
 //v1
-exports.getAllProfiles = (req, res) => {
+// exports.getAllProfiles = (req, res) => {
 
-}
+// }
 
 // exports.getProfilesByProfileId = function(req, res) {
 //     pool.query('SELECT *  FROM profiles WHERE id = ?', req.params.profile_id, function(err, data) {

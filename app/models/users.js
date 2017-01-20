@@ -83,3 +83,5 @@ exports.getUserProfile = (id) => {
 
 exports.getUserByEmail = (email) => {
     return db.select(['id', 'profile_id']).from(TABLES.USERS).where({email: email});
+}
+
