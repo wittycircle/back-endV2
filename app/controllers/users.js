@@ -48,36 +48,19 @@ exports.getUsersValidateMail = (req, res) => {
 }
 
 exports.ValidateAccount = (req, res) => {
-    pool.query('SELECT token from account_validation WHERE token = ?', req.params.token,
-    function (err, result) {
-        // if (err) {
-        //     console.log(new Date());
-        //     throw err;
-        // }
-         if (result.length !== 0) {
-            pool.query('UPDATE users SET valid = 1 WHERE email = ?', req.body.email,
-            function (err, response) {
-                // if (err) {
-                //     console.log(new Date());
-                //     throw err;
-                // } else {
-                    pool.query('DELETE FROM account_validation WHERE token = ?', req.params.token,
-                    function (err, data) {
-                        if (err) {
-                            console.log(new Date());
-                            throw err;
-                        } else {
-                            return res.send({message: 'ok!'});
-                        }
-                    });
-                // }
-            });
-        } else {
-            return res.status(404).send({message: 'nop'});
-        }
-    });
+    users.getToken(req.params.token)
+        .then((token) => {
+            if (token.length !== 0){
+                user.updateValidEmail(req.body.email)
+                    .then(() => {
+                        user.deleteValidationToken(req.params.token)
+                        .then(res.send({message: 'continue'}))
+                    })
+            } else {
+                res.status(404).send({message: 'Could not validate account'})
+            }
+        }).catch((e) => console.error(e.message))
 }
-
 
 exports.getUser = (req, res) => {
     user.getUser(req.user_id).then(user => {
