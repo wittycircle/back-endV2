@@ -4,10 +4,11 @@
 
 'use strict';
 
-const { db, TABLES } = require('./index'),
-	 user = require('./users');
+const {db, TABLES} = require('./index'),
+    user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
+
 	return db
 		.update(body)
 		.whereIn('id', function() {

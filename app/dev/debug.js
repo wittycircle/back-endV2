@@ -19,7 +19,9 @@ exports.resDebugger = (req, res, next) => {
         if (chunk)
             chunks.push(new Buffer(chunk));
         const body = Buffer.concat(chunks).toString('utf8');
+
         console.log('%s %s %s', req.method, req.path, body.length > 512 ? body.length + ' Response to big for terminal output' : body);
+        
         oldEnd.apply(res, arguments);
     };
     next();

@@ -82,7 +82,7 @@ exports.getUserFromProfile = (req, res) => {
 
 }
 
-//v1 : getProfilesByProfileId
+//v1
 exports.getAllProfiles = (req, res) => {
 
 }

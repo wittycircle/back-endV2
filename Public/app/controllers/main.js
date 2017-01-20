@@ -64,7 +64,7 @@ function ($scope, $state, $stateParams, $rootScope, $timeout, $interval, Profile
              document.execCommand("Stop", false);
         }
     });
-    
+
     /***** MOBILE *****/
     main.mamobile = {};
 
@@ -184,7 +184,7 @@ function ($scope, $state, $stateParams, $rootScope, $timeout, $interval, Profile
                 //     else
                 //     vm.followText = 'Follow';
                 // }
-            }); 
+            });
         } else {
             showbottomAlert.pop_it();
         }
@@ -630,9 +630,9 @@ function ($scope, $state, $stateParams, $rootScope, $timeout, $interval, Profile
 		var options = {
                     types: ['(cities)'],
 		};
-		
+
 		scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
-		
+
 		google.maps.event.addListener(scope.gPlace, 'place_changed',
 					      function() {
 						  scope.$apply(function() {
@@ -641,7 +641,7 @@ function ($scope, $state, $stateParams, $rootScope, $timeout, $interval, Profile
 						      scope.searchHL = model.$viewValue.slice(0, x);
 						  });
 					      });
-		
+
 		scope.$watch('selectedlocation', function(value) {
                     if (value) {
 			var checkCountry = value.indexOf('United States');
@@ -671,7 +671,7 @@ function ($scope, $state, $stateParams, $rootScope, $timeout, $interval, Profile
 			}
                     }
 		});
-		
+
 		scope.$watch('shufflerLocation', function(value, oldvalue) {
                     if (value !== oldvalue) {
 			var checkCountry = value.indexOf('United States');

@@ -7,7 +7,6 @@
 const passport = require('passport'),
     crypto = require('crypto'),
     bcrypt = require('bcrypt-nodejs'),
-    social = require('../private').social_auth,
     _ = require('lodash');
 
 
@@ -37,27 +36,20 @@ exports.ensureModerator = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    passport.authenticate('local-login', (err, user) => {
-        if (err || !user)
-            return res.send({success: false});
-        req.logIn(user, err => {
-            if (err)
-                res.send({success: false}); //todo login failure report
-            else {
-                return res.send({
-                    success: true,
-                    user: _.pick(user, ['id', 'email', 'profile_id', 'username', 'moderator', 'ambassador'])
-                });
-            }
+    passport.authenticate('local-login', function (err, user) {
+        console.log(err, user);
+        res.send({
+            success: true,
+            user: _.pick(user, ['id', 'email', 'profile_id', 'username', 'moderator', 'ambassador'])
         });
     })(req, res, next);
 };
 
 exports.logout = (req, res) => {
     if (!req.isAuthenticated())
-        res.send({message: 'User is not logged in'}) //todo security?
+        res.send({message: 'User is not logged in'}); //todo security?
     else
-        req.session.destroy(err => {
+        req.session.destroy(function (err) {
             if (err) throw err;
             res.send({success: true});
         })

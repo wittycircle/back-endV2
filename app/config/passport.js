@@ -35,18 +35,21 @@ module.exports = passport => {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true
-    }, (req, email, password, cb) => {
+    }, function(req, email, password, cb) {
         users.getUserByEmail(email)
+            .select('*')
             .then(user => {
+                user = user[0];
                 if (_.isEmpty(user))
-                    cb(null, null);
-                else if (!bcrypt.compareSync(password, user.password))
-                    cb(null, null); //todo raise WrongPasswordException or something like that
-                else
-                    cb(null, user)
+                    return cb(null, false);
+                if (_.isEmpty(user.password))
+                    return cb(null, false);
+                if (!bcrypt.compareSync(password, user.password))
+                    return cb(null, false); //todo raise WrongPasswordException or something like that
+                return cb(null, _.pull(user, 'password'))
             })
             .catch(err => {
-                cb(err)
+                return cb(err)
             });
     }));
 };

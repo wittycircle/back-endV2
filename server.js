@@ -8,13 +8,13 @@ const http = require('http'),
     router = express.Router(),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    path = require('path'),
-    _ = require('lodash'),
     passport = require('passport');
 
 let app = express();
 
 require('./app/config/passport')(passport);
+
+app.use(passport.initialize());
 
 app.set('port', process.env.PORT || 3000);
 // app.use(logger('dev'));
@@ -30,8 +30,12 @@ app.use('*', (err, req, res, next) => {
     next();
 });
 
+app.use(require('./app/config/custom_validator'));
+
 router.use(logger('dev'));
-router.use(require('./app/dev/debug').resDebugger)
+
+router.use(require('./app/dev/debug').resDebugger);
+
 router.use(require('./app/routes/index'));
 app.use(router);
 

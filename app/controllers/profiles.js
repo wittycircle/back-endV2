@@ -3,18 +3,10 @@
  */
 
 const profiles = require('../models/profiles'),
+
 	_ = require('lodash');
 
-const send_success = (res, data) => {
-	if (_.isEmpty(data)) {
-		res.send({success: false})
-	}
-	else{
-		res.send({success: true})
-	}
-}
-
-exports.updateProfileLocation = function(req, res) {
+exports.updateProfileLocation = function (req, res) {
     req.checkBody('location_country', 'Location country must be between 1 and 64 characters').optional().max(64);
     req.checkBody('location_city', 'Location city must be between 1 and 64 characters').optional().max(64);
     req.checkBody('location_state', 'Location state must be between 1 and 64 characters').optional().max(64);
@@ -31,7 +23,7 @@ exports.updateProfileLocation = function(req, res) {
     }
 };
 
-exports.updateProfilePicture = function(req, res) {
+exports.updateProfilePicture = function (req, res) {
     req.checkBody('profile_picture', 'profile picture must be a string of characters').optional().max(128);
     req.checkBody('profile_picture_icon', 'profile picture must be a string of characters').optional().max(256);
     req.checkBody('cover_picture', 'cover picture must be a string of characters').optional().max(128);
