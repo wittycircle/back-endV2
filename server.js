@@ -18,7 +18,6 @@ require('./app/config/passport')(passport);
 
 app.set('port', process.env.PORT || 3000);
 // app.use(logger('dev'));
-
 app.use(express.static(__dirname + '/public/app/'));
 app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/public/app/styles/css'));
@@ -32,6 +31,7 @@ app.use('*', (err, req, res, next) => {
 });
 
 router.use(logger('dev'));
+router.use(require('./app/dev/debug').resDebugger)
 router.use(require('./app/routes/index'));
 app.use(router);
 

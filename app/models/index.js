@@ -13,5 +13,6 @@ exports.db = knex;
 
 exports.TABLES = {
     USERS: 'users',
-    USER_PROFILES: 'profiles'
+    USER_PROFILES: 'profiles',
+    ACCOUNT_VALIDATION: 'account_validation'
 };
