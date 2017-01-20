@@ -8,13 +8,13 @@ const http = require('http'),
     router = express.Router(),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    path = require('path'),
-    _ = require('lodash'),
     passport = require('passport');
 
 let app = express();
 
 require('./app/config/passport')(passport);
+
+app.use(passport.initialize());
 
 app.set('port', process.env.PORT || 3000);
 // app.use(logger('dev'));

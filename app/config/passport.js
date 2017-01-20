@@ -41,16 +41,15 @@ module.exports = passport => {
             .then(user => {
                 user = user[0];
                 if (_.isEmpty(user))
-                    return cb(null, null);
-                else if (_.isEmpty(user.password))
-                    return cb(null, null);
-                if (bcrypt.compareSync(password, user.password)) {
-                    return cb(null, _.pull(user, 'password')); //todo raise WrongPasswordException or something like that
-                }else
-                    return cb(null, null)
+                    return cb(null, false);
+                if (_.isEmpty(user.password))
+                    return cb(null, false);
+                if (!bcrypt.compareSync(password, user.password))
+                    return cb(null, false); //todo raise WrongPasswordException or something like that
+                return cb(null, _.pull(user, 'password'))
             })
             .catch(err => {
-                cb(err)
+                return cb(err)
             });
     }));
 };

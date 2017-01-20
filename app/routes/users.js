@@ -23,5 +23,28 @@ router.route('/user/:user_id')
 router.route('/share/:user_id')
 	.get(users.getUserShare);
 
+router.param('user_id', (req, res, next, user_id) => {
+});
+
+router.route('/users')
+    .get()
+    .post()
+    .put();
+
+router.route('/users/:user_id')
+    .get()
+    .post();
+
+router.route('/users/:user_id/like')
+    .get()
+    .post()
+    .delete();
+
+router.route('/users/search')
+    .post();
+
+
+
+
 
 module.exports = router;
