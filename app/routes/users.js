@@ -25,7 +25,7 @@ router.route('/user/:user_id')
 router.route('/user/valid/:token')
 	.get(users.getUsersValidateMail)
 	.post(users.ValidateAccount) //(no sense to have this route, why parameter in post?)
-	// and this post does not work, [neither in v1]
+
 
 router.route('/user/checkLog')
 	.get(users.checkFirstLog)

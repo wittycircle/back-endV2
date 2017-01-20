@@ -29,10 +29,10 @@ exports.getUsersValidateMail = (token) =>  {
 }
 
 //ValidateAccount
-exports.getToken = () => {
+exports.getToken = (token) => {
 	return db.select(['token'])
 			.from(TABLES.ACCOUNT_VALIDATION)
-			.where({token:token})
+			.where({token: token})
 }
 
 exports.updateValidEmail = (email) => {

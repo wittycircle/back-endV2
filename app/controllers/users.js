@@ -39,13 +39,13 @@ exports.getUsersValidateMail = (req, res) => {
             if (email.length === 0){
                 res.status(404).send({message: 'Could not validate email'})
             } else {
-                res.send(email[0])  
+                res.send(email[0])
             }
         }).catch(err => { console.err ("Error in users validate mail") })
 }
 
 exports.ValidateAccount = (req, res) => {
-    users.getToken(req.params.token)
+    user.getToken(req.params.token)
         .then((token) => {
             if (token.length !== 0){
                 user.updateValidEmail(req.body.email)
@@ -56,7 +56,7 @@ exports.ValidateAccount = (req, res) => {
             } else {
                 res.status(404).send({message: 'Could not validate account'})
             }
-        }).catch((e) => console.error(e.message))
+        }).catch((e) => console.error(e.message))//unused ?
 }
 
 exports.checkFirstLog = (req, res) => {
