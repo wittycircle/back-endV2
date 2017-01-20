@@ -40,11 +40,27 @@ exports.deleteValidationToken = (token) => {
 			.where({token: token})
 			.from(TABLES.ACCOUNT_VALIDATION)
 }
-//--
-// exports.validateAccount = () => {
+//----
+//Log 
 
-// }
+ exports.getFirstLog = (id) => {
+ 	return db.select(['value'])
+ 			.from(TABLES.FIRST_LOG)
+ 			.where({user_id: id})
+ }
 
+exports.updateFirstLog = (id) => {
+	return db.update({value: 1})
+			.from(TABLES.FIRST_LOG)
+			.where({user_id: id})
+}
+
+exports.getUserFromProfile = (id) => {
+	return db.select(['id', 'username'])
+			.from(TABLES.USERS)
+			.where({profile_id: id})
+}
+// ----
 exports.updateUserShare = (id) => {
     return db.update({social_share: 1})
     		.from(TABLES.USERS)

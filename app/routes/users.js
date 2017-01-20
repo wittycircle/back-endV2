@@ -14,6 +14,7 @@ router.param('user_id', function (req, res, next, user_id) {
     next();
 });
 //add auth functions to [some] routes when they'll be done
+//GET
 
 router.route('/users')
 	.get(users.getUsers);
@@ -27,10 +28,22 @@ router.route('/share/:user_id')
 router.route('/user/valid/:token')
 	.get(users.getUsersValidateMail)
 
+router.route('/user/checkLog')
+	.get(users.checkFirstLog)
+
+//PUT
 router.route('/share/:user_id')
 	.put(users.updateUserShare)
+
+router.route('/user/checkLog/update')
+	.put(users.updateFirstLog)
+
+//POST
+router.route('/user/valid/:token')
+	.post(users.ValidateAccount)
 
 router.route('/user/valid/:token')
 	.post(users.ValidateAccount)
 
 module.exports = router;
+

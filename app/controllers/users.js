@@ -62,6 +62,46 @@ exports.ValidateAccount = (req, res) => {
         }).catch((e) => console.error(e.message))
 }
 
+exports.checkFirstLog = (req, res) => {
+   user.getFirstLog(req.user_id) 
+    .then((value) => res.send(value))
+    .catch(console.error("No first log"))
+}
+
+exports.updateFirstLog = (req, res) => {
+    user.updateFirstLog(req.user_id)
+        .then(res.send({success: true}))
+        .catch(console.error("Could not update log"))
+}
+
+//v1 : getUserIdByProfileId
+exports.getUserFromProfile = (req, res) => {
+    user.getUserFromProfile(req.params.profile_id)
+    .then((id) => res.send({success: true, userId: id })) //id or id[0], to test
+    .catch(console.error("Could not get user from profile"))
+
+}
+
+//v1 : getProfilesByProfileId
+exports.getAllProfiles = (req, res) => {
+
+}
+
+// exports.getProfilesByProfileId = function(req, res) {
+//     pool.query('SELECT *  FROM profiles WHERE id = ?', req.params.profile_id, function(err, data) {
+//     if (err) throw err;
+//     res.send({success: true, content: data[0]});
+//     });
+// };
+
+// exports.getProfileIdByUserId = function(req, res) {
+//     pool.query('SELECT profile_id FROM users WHERE id = ?', req.params.user_id, function(err, data) {
+//     if (err) throw err;
+//     res.send({success: true, content: data[0]});
+//     });
+// };
+
+
 exports.getUser = (req, res) => {
     user.getUser(req.user_id).then(user => {
         res.send(user)
