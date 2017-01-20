@@ -17,7 +17,7 @@ exports.getUserShare = (req, res) => {
                 res.send({success: false});
             else
                 res.send(social_share)
-        }).catch(err => {throw err});
+        }).catch(err => {console.err("Could not get social share")});
     }
 };
 
@@ -29,7 +29,7 @@ exports.updateUserShare = (req, res) => {
     else {
         user.updateUserShare(req.user_id)
             .then(res.send({success:true}))
-            .catch(err => {throw "Error updating user social share"})
+            .catch(err => {console.err ("Error updating user social share")})
     }
 }
 
@@ -37,14 +37,11 @@ exports.getUsersValidateMail = (req, res) => {
     user.getUsersValidateMail(req.params.token)
         .then((email) => {
             if (email.length === 0){
-                res.status(404).send({message: 'Could not validate emaile'})
+                res.status(404).send({message: 'Could not validate email'})
             } else {
-                res.send(email)  
+                res.send(email[0])  
             }
-        }).catch(err => {
-            // console.log(new Date())  // useful? 
-            throw "Error in users validate mail"
-        })
+        }).catch(err => { console.err ("Error in users validate mail") })
 }
 
 exports.ValidateAccount = (req, res) => {
@@ -82,36 +79,31 @@ exports.getUserFromProfile = (req, res) => {
 
 }
 
-//v1
-// exports.getAllProfiles = (req, res) => {
+// v1 : getProfilesByProfileId
+exports.getAllProfiles = (req, res) => {
+    user.getAllProfiles(req.params.profile_id)
+        .then((id) => res.send({success:true, content: id}))
+        .catch(console.error("Could not get profiles"))
+}
 
-// }
+//v1: getProfileIdByUserId
+exports.getProfileId = (req, res) => {
+    user.getProfileId(req.user_id)
+    .then((id) => res.send({success: true, content: id}))
+    .catch(console.error("Could not get profile"))
+}
 
-// exports.getProfilesByProfileId = function(req, res) {
-//     pool.query('SELECT *  FROM profiles WHERE id = ?', req.params.profile_id, function(err, data) {
-//     if (err) throw err;
-//     res.send({success: true, content: data[0]});
-//     });
-// };
-
-// exports.getProfileIdByUserId = function(req, res) {
-//     pool.query('SELECT profile_id FROM users WHERE id = ?', req.params.user_id, function(err, data) {
-//     if (err) throw err;
-//     res.send({success: true, content: data[0]});
-//     });
-// };
-
-
+//not done yet //===****==
 exports.getUser = (req, res) => {
     user.getUser(req.user_id).then(user => {
         res.send(user)
-    }).catch(err => {throw err });
+    }).catch(err => {console.err ("error") });
 };
 
 exports.getUsers = (req, res) => {
     user.getUsers().then(users => {
         res.send(users)
-    }).catch(err => {throw err });
+    }).catch(err => {console.err ("error") });
 };
 
 
@@ -121,6 +113,7 @@ exports.getUserByEmail = (req, res) => {
             res.send({success: false});
         else
             res.send(user);
-    }).catch(err => {throw err });
+    }).catch(err => {console.err ("error") });
 };
 
+//===****==

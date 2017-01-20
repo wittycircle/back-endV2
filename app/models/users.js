@@ -16,7 +16,13 @@ exports.getUserShare = (id) => {
 			.from(TABLES.USERS).where({'id': id});
 };
 
-exports.getUsersValidateEmail = (token) =>  {
+exports.updateUserShare = (id) => {
+    return db.update({social_share: 1})
+    		.from(TABLES.USERS)
+    		.where({id: id});
+};
+
+exports.getUsersValidateMail = (token) =>  {
 	return db.select(['user_email'])
 			.from(TABLES.ACCOUNT_VALIDATION)
 			.where({token:token})
@@ -60,13 +66,13 @@ exports.getUserFromProfile = (id) => {
 			.from(TABLES.USERS)
 			.where({profile_id: id})
 }
-// ----
-exports.updateUserShare = (id) => {
-    return db.update({social_share: 1})
-    		.from(TABLES.USERS)
-    		.where({id: id});
-};
 
+exports.getAllProfiles = (id) => {
+	return db.from(TABLES.USER_PROFILES)
+			.where({id: id})
+}
+// ----
+//not done till //===****==
 exports.getUser = (id) => {
     return db.from(TABLES.USERS).where({id: id});
 };
@@ -84,4 +90,4 @@ exports.getUserProfile = (id) => {
 exports.getUserByEmail = (email) => {
     return db.select(['id', 'profile_id']).from(TABLES.USERS).where({email: email});
 }
-
+//===****==

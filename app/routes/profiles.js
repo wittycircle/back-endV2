@@ -11,6 +11,7 @@ router.route('/profile/picture')
 		next()
 	})
 	.put(profiles.updateProfilePicture)
+	
 router.route('profile/location')
 	.put(profiles.updateProfileLocation)
 

@@ -13,8 +13,8 @@ router.param('user_id', function (req, res, next, user_id) {
     req.user_id = user_id;
     next();
 });
+
 //add auth functions to [some] routes when they'll be done
-//GET
 
 router.route('/users')
 	.get(users.getUsers);
@@ -22,31 +22,40 @@ router.route('/users')
 router.route('/user/:user_id')
     .get(users.getUser);
 
-router.route('/share/:user_id')
-	.get(users.getUserShare);
-
 router.route('/user/valid/:token')
 	.get(users.getUsersValidateMail)
+	.post(users.ValidateAccount) //(no sense to have this route, why parameter in post?)
+	// and this post does not work, [neither in v1]
 
 router.route('/user/checkLog')
 	.get(users.checkFirstLog)
 
-//PUT
-router.route('/share/:user_id')
-	.put(users.updateUserShare)
-
 router.route('/user/checkLog/update')
 	.put(users.updateFirstLog)
 
-//POST
-router.route('/user/valid/:token')
-	.post(users.ValidateAccount)
+router.route('/userId/:profile_id')
+	.get(users.getUserFromProfile)
 
-router.route('/user/valid/:token')
-	.post(users.ValidateAccount)
+//profiles (could be moved to route/profile ?)
 
-module.exports = router;
+router.route('/profiles/:profile_id')
+	.post(users.getAllProfiles)
+
+router.route('/profileId/:user_id')
+	.post(users.getProfileId)
+
+//Share
+
+router.route('/share/:user_id')
+	.get(users.getUserShare)
+	.put(users.updateUserShare);
+
+
+module.exports = router
+//=======================
 // Rest route example
+//=======================
+
 // router.param('user_id', (req, res, next, user_id) => {
 // });
 
