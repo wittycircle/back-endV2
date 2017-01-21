@@ -48,7 +48,7 @@ exports.getUsersValidateMail = (req, res) => {
             } else {
                 res.send(email[0])
             }
-        }).catch(err => { console.err ("Error in users validate mail") })
+        }).catch(err => { console.error ('Could not get mail from token') })
 }
 
 exports.ValidateAccount = (req, res) => {
@@ -58,12 +58,12 @@ exports.ValidateAccount = (req, res) => {
                 user.updateValidEmail(req.body.email)
                     .then(() => {
                         user.deleteValidationToken(req.params.token)
-                        .then(res.send({message: 'continue'}))
+                        .then(res.send({message: 'Validation succesful'}))
                     })
             } else {
                 res.status(404).send({message: 'Could not validate account'})
             }
-        }).catch((e) => console.error(e.message))//unused ?
+        }) 
 }
 
 exports.checkFirstLog = (req, res) => {
