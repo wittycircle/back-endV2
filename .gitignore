@@ -10,5 +10,7 @@ app/private
 [Pp]ublic/docs
 [Pp]ublic/.DS_Store
 
+api/doc
+
 .sass-cache/
 /algo/algolia.js
