@@ -4,7 +4,8 @@
 
 'use strict';
 
-const user = require('../models/users');
+const user = require('../models/users'),
+    home = 'http://localhost:3000'
 
 exports.getUserShare = (req, res) => {
     req.checkParams('user_id', 'username must be an integer.').isInt();
@@ -19,8 +20,10 @@ exports.getUserShare = (req, res) => {
             else
                 res.send({success: true})
         }).catch(err => {
+
             console.error ("Could not get social share")
-            res.redirect('http://localhost:3000')
+            res.location(home)
+            res.send({success:false})
         });
     }
 };
