@@ -14,11 +14,14 @@ exports.getUserShare = (req, res) => {
         return res.status(400).send(errors);
     else {
         user.getUserShare(req.user_id).then(social_share => {
-            if (social_share.length === 0)
+            if (!social_share[0].social_share)
                 res.send({success: false});
             else
-                res.send(social_share[0])
-        }).catch(err => {console.err("Could not get social share")});
+                res.send({success: true})
+        }).catch(err => {
+            console.error ("Could not get social share")
+            res.redirect('http://localhost:3000')
+        });
     }
 };
 
