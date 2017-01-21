@@ -8,6 +8,7 @@ const user = require('../models/users');
 
 exports.getUserShare = (req, res) => {
     req.checkParams('user_id', 'username must be an integer.').isInt();
+
     const errors = req.validationErrors(true);
     if (errors)
         return res.status(400).send(errors);
@@ -16,7 +17,7 @@ exports.getUserShare = (req, res) => {
             if (social_share.length === 0)
                 res.send({success: false});
             else
-                res.send(social_share)
+                res.send(social_share[0])
         }).catch(err => {console.err("Could not get social share")});
     }
 };
