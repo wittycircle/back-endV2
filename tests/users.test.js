@@ -23,11 +23,11 @@ describe('Update user share', function () {
 				})
 	})
 })
-	// before( function () {
-	// 	db.insert({token: 'toto', user_email:"toto.com"}).into(TABLES.ACCOUNT_VALIDATION)
-	// })
-
+//before not working
 describe('Get validation mail', function () {
+	before(function () {
+		db.insert({token: 'toto', user_email:"toto.com"}).into(TABLES.ACCOUNT_VALIDATION).then()
+	});
 	it('Should validate email', function() {
 		return chakram.get(home + '/user/valid/toto')
 				.then(function (r) {
@@ -36,5 +36,23 @@ describe('Get validation mail', function () {
 	})
 
 })
+
+describe('Post validation mail', function () {
+	it('Should validate account', function () {
+		return chakram.post(home + '/user/valid/toto', {email: 'toto.com'})
+			.then(function (r) {
+				expect(r.body.message).to.equal('Validation successful')
+			})
+	})
+})
+
+
+
+
+
+
+
+
+
 
 })

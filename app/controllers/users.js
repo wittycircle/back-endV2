@@ -58,7 +58,7 @@ exports.ValidateAccount = (req, res) => {
                 user.updateValidEmail(req.body.email)
                     .then(() => {
                         user.deleteValidationToken(req.params.token)
-                        .then(res.send({message: 'Validation succesful'}))
+                        .then(res.send({message: 'Validation successful'}))
                     })
             } else {
                 res.status(404).send({message: 'Could not validate account'})
