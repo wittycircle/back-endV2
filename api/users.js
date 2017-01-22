@@ -30,6 +30,7 @@ router
      * @apiParam {Number} id The User's id
      *
      * @apiSuccess {Object} user            User data
+     *
      */
     .put();
 

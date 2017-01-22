@@ -8,7 +8,10 @@ const http = require('http'),
     router = express.Router(),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    passport = require('passport');
+    passport = require('passport'),
+    RedisSessions = require('redis-sessions'),
+    rs = new RedisSessions(require('./app/private').redis);
+
 
 let app = express();
 
