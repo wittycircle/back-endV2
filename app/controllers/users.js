@@ -70,14 +70,21 @@ exports.ValidateAccount = (req, res) => {
 }
 
 exports.checkFirstLog = (req, res) => {
+    if (!req.user_id) {
+        res.status(404).send('Cannot find first log')
+    }
+    else {
    user.getFirstLog(req.user_id) 
-    .then((value) => res.send(value))
-    .catch(console.error("No first log"))
+    .then((value) => res.send("YOL"))
+}
 }
 
 exports.updateFirstLog = (req, res) => {
     user.updateFirstLog(req.user_id)
-        .then(res.send({success: true}))
+        .then((r) => {
+            console.log(r)
+            res.send({success: true})
+        })
         .catch(console.error("Could not update log"))
 }
 

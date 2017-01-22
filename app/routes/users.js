@@ -40,13 +40,19 @@ router.param('user_id', function (req, res, next, user_id) {
 //add auth functions to [some] routes when they'll be done
 
 //Share
+router.route('/users')
+	.get(users.getUsers);
+
+router.route('/user/checkLog')
+	.get(users.checkFirstLog)
+
+router.route('/user/checkLog/update')
+	.put(users.updateFirstLog)
 
 router.route('/share/:user_id')
 	.get(users.getUserShare)
 	.put(users.updateUserShare);
 
-router.route('/users')
-	.get(users.getUsers);
 
 router.route('/user/:user_id')
     .get(users.getUser); // + hasAccess
@@ -56,11 +62,6 @@ router.route('/user/valid/:token')
 	.post(users.ValidateAccount) //(no sense to have this route, why parameter in post?)
 
 
-router.route('/user/checkLog')
-	.get(users.checkFirstLog)
-
-router.route('/user/checkLog/update')
-	.put(users.updateFirstLog)
 
 router.route('/userId/:profile_id')
 	.get(users.getUserFromProfile)

@@ -53,12 +53,13 @@ describe('Post validation mail', function () {
 	})
 })
 
-
+//should add test when have req.user_id
 describe ('Check first log', function () {
 	it('Should send something', function () {
-		return chakram.get(home + '/user/checkLog')
+		return chakram.request('GET', home + '/user/checkLog')
 			.then(function(r) {
-				expect(r.value).to.be.a('string')
+				// console.log(r)//.response.req.res.request)
+				expect(r).to.have.status(404)
 			})
 	})
 })

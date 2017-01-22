@@ -7,9 +7,9 @@
 
 const { db, TABLES } = require('./index');
 
-const getProfileOfUser = (id) => {
-    return db.from(TABLES.USER_PROFILES).where({id: id});
-};
+// const getProfileOfUser = (id) => {
+//     return db.from(TABLES.USER_PROFILES).where({id: id});
+// };
 
 exports.getUserShare = (id) => {
 	return db.select(['social_share'])
@@ -82,11 +82,11 @@ exports.getUsers = () => {
     return db.from(TABLES.USERS);
 };
 
-exports.getUserProfile = (id) => {
-    exports.getUser(id).then(user => {
-        return getProfileOfUser(user.id);
-    })
-};
+// exports.getUserProfile = (id) => {
+//     exports.getUser(id).then(user => {
+//         return getProfileOfUser(user.id);
+//     })
+// };
 
 exports.getUserByEmail = (email) => {
     return db.select(['id', 'profile_id']).from(TABLES.USERS).where({email: email});
