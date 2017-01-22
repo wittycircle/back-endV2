@@ -56,10 +56,19 @@ describe('Post validation mail', function () {
 //should add test when have req.user_id
 describe ('Check first log', function () {
 	it('Should send something', function () {
-		return chakram.request('GET', home + '/user/checkLog')
+		return chakram.get(home + '/user/checkLog')
 			.then(function(r) {
-				// console.log(r)//.response.req.res.request)
 				expect(r).to.have.status(404)
 			})
 	})
+})
+
+describe ('Update log', function () {
+	it('Should update the log', function () {
+		return chakram.put(home + '/user/checkLog/update')
+			.then(function(r) {
+				expect(r.body.success).to.equal.true
+			})
+	})
+
 })
