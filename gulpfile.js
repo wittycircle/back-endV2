@@ -6,8 +6,14 @@
 
 const gulp = require('gulp'),
     mocha = require('gulp-mocha'),
-    apidoc = require('gulp-apidoc');
+    apidoc = require('gulp-apidoc'),
+    os = require('os'),
+    open = require('gulp-open');
 
+
+const browser = os.platform() === 'linux' ? 'google-chrome' : (
+        os.platform() === 'darwin' ? 'google chrome' : (
+                os.platform() === 'win32' ? 'chrome' : 'firefox'));
 
 gulp.task('default', () => console.log('no task default defined'));
 
@@ -36,4 +42,7 @@ gulp.task('apidoc', cb => {
         dest: 'api-build',
         debug: true
     }, cb);
+    gulp.src('./api-build/index.html')
+        .pipe(open({app: browser}));
 });
+
