@@ -3,12 +3,3 @@
  */
 
 'use strict';
-
-/**
- * @api {}  
- * @apiName 
- * @apiGroup 
- *
- * @apiParam {}   
- *
- */
