@@ -39,6 +39,7 @@ exports.updateValidEmail = (email) => {
 	return db.update({valid: 1})
 			.from(TABLES.USERS)
 			.where({email: email})
+			.limit(1)
 }
 
 exports.deleteValidationToken = (token) => {

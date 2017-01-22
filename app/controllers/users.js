@@ -54,16 +54,21 @@ exports.getUsersValidateMail = (req, res) => {
 exports.ValidateAccount = (req, res) => {
     user.getToken(req.params.token)
         .then((token) => {
-            if (token.length !== 0){
+            if (token.length !== 0) {
                 user.updateValidEmail(req.body.email)
-                    .then(() => {
+                    .then((r) => {
+                        console.log("r is ", r)
+                        if (!r) {
+                            // res.status(404).send("error")
+                            throw("email not found")
+                    }
+                    else {
                         user.deleteValidationToken(req.params.token)
-                        .then(res.send({message: 'Validation successful'}))
-                    })
-            } else {
-                res.status(404).send({message: 'Could not validate account'})
+                        .then(() => res.send({message: 'Validation successful'}))
+                    }
+                    }).catch((e) => res.status(404).send(e))
             }
-        }) 
+        }).catch((e) => res.status(404).send(e))
 }
 
 exports.checkFirstLog = (req, res) => {
