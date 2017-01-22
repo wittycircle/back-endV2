@@ -39,13 +39,13 @@ describe('Validation mail', function () {
 })
 
 describe('Post validation mail', function () {
-			it ('Should validate account', function () {
+			it ('Should not validate account', function () {
 		return chakram.post(home + '/user/valid/toto', {email: 'toto.comwrg'})
 			.then(function (r) {
 				expect(r.body.message).to.not.equal('Validation successful')
 			})
 	})
-			it ('Should not validate account', function () {
+			it ('Should validate account', function () {
 			return chakram.post(home + '/user/valid/toto', {email: 'toto.com'})
 				.then(function (r) {
 					expect(r.body.message).to.equal('Validation successful')
