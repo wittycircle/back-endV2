@@ -53,22 +53,35 @@ describe('Post validation mail', function () {
 	})
 })
 
-//should add test when have req.user_id
 describe ('Check first log', function () {
 	it('Should send something', function () {
-		return chakram.get(home + '/user/checkLog')
+		return chakram.get(home + '/user/checkLog/1')
 			.then(function(r) {
-				expect(r).to.have.status(404)
+				expect(r.body.value).to.equal(1)
 			})
 	})
 })
 
 describe ('Update log', function () {
 	it('Should update the log', function () {
-		return chakram.put(home + '/user/checkLog/update')
+		return chakram.put(home + '/user/checkLog/update/1')
 			.then(function(r) {
-				expect(r.body.success).to.equal.true
+				expect(r.body.success).to.equal(true)
 			})
 	})
 
 })
+
+describe ('Get user from profile', function () {
+	it('should get id and username', function () {
+		return chakram.get(home + '/userId/1')
+			.then(function(r) {
+				expect(r).to.have.status(200)
+				expect(r.body.success).to.equal(true)
+				expect(r.body.content.id).to.be.a('number')
+				expect(r.body.content.username).to.be.a('string')
+			})
+	})
+
+})
+

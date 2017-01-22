@@ -75,23 +75,24 @@ exports.checkFirstLog = (req, res) => {
     }
     else {
    user.getFirstLog(req.user_id) 
-    .then((value) => res.send("YOL"))
-}
+    .then((value) => res.send(value[0]))
+    }
 }
 
 exports.updateFirstLog = (req, res) => {
+if (!req.user_id) {
+        res.status(404).send('Cannot update first log')
+    }
+    else {
     user.updateFirstLog(req.user_id)
-        .then((r) => {
-            console.log(r)
-            res.send({success: true})
-        })
-        .catch(console.error("Could not update log"))
+    .then((value) => res.send({success: true}))
+    }
 }
 
 //v1 : getUserIdByProfileId
 exports.getUserFromProfile = (req, res) => {
     user.getUserFromProfile(req.params.profile_id)
-    .then((id) => res.send({success: true, userId: id })) //id or id[0], to test
+    .then((id) => res.send({success: true, content: id[0] })) //id or id[0], to test
     .catch(console.error("Could not get user from profile"))
 
 }

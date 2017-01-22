@@ -43,10 +43,10 @@ router.param('user_id', function (req, res, next, user_id) {
 router.route('/users')
 	.get(users.getUsers);
 
-router.route('/user/checkLog')
+router.route('/user/checkLog/:user_id')
 	.get(users.checkFirstLog)
 
-router.route('/user/checkLog/update')
+router.route('/user/checkLog/update/:user_id')
 	.put(users.updateFirstLog)
 
 router.route('/share/:user_id')
