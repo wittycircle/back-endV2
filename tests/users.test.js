@@ -24,10 +24,11 @@ describe('Update user share', function () {
 	})
 })
 
-describe('Validation main', function () {
+describe('Validation mail', function () {
 	before(function () {
 		db.insert({token: 'toto', user_email:"toto.com"}).into(TABLES.ACCOUNT_VALIDATION).return()
-		db.raw(db.insert({profile_id: 2, email: "toto.com"}).into(TABLES.USERS).toString().replace('insert', 'INSERT IGNORE')).return()
+		db.raw(db.insert({profile_id: 2, email: "toto.com"}).into(TABLES.USERS)
+			.toString().replace('insert', 'INSERT IGNORE')).return()
 	});
 	it('Should validate email', function() {
 		return chakram.get(home + '/user/valid/toto')
@@ -37,22 +38,19 @@ describe('Validation main', function () {
 	})
 })
 
-// describe('Post validation mail', function () {
-// 			it ('Should not validate account', function () {
-// 		return chakram.post(home + '/user/valid/toto', {email: 'toto.com'})
-// 			.then(function (r) {
-// 				expect(r.body.message).to.not.equal('Validation successful')
-// 			})
-// 	})
-// })
-
-describe('TOTO', function () {
+describe('Post validation mail', function () {
+			it ('Should validate account', function () {
+		return chakram.post(home + '/user/valid/toto', {email: 'toto.comwrg'})
+			.then(function (r) {
+				expect(r.body.message).to.not.equal('Validation successful')
+			})
+	})
 			it ('Should not validate account', function () {
-			return chakram.post(home + '/user/valid/toto', {email: 'toto.sbcom'})
+			return chakram.post(home + '/user/valid/toto', {email: 'toto.com'})
 				.then(function (r) {
-					return expect(r.body.message).to.not.equal('Validation successful')
+					expect(r.body.message).to.equal('Validation successful')
 				})
 	})
-	
 })
+
 

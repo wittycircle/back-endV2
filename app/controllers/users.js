@@ -57,9 +57,7 @@ exports.ValidateAccount = (req, res) => {
             if (token.length !== 0) {
                 user.updateValidEmail(req.body.email)
                     .then((r) => {
-                        console.log("r is ", r)
                         if (!r) {
-                            // res.status(404).send("error")
                             throw("email not found")
                     }
                     else {
