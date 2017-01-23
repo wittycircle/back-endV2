@@ -24,3 +24,8 @@ exports.resDebugger = (req, res, next) => {
     };
     next();
 };
+
+exports.errorLogger = (err, req, res, next) => {
+    console.log(err);
+    next();
+};;;;;;;;;;;;;;

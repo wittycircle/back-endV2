@@ -48,6 +48,6 @@ gulp.task('apidoc', 'Generates api documentation html', cb => {
 
 gulp.task('api', 'Open the latest documentation revision', () => {
     gulp.src('./api-build/index.html')
-        .dest(open({app: browser}))
+        .pipe(open({app: browser}))
 });
 

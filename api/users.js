@@ -142,7 +142,7 @@ router
     /**
      * @api {delete} /users/:id/skills/:id Remove skill from user
      * @apiName RemoveUserSkill
-     * @apiGroup User
+     * @apiGroup Skill
      *
      * @apiParam {Number}   user_id     The user id
      * @apiParam {Number}   skill_id    The skill id
