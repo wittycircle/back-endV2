@@ -86,7 +86,7 @@ describe ('Get user from profile', function () {
 })
 
 describe('Get profile', function () {
-	it('oto', function () {
+	it('Should have properties [genre, birthdate, location_city]', function () {
 		return chakram.post(home + '/profiles/1')
 			.then(function(r) {
 				expect(r).to.have.status(200)
@@ -94,6 +94,15 @@ describe('Get profile', function () {
 				expect(r.body.content).to.have.property('genre')
 				expect(r.body.content).to.have.property('birthdate')
 				expect(r.body.content).to.have.property('location_city')
+			})
+	})
+})
+
+describe('Get profile id', function () {
+	it('Should return an id', function () {
+		return chakram.post(home + '/profileId/1')
+			.then(function(r) {
+				expect(r.body.content).to.have.property('profile_id')
 			})
 	})
 })

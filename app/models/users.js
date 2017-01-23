@@ -74,8 +74,14 @@ exports.getProfile = (id) => {
 			.from(TABLES.USER_PROFILES)
 			.where({id: id})
 }
+
+exports.getProfileId = (id) => {
+	return db.select(['profile_id'])
+			.from(TABLES.USERS)
+			.where({id: id})
+}
 // ----
-//not done till //===****==
+//not done still //===****==
 exports.getUser = (id) => {
     return db.from(TABLES.USERS).where({id: id});
 };
