@@ -69,7 +69,7 @@ router.route('/userId/:profile_id')
 //profiles (could be moved to route/profile ?)
 
 router.route('/profiles/:profile_id')
-	.post(users.getAllProfiles) // + hasAccess
+	.post(users.getProfile) // + hasAccess
 
 router.route('/profileId/:user_id')
 	.post(users.getProfileId)

@@ -85,3 +85,15 @@ describe ('Get user from profile', function () {
 
 })
 
+describe('Get profile', function () {
+	it('oto', function () {
+		return chakram.post(home + '/profiles/1')
+			.then(function(r) {
+				expect(r).to.have.status(200)
+				expect(r.body.success).to.equal(true)
+				expect(r.body.content).to.have.property('genre')
+				expect(r.body.content).to.have.property('birthdate')
+				expect(r.body.content).to.have.property('location_city')
+			})
+	})
+})

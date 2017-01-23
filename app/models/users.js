@@ -68,8 +68,10 @@ exports.getUserFromProfile = (id) => {
 			.where({profile_id: id})
 }
 
-exports.getAllProfiles = (id) => {
-	return db.from(TABLES.USER_PROFILES)
+exports.getProfile = (id) => {
+	return db.select(['birthdate', 'description', 'genre','profile_picture',
+					'location_city', 'location_state', 'location_country'])
+			.from(TABLES.USER_PROFILES)
 			.where({id: id})
 }
 // ----

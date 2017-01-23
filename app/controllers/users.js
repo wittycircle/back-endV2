@@ -98,16 +98,16 @@ exports.getUserFromProfile = (req, res) => {
 }
 
 // v1 : getProfilesByProfileId
-exports.getAllProfiles = (req, res) => {
-    user.getAllProfiles(req.params.profile_id)
-        .then((id) => res.send({success:true, content: id}))
+exports.getProfile = (req, res) => {
+    user.getProfile(req.params.profile_id)
+        .then((id) => res.send({success:true, content: id[0]}))
         .catch(console.error("Could not get profiles"))
 }
 
 //v1: getProfileIdByUserId
 exports.getProfileId = (req, res) => {
     user.getProfileId(req.user_id)
-    .then((id) => res.send({success: true, content: id}))
+    .then((id) => res.send({success: true, content: id[0]}))
     .catch(console.error("Could not get profile"))
 }
 
