@@ -24,17 +24,17 @@ app.use(express.static(__dirname + '/public/app/styles/css'));
 app.use(require('./app/config/custom_validator'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(require('./app/config/custom_validator'));
-
-app.use('*', (err, req, res, next) => {
-    console.log(err);
-    next();
-});
 
 
-router.use(logger('dev'));
+// app.use('*', (err, req, res, next) => {
+//     console.log(err);
+//     next();
+// });
 
-router.use(require('./app/dev/debug').resDebugger);
+
+// router.use(logger('dev'));
+
+// router.use(require('./app/dev/debug').resDebugger);
 
 router.use(require('./app/routes/index'));
 app.use(router);

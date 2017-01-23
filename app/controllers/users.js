@@ -112,26 +112,38 @@ exports.getProfileId = (req, res) => {
 }
 
 //not done yet //===****==
-exports.getUser = (req, res) => {
-    user.getUser(req.user_id).then(user => {
-        res.send(user)
-    }).catch(err => {console.err ("error") });
-};
 
 exports.getUsers = (req, res) => {
     user.getUsers().then(users => {
+        // users.forEach(function(element, index) {
+        //     user.getAllFromProfile(element.profile_id)
+        //         .then((profile) => {
+        //             element.profile = profile
+        //             element.fullname = profile[0].first_name + ' ' + profile[0].last_name
+        //         })
+        // })
         res.send(users)
-    }).catch(err => {console.err ("error") });
+    }).catch(err => {console.error (err)})
 };
 
 
-exports.getUserByEmail = (req, res) => {
-    user.getUserByEmail(req.user_email).then(user => {
-        if (user.length === 0)
-            res.send({success: false});
-        else
-            res.send(user);
-    }).catch(err => {console.err ("error") });
-};
+// exports.getProfiles = (req, res) => {
 
-//===****==
+// }
+
+// exports.getUser = (req, res) => {
+//     user.getUser(req.user_id).then(user => {
+//         res.send(user)
+//     }).catch(err => {console.err ("error") });
+// };
+
+// exports.getUserByEmail = (req, res) => {
+//     user.getUserByEmail(req.user_email).then(user => {
+//         if (user.length === 0)
+//             res.send({success: false});
+//         else
+//             res.send(user);
+//     }).catch(err => {console.err ("error") });
+// };
+
+// //===****==

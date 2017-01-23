@@ -9,29 +9,6 @@ const users = require('../controllers/users'),
 
 let router = express.Router();
 
-//List of params use in controllers/users.js [v1] 
-//obtained with :  tr ' ' '\n' < controllers/users.js | grep -e "req.params*" | sort | uniq 
-
-// [req.params.email],
-// [req.params.id],
-// [req.params.username],
-// req.params.id
-// req.params.id,
-// req.params.profile_id,
-// req.params.search
-// req.params.token,
-// req.params.user_id,
-
-// !req.user.password
-// ((req.user.username
-// (req.user.email
-// req.user.email
-// req.user.email)
-// req.user.id,
-// req.user.password))
-// req.user.username
-// req.user.username)
-// req.user});`
 router.param('user_id', function (req, res, next, user_id) {
     req.user_id = user_id;
     next();
@@ -54,8 +31,8 @@ router.route('/share/:user_id')
 	.put(users.updateUserShare);
 
 
-router.route('/user/:user_id')
-    .get(users.getUser); // + hasAccess
+// router.route('/user/:user_id')
+//     .get(users.getUser); // + hasAccess
 
 router.route('/user/valid/:token')
 	.get(users.getUsersValidateMail)
