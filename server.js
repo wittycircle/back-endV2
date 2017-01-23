@@ -8,16 +8,13 @@ const http = require('http'),
     router = express.Router(),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    passport = require('passport'),
-    RedisSessions = require('redis-sessions'),
-    rs = new RedisSessions(require('./app/private').redis);
+    passport = require('passport');
 
 
 let app = express();
 
-require('./app/config/passport')(passport);
-
 app.use(passport.initialize());
+require('./app/config/passport')(passport);
 
 app.set('port', process.env.PORT || 3000);
 // app.use(logger('dev'));
@@ -37,7 +34,7 @@ app.use(require('./app/config/custom_validator'));
 
 router.use(logger('dev'));
 
-app.use(require('./app/dev/debug').resDebugger);
+app.use(require('./app/middlewares/debug').resDebugger);
 
 router.use(require('./app/routes/index'));
 app.use(router);

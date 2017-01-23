@@ -42,7 +42,10 @@ gulp.task('apidoc', cb => {
         dest: 'api-build',
         debug: true
     }, cb);
+});
+
+gulp.task('api', () => {
     gulp.src('./api-build/index.html')
-        .pipe(open({app: browser}));
+        .pipe(open({app: browser}))
 });
 

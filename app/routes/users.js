@@ -5,7 +5,8 @@
 'use strict';
 
 const users = require('../controllers/users'),
-    express = require('express');
+    express = require('express'),
+    passport = require('passport');
 
 let router = express.Router();
 
@@ -15,7 +16,7 @@ router.param('user_id', function (req, res, next, user_id) {
 });
 
 router.route('/users')
-    .get(users.getUsers);
+    .get(passport.authenticate('bearer', {session: false}), users.getUsers);
 
 router.route('/user/:user_id')
     .get(users.getUser);

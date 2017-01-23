@@ -7,6 +7,12 @@
 const express = require('express'),
     router = express.Router();
 
+/**
+ * @apiDefine AuthToken
+ * @apiSuccess {Object} auth
+ * @apiSuccess {String} auth.token Bearer token for current session
+ */
+
 router
     .route('/auth/local')
     /**
@@ -14,35 +20,32 @@ router
      * @apiName LocalAuth
      * @apiGroup Auth
      *
-     * @apiParam {Object}       auth
-     * @apiParam {String}       auth.email          User email
-     * @apiParam {String}       auth.password       User password
+     * @apiParam {String}       email          User email
+     * @apiParam {String}       password       User password
      *
-     * @apiSuccess {Object} auth
-     * @apiSuccess {String} auth.token  Bearer token for current session
+     * @apiUse AuthToken
      */
     .post();
 
-router.route('/auth/facebook')
+router
+    .route('/auth/facebook')
     /**
      * @api {get} /auth/facebook Facebook Oauth
      * @apiName FacebookAuth
      * @apiGroup Auth
      *
-     * @apiSuccess {Object} auth
-     * @apiSuccess {String} auth.token  Bearer token for current session
      *
+     * @apiUse AuthToken
      */
     .post();
 
-router.route('/auth/google')
-/**
- * @api {get} /auth/facebook Google Oauth2
- * @apiName GoogleAuth
- * @apiGroup Auth
- *
- * @apiSuccess {Object} auth
- * @apiSuccess {String} auth.token  Bearer token for current session
- *
- */
+router
+    .route('/auth/google')
+    /**
+     * @api {get} /auth/facebook Google Oauth2
+     * @apiName GoogleAuth
+     * @apiGroup Auth
+     *
+     * @apiUse AuthToken
+     */
     .post();
