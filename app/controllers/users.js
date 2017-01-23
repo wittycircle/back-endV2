@@ -115,13 +115,6 @@ exports.getProfileId = (req, res) => {
 
 exports.getUsers = (req, res) => {
     user.getUsers().then(users => {
-        // users.forEach(function(element, index) {
-        //     user.getAllFromProfile(element.profile_id)
-        //         .then((profile) => {
-        //             element.profile = profile
-        //             element.fullname = profile[0].first_name + ' ' + profile[0].last_name
-        //         })
-        // })
         res.send(users)
     }).catch(err => {console.error (err)})
 };

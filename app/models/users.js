@@ -81,27 +81,22 @@ exports.getProfileId = (id) => {
 			.where({id: id})
 }
 
-exports.getAllFromProfile = (id) => {
-	return db.select(['id', 'first_name', 'last_name', 'profession',
+// ----
+exports.getUsers = () => {
+    return db.distinct(['users.id', 'profile_id', 'users.username',//this line from user, rest from profile
+	    'first_name', 'last_name', 'profession',
 		'description', 'location_city', 'location_state', 'location_country',
 		'profile_picture', 'about', 'genre', 'creation_date', 'cover_picture',
 		'views', 'profile_picture_icon', 'cover_picture_cards'])
-		.from(TABLES.USER_PROFILES)
-		.where({id: id})
-}
-// ----
-//not done still //===****==
-exports.getUsers = () => {
-
-    return db.select(['users.id', 'users.profile_id', 'users.username',
-	    'profiles.id', 'profiles.first_name', 'profiles.last_name', 'profiles.profession',
-		'profiles.description', 'profiles.location_city', 'profiles.location_state', 'profiles.location_country',
-		'profiles.profile_picture', 'profiles.about', 'profiles.genre', 'profiles.creation_date', 'profiles.cover_picture',
-		'profiles.views', 'profiles.profile_picture_icon', 'profiles.cover_picture_cards'])
+    	.select()
 	    .from(TABLES.USERS)
-	    .innerJoin(TABLES.USER_PROFILES, 'users.username', 'profiles.username')
-	    .limit(1);
+	    .join(TABLES.USER_PROFILES, function () {
+	    	this.on('users.profile_id', '=', 'profiles.id').andOn('users.username', '=', 'profiles.username')
+	     
+	 })
 };
+
+//not done still //===****==
 
 // exports.getProfiles = () => {
 

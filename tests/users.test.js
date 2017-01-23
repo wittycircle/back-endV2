@@ -106,3 +106,16 @@ describe('Get profile id', function () {
 			})
 	})
 })
+
+describe('Get users', function () {
+	it('Should get a list of users', function () {
+		return chakram.get(home + '/users')
+			.then(function(r) {
+				console.log(r.body.length)
+				expect(r.body).to.be.a('array')
+				expect(r.body[0]).to.have.property('profile_id')
+				expect(r.body[0]).to.have.property('username')
+				expect(r.body[0]).to.have.property('location_city')
+			})
+	})
+})
