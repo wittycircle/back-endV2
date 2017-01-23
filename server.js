@@ -8,12 +8,18 @@ const http = require('http'),
     router = express.Router(),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    passport = require('passport');
+    passport = require('passport'),
+    OauthServer = require('express-oauth-server');
 
 
 let app = express();
 
-app.use(passport.initialize());
+app.oauth = new OauthServer(require('./app/config/oauth'));
+
+app.post('/oauth/token', app.oauth.token());
+
+app.get('/secret', app.oauth.authorize(), (req, res) => res.send('OK'));
+
 require('./app/config/passport')(passport);
 
 app.set('port', process.env.PORT || 3000);

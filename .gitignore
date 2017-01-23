@@ -2,14 +2,10 @@
 .idea
 node_modules
 app/private
-[Pp]ublic/node_modules
 [Pp]ublic/dist
 [Pp]ublic/.sass-cache
 [Pp]ublic/bower_components
-[Pp]ublic/.tmp
-[Pp]ublic/docs
-[Pp]ublic/.DS_Store
+
 
 api-build
-.sass-cache/
-/algo/algolia.js
+*.rdb

@@ -20,17 +20,20 @@ gulp.task('default', () => console.log('no task default defined'));
 /**
  *  Launch unit tests in ./tests
  */
-gulp.task('test', () =>
+gulp.task('test', () => {
     gulp.src('tests/*test.js')
         .pipe(mocha({
-            reporter: 'nyan'
+            reporter: 'mochawesome'
         }))
         /**
          * database lingering connection killer
          */
         .once('error', () => process.exit(1))
-        .once('end', () => process.exit())
-);
+        .once('end', () => process.exit());
+
+        gulp.src('mochawesome-reports/mochawesome.html')
+            .pipe(open({app: browser}));
+});
 
 /**
  * Parse api definition in /api
@@ -46,6 +49,6 @@ gulp.task('apidoc', cb => {
 
 gulp.task('api', () => {
     gulp.src('./api-build/index.html')
-        .pipe(open({app: browser}))
+        .dest(open({app: browser}))
 });
 
