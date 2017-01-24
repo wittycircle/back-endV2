@@ -5,7 +5,8 @@
 'use strict';
 
 const auth = require('../controllers/auth'),
-    express = require('express');
+    express = require('express'),
+    passport = require('passport');
 
 let router = express.Router();
 

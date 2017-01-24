@@ -5,7 +5,6 @@ app/private
 [Pp]ublic/dist
 [Pp]ublic/.sass-cache
 [Pp]ublic/bower_components
-
 mochawesome-reports
 api-build
 *.rdb

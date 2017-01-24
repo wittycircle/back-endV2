@@ -1,56 +1,29 @@
 /**
  * Created by rdantzer on 19/01/17.
  */
+const passport = require('passport');
 
 'use strict';
-
-const passport = require('passport'),
-    crypto = require('crypto'),
-    bcrypt = require('bcrypt-nodejs'),
-    _ = require('lodash');
-
 
 exports.checkLog = (req, res) => {
     res.send({success: req.isAuthenticated()})
 };
 
-exports.ensureAuth = (req, res, next) => {
-    if (req.isAuthenticated())
-        next();
-    else
-        res.status(400); //Todo 401 UNAUTHORIZED
-};
-
-exports.ensureAdminAuth = (req, res, next) => {
-    if (req.isAuthenticated() && req.user.moderator)
-        next();
-    else
-        res.redirect('/'); //todo 403 FORBIDDEN
-};
-
-exports.ensureModerator = (req, res, next) => {
-    if (req.isAuthenticated() && (req.user.moderator || req.user.ambassador))
-        next();
-    else
-        res.redirect('/'); //todo 403 FORBIDDEN
-};
-
 exports.login = (req, res, next) => {
-    passport.authenticate('local-login', function (err, user) {
-        console.log(err, user);
-        res.send({
-            success: true,
-            user: _.pick(user, ['id', 'email', 'profile_id', 'username', 'moderator', 'ambassador'])
-        });
+    passport.authenticate('local-login', (err, user) => {
+        if (err || !user)
+            res.status(400).send({error: 'wrong credentials'});
+        req.logIn(user, (err) => {
+            if (err) {
+                res.send.status(500).send({error: 'auth error'});
+                return next(err);
+            } else {
+                return res.send(user);
+            }
+        })
     })(req, res, next);
 };
 
 exports.logout = (req, res) => {
-    if (!req.isAuthenticated())
-        res.send({message: 'User is not logged in'}); //todo security?
-    else
-        req.session.destroy(function (err) {
-            if (err) throw err;
-            res.send({success: true});
-        })
+
 };

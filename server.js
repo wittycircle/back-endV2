@@ -9,18 +9,27 @@ const http = require('http'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     passport = require('passport'),
-    OauthServer = require('express-oauth-server');
-
+    middlewares = require('./app/middlewares/debug');
 
 let app = express();
 
-app.oauth = new OauthServer(require('./app/config/oauth'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
-app.post('/oauth/token', app.oauth.token());
+/**
+ * Error middleware
+ */
+app.use(middlewares.errorLogger);
 
-app.get('/secret', app.oauth.authorize(), (req, res) => res.send('OK'));
+/**
+ * Debug middleware
+ */
+app.use(middlewares.resDebugger);
+
 
 require('./app/config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set('port', process.env.PORT || 3000);
 // app.use(logger('dev'));
@@ -28,19 +37,11 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public/app/'));
 app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/public/app/styles/css'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('*', (err, req, res, next) => {
-    console.log(err);
-    next();
-});
 
 app.use(require('./app/config/custom_validator'));
 
 router.use(logger('dev'));
-
-app.use(require('./app/middlewares/debug').resDebugger);
 
 router.use(require('./app/routes/index'));
 app.use(router);
