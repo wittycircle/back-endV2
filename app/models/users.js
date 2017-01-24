@@ -147,37 +147,31 @@ exports.test = () => {
 exports.getSkills = (id) => {
 	return db.select('skill_name').from(TABLES.USER_SKILLS).where({user_id : id})
 }
+//have count separate as it slow down (200ms to 9000 ms)
+			// .count('f2.id as followers')
+			// .count('f.id as following')
+			// .join(TABLES.USER_FOLLOWERS + ' as f','f.user_id', 'u.id')
+			// .join(TABLES.USER_FOLLOWERS + ' as f2','f2.follow_user_id', 'u.id')
 
 exports.cardProfile = () => {
-	// return db.count('f.follow_user_id as followers')//4
-			// .count('f.user_id as following')//5
-			return db.countDistinct('f.id')
-			.countDistinct('f2.id')
+return db.select(['u.id', 's.user_id',
+		's.user_id', 'e.user_id', 'p.username',
+		'p.id', 'p.first_name', 'p.last_name', 'p.description',
+		'p.location_city', 'p.location_state', 'p.location_country',
+		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank',
+		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills')])
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_FOLLOWERS + ' as f', 'f.user_id', 'u.profile_id')
-			.join(TABLES.USER_FOLLOWERS + ' as f2', 'f2.follow_user_id', 'u.profile_id')
-			.where('u.id', 1)
-
-		// 	return db.select(['u.id', 'u.profile_id',
-		// 			// 's.user_id', 'e.user_id',
-		// 'p.id', 'p.first_name', 'p.last_name', 'p.description',
-		// 'p.location_city', 'p.location_state', 'p.location_country',
-		// 'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank'])
-		// 	.count('f.follow_user_id as followers')
-		// 	.count('f.user_id as following')
-		// 	.from(TABLES.USERS + ' as u')
-		// 	.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
-		// 	// .join(TABLES.USER_SKILLS + ' as s', function() {
-		// 	// 	this.on('u.id', 's.user_id')
-		// 	// 	this.on('u.profile_id', 'p.id')
-		// 	// })
-		// 	// .join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
-		// 	.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
-		// 	.join(TABLES.USER_FOLLOWERS + ' as f','f.follow_user_id', 'u.id')
-		// 	.where('p.description', '!=', 'NULL')
-		// 	.andWhere('p.profile_picture', '!=', 'NULL')
-		// 	.andWhere('p.fake', '=', '0')
-		// 	.andWhere('u.id', 1)//toremove
+			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
+			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
+			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+			.where('p.description', '!=', 'NULL')
+			.andWhere('p.profile_picture', '!=', 'NULL')
+			.andWhere('p.fake', '=', '0')
+			.groupBy('u.id')
+			.orderByRaw('RAND()')
+			// .db.raw()
+			// .orderBy('RAND()')
 			// .limit(1)
 }
 
