@@ -15,6 +15,9 @@ exports.db = knex;
 exports.TABLES = {
     USERS: 'users',
     USER_PROFILES: 'profiles',
+    USER_SKILLS: 'user_skills',
+    USER_EXPERIENCES: 'user_experiences',
+    USER_FOLLOWERS: 'user_followers',
     ACCOUNT_VALIDATION: 'account_validation',
     FIRST_LOG: 'first_log'
 };

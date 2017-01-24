@@ -3,9 +3,11 @@
  */
 
 'use strict';
+ //move to profile all related things to profile (using only table.users_profiles)
 
 const user = require('../models/users'),
-    home = 'http://localhost:3000'
+    home = 'http://localhost:3000';
+    // pf = require('../utils/profile_functions');
 
 exports.getUserShare = (req, res) => {
     req.checkParams('user_id', 'username must be an integer.').isInt();
@@ -114,29 +116,54 @@ exports.getProfileId = (req, res) => {
 //not done yet //===****==
 
 exports.getUsers = (req, res) => {
-    user.getUsers().then(users => {
+    user.getUsers()
+    .then(users => {
         res.send(users)
     }).catch(err => {console.error (err)})
 };
 
+exports.getProfiles = (req, res) => { 
+    user.getProfiles()
+    .then(profiles => {
+        res.send(profiles)
+    }).catch(err => {console.error(err)})
+}
 
-// exports.getProfiles = (req, res) => {
+exports.getUser = (req, res) => { //Unused as of now
+   req.checkParams('id', 'id parameter must be an integer.').isInt().min(1);
 
-// }
+    const errors = req.validationErrors(true);
+    if (errors) {
+        return res.status(400).send(errors);
+    } else {
+        user.getUser(req.params.id)
+            .then(user => {
+                res.send(user)
+            }).catch(err => {console.error(err)})
+        }
+}
 
-// exports.getUser = (req, res) => {
-//     user.getUser(req.user_id).then(user => {
-//         res.send(user)
-//     }).catch(err => {console.err ("error") });
-// };
-
-// exports.getUserByEmail = (req, res) => {
-//     user.getUserByEmail(req.user_email).then(user => {
-//         if (user.length === 0)
-//             res.send({success: false});
-//         else
-//             res.send(user);
-//     }).catch(err => {console.err ("error") });
-// };
+exports.getCardProfile = (req, res) => {
+    user.test().then((r) => res.send(r))
+    // user.getIdFromSkills()
+    // .then((uid) => {
+    //     let arr = uid.map(e => e.user_id)
+    //     user.getIdFromProfiles(arr)
+    //     .then((r) => {
+    //         let arr2 = r.map(e => e.id)
+    //         user.getInfoFromProfile(arr2)
+    //         .then((info) => {
+    //             pf.sortCardProfile(info, (array) => {
+    //                 if (array[0]) {
+    //                     res.send({success: true, data: array})
+    //                 }
+    //                 else{
+    //                     res.send({success: false})
+    //                 }
+    //             })
+    //         })
+    //     })
+    // })
+}
 
 // //===****==

@@ -20,6 +20,12 @@ router.param('user_id', function (req, res, next, user_id) {
 router.route('/users')
 	.get(users.getUsers);
 
+router.route('/user/:id')
+	.get(users.getUser)
+
+router.route('/user/card/profiles')
+	.get(users.getCardProfile)
+
 router.route('/user/checkLog/:user_id')
 	.get(users.checkFirstLog)
 
