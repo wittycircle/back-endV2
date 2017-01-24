@@ -110,7 +110,25 @@ exports.getProfiles = () => {
 			.select()
 }
 
+
+// exports.test = () => {
+// 	// return db(TABLES.USERS).select('id', "count('id')")
+// 	return db.count('p.id as id')
+// 			.from( TABLES.USER_PROFILES)
+// 			.join(TABLES.USERS + ' as p', 'p.profile_id', 'profiles.id')//.on('p.profile_id', 'profiles.id')
+// 			// .from(TABLES.USERS)
+// }
 //CARD PROFILE THING [maybe move to a card.js in models]
+//------------------------------------------------------
+
+					// pool.query('SELECT count(*) as followers FROM user_followers
+					//  WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+
+
+					        // pool.query('SELECT count(*) as following FROM user_followers 
+					        // WHERE user_id IN  (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+
+
     // pool.query('SELECT user_id FROM user_skills WHERE user_id IN (SELECT user_id FROM user_experiences GROUP BY user_id)' +
     //     'GROUP BY user_id',
 
@@ -121,13 +139,6 @@ exports.getProfiles = () => {
 // location_state, location_country, profile_picture, about, cover_picture_cards FROM `profiles` 
 // WHERE id IN (' + arr2 + ') && profile_picture is not null && fake = 0 ORDER BY rand()', 
 
-				// pool.query('SELECT count(*) as followers FROM user_followers
-				//  WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-
-				        // pool.query('SELECT count(*) as following FROM user_followers WHERE user_id IN
-				        //  (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
 // pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
 
 //pool.query('SELECT skill_name FROM user_skills WHERE user_id IN
@@ -137,29 +148,19 @@ exports.getProfiles = () => {
 // pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',  row[0].id,
 // 
 
-exports.test = () => {
-	// return db(TABLES.USERS).select('id', "count('id')")
-	return db.count('p.id as id')
-			.from( TABLES.USER_PROFILES)
-			.join(TABLES.USERS + ' as p', 'p.profile_id', 'profiles.id')//.on('p.profile_id', 'profiles.id')
-			// .from(TABLES.USERS)
-}
-
 exports.CardProfile = () => {
-	return db.count('user_followers.id as followers')
-			.count('')
-			.select(['users.user_id', 'users.profiles_id',
+	return db.count('follow.follow_user_id as followers')
+			.count('follow.user_id as following')
+			.distinct(['users.user_id', 'users.profiles_id',
 					'skills.user_id', 'experiences.user_id',
 		'profiles.id', 'profiles.first_name', 'profiles.last_name', 'profiles.description',
 		'profiles.location_city', 'profiles.location_state', 'profiles.location_country',
-		'profiles.profile_picture', 'profiles.about', 'profiles.cover_picture_cards',
-		db.raw('SELECT count(*) as followers FROM user_followers'),
-		db.raw('SELECT count(*) as following FROM user_followers WHERE user_id' +
-			'IN (SELECT id FROM users WHERE profile_id')])
+		'profiles.profile_picture', 'profiles.about', 'profiles.cover_picture_cards'])
 			.from(TABLES.USERS).as('users')
 			.join(TABLES.USER_PROFILES).as('profiles')
 			.join(TABLES.USER_SKILLS).as('skills')
-			.join(TABLES.USER_EXPERIENCES).as('experiences')
+			.join(TABLES.USER_EXPERIENCES, 'skills.user_id', 'experiences.user_id').as('experiences')
+			join(TABLES.USER_FOLLOWERS, 'follow.follow_user_id', 'users.id').as('follow')
 }
 
 exports.getIdFromSkills = () => {
