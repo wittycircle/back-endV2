@@ -12,19 +12,21 @@ const Strategy = {
     },
     bcrypt = require('bcrypt-nodejs'),
     session = require('../middlewares/session').session,
-    users = require('../models/users'),
-    _ = require("lodash");
+    users = require('../models/users');
 
 module.exports = function (passport) {
 
-    passport.serializeUser = function (user, done) {
-        console.log(done);
-        session.createUserSession(user, done)
-    };
+    passport.serializeUser((user, done) => {
+        session.createUserSession(user, (err, token) => {
+            if (err) return done(err);
+            if (token === null) return done(null, false);
+            return done(null, token);
+        });
+    });
 
-    passport.deserializeUser = function (token, done) {
+    passport.deserializeUser((token, done) => {
         session.getUser(token, done)
-    };
+    });
 
     passport.use(new Strategy.bearer({
             session: false
@@ -41,9 +43,9 @@ module.exports = function (passport) {
         }
     ));
 
-    passport.use('local-login', new Strategy.local({
+    passport.use(new Strategy.local({
             usernameField: 'email',
-            session: false,
+        // session: true,
             passReqToCallback: true
         }, (req, email, password, done) => {
             users
