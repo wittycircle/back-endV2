@@ -146,11 +146,12 @@ exports.getUser = (req, res) => { //Unused as of now
 exports.getCardProfile = (req, res) => {
     user.cardProfile()
     .then((r) => {
-       user.getSkills(r[0].id)
-       .then((rr) => {
-            r[0].skills = rr
-            res.send(r) 
-    })
+        res.send(r)
+    //    user.getSkills(r[0].id)
+    //    .then((rr) => {
+    //         r[0].skills = rr
+    //         res.send(r) 
+    // })
     })
         
     // user.getIdFromSkills()

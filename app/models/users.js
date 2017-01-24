@@ -93,6 +93,12 @@ exports.getUsers = () => {
 	    .orderBy('username')
 };
 
+exports.getProfiles = () => {
+	return db.from(TABLES.USER_PROFILES)
+			.orderBy('views', 'desc')
+			.select()
+}
+
 exports.getUser = (id) => {
     return db.select(['users.id', 'email', 'profile_id', 'users.username',//this line from user, rest from profile
 	    'first_name', 'last_name', 'profession',
@@ -102,12 +108,6 @@ exports.getUser = (id) => {
 	    .from(TABLES.USERS)
 	    .where({'users.id': id})
 	    .join(TABLES.USER_PROFILES, 'users.profile_id', 'profiles.id')
-}
-
-exports.getProfiles = () => {
-	return db.from(TABLES.USER_PROFILES)
-			.orderBy('views', 'desc')
-			.select()
 }
 
 exports.test = () => {
@@ -134,8 +134,8 @@ exports.test = () => {
  //4 		pool.query('SELECT count(*) as followers FROM user_followers'+
 					// 'WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
 
-//5 		 pool.query('SELECT count(*) as following FROM user_followers WHERE user_id IN'+
-				         // '(SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+//5 		 pool.query('SELECT count(*) as following FROM user_followers 
+// WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
 
 //6   	pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
 
@@ -151,26 +151,34 @@ exports.getSkills = (id) => {
 exports.cardProfile = () => {
 	// return db.count('f.follow_user_id as followers')//4
 			// .count('f.user_id as following')//5
-			return db.select(['u.id', 'u.profile_id',
-					's.user_id', 'e.user_id',
-		'p.id', 'p.first_name', 'p.last_name', 'p.description',
-		'p.location_city', 'p.location_state', 'p.location_country',
-		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank'])
+			return db.countDistinct('f.id')
+			.countDistinct('f2.id')
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
-			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
-			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
-			.join(TABLES.USER_FOLLOWERS + ' as f', function () {
-				this.on('f.follow_user_id', 'u.id')
-			})
-			.where('p.description', '!=', 'NULL')
-			.andWhere('p.profile_picture', '!=', 'NULL')
-			.andWhere('p.fake', '=', '0')
-			.where('u.id', 1)//toremove
-			// .count('f.follow_user_id as followers')
-			// .count('f.user_id as following')
-			.limit(1)
+			.join(TABLES.USER_FOLLOWERS + ' as f', 'f.user_id', 'u.profile_id')
+			.join(TABLES.USER_FOLLOWERS + ' as f2', 'f2.follow_user_id', 'u.profile_id')
+			.where('u.id', 1)
+
+		// 	return db.select(['u.id', 'u.profile_id',
+		// 			// 's.user_id', 'e.user_id',
+		// 'p.id', 'p.first_name', 'p.last_name', 'p.description',
+		// 'p.location_city', 'p.location_state', 'p.location_country',
+		// 'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank'])
+		// 	.count('f.follow_user_id as followers')
+		// 	.count('f.user_id as following')
+		// 	.from(TABLES.USERS + ' as u')
+		// 	.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+		// 	// .join(TABLES.USER_SKILLS + ' as s', function() {
+		// 	// 	this.on('u.id', 's.user_id')
+		// 	// 	this.on('u.profile_id', 'p.id')
+		// 	// })
+		// 	// .join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
+		// 	.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+		// 	.join(TABLES.USER_FOLLOWERS + ' as f','f.follow_user_id', 'u.id')
+		// 	.where('p.description', '!=', 'NULL')
+		// 	.andWhere('p.profile_picture', '!=', 'NULL')
+		// 	.andWhere('p.fake', '=', '0')
+		// 	.andWhere('u.id', 1)//toremove
+			// .limit(1)
 }
 
 exports.getIdFromSkills = () => {
