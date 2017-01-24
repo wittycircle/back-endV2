@@ -144,6 +144,10 @@ exports.test = () => {
 
 //	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
 
+exports.getSkills = (id) => {
+	return db.select('skill_name').from(TABLES.USER_SKILLS).where({user_id : id})
+}
+
 exports.cardProfile = () => {
 	// return db.count('f.follow_user_id as followers')//4
 			// .count('f.user_id as following')//5
@@ -151,11 +155,11 @@ exports.cardProfile = () => {
 					's.user_id', 'e.user_id',
 		'p.id', 'p.first_name', 'p.last_name', 'p.description',
 		'p.location_city', 'p.location_state', 'p.location_country',
-		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank'])
+		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank'])
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
 			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-			.join(TABLES.USER_EXPERIENCES + ' as e', 'u.id', 'e.user_id')
+			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
 			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
 			.join(TABLES.USER_FOLLOWERS + ' as f', function () {
 				this.on('f.follow_user_id', 'u.id')
@@ -163,9 +167,9 @@ exports.cardProfile = () => {
 			.where('p.description', '!=', 'NULL')
 			.andWhere('p.profile_picture', '!=', 'NULL')
 			.andWhere('p.fake', '=', '0')
-			.count('f.follow_user_id as followers')
-			.count('f.user_id as following')
 			.where('u.id', 1)//toremove
+			// .count('f.follow_user_id as followers')
+			// .count('f.user_id as following')
 			.limit(1)
 }
 
