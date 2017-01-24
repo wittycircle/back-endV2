@@ -19,5 +19,6 @@ exports.TABLES = {
     USER_EXPERIENCES: 'user_experiences',
     USER_FOLLOWERS: 'user_followers',
     ACCOUNT_VALIDATION: 'account_validation',
+    RANK: 'rank_of_the_day',
     FIRST_LOG: 'first_log'
 };

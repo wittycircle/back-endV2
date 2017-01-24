@@ -110,57 +110,63 @@ exports.getProfiles = () => {
 			.select()
 }
 
-
-// exports.test = () => {
-// 	// return db(TABLES.USERS).select('id', "count('id')")
-// 	return db.count('p.id as id')
-// 			.from( TABLES.USER_PROFILES)
-// 			.join(TABLES.USERS + ' as p', 'p.profile_id', 'profiles.id')//.on('p.profile_id', 'profiles.id')
-// 			// .from(TABLES.USERS)
-// }
+exports.test = () => {
+	// return db(TABLES.USERS).select('id', "count('id')")
+	return db.select()
+			.from(TABLES.USERS + ' as u')
+			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')//.on('p.profile_id', 'profiles.id')
+			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id' )//.on('p.profile_id', 'profiles.id')	
+			.join(TABLES.USER_EXPERIENCES + ' as e', 'e.user_id' , 's.user_id')
+			.limit(1)
+				// .from(TABLES.USERS)
+}
 //CARD PROFILE THING [maybe move to a card.js in models]
 //------------------------------------------------------
+//1     pool.query('SELECT user_id FROM user_skills WHERE user_id IN (SELECT user_id FROM user_experiences GROUP BY user_id)' +
+        // 'GROUP BY user_id',
 
-					// pool.query('SELECT count(*) as followers FROM user_followers
-					//  WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+//2     pool.query("SELECT id FROM profiles WHERE id IN (SELECT profile_id FROM users
+// WHERE id IN (" + arr + ")) && (DESCRIPTION != '' && DESCRIPTION is not null)",
 
+//3    pool.query('SELECT id, first_name, last_name, description, location_city, location_state, location_country, profile_picture,
+ // about, cover_picture_cards FROM `profiles` WHERE id IN (' + arr2 + ') && profile_picture is not null && fake = 0 ORDER BY rand()', 
 
-					        // pool.query('SELECT count(*) as following FROM user_followers 
-					        // WHERE user_id IN  (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+ //4 		pool.query('SELECT count(*) as followers FROM user_followers'+
+					// 'WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
 
+//5 		 pool.query('SELECT count(*) as following FROM user_followers WHERE user_id IN'+
+				         // '(SELECT id FROM users WHERE profile_id = ?)', data[index].id,
 
-    // pool.query('SELECT user_id FROM user_skills WHERE user_id IN (SELECT user_id FROM user_experiences GROUP BY user_id)' +
-    //     'GROUP BY user_id',
+//6   	pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
 
-// pool.query("SELECT id FROM profiles 
-// WHERE id IN (SELECT profile_id FROM users WHERE id IN (" + arr + ")) && (DESCRIPTION != '' && DESCRIPTION is not null)",
+//7						pool.query('SELECT skill_name FROM user_skills WHERE user_id IN'+
+					 // '(SELECT id FROM users WHERE profile_id = ?)', data[index].id,
 
-// pool.query('SELECT id, first_name, last_name, description, location_city, 
-// location_state, location_country, profile_picture, about, cover_picture_cards FROM `profiles` 
-// WHERE id IN (' + arr2 + ') && profile_picture is not null && fake = 0 ORDER BY rand()', 
+//	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
 
-// pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
-
-//pool.query('SELECT skill_name FROM user_skills WHERE user_id IN
-// (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-
-// pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',  row[0].id,
-// 
-
-exports.CardProfile = () => {
-	return db.count('follow.follow_user_id as followers')
-			.count('follow.user_id as following')
-			.distinct(['users.user_id', 'users.profiles_id',
-					'skills.user_id', 'experiences.user_id',
-		'profiles.id', 'profiles.first_name', 'profiles.last_name', 'profiles.description',
-		'profiles.location_city', 'profiles.location_state', 'profiles.location_country',
-		'profiles.profile_picture', 'profiles.about', 'profiles.cover_picture_cards'])
-			.from(TABLES.USERS).as('users')
-			.join(TABLES.USER_PROFILES).as('profiles')
-			.join(TABLES.USER_SKILLS).as('skills')
-			.join(TABLES.USER_EXPERIENCES, 'skills.user_id', 'experiences.user_id').as('experiences')
-			join(TABLES.USER_FOLLOWERS, 'follow.follow_user_id', 'users.id').as('follow')
+exports.cardProfile = () => {
+	// return db.count('f.follow_user_id as followers')//4
+			// .count('f.user_id as following')//5
+			return db.select(['u.id', 'u.profile_id',
+					's.user_id', 'e.user_id',
+		'p.id', 'p.first_name', 'p.last_name', 'p.description',
+		'p.location_city', 'p.location_state', 'p.location_country',
+		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank'])
+			.from(TABLES.USERS + ' as u')
+			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
+			.join(TABLES.USER_EXPERIENCES + ' as e', 'u.id', 'e.user_id')
+			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+			.join(TABLES.USER_FOLLOWERS + ' as f', function () {
+				this.on('f.follow_user_id', 'u.id')
+			})
+			.where('p.description', '!=', 'NULL')
+			.andWhere('p.profile_picture', '!=', 'NULL')
+			.andWhere('p.fake', '=', '0')
+			.count('f.follow_user_id as followers')
+			.count('f.user_id as following')
+			.where('u.id', 1)//toremove
+			.limit(1)
 }
 
 exports.getIdFromSkills = () => {

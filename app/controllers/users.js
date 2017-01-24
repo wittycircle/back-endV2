@@ -144,7 +144,7 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    user.test().then((r) => res.send(r))
+    user.cardProfile().then((r) => res.send(r))
     // user.getIdFromSkills()
     // .then((uid) => {
     //     let arr = uid.map(e => e.user_id)
