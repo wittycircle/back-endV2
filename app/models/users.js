@@ -170,6 +170,15 @@ return sub
 	// .groupBy('f.id')
 
 }
+exports.getCountFollowers = (id) => {
+	return db.countDistinct('f.id as followers')
+			.countDistinct('f2.id as following')
+			.from(TABLES.USERS + ' as u')
+			.join(TABLES.USER_FOLLOWERS + ' as f', 'f.user_id', 'u.id')
+			.join(TABLES.USER_FOLLOWERS + ' as f2', 'f2.follow_user_id', 'u.id')
+			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+			.where({'f.user_id': 1})
+}
 //have count separate as it slow down (200ms to 9000 ms)
 			// .count('f2.id as followers')
 			// .count('f.id as following')
@@ -177,23 +186,14 @@ return sub
 			// .join(TABLES.USER_FOLLOWERS + ' as f2','f2.follow_user_id', 'u.id')
 
 exports.cardProfile = () => {
-return db.select(['u.id', 's.user_id',
+return db.select(['u.id', 'u.username', 's.user_id',
 		's.user_id', 'e.user_id', 'p.username',
 		'p.id', 'p.first_name', 'p.last_name', 'p.description',
 		'p.location_city', 'p.location_state', 'p.location_country',
 		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank',
 		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills'),
-		 // db.raw('SELECT p.username')
-		 // db.raw('SELECT COUNT("*") FROM user_followers WHERE follow_user_id=1')
-		 	])//.countDistinct('f.id as follower').countDistinct('f2.id as following')
-//.count('*').from(TABLES.USER_FOLLOWERS).whereIn('user_username', 'u.id')
- //4 		pool.query('SELECT count(*) as followers FROM user_followers'+
-					// 'WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-			// .count('*').from(TABLES.USER_FOLLOWERS).where('follow_user_id', 1)
+		 	])
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_FOLLOWERS + ' as f', 'f.follow_user_id', 'u.id')
-			.join(TABLES.USER_FOLLOWERS + ' as f2', 'f2.user_id', 'u.id')
 			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
 			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
 			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
@@ -201,10 +201,10 @@ return db.select(['u.id', 's.user_id',
 			.where('p.description', '!=', 'NULL')
 			.andWhere('p.profile_picture', '!=', 'NULL')
 			.andWhere('p.fake', '=', '0')
-			// .limit(1)
 			// .andWhere('u.id', 1)
 			.groupBy('u.id')
 			.orderByRaw('RAND()')
+			.limit(3)
 }
 
 exports.getIdFromSkills = () => {

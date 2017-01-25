@@ -144,15 +144,31 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    user.getSkills()
+    user.getCountFollowers(1)
     .then((r) => {
+        return user.getCountFollowers(0)
+
         res.send(r)
-    //    user.getSkills(r[0].id)
-    //    .then((rr) => {
-    //         r[0].skills = rr
-    //         res.send(r) 
-    // })
+        // console.log(r)
+        //             user.getCountFollowers(r[i].id)
+        //     .then((e) => {
+        //         r[i].followers = e[0].followers
+        //         r[i].following = e[0].following
+        //         console.log(r)
+        //         rec(i + 1)
+            // })
+                // r.forEach( function(element, index) {
+        //   user.getCountFollowers(element.id)
+        //     .then((e) => {
+        //         console.log("e is ", e[0].followers)
+        //         r[index].follower = e[0].followers
+        //         r[index].following = e[0].following
+        //         return r
+        //     }).then((r) => res.send(r))
+        // })
     })
+}
+
         
     // user.getIdFromSkills()
     // .then((uid) => {
@@ -173,6 +189,5 @@ exports.getCardProfile = (req, res) => {
     //         })
     //     })
     // })
-}
 
 // //===****==
