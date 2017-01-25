@@ -145,29 +145,13 @@ exports.test = () => {
 //	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
 
 exports.getSkills = () => {
-	let sub = db.distinct('id', 'users.id')//, 'user_id')
-			.count('* as total')
-			.from(db.distinct('id')
-				.from(TABLES.USERS))
-				// )
+	let ssu = db.distinct('id', 'user_id').countDistinct('id as total')
+	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
+	let sub = db.distinct('users.id', 'total')//, 'user_id')
+			.from(TABLES.USERS)
+			.join(ssu, 'ssu.user_id', 'users.id')
 return sub
-// 	return db
-// 	.select('u.id')
-// 	// .countDistinct('f2.user_id as followers')
-// 	// .countDistinct('f.id as following')
-// 	.from(TABLES.USERS + ' as u')
-// 	.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
-// 	// .leftJoin(TABLES.USER_FOLLOWERS + ' as f', function() {
-// 	// 	this.on('u.id', 'f.user_id')
-// 	// 	// this.andOn('u.id', 'f.user_id')	
-// 	// })
-// 	.join(sub, 'user_followers.user_id', 'u.id')
-// 	// .leftJoin(TABLES.USER_FOLLOWERS + ' as f2', function() {
-// 	// 	this.on('u.id', 'f2.follow_user_id')
-// 	// 	// this.andOn('u.id', 'f2.user_id')	
-// 	// })
-// .where('u.id', 1)//.limit(1)
-	// .groupBy('f.id')
+	// return ssu
 
 }
 exports.getCountFollowers = (id) => {

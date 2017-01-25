@@ -144,10 +144,12 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    user.getCountFollowers(1)
+    user.getSkills()
     .then((r) => {
-        return user.getCountFollowers(0)
-
+        // return user.getCountFollowers(0)
+                // .then((e) => {
+                //     r[]
+                // })
         res.send(r)
         // console.log(r)
         //             user.getCountFollowers(r[i].id)
