@@ -144,7 +144,7 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    user.getSkills()
+    user.cardProfile()
     .then((r) => {
         // return user.getCountFollowers(0)
                 // .then((e) => {
