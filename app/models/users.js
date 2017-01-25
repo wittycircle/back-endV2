@@ -110,82 +110,16 @@ exports.getUser = (id) => {
 	    .join(TABLES.USER_PROFILES, 'users.profile_id', 'profiles.id')
 }
 
-exports.test = () => {
-	// return db(TABLES.USERS).select('id', "count('id')")
-	return db.select()
-			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')//.on('p.profile_id', 'profiles.id')
-			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id' )//.on('p.profile_id', 'profiles.id')	
-			.join(TABLES.USER_EXPERIENCES + ' as e', 'e.user_id' , 's.user_id')
-			.limit(1)
-				// .from(TABLES.USERS)
-}
-//CARD PROFILE THING [maybe move to a card.js in models]
-//------------------------------------------------------
-//1     pool.query('SELECT user_id FROM user_skills WHERE user_id IN (SELECT user_id FROM user_experiences GROUP BY user_id)' +
-        // 'GROUP BY user_id',
-
-//2     pool.query("SELECT id FROM profiles WHERE id IN (SELECT profile_id FROM users
-// WHERE id IN (" + arr + ")) && (DESCRIPTION != '' && DESCRIPTION is not null)",
-
-//3    pool.query('SELECT id, first_name, last_name, description, location_city, location_state, location_country, profile_picture,
- // about, cover_picture_cards FROM `profiles` WHERE id IN (' + arr2 + ') && profile_picture is not null && fake = 0 ORDER BY rand()', 
-
- //4 		pool.query('SELECT count(*) as followers FROM user_followers'+
-					// 'WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-//5 		 pool.query('SELECT count(*) as following FROM user_followers 
-// WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-//6   	pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
-
-//7						pool.query('SELECT skill_name FROM user_skills WHERE user_id IN'+
-					 // '(SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-//	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
-
-exports.getSkills = () => {
-	let follower = db.distinct('id', 'user_id').countDistinct('id as total')
+	let follower = db.select('user_id').count('user_id as total')
 	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
 
-
-	let following = db.distinct('id', 'follow_user_id').countDistinct('id as MA')
+	let following = db.select('follow_user_id').count('follow_user_id as MA')
 	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
 
-
-	let sub = db.distinct('users.id', 'total', 'MA')//, 'user_id')
-			.from(TABLES.USERS)
-			.join(follower, 'ssu.user_id', 'users.id')
-			.join(following, 'su.follow_user_id', 'users.id')
-			.where('users.id', 1)
-return sub
-	// return ssu
-
-}
-exports.getCountFollowers = (id) => {
-	return db.countDistinct('f.id as followers')
-			.countDistinct('f2.id as following')
-			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_FOLLOWERS + ' as f', 'f.user_id', 'u.id')
-			.join(TABLES.USER_FOLLOWERS + ' as f2', 'f2.follow_user_id', 'u.id')
-			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
-			.where({'f.user_id': 1})
-}
-//have count separate as it slow down (200ms to 9000 ms)
-			// .count('f2.id as followers')
-			// .count('f.id as following')
-			// .join(TABLES.USER_FOLLOWERS + ' as f','f.user_id', 'u.id')
-			// .join(TABLES.USER_FOLLOWERS + ' as f2','f2.follow_user_id', 'u.id')
+	let exp = db.select('user_id')
+		.from(TABLES.USER_EXPERIENCES).as('e')
 
 exports.cardProfile = () => {
-// db.raw('SELECT id, user_id ')
-		let follower = db.select('id', 'user_id').count('user_id as total')
-	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
-
-
-	let following = db.select('id', 'follow_user_id').count('follow_user_id as MA')
-	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
-
 return db.select(['u.id', 'u.username', 's.user_id',
 		's.user_id', 'e.user_id', 'p.username',
 		'p.id', 'p.first_name', 'p.last_name', 'p.description',
@@ -195,20 +129,19 @@ return db.select(['u.id', 'u.username', 's.user_id',
 		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills'),
 		 	])
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+			.join(TABLES.USER_PROFILES + ' as p', function () {
+				this.on('p.id', 'u.profile_id')
+				this.andOn('p.fake', '=', 0)
+			})
 			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
+			.join(exp, 's.user_id', 'e.user_id')
 			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
 			.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
 			.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
-
 			.where('p.description', '!=', 'NULL')
-			.andWhere('p.profile_picture', '!=', 'NULL')
-			.andWhere('p.fake', '=', '0')
-			// .andWhere('u.id', 1)
+			.where('p.profile_picture', '!=', 'NULL')
 			.groupBy('u.id')
 			.orderByRaw('RAND()')
-			// .limit(3)
 }
 
 exports.getIdFromSkills = () => {
