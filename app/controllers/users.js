@@ -144,7 +144,7 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    user.cardProfile()
+    user.getSkills()
     .then((r) => {
         res.send(r)
     //    user.getSkills(r[0].id)

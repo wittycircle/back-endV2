@@ -145,7 +145,20 @@ exports.test = () => {
 //	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
 
 exports.getSkills = (id) => {
-	return db.select('skill_name').from(TABLES.USER_SKILLS).where({user_id : id})
+	let sub = db.select('id', 'user_id').count('* as total')
+	.from(TABLES.USER_FOLLOWERS + ' as f')
+	.where('f.user_id', 1)
+	.as('f')
+	return db
+	.select('users.id', 'f.total')
+	.from(TABLES.USERS)
+	.join(TABLES.USER_PROFILES + ' as p', 'users.id', 'p.id')
+	.leftOuterJoin(sub, 'f.user_id', 'users.id')
+	.join(TABLES.USER_FOLLOWERS + ' as f2', function() {
+		this.on('users.id', 'f2.follow_user_id')
+		this.andOn('users.id', 'p.id')
+	}).where('users.id', 1).limit(1)
+
 }
 //have count separate as it slow down (200ms to 9000 ms)
 			// .count('f2.id as followers')
@@ -159,8 +172,18 @@ return db.select(['u.id', 's.user_id',
 		'p.id', 'p.first_name', 'p.last_name', 'p.description',
 		'p.location_city', 'p.location_state', 'p.location_country',
 		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank',
-		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills')])
+		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills'),
+		 // db.raw('SELECT p.username')
+		 // db.raw('SELECT COUNT("*") FROM user_followers WHERE follow_user_id=1')
+		 	])//.countDistinct('f.id as follower').countDistinct('f2.id as following')
+//.count('*').from(TABLES.USER_FOLLOWERS).whereIn('user_username', 'u.id')
+ //4 		pool.query('SELECT count(*) as followers FROM user_followers'+
+					// 'WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+
+			// .count('*').from(TABLES.USER_FOLLOWERS).where('follow_user_id', 1)
 			.from(TABLES.USERS + ' as u')
+			.join(TABLES.USER_FOLLOWERS + ' as f', 'f.follow_user_id', 'u.id')
+			.join(TABLES.USER_FOLLOWERS + ' as f2', 'f2.user_id', 'u.id')
 			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
 			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
 			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
@@ -168,11 +191,10 @@ return db.select(['u.id', 's.user_id',
 			.where('p.description', '!=', 'NULL')
 			.andWhere('p.profile_picture', '!=', 'NULL')
 			.andWhere('p.fake', '=', '0')
+			// .limit(1)
+			// .andWhere('u.id', 1)
 			.groupBy('u.id')
 			.orderByRaw('RAND()')
-			// .db.raw()
-			// .orderBy('RAND()')
-			// .limit(1)
 }
 
 exports.getIdFromSkills = () => {
