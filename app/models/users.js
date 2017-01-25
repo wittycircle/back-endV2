@@ -121,15 +121,15 @@ exports.getUser = (id) => {
 // pool.query('SELECT skill_name FROM user_skills WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
 // pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?', row[0].id,
 
-let sortCardProfile = () => {
+const sortCardProfile = () => {
 	let follower = db.select('user_id').count('user_id as total')
 	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
 
 	let following = db.select('follow_user_id').count('follow_user_id as MA')
 	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
 
-	return db.select(['r.rank as myRank', 'u.id', 'u.username',
-		 db.raw('IFNULL(total, 0) as following'), db.raw('IFNULL (MA, 0) as follower'),
+	return db.select(['r.rank as myRank', 'u.id', 'u.username', 's.user_id',
+		 db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
 		 db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
 		.from(TABLES.USERS + ' as u')
 		.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
@@ -137,7 +137,6 @@ let sortCardProfile = () => {
 		.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
 		.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
 		.groupBy('u.id')
-		.orderByRaw('RAND()')
 
 }	
 
@@ -154,34 +153,7 @@ return db.select(['sort.*', 'p.description', 'p.id', 'p.first_name', 'p.last_nam
 			.from(TABLES.USERS + ' as u')
 			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
 			.join(sort, 'sort.id', 'u.id')
-			.where('p.description', '!=', 'NULL')
-			.andWhere('p.profile_picture', '!=', 'NULL')
-			.andWhere('p.fake', '=', '0')
-}
-
-exports.savesave = () => {
-		let follower = db.select('id', 'user_id').count('user_id as total')
-	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
-
-
-	let following = db.select('id', 'follow_user_id').count('follow_user_id as MA')
-	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
-
-return db.select(['u.id', 'u.username', 's.user_id',
-		's.user_id', 'e.user_id', 'p.username',
-		'p.id', 'p.first_name', 'p.last_name', 'p.description',
-		'p.location_city', 'p.location_state', 'p.location_country',
-		'p.profile_picture', 'p.about', 'p.cover_picture_cards', 'r.rank as myRank', 
-		db.raw('IFNULL(total, 0) as following'), db.raw('IFNULL (MA, 0) as follower'),
-		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills'),
-		 	])
-			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
-			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
-			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
-			.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
-			.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
+			.join(exp, 'e.user_id', 'sort.user_id')
 			.where('p.description', '!=', 'NULL')
 			.andWhere('p.profile_picture', '!=', 'NULL')
 			.andWhere('p.fake', '=', '0')
