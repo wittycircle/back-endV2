@@ -128,42 +128,36 @@ let sortCardProfile = () => {
 	let following = db.select('follow_user_id').count('follow_user_id as MA')
 	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
 
-	return db.select(['r.rank as myRank',
+	return db.select(['r.rank as myRank', 'u.id', 'u.username',
 		 db.raw('IFNULL(total, 0) as following'), db.raw('IFNULL (MA, 0) as follower'),
-		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills') ])
+		 db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
 		.from(TABLES.USERS + ' as u')
-		.join(TABLES.USER_PROFILES + ' as p', function () {
-				this.on('p.id', 'u.profile_id')
-				this.andOn('p.fake', '=', 0)
-			})
 		.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
 		.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
 		.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
 		.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
-		.where('p.description', '!=', 'NULL')
-		.where('p.profile_picture', '!=', 'NULL')
 		.groupBy('u.id')
 		.orderByRaw('RAND()')
 
-}
-// select(r.*) from first request then have a sortcard thing where you select the subquery.* resulting table plus the other shit
-//OR export sortcard, and then do first query, and pass res to sort
+}	
+
 exports.cardProfile = () => {
 	let exp = db.select('user_id')
 		.from(TABLES.USER_EXPERIENCES).as('e')
 
-	let sort = sortCardProfile([1, 2, 3]).as('sort')
+	let sort = sortCardProfile().as('sort')
 
-return db.select(['sort.*'])
-			.from(sort)
-			// .join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-			// .join(exp, 's.user_id', 'e.user_id')
-
+return db.select(['sort.*', 'p.description', 'p.id', 'p.first_name', 'p.last_name', 'p.description',
+		'p.location_city', 'p.location_state', 'p.location_country',
+		'p.profile_picture', 'p.about', 'p.cover_picture_cards',
+			])
+			.from(TABLES.USERS + ' as u')
+			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
+			.join(sort, 'sort.id', 'u.id')
+			.where('p.description', '!=', 'NULL')
+			.andWhere('p.profile_picture', '!=', 'NULL')
+			.andWhere('p.fake', '=', '0')
 }
-        // pool.query('SELECT id, first_name, last_name, description, location_city,
-        //  location_state, location_country, profile_picture, about,
-        //   cover_picture_cards FROM `profiles` 
-        //   WHERE id NOT IN (' + arr + ') && profile_picture is not null && fake = 0 ORDER BY rand() LIMIT 100', 
 
 exports.savesave = () => {
 		let follower = db.select('id', 'user_id').count('user_id as total')

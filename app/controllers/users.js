@@ -144,8 +144,8 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    // user.cardProfile()
-    user.savesave().limit(2)
+    user.cardProfile()
+    // user.savesave()
     .then((r) => {
         res.send(r)
     }).catch(err => {console.error(err)})
