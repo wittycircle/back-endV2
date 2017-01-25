@@ -144,20 +144,30 @@ exports.test = () => {
 
 //	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
 
-exports.getSkills = (id) => {
-	let sub = db.select('id', 'user_id').count('* as total')
-	.from(TABLES.USER_FOLLOWERS + ' as f')
-	.where('f.user_id', 1)
-	.as('f')
-	return db
-	.select('users.id', 'f.total')
-	.from(TABLES.USERS)
-	.join(TABLES.USER_PROFILES + ' as p', 'users.id', 'p.id')
-	.leftOuterJoin(sub, 'f.user_id', 'users.id')
-	.join(TABLES.USER_FOLLOWERS + ' as f2', function() {
-		this.on('users.id', 'f2.follow_user_id')
-		this.andOn('users.id', 'p.id')
-	}).where('users.id', 1).limit(1)
+exports.getSkills = () => {
+	let sub = db.distinct('id', 'users.id')//, 'user_id')
+			.count('* as total')
+			.from(db.distinct('id')
+				.from(TABLES.USERS))
+				// )
+return sub
+// 	return db
+// 	.select('u.id')
+// 	// .countDistinct('f2.user_id as followers')
+// 	// .countDistinct('f.id as following')
+// 	.from(TABLES.USERS + ' as u')
+// 	.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
+// 	// .leftJoin(TABLES.USER_FOLLOWERS + ' as f', function() {
+// 	// 	this.on('u.id', 'f.user_id')
+// 	// 	// this.andOn('u.id', 'f.user_id')	
+// 	// })
+// 	.join(sub, 'user_followers.user_id', 'u.id')
+// 	// .leftJoin(TABLES.USER_FOLLOWERS + ' as f2', function() {
+// 	// 	this.on('u.id', 'f2.follow_user_id')
+// 	// 	// this.andOn('u.id', 'f2.user_id')	
+// 	// })
+// .where('u.id', 1)//.limit(1)
+	// .groupBy('f.id')
 
 }
 //have count separate as it slow down (200ms to 9000 ms)
