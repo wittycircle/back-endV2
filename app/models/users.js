@@ -145,11 +145,15 @@ exports.test = () => {
 //	8						pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?',
 
 exports.getSkills = () => {
-	let ssu = db.distinct('id', 'user_id').countDistinct('id as total')
+	let follower = db.distinct('id', 'user_id').countDistinct('id as total')
 	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
-	let sub = db.distinct('users.id', 'total')//, 'user_id')
+
+	let following = db.distinct('id', 'follow_user_id').countDistint('id as MA')
+		.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
+	let sub = db.distinct('users.id', 'total', 'MA')//, 'user_id')
 			.from(TABLES.USERS)
-			.join(ssu, 'ssu.user_id', 'users.id')
+			.join(follower, 'ssu.user_id', 'users.id')
+			.join(following, 'su.follow_user_id', 'users.id')
 return sub
 	// return ssu
 
