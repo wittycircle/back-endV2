@@ -144,52 +144,42 @@ exports.getUser = (req, res) => { //Unused as of now
 }
 
 exports.getCardProfile = (req, res) => {
-    user.cardProfile()
+    // user.cardProfile()
+    user.savesave().limit(2)
     .then((r) => {
-        // return user.getCountFollowers(0)
-                // .then((e) => {
-                //     r[]
-                // })
         res.send(r)
-        // console.log(r)
-        //             user.getCountFollowers(r[i].id)
-        //     .then((e) => {
-        //         r[i].followers = e[0].followers
-        //         r[i].following = e[0].following
-        //         console.log(r)
-        //         rec(i + 1)
-            // })
-                // r.forEach( function(element, index) {
-        //   user.getCountFollowers(element.id)
-        //     .then((e) => {
-        //         console.log("e is ", e[0].followers)
-        //         r[index].follower = e[0].followers
-        //         r[index].following = e[0].following
-        //         return r
-        //     }).then((r) => res.send(r))
-        // })
-    })
+    }).catch(err => {console.error(err)})
 }
 
-        
-    // user.getIdFromSkills()
-    // .then((uid) => {
-    //     let arr = uid.map(e => e.user_id)
-    //     user.getIdFromProfiles(arr)
-    //     .then((r) => {
-    //         let arr2 = r.map(e => e.id)
-    //         user.getInfoFromProfile(arr2)
-    //         .then((info) => {
-    //             pf.sortCardProfile(info, (array) => {
-    //                 if (array[0]) {
-    //                     res.send({success: true, data: array})
-    //                 }
-    //                 else{
-    //                     res.send({success: false})
-    //                 }
-    //             })
-    //         })
-    //     })
-    // })
 
-// //===****==
+exports.getCardProfilePlus = (req, res) => {
+    if (req.body[0]) {
+        let arr = req.body.map(e => e.id)
+        user.cardProfilePlus(arr)
+            .then((r) => {
+                res.send(r)
+            }).catch(err => {console.error(err)})
+    }
+}
+
+// exports.getCardProfilePlus = function(req, res) {
+
+//     if (req.body[0]) {
+//         var arr = req.body.map(function(el) { return el.id});
+//         pool.query('SELECT id, first_name, last_name, description, location_city,
+//          location_state, location_country, profile_picture, about,
+//           cover_picture_cards FROM `profiles` 
+//           WHERE id NOT IN (' + arr + ') && profile_picture is not null && fake = 0 ORDER BY rand() LIMIT 100', 
+//             function (err, result) {
+//                 if (err) throw (err);
+//                 pf.sortCardProfile(result, function(array) {
+//                     var newArray = req.body.concat(array); // ??
+//                     return res.send({success: true, data: newArray});
+//                 });
+//             });
+//     } else
+//         return res.status(400).send("Error data!");
+// };
+
+
+//=-----------

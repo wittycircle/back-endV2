@@ -110,16 +110,69 @@ exports.getUser = (id) => {
 	    .join(TABLES.USER_PROFILES, 'users.profile_id', 'profiles.id')
 }
 
+
+
+// common from sortcard
+// pool.query('SELECT count(*) as followers FROM user_followers
+ // WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+
+// pool.query('SELECT count(*) as following FROM user_followers WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+// pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
+// pool.query('SELECT skill_name FROM user_skills WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
+// pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?', row[0].id,
+
+let sortCardProfile = () => {
 	let follower = db.select('user_id').count('user_id as total')
 	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
 
 	let following = db.select('follow_user_id').count('follow_user_id as MA')
 	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
 
+	return db.select(['r.rank as myRank',
+		 db.raw('IFNULL(total, 0) as following'), db.raw('IFNULL (MA, 0) as follower'),
+		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills') ])
+		.from(TABLES.USERS + ' as u')
+		.join(TABLES.USER_PROFILES + ' as p', function () {
+				this.on('p.id', 'u.profile_id')
+				this.andOn('p.fake', '=', 0)
+			})
+		.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
+		.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+		.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
+		.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
+		.where('p.description', '!=', 'NULL')
+		.where('p.profile_picture', '!=', 'NULL')
+		.groupBy('u.id')
+		.orderByRaw('RAND()')
+
+}
+// select(r.*) from first request then have a sortcard thing where you select the subquery.* resulting table plus the other shit
+//OR export sortcard, and then do first query, and pass res to sort
+exports.cardProfile = () => {
 	let exp = db.select('user_id')
 		.from(TABLES.USER_EXPERIENCES).as('e')
 
-exports.cardProfile = () => {
+	let sort = sortCardProfile([1, 2, 3]).as('sort')
+
+return db.select(['sort.*'])
+			.from(sort)
+			// .join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
+			// .join(exp, 's.user_id', 'e.user_id')
+
+}
+        // pool.query('SELECT id, first_name, last_name, description, location_city,
+        //  location_state, location_country, profile_picture, about,
+        //   cover_picture_cards FROM `profiles` 
+        //   WHERE id NOT IN (' + arr + ') && profile_picture is not null && fake = 0 ORDER BY rand() LIMIT 100', 
+
+exports.savesave = () => {
+		let follower = db.select('id', 'user_id').count('user_id as total')
+	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
+
+
+	let following = db.select('id', 'follow_user_id').count('follow_user_id as MA')
+	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
+
 return db.select(['u.id', 'u.username', 's.user_id',
 		's.user_id', 'e.user_id', 'p.username',
 		'p.id', 'p.first_name', 'p.last_name', 'p.description',
@@ -129,50 +182,29 @@ return db.select(['u.id', 'u.username', 's.user_id',
 		 db.raw('GROUP_CONCAT(DISTINCT skill_name ) as skills'),
 		 	])
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_PROFILES + ' as p', function () {
-				this.on('p.id', 'u.profile_id')
-				this.andOn('p.fake', '=', 0)
-			})
+			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
 			.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-			.join(exp, 's.user_id', 'e.user_id')
+			.join(TABLES.USER_EXPERIENCES + ' as e', 's.user_id', 'e.user_id')
 			.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
 			.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
 			.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
 			.where('p.description', '!=', 'NULL')
-			.where('p.profile_picture', '!=', 'NULL')
+			.andWhere('p.profile_picture', '!=', 'NULL')
+			.andWhere('p.fake', '=', '0')
 			.groupBy('u.id')
 			.orderByRaw('RAND()')
 }
 
-exports.getIdFromSkills = () => {
-	return db.select(['user_id'])
-			.from(TABLES.USER_SKILLS)
-			.whereIn('user_id', function() {
-				this.select(['user_id'])
-					.from(TABLES.USER_EXPERIENCES)
-					.groupBy('user_id')
-			}).groupBy('user_id')
-}
-
-exports.getIdFromProfiles = (arr) => {
-	return db.select(['id'])
-			.from(TABLES.USER_PROFILES)
-			.whereIn('id', function () {
-				this.select(['profile_id'])
-				.from(TABLES.USERS)
-				.whereIn('id', arr)
-				.andWhere('description', '!=', '')
-			})
-}
-
-exports.getInfoFromProfile = (arr) => {
+exports.cardProfilePlus = (arr) => {
 	return db.select(['id', 'first_name', 'last_name', 'description',
-		'location_city', 'location_state', 'location_country',
-		'profile_picture', 'about', 'cover_picture_cards'])
-		.from(TABLES.USER_PROFILES)
-		.whereIn('id', arr)
-		.andWhere('fake', '=', 0)
-		.andWhere('profile_picture', '!=', 'null')
+					'location_city', 'location_state', 'location_country',
+					'profile_picture', 'about', 'cover_picture_cards'])
+			.from(TABLES.USER_PROFILES)
+			.whereNotIn('id', [arr])
+			.andWhere('profile_picture', '!=', 'NULL')
+			.andWhere('fake = 0')
+			.orderByRaw('RAND()')
+			.limit(100)
 }
 //-------------
 
