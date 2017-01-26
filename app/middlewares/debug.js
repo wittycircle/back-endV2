@@ -4,8 +4,7 @@
 
 'use strict';
 
-const _ = require('lodash'),
-    BUFFER_SIZE = 4096;
+const _ = require('lodash');
 
 exports.resDebugger = (req, res, next) => {
     let oldWrite = res.write,
