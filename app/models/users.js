@@ -7,9 +7,34 @@
 
 const { db, TABLES } = require('./index');
 
-// const getProfileOfUser = (id) => {
-//     return db.from(TABLES.USER_PROFILES).where({id: id});
-// };
+//Helper for what is exported 
+const follower = db.select('user_id').count('user_id as total')
+.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
+
+const following = db.select('follow_user_id').count('follow_user_id as MA')
+.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
+
+const sortCardProfile = db.select(['u.id', 'u.username', 'u.profile_id',
+	 	's.user_id', 'r.rank as myRank', 
+		 db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
+		 db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
+		.from(TABLES.USERS + ' as u')
+		.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
+		.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+		.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
+		.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
+		.groupBy('u.id').as('sort')
+
+const profileStuff = db(TABLES.USER_PROFILES)
+			.select(['id', 'first_name', 'last_name', 'description',
+					'location_city', 'location_state', 'location_country',
+					'profile_picture', 'about', 'cover_picture_cards'])
+			.where('description', '!=', 'NULL')
+			.andWhere('profile_picture', '!=', 'NULL')
+			.andWhere('fake', '=', '0')
+ 			.as('p')
+
+// end helper
 
 exports.getUserShare = (id) => {
 	return db.select(['social_share'])
@@ -110,71 +135,60 @@ exports.getUser = (id) => {
 	    .join(TABLES.USER_PROFILES, 'users.profile_id', 'profiles.id')
 }
 
-
-
-// common from sortcard
-// pool.query('SELECT count(*) as followers FROM user_followers
- // WHERE follow_user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-
-// pool.query('SELECT count(*) as following FROM user_followers WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-// pool.query('SELECT id, username FROM users WHERE profile_id = ?', data[index].id,
-// pool.query('SELECT skill_name FROM user_skills WHERE user_id IN (SELECT id FROM users WHERE profile_id = ?)', data[index].id,
-// pool.query('SELECT rank FROM rank_of_the_day WHERE user_id = ?', row[0].id,
-
-const sortCardProfile = () => {
-	let follower = db.select('user_id').count('user_id as total')
-	.from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu')
-
-	let following = db.select('follow_user_id').count('follow_user_id as MA')
-	.from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su')
-
-	return db.select(['r.rank as myRank', 'u.id', 'u.username', 's.user_id',
-		 db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
-		 db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
-		.from(TABLES.USERS + ' as u')
-		.join(TABLES.USER_SKILLS + ' as s', 'u.id', 's.user_id')
-		.join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
-		.leftOuterJoin(follower, 'ssu.user_id', 'u.id')
-		.leftOuterJoin(following, 'su.follow_user_id', 'u.id')
-		.groupBy('u.id')
-
-}	
-
 exports.cardProfile = () => {
 	let exp = db.select('user_id')
 		.from(TABLES.USER_EXPERIENCES).as('e')
 
-	let sort = sortCardProfile().as('sort')
-
-return db.select(['sort.*', 'p.description', 'p.id', 'p.first_name', 'p.last_name', 'p.description',
-		'p.location_city', 'p.location_state', 'p.location_country',
-		'p.profile_picture', 'p.about', 'p.cover_picture_cards',
-			])
+return db.select(['sort.*', 'p.*'])
 			.from(TABLES.USERS + ' as u')
-			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
-			.join(sort, 'sort.id', 'u.id')
+			.join(profileStuff, 'u.profile_id', 'p.id')
+			.join(sortCardProfile, 'sort.id', 'u.id')
 			.join(exp, 'e.user_id', 'sort.user_id')
-			.where('p.description', '!=', 'NULL')
-			.andWhere('p.profile_picture', '!=', 'NULL')
-			.andWhere('p.fake', '=', '0')
 			.groupBy('u.id')
 			.orderByRaw('RAND()')
 }
 
-exports.cardProfilePlus = (arr) => {
-	return db.select(['id', 'first_name', 'last_name', 'description',
-					'location_city', 'location_state', 'location_country',
-					'profile_picture', 'about', 'cover_picture_cards'])
-			.from(TABLES.USER_PROFILES)
-			.whereNotIn('id', [arr])
-			.andWhere('profile_picture', '!=', 'NULL')
-			.andWhere('fake = 0')
+exports.cardProfileHome = (city, state, country) => {
+	return db.select(['sort.*', 'p.*'])
+			.from(sortCardProfile)
+			.join(profileStuff
+			.where('location_city', 'like', city)
+			.orWhere('location_state', 'like', '%' + state + '%')
+			.orWhere('location_country', 'like', '%' + country + '%')
+			, 'p.id', 'sort.profile_id')
+			.limit(4)
 			.orderByRaw('RAND()')
-			.limit(100)
 }
-//-------------
 
 exports.getUserByEmail = (email) => {
-    return db.select(['id', 'profile_id']).from(TABLES.USERS).where({email: email});
+	// Really need everything ? Seem unsafe
+	let sub = db.select('id', 'profile_id').from(TABLES.USERS).where('email', email).as('u')
+
+	return db.select('p.id as profile_id', 'p.*', 'u.id as id')
+			.from(sub)
+			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
 }
+
+exports.getUserByUsername = (username) => {
+	// Really need everything ? Seem unsafe
+	let sub = db.select('*').from(TABLES.USERS).where('username', username).as('u')
+
+	return db.select('u.*', 'p.*') // 
+			.from(sub)
+			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
+			.limit(1)
+}
+
+exports.updateProfileView = (username) => {
+	let sub = db.select('id', 'profile_id').from(TABLES.USERS).where('username', username).as('u')
+
+	return db
+		.from(TABLES.USER_PROFILES + ' as p')
+		.join(sub, 'u.profile_id', 'p.id')
+		.update('views', db.raw('views + 1'))
+}
+
+
+
+
 //===****==

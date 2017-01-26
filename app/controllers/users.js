@@ -5,8 +5,9 @@
 'use strict';
  //move to profile all related things to profile (using only table.users_profiles)
 
-const user = require('../models/users'),
-    home = 'http://localhost:3000';
+const   user = require('../models/users'),
+        geo = require('../utils/geolocation'),
+        home = 'http://localhost:3000';
     // pf = require('../utils/profile_functions');
 
 exports.getUserShare = (req, res) => {
@@ -145,41 +146,69 @@ exports.getUser = (req, res) => { //Unused as of now
 
 exports.getCardProfile = (req, res) => {
     user.cardProfile()
-    // user.savesave()
     .then((r) => {
         res.send(r)
     }).catch(err => {console.error(err)})
 }
 
+exports.getCardProfileHome = (req, res) => {
+    req.checkBody('ip', "error").isString();
 
-exports.getCardProfilePlus = (req, res) => {
-    if (req.body[0]) {
-        let arr = req.body.map(e => e.id)
-        user.cardProfilePlus(arr)
-            .then((r) => {
-                res.send(r)
-            }).catch(err => {console.error(err)})
+    const errors = req.validationErrors(true);
+    if (errors) {
+        return res.status(400).send(errors);
     }
+    geo.getLocation(req.body, function (city, state, country) {
+        console.log("INFO: ", city,  state, country)
+        user.cardProfileHome(city, state, country)
+        .then((r) => res.send(r))
+        .catch((err) => {console.error(err)})
+    })
 }
 
-// exports.getCardProfilePlus = function(req, res) {
+exports.getUserByEmail = (req, res) => {
+    req.checkParams('email', 'email parameter must be an integer.').isString().max(128).min(1);
 
-//     if (req.body[0]) {
-//         var arr = req.body.map(function(el) { return el.id});
-//         pool.query('SELECT id, first_name, last_name, description, location_city,
-//          location_state, location_country, profile_picture, about,
-//           cover_picture_cards FROM `profiles` 
-//           WHERE id NOT IN (' + arr + ') && profile_picture is not null && fake = 0 ORDER BY rand() LIMIT 100', 
-//             function (err, result) {
-//                 if (err) throw (err);
-//                 pf.sortCardProfile(result, function(array) {
-//                     var newArray = req.body.concat(array); // ??
-//                     return res.send({success: true, data: newArray});
-//                 });
-//             });
-//     } else
-//         return res.status(400).send("Error data!");
-// };
+    const errors = req.validationErrors(true);
+    if (errors){
+        return res.status(400).send(errors);
+    }
+    user.getUserByEmail(req.params.email)
+        .then((r) => {
+           if (r) res.send(r) 
+           else res.send({err: "Unknown email"})
+        })
+        .catch((e) => {console.error(e)})
+}
 
+
+exports.getUserbyUsername = (req, res) => {
+    req.checkParams('username', 'username must be a string.').isString().max(128).min(1);
+
+    const errors = req.validationErrors(true);
+    if (errors) {
+        return res.status(400).send(errors);
+    }
+    user.getUserByUsername(req.params.username)
+    .then((r) => {
+        if (r) res.send(r)
+        else res.send({err: "Unknown username"})
+    })
+    .catch((e) => {console.error(e)})
+}
+
+exports.updateProfileView = (req, res) => {
+    req.checkParams('username', 'username must be a string').isString().min(1).max(128);
+
+    const errors = req.validationErrors(true);
+    if (errors) return res.status(400).send(errors);
+        user.updateProfileView(req.params.username)
+        .then((r) => {
+            if (r) res.send({success: true})
+            else res.send({success: false, msg: "Unknown username"})
+        })
+        .catch((e) => {console.error(e)})
+
+}
 
 //=-----------

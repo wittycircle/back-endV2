@@ -14,6 +14,7 @@ router.param('user_id', function (req, res, next, user_id) {
     next();
 });
 
+//maybe add other route.param for username and stuff
 //add auth functions to [some] routes when they'll be done
 
 //Share
@@ -25,6 +26,18 @@ router.route('/user/:id')
 
 router.route('/user/card/profiles')
 	.get(users.getCardProfile)
+
+router.route('/user/card/profiles/home')
+	.post(users.getCardProfileHome)
+
+router.route('/user_email/:email')
+	.get(users.getUserByEmail)
+
+router.route('/username/:username')
+	.get(users.getUserbyUsername)
+
+router.route('/profiles/view/:username')
+	.put(users.updateProfileView)
 
 router.route('/user/checkLog/:user_id')
 	.get(users.checkFirstLog)
