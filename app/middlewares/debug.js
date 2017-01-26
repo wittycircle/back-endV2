@@ -4,7 +4,8 @@
 
 'use strict';
 
-const BUFFER_SIZE = 4096;
+const _ = require('lodash'),
+    BUFFER_SIZE = 4096;
 
 exports.resDebugger = (req, res, next) => {
     let oldWrite = res.write,
@@ -21,7 +22,10 @@ exports.resDebugger = (req, res, next) => {
         if (chunk)
             chunks.push(new Buffer(chunk));
         const body = Buffer.concat(chunks).toString('utf8');
-        console.log('%s %s %s', req.method, req.path, body.length > 4096 ? body.length + 'Response to big for terminal output' : ' ' + body);
+        console.log('%s %s %s', req.method, req.path, _.truncate(body, {
+            length: 512,
+            separator: ' '
+        }));
         oldEnd.apply(res, arguments);
     };
     next();
