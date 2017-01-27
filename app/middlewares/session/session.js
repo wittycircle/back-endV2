@@ -62,7 +62,7 @@ exports.createUserSession = (user, cb, optional) => {
  * Get user id for token
  */
 exports.getUser = (token, cb) => {
-    rs.set({
+    rs.get({
         app: rsapp,
         token: token
     }, cb)
@@ -75,7 +75,7 @@ exports.updateFromToken = (token, data, cb) => {
     rs.set({
         app: rsapp,
         token: token,
-        d: data
+        d: data || null
     }, cb)
 };
 
