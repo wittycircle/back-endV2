@@ -152,7 +152,7 @@ exports.cardProfileHome = (city, state, country) => {
 	return db.select(['sort.*', 'p.*'])
 			.from(sortCardProfile)
 			.join(profileStuff
-			.where('location_city', 'like', city)
+			.where('location_city', 'like','%' + city + '%')
 			.orWhere('location_state', 'like', '%' + state + '%')
 			.orWhere('location_country', 'like', '%' + country + '%')
 			, 'p.id', 'sort.profile_id')
@@ -182,13 +182,58 @@ exports.getUserByUsername = (username) => {
 exports.updateProfileView = (username) => {
 	let sub = db.select('id', 'profile_id').from(TABLES.USERS).where('username', username).as('u')
 
-	return db
-		.from(TABLES.USER_PROFILES + ' as p')
-		.join(sub, 'u.profile_id', 'p.id')
-		.update('views', db.raw('views + 1'))
+	return db.update('views', db.raw('views + 1'))
+			.from(TABLES.USER_PROFILES + ' as p')
+			.join(sub, 'u.profile_id', 'p.id')
 }
 
+exports.searchUser = (search) => {
+	//Really need everything from profile?
+	let sub = db.select('*').from(TABLES.USER_PROFILES)
+				.where('first_name', 'like', '%' + search +'%')
+				.orWhere('last_name', 'like', '%' + search +'%')
+				.as('p')
 
+	return db.select('p.*', 'u.id', 'u.profile_id')
+			.from(TABLES.USERS + ' as u')
+			.join(sub, 'p.id', 'u.profile_id')
+}
+//Create user stuff
+exports.getUserEmail = (email) => {
+	return db.select('id').from(TABLES.USERS)
+		.where('email', email)
+}
 
+exports.createProfile = (first, last) => {
+	return db(TABLES.USER_PROFILES)
+			.insert({'first_name' : first, 'last_name': last})
+}
+
+exports.insertUser = (profile_id, email, username, password) => {
+	return db(TABLES.USERS)
+		.insert({
+		'profile_id': profile_id,
+		'email': email,
+		'username': username,
+		'password': password
+	})
+}
+
+exports.updateProfile = (username, id) => {
+	return db(TABLES.USER_PROFILES)
+			.update({'username': username})
+			.where('id', id)
+}
+
+exports.updateInvitation = (email) => {
+	return db(TABLES.INVITATION)
+			.update({'status': 'registered'})
+			.where('invite_email', email)
+			.andWhere('status', 'pending')
+}
+
+// exports.createUser = () => {
+
+// }
 
 //===****==

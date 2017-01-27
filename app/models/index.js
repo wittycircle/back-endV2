@@ -20,5 +20,6 @@ exports.TABLES = {
     USER_FOLLOWERS: 'user_followers',
     ACCOUNT_VALIDATION: 'account_validation',
     RANK: 'rank_of_the_day',
+    INVITATION: 'invitation',
     FIRST_LOG: 'first_log'
 };

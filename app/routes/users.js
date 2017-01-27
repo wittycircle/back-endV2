@@ -39,6 +39,9 @@ router.route('/username/:username')
 router.route('/profiles/view/:username')
 	.put(users.updateProfileView)
 
+router.route('/users/search/:search') //Still used?
+	.get(users.searchUser)
+	
 router.route('/user/checkLog/:user_id')
 	.get(users.checkFirstLog)
 
