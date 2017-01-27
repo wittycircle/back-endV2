@@ -11,7 +11,7 @@ const auth = require('../controllers/auth'),
 
 let router = express.Router();
 
-router.route('/login')
+router.route('/auth/local')
     .post((req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
             if (err) return next(err);
@@ -26,7 +26,28 @@ router.route('/login')
         })(req, res, next);
     });
 
+router.route('/auth/google')
+    .post((req, res, next) => {
+        res.status(404).send({
+            error: 'unimplemented',
+            error_description: 'This authentification strategy is not implemented yet!'
+        })
+    });
+
+router.route('/auth/facebook')
+    .post((req, res, next) => {
+        res.status(404).send({
+            error: 'unimplemented',
+            error_description: 'This authentification strategy is not implemented yet!'
+        })
+    });
+
 router.route('/logout')
-    .get(auth.logout);
+    .post((req, res, next) => {
+        res.send({
+            error: 'unimplemented',
+            error_description: 'This authentificaation strategy is not implemented yet!'
+        })
+    });
 
 module.exports = router;
