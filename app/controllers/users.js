@@ -252,6 +252,10 @@ const getUsername = (first, last) => new Promise( (_res, _r) => {
     
 })
 
+let passwordThing = (password) => { // do salting and stuff?
+   return bcrypt.hashSync(req.body.password)
+}
+
 exports.createUser = (req, res) => {
     // const mandrill_client = new mandrill.Mandrill('XMOg7zwJZIT5Ty-_vrtqgA');
     /* Validate */
@@ -272,41 +276,23 @@ exports.createUser = (req, res) => {
     // req.sanitize('first_name').Clean(true);
     // req.sanitize('last_name').Clean(true);
 
-    // const errors = req.validationErrors(true);
-    // if (errors) { return res.status(400).send(errors) };
-    // user.getUserEmail(req.body.email)
-    // .then((exist) => {
-    //     if (exist.length){
-    //            res.send({sucess: false, msg: 'Email is already taken', exist: exist}); 
-    //        }
-    //     else {
-    //     // let firstName = "totoeg"
-            
-        // let lastName = "tatawegqeg"
-       // user.createProfile(firstName, lastName).then((profileId) =>  {
-
-    getUsername(req.body.first_name, req.body.last_name).then(({firstName, lastName, username}) =>{
-        res.send({a: "a", f: firstName, l: lastName, u: username})//, id: profileId[0]})
-        })
-
-   // })
-    //     }
-        
-    // })
-
-    // res.send({id: id})
-    // let id = user.createProfile(firstName, lastName).return()
-
-
-// 
-    // user.insertUser()
-                               // profile_id: result.insertId, //p.id
-                               // email: req.body.email,
-                               // username: username1[index], //??
-                               // password: bcrypt.hashSync(req.body.password)
-
-
-    // let user_id = user.getUserId().return()
-
-
+    const errors = req.validationErrors(true);
+    if (errors) { return res.status(400).send(errors) };
+    user.getUserEmail(req.body.email).then((exist) => {
+    if (exist.length) {
+           res.send({sucess: false, msg: 'Email is already taken', exist: exist}); 
+   } else {
+        getUsername(req.body.first_name, req.body.last_name)
+            .then(({firstName, lastName, username}) => {
+               user.createProfile(firstName, lastName).then((profileId) =>  {
+                let password = passwordThing(req.body.password)
+                user.createUser(profileId, req.body.email, username, password)
+                .then((result) => user.updateProfile.then(updateInvitation)
+                .then(res.send({success: true, result: result}))
+                )})
+             })
+        }
+     })
+        mailing.sendWelcomeMail();
+        mailing.sendValidateAccountMail();
 }
