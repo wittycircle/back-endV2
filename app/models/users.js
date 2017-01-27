@@ -182,7 +182,7 @@ exports.getUserByUsername = (username) => {
 exports.updateProfileView = (username) => {
 	let sub = db.select('id', 'profile_id').from(TABLES.USERS).where('username', username).as('u')
 
-	return db.update('views', db.raw('views + 1'))
+	return db.update({'views': db.raw('views + 1')}, ['id'])
 			.from(TABLES.USER_PROFILES + ' as p')
 			.join(sub, 'u.profile_id', 'p.id')
 }
@@ -209,7 +209,12 @@ exports.createProfile = (first, last) => {
 			.insert({'first_name' : first, 'last_name': last})
 }
 
-exports.insertUser = (profile_id, email, username, password) => {
+exports.checkUsername = (username) => {
+	return db(TABLES.USERS)
+			.select('id')
+			.where('username', username)
+}
+exports.createUser = (profile_id, email, username, password) => {
 	return db(TABLES.USERS)
 		.insert({
 		'profile_id': profile_id,

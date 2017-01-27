@@ -17,7 +17,10 @@ router.param('user_id', function (req, res, next, user_id) {
 //maybe add other route.param for username and stuff
 //add auth functions to [some] routes when they'll be done
 
-//Share
+
+router.route('/test')
+	.post(users.createUser)
+
 router.route('/users')
 	.get(users.getUsers);
 
@@ -41,7 +44,7 @@ router.route('/profiles/view/:username')
 
 router.route('/users/search/:search') //Still used?
 	.get(users.searchUser)
-	
+
 router.route('/user/checkLog/:user_id')
 	.get(users.checkFirstLog)
 
@@ -53,7 +56,7 @@ router.route('/share/:user_id')
 	.put(users.updateUserShare);
 
 
-// router.route('/user/:user_id')
+// router.route('/user/:user_id') // Still used?
 //     .get(users.getUser); // + hasAccess
 
 router.route('/user/valid/:token')

@@ -205,7 +205,7 @@ exports.updateProfileView = (req, res) => {
     if (errors) return res.status(400).send(errors);
         user.updateProfileView(req.params.username)
         .then((r) => {
-            if (r) { res.send({success: true}) }
+            if (r) { res.send({success: true, toto: r.insertId, tata: "id: " + id}) }
             else { res.send({success: false, msg: "Unknown username"}) }
         })
         .catch((e) => {console.error(e)})
@@ -227,56 +227,86 @@ exports.searchUser = (req, res) => {
     })
 }
 
-const getUsername = (first, last) => {
-    let username = [];
+const getUsername = (first, last) => new Promise( (_res, _r) => {
+    let username;
+    let a_username = [];
     let firstName = first.replace(/\s+/g, '');
     let lastName = last.replace(/\s+/g, '');
     for (let i = firstName.length; i > 0; i--) {
-        username.push(firstName.slice(0, i) + '.' + lastName);
+        a_username.push(firstName.slice(0, i) + '.' + lastName);
     };
     for (let i = lastName.length - 1; i > 0; i--) {
-        username.push(firstName + '.' + lastName.slice(0, i));
+        a_username.push(firstName + '.' + lastName.slice(0, i));
     }
-    return ({'first': firstName, 'last': lastName, 'username': username})
-}
+
+    let p_arr = [];  
+    for (let i = 0; i < a_username.length; i++){
+        p_arr.push(user.checkUsername(a_username[i]).then((r) => 
+            r.length ? firstName + '.' + lastName + Math.floor((Math.random() * 10000) + 1) : a_username[i]))
+        }
+        console.log("ARRAY: ", p_arr[0])
+    Promise.all(p_arr).then((e) => { 
+        e.forEach((e) => console.log("foreach:", e))
+    console.log("final")
+        _res ({firstName, lastName,  username: e[0]}) })
+    
+})
 
 exports.createUser = (req, res) => {
-    const mandrill_client = new mandrill.Mandrill('XMOg7zwJZIT5Ty-_vrtqgA');
+    // const mandrill_client = new mandrill.Mandrill('XMOg7zwJZIT5Ty-_vrtqgA');
     /* Validate */
-    req.checkBody('email', 'E-Mail is already in used.').isUnique('email');
-    req.checkBody('email', 'E-Mail is not valid.').isString().isEmail().min(2).max(64);
-    req.checkBody('password', 'Password must be between 5 and 32 characters.').isString().min(5).max(32);
-    req.checkBody('first_name', 'First Name must be between 1 and 64 characters.').isString().min(1).max(64);
-    req.checkBody('last_name', 'Last Name must be between 1 and 64 characters.').isString().min(1).max(64);
+    req.body.email = "raphael@wefittycircle.com"
+    req.body.password = "tototatatutu"
+    req.body.first_name = "tatwega"
+    req.body.last_name = "tototutu"
 
-    /* Sanitize */
-    req.sanitize('email').Clean();
-    req.sanitize('password').trim();
-    req.sanitize('first_name').Clean(true);
-    req.sanitize('last_name').Clean(true);
+    // req.checkBody('email', 'E-Mail is already in used.').isUnique('email');
+    // req.checkBody('email', 'E-Mail is not valid.').isString().isEmail().min(2).max(64);
+    // req.checkBody('password', 'Password must be between 5 and 32 characters.').isString().min(5).max(32);
+    // req.checkBody('first_name', 'First Name must be between 1 and 64 characters.').isString().min(1).max(64);
+    // req.checkBody('last_name', 'Last Name must be between 1 and 64 characters.').isString().min(1).max(64);
 
-    const errors = req.validationErrors(true);
-    if (errors) { return res.status(400).send(errors) };
+    // /* Sanitize */
+    // req.sanitize('email').Clean();
+    // req.sanitize('password').trim();
+    // req.sanitize('first_name').Clean(true);
+    // req.sanitize('last_name').Clean(true);
 
-    let {firstName, lastName, username} = getUsername(req.body.first_name, req.body.last_name)
+    // const errors = req.validationErrors(true);
+    // if (errors) { return res.status(400).send(errors) };
+    // user.getUserEmail(req.body.email)
+    // .then((exist) => {
+    //     if (exist.length){
+    //            res.send({sucess: false, msg: 'Email is already taken', exist: exist}); 
+    //        }
+    //     else {
+    //     // let firstName = "totoeg"
+            
+        // let lastName = "tatawegqeg"
+       // user.createProfile(firstName, lastName).then((profileId) =>  {
 
-    let user_exist = user.getUserEmail(req.body.email).return()
-    if (user_exist){
-           res.send({sucess: false, msg: 'Email is already taken'}); 
-       }
+    getUsername(req.body.first_name, req.body.last_name).then(({firstName, lastName, username}) =>{
+        res.send({a: "a", f: firstName, l: lastName, u: username})//, id: profileId[0]})
+        })
+
+   // })
+    //     }
+        
+    // })
+
+    // res.send({id: id})
+    // let id = user.createProfile(firstName, lastName).return()
+
+
+// 
+    // user.insertUser()
+                               // profile_id: result.insertId, //p.id
+                               // email: req.body.email,
+                               // username: username1[index], //??
+                               // password: bcrypt.hashSync(req.body.password)
+
+
     // let user_id = user.getUserId().return()
 
-
-    // mailing.sendWelcomeMail();
-    // mailing.sendValidateAccountMail();
-
-               // function checkUsername(value, callback) {
-               //     pool.query('SELECT `id`  FROM `users` WHERE `username` = ?', [value], function(err, result){
-               //     if (err) {
-               //         throw err;
-               //     }
-               //     return callback(result);
-               //     });
-               // };
 
 }
