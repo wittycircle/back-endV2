@@ -253,16 +253,17 @@ const getUsername = (first, last) => new Promise( (_res, _r) => {
 })
 
 let passwordThing = (password) => { // do salting and stuff?
-   return bcrypt.hashSync(req.body.password)
+   // return bcrypt.hashSync(req.body.password)
+   return (password)
 }
 
 exports.createUser = (req, res) => {
     // const mandrill_client = new mandrill.Mandrill('XMOg7zwJZIT5Ty-_vrtqgA');
     /* Validate */
-    req.body.email = "raphael@wefittycircle.com"
-    req.body.password = "tototatatutu"
-    req.body.first_name = "tatwega"
-    req.body.last_name = "tototutu"
+    // req.body.email = "raphael@wefittycircle.com"
+    // req.body.password = "tototatatutu"
+    // req.body.first_name = "tatwega"
+    // req.body.last_name = "tototutu"
 
     // req.checkBody('email', 'E-Mail is already in used.').isUnique('email');
     // req.checkBody('email', 'E-Mail is not valid.').isString().isEmail().min(2).max(64);
@@ -287,12 +288,12 @@ exports.createUser = (req, res) => {
                user.createProfile(firstName, lastName).then((profileId) =>  {
                 let password = passwordThing(req.body.password)
                 user.createUser(profileId, req.body.email, username, password)
-                .then((result) => user.updateProfile.then(updateInvitation)
-                .then(res.send({success: true, result: result}))
+                .then(user.updateProfile().then(user.updateInvitation)
+                .then(res.send({success: true, result: "created"}))
                 )})
              })
         }
      })
-        mailing.sendWelcomeMail();
-        mailing.sendValidateAccountMail();
+        // mailing.sendWelcomeMail();
+        // mailing.sendValidateAccountMail();
 }

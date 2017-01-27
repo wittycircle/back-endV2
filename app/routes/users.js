@@ -17,12 +17,9 @@ router.param('user_id', function (req, res, next, user_id) {
 //maybe add other route.param for username and stuff
 //add auth functions to [some] routes when they'll be done
 
-
-router.route('/test')
-	.post(users.createUser)
-
 router.route('/users')
-	.get(users.getUsers);
+	.get(users.getUsers)
+	.post(users.createUser)
 
 router.route('/user/:id')
 	.get(users.getUser)
