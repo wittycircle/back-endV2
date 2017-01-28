@@ -7,11 +7,11 @@
 const auth = require('../controllers/auth'),
     express = require('express'),
     passport = require('passport'),
-    _ = require("lodash");
+    _ = require('lodash');
 
 let router = express.Router();
 
-router.route('/auth/local')
+router.route('/local')
     .post((req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
             if (err) return next(err);
@@ -26,7 +26,7 @@ router.route('/auth/local')
         })(req, res, next);
     });
 
-router.route('/auth/google')
+router.route('/google')
     .post((req, res, next) => {
         res.status(404).send({
             error: 'unimplemented',
@@ -34,7 +34,7 @@ router.route('/auth/google')
         })
     });
 
-router.route('/auth/facebook')
+router.route('/facebook')
     .post((req, res, next) => {
         res.status(404).send({
             error: 'unimplemented',
@@ -43,11 +43,6 @@ router.route('/auth/facebook')
     });
 
 router.route('/logout')
-    .post((req, res, next) => {
-        res.send({
-            error: 'unimplemented',
-            error_description: 'This authentificaation strategy is not implemented yet!'
-        })
-    });
+    .post(passport.authenticate('bearer'), auth.logout);
 
 module.exports = router;
