@@ -52,26 +52,33 @@ router
      *
      * @apiUse AuthToken
      * @apiUse UserStub
+     *
+     * @apiDescription
+     * The token must be passed as a bearer token in the Authorization header, to each request needing user authentication<br>
+     *
+     * Token validity is <em>1 hour</em><br>
+     * Eg: <code>Authorization: Bearer IX0Rf0xSOEInNVm2pafUyBywCD6FMBqOootgutLiMI57IHSKrrTTd8oZiyej7nm6</code>
      */
     .post();
 
 router
     .route('/auth/facebook')
     /**
-     * @api {get} /auth/facebook Facebook Oauth
+     * @api {post} /auth/facebook Facebook Oauth
      * @apiName FacebookAuth
      * @apiGroup Auth
      *
      *
      * @apiUse AuthToken
      * @apiUse UserStub
+     *
      */
     .post();
 
 router
     .route('/auth/google')
     /**
-     * @api {get} /auth/facebook Google Oauth2
+     * @api {post} /auth/facebook Google Oauth2
      * @apiName GoogleAuth
      * @apiGroup Auth
      *

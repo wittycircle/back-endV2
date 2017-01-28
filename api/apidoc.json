@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "wittycircle api documentation",
   "title": "Wittycircle api",
-  "url": "http://wittycircle.com/api",
+  "url": "https://wittycircle.com/api",
   "header": {
   },
   "footer": {
   },
   "template": {
-    "withCompare": true,
+    "withCompare": false,
     "withGenerator": true
   }
 }
