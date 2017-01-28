@@ -16,7 +16,7 @@ router.param('user_id', function (req, res, next, user_id) {
 });
 
 router.route('/users')
-    .get(passport.authenticate('bearer', {session: false}), users.getUsers);
+    .get(passport.authenticate('bearer'), users.getUsers);
 
 router.route('/user/:user_id')
     .get(users.getUser);

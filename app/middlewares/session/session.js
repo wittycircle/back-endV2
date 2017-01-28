@@ -116,7 +116,7 @@ exports.killSession = (token, cb) => {
 /**
  * Kill all session of user
  */
-exports.killAllSessionFromUser = (id, cb) => {
+exports.killAllFromUser = (id, cb) => {
     rs.killsoid({
         app: rsapp,
         id: id
