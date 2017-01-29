@@ -8,16 +8,17 @@ const {db, TABLES} = require('./index'),
     user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
-    return db
-        .from(TABLES.USER_PROFILES)
-        .update(body)
-        .whereIn('id', function () {
-            this.select('profile_id').from(TABLES.USERS)
-        })
-};
-
+	return db.update(body)
+		.whereIn('id', function() {
+			this.select('profile_id').from(TABLES.USERS).where({'id':id})
+		}).from(TABLES.USER_PROFILES)
+	}
+ 
 exports.updateProfilePicture = (body, id) => {
-    return db(TABLES.USER_PROFILES)
-        .update(body)
-        .where({'id': id})
-};
+	return db(TABLES.USER_PROFILES)
+		.update(body)
+		.where({'id': id})
+		//example :
+// update `profiles` set `profile_picture` = ?, `profile_picture_icon` = ? where `id`
+ // in (select `profile_id` from `users` where `id` = ?)
+}

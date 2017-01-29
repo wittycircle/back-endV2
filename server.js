@@ -34,16 +34,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.set('port', process.env.PORT || 3000);
-// app.use(logger('dev'));
-
 app.use(express.static(__dirname + '/public/app/'));
 app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/public/app/styles/css'));
-
-
 app.use(require('./app/config/custom_validator'));
-
-router.use(logger('dev'));
 
 router.use(require('./app/routes/index'));
 app.use(router);

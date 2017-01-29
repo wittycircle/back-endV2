@@ -14,7 +14,6 @@ const gulp = require('gulp'),
     spawn = require('child_process').spawn;
 
 
-
 const browser = os.platform() === 'linux' ? 'google-chrome' : (
         os.platform() === 'darwin' ? 'google chrome' : (
                 os.platform() === 'win32' ? 'chrome' : 'firefox'));
@@ -34,7 +33,6 @@ gulp.task('redis', function () {
         console.log(`child process exited with code ${code}`)
     });
 });
-
 /**
  *  Launch unit tests in ./tests
  */
@@ -51,6 +49,7 @@ gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
 
     gulp.src('mochawesome-reports/mochawesome.html')
         .pipe(open({app: browser}));
+
 });
 
 /**
@@ -68,5 +67,6 @@ gulp.task('apidoc', 'Generates api documentation html', cb => {
 gulp.task('api', 'Open the latest documentation revision', () => {
     gulp.src('./api-build/index.html')
         .pipe(open({app: browser}))
+
 });
 
