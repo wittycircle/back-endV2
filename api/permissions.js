@@ -11,7 +11,7 @@
 
 /**
  * @apiDefine owner Resource owner only
- * User needs to own the resource in order to access it (eg: cant modify someone else skills)
+ * User needs to own the resource in order to access it <em>(eg: cant modify someone else skills)</em>
  */
 
 /**

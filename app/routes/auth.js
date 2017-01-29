@@ -17,7 +17,7 @@ router.route('/local')
             if (err) return next(err);
             if (!user) return res.redirect('/login');
             req.logIn(user, err => {
-                if (err) return next(err);
+                if (err) next(err);
                 return res.json({
                     auth: _.pick(req.session.passport.user, ['token']),
                     user: _.pick(req.user, ['id', 'profile_id', 'email'])
