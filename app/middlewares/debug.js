@@ -4,6 +4,8 @@
 
 'use strict';
 
+const _ = require('lodash');
+
 exports.resDebugger = (req, res, next) => {
     let oldWrite = res.write,
         oldEnd = res.end;
@@ -19,10 +21,16 @@ exports.resDebugger = (req, res, next) => {
         if (chunk)
             chunks.push(new Buffer(chunk));
         const body = Buffer.concat(chunks).toString('utf8');
-
-        console.log('%s %s %s', req.method, req.path, body.length > 512 ? body.length + ' Response to big for terminal output' : body);
-        
+        console.log('Debug: %s %s %s', req.method, req.path, _.truncate(body, {
+            length: 512,
+            separator: ' '
+        }));
         oldEnd.apply(res, arguments);
     };
+    next();
+};
+
+exports.errorLogger = (err, req, res, next) => {
+    console.log('Debug: ', err);
     next();
 };

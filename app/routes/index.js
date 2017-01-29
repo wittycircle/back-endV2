@@ -9,6 +9,6 @@ let router = express.Router();
 
 router.use(require('./users'));
 router.use(require('./profiles'));
-router.use('/api', require('./auth'));
+router.use('/api/auth', require('./auth'));
 
 module.exports = router;

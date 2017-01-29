@@ -42,7 +42,7 @@ module.exports = Validator({
     Clean: function (value, nice) {
       if (typeof value === 'string') {
         if (typeof nice !== 'undefined' && nice === true) {
-          return value.trim().replace(/(<([^>]+)>)/ig, '').Nice()
+          return value.trim().replace(/(<([^>]+)>)/ig, '').Nice//() // ?
         } else {
           return value.trim().replace(/(<([^>]+)>)/ig, '')
         }
