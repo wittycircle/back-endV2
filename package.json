@@ -30,11 +30,13 @@
   },
   "devDependencies": {
     "chakram": "^1.5.0",
+    "chakram-joi": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-apidoc": "^0.2.5",
     "gulp-help": "^1.6.1",
     "gulp-mocha": "^3.0.1",
     "gulp-open": "^2.0.0",
-    "mochawesome": "^2.0.2"
+    "mochawesome": "^2.0.2",
+    "joi": "latest"
   }
 }

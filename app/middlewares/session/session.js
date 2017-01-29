@@ -9,8 +9,7 @@ const loglevel = process.env.RS_LOGLEVEL || 'dev',
     rs = new Redis(require('../../private/index').redis),
     _ = require('lodash'),
     express = require('express'),
-    app = express(),
-    router = express.Router();
+    app = express();
 
 if (loglevel !== 'none') {
     app.use(require('morgan')(loglevel));

@@ -27,6 +27,8 @@ const express = require('express'),
  * @apiSuccess {String} profiles.last_name       User last name
  * @apiSuccess {String} profiles.picture         User profile picture
  * @apiSuccess {String} profiles.gender          User gender
+ * @apiSuccess {String} profiles.about           About User
+ * @apiSuccess {String} profiles.cover_picture   User cover picture
  */
 
 /**
@@ -37,6 +39,8 @@ const express = require('express'),
  * @apiSuccess {String} profile.last_name       User last name
  * @apiSuccess {String} profile.picture         User profile picture
  * @apiSuccess {String} profile.gender          User gender
+ * @apiSuccess {String} profile.about           About User
+ * @apiSuccess {String} profile.cover_picture   User cover picture
  */
 
 /**

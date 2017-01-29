@@ -21,7 +21,7 @@ exports.resDebugger = (req, res, next) => {
         if (chunk)
             chunks.push(new Buffer(chunk));
         const body = Buffer.concat(chunks).toString('utf8');
-        console.log('%s %s %s', req.method, req.path, _.truncate(body, {
+        console.log('Debug: %s %s %s', req.method, req.path, _.truncate(body, {
             length: 512,
             separator: ' '
         }));
@@ -31,6 +31,6 @@ exports.resDebugger = (req, res, next) => {
 };
 
 exports.errorLogger = (err, req, res, next) => {
-    console.log(err);
+    console.log('Debug: ', err);
     next();
 };

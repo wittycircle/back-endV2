@@ -11,13 +11,21 @@ const auth = require('../controllers/auth'),
 
 let router = express.Router();
 
+//todo extract errors to middleware
 router.route('/local')
     .post((req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
-            if (err) return next(err);
-            if (!user) return res.redirect('/login');
+            if (err) throw err;
+            if (!user)
+                return res.status(400).json({
+                    error: 'malformed_request',
+                    error_description: 'Your request is invalid'
+                });
             req.logIn(user, err => {
-                if (err) next(err);
+                if (err) res.status(400).json({
+                    error: 'malformed_request',
+                    error_description: 'Your request is invalid'
+                });
                 return res.json({
                     auth: _.pick(req.session.passport.user, ['token']),
                     user: _.pick(req.user, ['id', 'profile_id', 'email'])

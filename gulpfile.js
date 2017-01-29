@@ -39,7 +39,7 @@ gulp.task('redis', function () {
  *  Launch unit tests in ./tests
  */
 gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
-    gulp.src('tests/*test.js')
+    gulp.src('tests/*.test.js')
         .pipe(mocha({
             reporter: 'mochawesome'
         }))
