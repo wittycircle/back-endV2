@@ -56,8 +56,10 @@ router
      * @apiDescription
      * The token must be passed as a bearer token in the Authorization header, to each request needing user authentication<br>
      *
-     * Token validity is <em>1 hour</em><br>
-     * Eg: <code>Authorization: Bearer IX0Rf0xSOEInNVm2pafUyBywCD6FMBqOootgutLiMI57IHSKrrTTd8oZiyej7nm6</code>
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          'Authorization': 'Bearer IX0Rf0xSOEInNVm2pafUyBywCD6FMBqOootgutLiMI57IHSKrrTTd8oZiyej7nm6'
+     *      }
      */
     .post();
 
