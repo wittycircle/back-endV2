@@ -169,6 +169,10 @@ exports.getUserByEmail = (email) => {
 			.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
 }
 
+exports.getUserBy = (by) => {
+    return db.select(['id', 'profile_id', 'password']).from(TABLES.USERS).where(by);
+};
+
 exports.getUserByUsername = (username) => {
 	// Really need everything ? Seem unsafe
 	let sub = db.select('*').from(TABLES.USERS).where('username', username).as('u')

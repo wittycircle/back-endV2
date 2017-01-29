@@ -49,8 +49,7 @@ module.exports = function (passport) {
             passReqToCallback: true
         }, (req, email, password, done) => {
             users
-                .getUserByEmail(email)
-                .select('id', 'profile_id', 'email', 'password')
+                .getUserBy({email: email})
                 .then(user => {
                     if (user === null) return done(null, false);
                     else
@@ -59,7 +58,7 @@ module.exports = function (passport) {
                         return done(null, {
                             id: user.id,
                             profile_id: user.profile_id,
-                            email: user.email,
+                            email: email,
                             ip: req.ip
                         });
                     }
