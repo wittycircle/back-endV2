@@ -12,7 +12,8 @@ const Strategy = {
     },
     bcrypt = require('bcrypt-nodejs'),
     session = require('../middlewares/session').session,
-    users = require('../models/users');
+    users = require('../models/users'),
+    schemas = require('../middlewares/validation').schemas;
 
 module.exports = function (passport) {
 
@@ -44,27 +45,23 @@ module.exports = function (passport) {
     ));
 
     passport.use(new Strategy.local({
-            usernameField: 'email',
+        usernameField: 'email',
         // session: true,
-            passReqToCallback: true
-        }, (req, email, password, done) => {
-            users
-                .getUserBy({email: email})
-                .then(user => {
-                    if (user === null) return done(null, false);
-                    else
-                        user = user[0];
-                    if (bcrypt.compareSync(password, user.password)) {
-                        return done(null, {
-                            id: user.id,
-                            profile_id: user.profile_id,
-                            email: email,
-                            ip: req.ip
-                        });
-                    }
-                    return done(null, false);
-                })
-                .catch(err => done(err))
-        }
-    ))
+        passReqToCallback: true
+    }, (req, email, password, done) => {
+        users.getUserBy({email: email}).then(user => {
+            if (!user.length) return done(null, false);
+            else
+                user = user[0];
+            if (bcrypt.compareSync(password, user.password)) {
+                return done(null, {
+                    id: user.id,
+                    profile_id: user.profile_id,
+                    email: email,
+                    ip: req.ip
+                });
+            }
+            done(null, false);
+        }).catch(err => done(err));
+    }))
 };

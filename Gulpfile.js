@@ -18,11 +18,11 @@ const browser = os.platform() === 'linux' ? 'google-chrome' : (
         os.platform() === 'darwin' ? 'google chrome' : (
                 os.platform() === 'win32' ? 'chrome' : 'firefox'));
 
-gulp.task('redis', function () {
+gulp.task('redis', 'Launch redis-server', function () {
     let redis = spawn('redis-server', ['redis.conf']);
 
     redis.stdout.on('data', (data) => {
-        // console.log(`stdout: ${data}`)
+        console.log(`stdout: ${data}`)
     });
 
     redis.stderr.on('data', (data) => {
@@ -46,10 +46,6 @@ gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
          */
         .once('error', () => process.exit(1))
         .once('end', () => process.exit());
-
-    gulp.src('mochawesome-reports/mochawesome.html')
-        .pipe(open({app: browser}));
-
 });
 
 /**
@@ -65,7 +61,7 @@ gulp.task('apidoc', 'Generates api documentation html', cb => {
     }, cb);
 });
 
-gulp.task('api', 'Open the latest documentation revision', () => {
+gulp.task('api', 'Open the latest documentation revision', ['apidoc'], () => {
     gulp.src('./api-build/index.html')
         .pipe(open({app: browser}))
 

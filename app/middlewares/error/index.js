@@ -8,6 +8,6 @@
  *  Error middleware
  */
 
-exports.error = (req, res, next) => {
-
+exports.error = (err, req, res, next) => {
+    res.json(err);
 };
