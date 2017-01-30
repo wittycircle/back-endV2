@@ -228,9 +228,9 @@ exports.createUser = (profile_id, email, username, password) => {
 	})
 }
 
-exports.updateProfile = (username, id) => {
+exports.updateProfile = (info, id) => {
 	return db(TABLES.USER_PROFILES)
-			.update({'username': username})
+			.update(info)
 			.where('id', id)
 }
 
@@ -241,8 +241,5 @@ exports.updateInvitation = (email) => {
 			.andWhere('status', 'pending')
 }
 
-// exports.createUser = () => {
-
-// }
-
+// Update profile stuff
 //===****==
