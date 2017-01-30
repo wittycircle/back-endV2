@@ -36,6 +36,10 @@ const profileStuff = db(TABLES.USER_PROFILES)
 
 // end helper
 
+exports.updateUser = (info, cond) => {
+	return db(TABLES.USERS).update(info).where(cond)
+}
+
 exports.getUserShare = (id) => {
 	return db.select(['social_share'])
 			.from(TABLES.USERS).where({'id': id});
@@ -234,6 +238,13 @@ exports.updateProfile = (info, id) => {
 			.where('id', id)
 }
 
+exports.updateProfileFromUser = (info, id) => {
+	return db(TABLES.USER_PROFILES)
+			.update(info)
+			join(TABLES.USERS, 'users.profile_id', 'profiles.id')
+			.where('users.id', id)
+}
+
 exports.updateInvitation = (email) => {
 	return db(TABLES.INVITATION)
 			.update({'status': 'registered'})
@@ -245,7 +256,7 @@ exports.updateInvitation = (email) => {
 
 
 exports.getFromUser = (need, info) => {
-	db(TABLES.USERS)
+	return db(TABLES.USERS)
 	.select(need)
 	.where(info)
 }

@@ -24,6 +24,7 @@ router.route('/users')
 
 router.route('/user/:id')
 	.get(users.getUser)
+	.put(users.updateUser)
 
 router.route('/user/card/profiles')
 	.get(users.getCardProfile)

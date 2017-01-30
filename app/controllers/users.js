@@ -270,7 +270,7 @@ exports.createUser = (req, res) => {
                     .then(user.updateProfile({username:username}, profileId))
                     .then(user.updateInvitation)
                     .then(res.send({success: true, result: "created"}))
-                    .catch((e) => console.error("NOPE NOPE ", e))
+                    .catch((e) => { console.error(e) })
                   })
            }).catch((e) => {console.error(e)})
        }
@@ -290,14 +290,37 @@ exports.updateUser = (req, res) => { //validation will be extern
     last_name   : req.body.last_name
     };
 
+    // remove this when login stuff done
+    req.user = {}
+    req.user.username = "Toto"
+    req.user.email = "Tata@tata.com"
+
+    req.param.id = 3719
+
     if (errors) return res.status(400).send(errors);
     if ((req.user.username !== req.body.username) || (req.user.email !== req.body.email)) {
-        user.getFromUser(['id, username, email'], {email: req.body.email})
-        // user.getFromUser(['id, username, email'], {username: req.body.username})
-
+        Promise.all([user.getFromUser(['id', 'username', 'email'], {email: req.body.email}),
+                user.getFromUser(['id', 'username', 'email'], {username: req.body.username})])
+            .then(([[r1, ], [r2, ]]) => {//deconstruct array from promise than return an array of object. to get the first one [[r1, ]]
+                if (r1 && r1.email === req.body.email && r1.email !== req.user.email) {
+                    res.send({success: false, msg: 'Email already in use ' + r1.email});
+                } else if (r2 && r2.username === req.body.username && r2.username != req.user.username) {
+                    res.send({success: false, msg: 'Username already in use ' + r2.username});
+                }
+                else {
+                    Promise.all([user.updateProfileFromUser(newName, req.param.id),
+                                user.updateUser(newInfo, {id: req.param.id}) ])
+                    .then((result) => {
+                        console.log("WHRE THING SIET")
+                        req.user.email = req.body.email;
+                        req.user.username = req.body.username;
+                        res.send({result: result, success: true, data: req.user});
+                    }).catch((e) => console.error("NOPE PROLEM", e))
+                }
+            })
     } else {
-        user.updateProfile(newName, req.param.id)
-        .then((result) => res.send({result: result, success: true, data: req.user}))
+        user.updateProfileFromUser(newName, req.param.id)
+        .then((result) => res.send({"ELSE":"ELSE", result: result, success: true, data: req.user}))
     }
 
 }
