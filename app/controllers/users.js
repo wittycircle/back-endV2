@@ -229,11 +229,13 @@ exports.searchUser = (req, res) => {
     })
 }
 
-const checkUsername = (first, last, cb) => {
- let username;
+const checkUsername = (first, last, pswd) => {
+    let username;
+    let password = bcrypt.hashSync(pswd)
     let a_username = [];
     let firstName = first.replace(/\s+/g, '');
     let lastName = last.replace(/\s+/g, '');
+
     for (let i = firstName.length; i > 0; i--) {
         a_username.push(firstName.slice(0, i) + '.' + lastName);
     };
@@ -245,48 +247,36 @@ const checkUsername = (first, last, cb) => {
         if (r.length === a_username.length){
             username = firstName + '.' + lastName + Math.floor((Math.random() * 10000) + 1)
         } else {
-            username = _.differenceWith(a_username, r, _.isEqual)[0]
+            let nr = _.map(r, v => v.username)
+           username =  _.differenceWith(a_username, nr, _.isEqual)[0]
         }
-
-        console.log("THERE ", r, username)
-        return ({firstName, lastName, username})
+        return ({firstName, lastName, username, password})
     })
-
-}
-
-let passwordThing = (password) => { // do salting and stuff?
-   return bcrypt.hashSync(password)
 }
 
 exports.createUser = (req, res) => {
     const errors = req.validationErrors(true);
     if (errors) { return res.status(400).send(errors) };
+
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
            res.send({sucess: false, msg: 'Email is already taken', exist: exist});
    } else {
-        checkUsername(req.body.first_name, req.body.last_name)
-        .then(({firstName, lastName, username}) => {
-
-        console.log("HERe ", username)
-        }).then((r) => console.log("AND THER ", r))
-            // let password = passwordThing(req.body.password)
-            // // getUsername(req.body.first_name, req.body.last_name)
-            //     // .then(({firstName, lastName, username}) => {
-            //        user.createProfile(firstName, lastName)
-            //        .then((profileId) =>  {
-            //             user.createUser(profileId, req.body.email, username, password)
-            //             .then(user.updateProfile({username:username}, profileId))
-            //             .then(user.updateInvitation)
-            //             .then(res.send({success: true, result: "created"}))
-            //             .catch((e) => console.error("NOPE NOPE ", e))
-            //     }).catch((e) => console.error("NOPE NOPE ", e))
-            // // }).catch((e) => console.error("NOPE NOPE ", e))
-            res.send("pending")
-    }
-     }).catch((e) => console.error("NOPE NOPE ", e))
+        checkUsername(req.body.first_name, req.body.last_name, req.body.password)
+        .then(({firstName, lastName, username, password}) => {
+            user.createProfile(firstName, lastName)
+               .then((profileId) =>  {
+                    user.createUser(profileId, req.body.email, username, password)
+                    .then(user.updateProfile({username:username}, profileId))
+                    .then(user.updateInvitation)
+                    .then(res.send({success: true, result: "created"}))
+                    .catch((e) => console.error("NOPE NOPE ", e))
+                  })
+           }).catch((e) => {console.error(e)})
+       }
         // mailing.sendWelcomeMail();
         // mailing.sendValidateAccountMail();
+    })
 }
 
 exports.updateUser = (req, res) => { //validation will be extern
