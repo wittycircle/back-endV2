@@ -83,7 +83,7 @@ describe('Get user from profile', function () {
             })
     })
 
-});
+})
 
 describe('Get profile', function () {
     it('Should have properties [genre, birthdate, location_city]', function () {
