@@ -7,7 +7,7 @@
 
 const   user = require('../models/users'),
         geo = require('../utils/geolocation'),
-        mailing = require('../utils/mailing'),
+        // mailing = require('../utils/mailing'),
         home = 'http://localhost:3000';
     // pf = require('../utils/profile_functions');
 

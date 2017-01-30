@@ -24,10 +24,12 @@ router
     .get()
     /**
      * @api {put} /users/:id Update data of user
-     * @apiName PutUser
+     * @apiName UpdateUser
      * @apiGroup User
      *
      * @apiParam {Number} id The User's id
+     *
+     * @apiPermission owner
      *
      * @apiSuccess {Object} user            User data
      *
@@ -50,6 +52,8 @@ router
      * @api {post} /users Create new user
      * @apiName CreateUser
      * @apiGroup User
+     *
+     * @apiPermission dev
      *
      * @apiSuccess {Object} user               User list
      * @apiSuccess {Number} user.id            User id
@@ -104,6 +108,8 @@ router
      *
      * @apiParam {Number}  id The User's id
      *
+     * @apiPermission owner
+     *
      * @apiSuccess {Object[]} skills        User's updated skill list
      * @apiUse SkillData
      *
@@ -142,7 +148,9 @@ router
     /**
      * @api {delete} /users/:id/skills/:id Remove skill from user
      * @apiName RemoveUserSkill
-     * @apiGroup User
+     * @apiGroup Skill
+     *
+     * @apiPermission owner
      *
      * @apiParam {Number}   user_id     The user id
      * @apiParam {Number}   skill_id    The skill id

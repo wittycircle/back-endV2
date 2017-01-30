@@ -5,7 +5,8 @@
 'use strict';
 
 const users = require('../controllers/users'),
-    express = require('express');
+    express = require('express'),
+    passport = require('passport');
 
 let router = express.Router();
 
@@ -74,29 +75,5 @@ router.route('/profileId/:user_id')
 	.post(users.getProfileId)
 
 
-module.exports = router
-//=======================
-// Rest route example
-//=======================
-
-// router.param('user_id', (req, res, next, user_id) => {
-// });
-
-// router.route('/users')
-//     .get()
-//     .post()
-//     .put();
-
-// router.route('/users/:user_id')
-//     .get()
-//     .post();
-
-// router.route('/users/:user_id/like')
-//     .get()
-//     .post()
-//     .delete();
-
-// router.route('/users/search')
-//     .post();
-
+module.exports = router;
 
