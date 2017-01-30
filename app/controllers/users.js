@@ -279,7 +279,7 @@ exports.createUser = (req, res) => {
 
     const errors = req.validationErrors(true);
     if (errors) { return res.status(400).send(errors) };
-    user.getUserEmail(req.body.email).then((exist) => {
+    user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
            res.send({sucess: false, msg: 'Email is already taken', exist: exist}); 
    } else {
@@ -297,3 +297,69 @@ exports.createUser = (req, res) => {
         // mailing.sendWelcomeMail();
         // mailing.sendValidateAccountMail();
 }
+
+exports.updateUser = (req, res) => {
+    //  req.checkParams('id', 'id parameter must be an integer.').isInt().min(1);
+    // //req.checkParams('id', 'id parameter must be current logged user.').isLoggedUser(req);
+    // req.checkBody('email', 'E-Mail is not valid.').isString().isEmail().min(2).max(64);
+    // req.checkBody('username', 'Username is not valid.').isString().min(2).max(64);
+    // req.checkBody('first_name', 'First Name must be between 1 and 64 characters.').isString().min(1).max(64);
+    // req.checkBody('last_name', 'Last Name must be between 1 and 64 characters.').isString().min(1).max(64);
+    // req.checkBody('profession', 'Profession must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('description', 'Profession must be between 1 and 512 characters.').optional().isString().min(1).max(512);
+    // req.checkBody('location_city', 'City must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('location_country', 'Country must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('website_url', 'Website URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('facebook_url', 'Facebook URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('twitter_url', 'Twitter URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('google_url', 'Google URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('linkedin_url', 'LinkedIn URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('about', 'About Text is limited to 10000 characters.').optional().isString().min(1).max(10000);
+    // req.checkBody('genre', 'Genre must be between 1 and 64 characters.').optional().isString().min(1).max(64);
+    // req.checkBody('birthdate', 'Birthdate must be between 1 and 64characters.').optional().isString().min(1).max(64);
+
+    // req.sanitize('email').Clean(true);
+    // req.sanitize('username').Clean(true);
+    // //req.sanitize('first_name').Clean(true);
+    // //req.sanitize('last_name').Clean(true);
+    // req.sanitize('profession').Clean(true);
+    // req.sanitize('description').Clean(true);
+    // req.sanitize('location_city').Clean(true);
+    // req.sanitize('location_country').Clean(true);
+    // req.sanitize('website_url').Clean();
+    // req.sanitize('facebook_url').Clean();
+    // req.sanitize('twitter_url').Clean();
+    // req.sanitize('google_url').Clean();
+    // req.sanitize('linkedin_url').Clean();
+    // req.sanitize('about').Clean(true);
+    // req.sanitize('genre').Clean(true);
+    // req.sanitize('birthdate').Clean();
+
+    var errors      = req.validationErrors(true);
+    var newInfo     =  {
+    email   : req.body.email,
+    username: req.body.username
+    };
+    var newName     = {
+    first_name  : req.body.first_name,
+    last_name   : req.body.last_name
+    };
+
+    if (errors) return res.status(400).send(errors);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

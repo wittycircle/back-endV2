@@ -199,7 +199,7 @@ exports.searchUser = (search) => {
 			.join(sub, 'p.id', 'u.profile_id')
 }
 //Create user stuff
-exports.getUserEmail = (email) => {
+exports.getUserByEmail = (email) => {
 	return db.select('id').from(TABLES.USERS)
 		.where('email', email)
 }
