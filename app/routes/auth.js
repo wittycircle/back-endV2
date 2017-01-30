@@ -7,32 +7,14 @@
 const auth = require('../controllers/auth'),
     express = require('express'),
     passport = require('passport'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    Validation = require('../middlewares/validation');
 
 let router = express.Router();
 
-//todo extract errors to middleware
+router.use('/local', Validation.validate(Validation.schemas.auth.login));
 router.route('/local')
-    .post((req, res, next) => {
-        passport.authenticate('local', (err, user, info) => {
-            if (err) throw err;
-            if (!user)
-                return res.status(400).json({
-                    error: 'malformed_request',
-                    error_description: 'Your request is invalid'
-                });
-            req.logIn(user, err => {
-                if (err) res.status(400).json({
-                    error: 'malformed_request',
-                    error_description: 'Your request is invalid'
-                });
-                return res.json({
-                    auth: _.pick(req.session.passport.user, ['token']),
-                    user: _.pick(req.user, ['id', 'profile_id', 'email'])
-                });
-            });
-        })(req, res, next);
-    });
+    .post(auth.localLogin);
 
 router.route('/google')
     .post((req, res, next) => {
