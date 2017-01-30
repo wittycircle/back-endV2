@@ -1,5 +1,7 @@
 #Wittycircle backend v.2.0
 
+👉 Development wiki [here](https://github.com/wittycircle/back-endV2/wiki)
+
 ##Running
 `npm install`    
 `gulp redis` _token server and sessions_  
