@@ -295,7 +295,7 @@ exports.updateUser = (req, res) => { //validation will be extern
     req.user.username = "Toto"
     req.user.email = "Tata@tata.com"
 
-    req.param.id = 3719
+    // req.param.id = 3719
 
     if (errors) return res.status(400).send(errors);
     if ((req.user.username !== req.body.username) || (req.user.email !== req.body.email)) {
@@ -308,8 +308,8 @@ exports.updateUser = (req, res) => { //validation will be extern
                     res.send({success: false, msg: 'Username already in use ' + r2.username});
                 }
                 else {
-                    Promise.all([user.updateProfileFromUser(newName, req.param.id),
-                                user.updateUser(newInfo, {id: req.param.id}) ])
+                    Promise.all([user.updateProfileFromUser(newName, req.params.id),
+                                user.updateUser(newInfo, {id: req.params.id}) ])
                     .then((result) => {
                         console.log("WHRE THING SIET")
                         req.user.email = req.body.email;
@@ -319,7 +319,7 @@ exports.updateUser = (req, res) => { //validation will be extern
                 }
             })
     } else {
-        user.updateProfileFromUser(newName, req.param.id)
+        user.updateProfileFromUser(newName, req.params.id)
         .then((result) => res.send({"ELSE":"ELSE", result: result, success: true, data: req.user}))
     }
 
