@@ -9,6 +9,7 @@ const   user = require('../models/users'),
         geo = require('../utils/geolocation'),
         mailing = require('../utils/mailing'),
         bcrypt = require('bcrypt-nodejs'),
+        _ = require('lodash'),
         home = 'http://localhost:3000';
     // pf = require('../utils/profile_functions');
 
@@ -228,9 +229,8 @@ exports.searchUser = (req, res) => {
     })
 }
 
-const getUsername = (first, last) => new Promise( (_res, _r) => { // all this might be replace with simple
-                                                                    //username = firstName + '.' + lastName
-    let username;
+const checkUsername = (first, last, cb) => {
+ let username;
     let a_username = [];
     let firstName = first.replace(/\s+/g, '');
     let lastName = last.replace(/\s+/g, '');
@@ -240,60 +240,49 @@ const getUsername = (first, last) => new Promise( (_res, _r) => { // all this mi
     for (let i = lastName.length - 1; i > 0; i--) {
         a_username.push(firstName + '.' + lastName.slice(0, i));
     }
-    let p_arr = [];  
-    for (let i = 0; i < a_username.length; i++){
-        p_arr.push(user.checkUsername(a_username[i]).then((r) => 
-            r.length ? firstName + '.' + lastName + Math.floor((Math.random() * 10000) + 1) : a_username[i]))
+    return user.checkUsername(a_username)
+    .then((r) => {
+        if (r.length === a_username.length){
+            username = firstName + '.' + lastName + Math.floor((Math.random() * 10000) + 1)
+        } else {
+            username = _.differenceWith(a_username, r, _.isEqual)[0]
         }
-    Promise.all(p_arr).then((e) => { 
-        _res ({firstName, lastName,  username: e[0]}) })
-    
-})
+
+        console.log("THERE ", r, username)
+        return ({firstName, lastName, username})
+    })
+
+}
 
 let passwordThing = (password) => { // do salting and stuff?
    return bcrypt.hashSync(password)
 }
 
 exports.createUser = (req, res) => {
-    // {
-    // // // const mandrill_client = new mandrill.Mandrill('XMOg7zwJZIT5Ty-_vrtqgA');
-    // // /* Validate */
-    // // // req.body.email = "raphael@wefittycircle.com"
-    // // // req.body.password = "tototatatutu"
-    // // // req.body.first_name = "tatwega"
-    // // // req.body.last_name = "tototutu"
-
-    // // // req.checkBody('email', 'E-Mail is already in used.').isUnique('email');
-    // // // req.checkBody('email', 'E-Mail is not valid.').isString().isEmail().min(2).max(64);
-    // // // req.checkBody('password', 'Password must be between 5 and 32 characters.').isString().min(5).max(32);
-    // // // req.checkBody('first_name', 'First Name must be between 1 and 64 characters.').isString().min(1).max(64);
-    // // // req.checkBody('last_name', 'Last Name must be between 1 and 64 characters.').isString().min(1).max(64);
-
-    // // // /* Sanitize */
-    // // // req.sanitize('email').Clean();
-    // // // req.sanitize('password').trim();
-    // // // req.sanitize('first_name').Clean(true);
-    // // // req.sanitize('last_name').Clean(true);
-        
-    // }
-
     const errors = req.validationErrors(true);
     if (errors) { return res.status(400).send(errors) };
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
            res.send({sucess: false, msg: 'Email is already taken', exist: exist});
    } else {
-        getUsername(req.body.first_name, req.body.last_name)
-            .then(({firstName, lastName, username}) => {
-               user.createProfile(firstName, lastName).then((profileId) =>  {
-                let password = passwordThing(req.body.password)
-                user.createUser(profileId, req.body.email, username, password)
-                .then(user.updateProfile({username:username}, profileId).catch((e) => console.error("NOPE NOPE ", e))
-                .then(user.updateInvitation).catch((e) => console.error("NOPE NOPE ", e))
-                .then(res.send({success: true, result: "created"})).catch((e) => console.error("NOPE NOPE ", e))
-                ).catch((e) => console.error("NOPE NOPE ", e))
-            }).catch((e) => console.error("NOPE NOPE ", e))
-        }).catch((e) => console.error("NOPE NOPE ", e))
+        checkUsername(req.body.first_name, req.body.last_name)
+        .then(({firstName, lastName, username}) => {
+
+        console.log("HERe ", username)
+        }).then((r) => console.log("AND THER ", r))
+            // let password = passwordThing(req.body.password)
+            // // getUsername(req.body.first_name, req.body.last_name)
+            //     // .then(({firstName, lastName, username}) => {
+            //        user.createProfile(firstName, lastName)
+            //        .then((profileId) =>  {
+            //             user.createUser(profileId, req.body.email, username, password)
+            //             .then(user.updateProfile({username:username}, profileId))
+            //             .then(user.updateInvitation)
+            //             .then(res.send({success: true, result: "created"}))
+            //             .catch((e) => console.error("NOPE NOPE ", e))
+            //     }).catch((e) => console.error("NOPE NOPE ", e))
+            // // }).catch((e) => console.error("NOPE NOPE ", e))
+            res.send("pending")
     }
      }).catch((e) => console.error("NOPE NOPE ", e))
         // mailing.sendWelcomeMail();
@@ -301,44 +290,6 @@ exports.createUser = (req, res) => {
 }
 
 exports.updateUser = (req, res) => { //validation will be extern
-    // {
-    // //  req.checkParams('id', 'id parameter must be an integer.').isInt().min(1);
-    // // //req.checkParams('id', 'id parameter must be current logged user.').isLoggedUser(req);
-    // // req.checkBody('email', 'E-Mail is not valid.').isString().isEmail().min(2).max(64);
-    // // req.checkBody('username', 'Username is not valid.').isString().min(2).max(64);
-    // // req.checkBody('first_name', 'First Name must be between 1 and 64 characters.').isString().min(1).max(64);
-    // // req.checkBody('last_name', 'Last Name must be between 1 and 64 characters.').isString().min(1).max(64);
-    // // req.checkBody('profession', 'Profession must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('description', 'Profession must be between 1 and 512 characters.').optional().isString().min(1).max(512);
-    // // req.checkBody('location_city', 'City must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('location_country', 'Country must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('website_url', 'Website URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('facebook_url', 'Facebook URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('twitter_url', 'Twitter URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('google_url', 'Google URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('linkedin_url', 'LinkedIn URL must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('about', 'About Text is limited to 10000 characters.').optional().isString().min(1).max(10000);
-    // // req.checkBody('genre', 'Genre must be between 1 and 64 characters.').optional().isString().min(1).max(64);
-    // // req.checkBody('birthdate', 'Birthdate must be between 1 and 64characters.').optional().isString().min(1).max(64);
-
-    // // req.sanitize('email').Clean(true);
-    // // req.sanitize('username').Clean(true);
-    // // //req.sanitize('first_name').Clean(true);
-    // // //req.sanitize('last_name').Clean(true);
-    // // req.sanitize('profession').Clean(true);
-    // // req.sanitize('description').Clean(true);
-    // // req.sanitize('location_city').Clean(true);
-    // // req.sanitize('location_country').Clean(true);
-    // // req.sanitize('website_url').Clean();
-    // // req.sanitize('facebook_url').Clean();
-    // // req.sanitize('twitter_url').Clean();
-    // // req.sanitize('google_url').Clean();
-    // // req.sanitize('linkedin_url').Clean();
-    // // req.sanitize('about').Clean(true);
-    // // req.sanitize('genre').Clean(true);
-    // // req.sanitize('birthdate').Clean();
-    //}
-
     var errors      = req.validationErrors(true);
     var newInfo     =  {
     email   : req.body.email,
@@ -351,7 +302,8 @@ exports.updateUser = (req, res) => { //validation will be extern
 
     if (errors) return res.status(400).send(errors);
     if ((req.user.username !== req.body.username) || (req.user.email !== req.body.email)) {
-
+        user.getFromUser(['id, username, email'], {email: req.body.email})
+        // user.getFromUser(['id, username, email'], {username: req.body.username})
 
     } else {
         user.updateProfile(newName, req.param.id)

@@ -215,8 +215,8 @@ exports.createProfile = (first, last) => {
 
 exports.checkUsername = (username) => {
 	return db(TABLES.USERS)
-			.select('id')
-			.where('username', username)
+			.select('username')
+			.whereIn('username', username)
 }
 exports.createUser = (profile_id, email, username, password) => {
 	return db(TABLES.USERS)
@@ -242,4 +242,11 @@ exports.updateInvitation = (email) => {
 }
 
 // Update profile stuff
+
+
+exports.getFromUser = (need, info) => {
+	db(TABLES.USERS)
+	.select(need)
+	.where(info)
+}
 //===****==
