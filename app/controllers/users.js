@@ -35,12 +35,12 @@ exports.getUserShare = (req, res) => {
 };
 
 exports.updateUserShare = (req, res) => {
-    req.checkParams('user_id', 'username must be an integer.').isInt();
+    // req.checkParams('user_id', 'username must be an integer.').isInt();
     const errors = req.validationErrors(true);
     if (errors)
         return res.status(400).send(errors);
     else {
-        user.updateUserShare(req.user_id)
+        user.updateUser({social_share: 1}, {id: req.user_id})
             .then(res.send({success:true}))
             .catch(err => {console.err ("Error updating user social share")})
     }
@@ -61,7 +61,7 @@ exports.ValidateAccount = (req, res) => {
     user.getToken(req.params.token)
         .then((token) => {
             if (token.length !== 0) {
-                user.updateValidEmail(req.body.email)
+                user.updateUser({valid: 1}, {email: req.body.email})
                     .then((r) => {
                         if (!r) {
                             throw("email not found")
@@ -290,12 +290,11 @@ exports.updateUser = (req, res) => { //validation will be extern
     last_name   : req.body.last_name
     };
 
-    // remove this when login stuff done
+//remove three lines below (was for testing with postman, will be in test chakram directly)
     req.user = {}
     req.user.username = "Toto"
     req.user.email = "Tata@tata.com"
 
-    // req.param.id = 3719
 
     if (errors) return res.status(400).send(errors);
     if ((req.user.username !== req.body.username) || (req.user.email !== req.body.email)) {

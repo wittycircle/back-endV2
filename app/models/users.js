@@ -45,12 +45,6 @@ exports.getUserShare = (id) => {
 			.from(TABLES.USERS).where({'id': id});
 };
 
-exports.updateUserShare = (id) => {
-    return db.update({social_share: 1})
-    		.from(TABLES.USERS)
-    		.where({id: id});
-};
-
 exports.getUsersValidateMail = (token) =>  {
 	return db.select(['user_email'])
 			.from(TABLES.ACCOUNT_VALIDATION)
@@ -62,13 +56,6 @@ exports.getToken = (token) => {
 	return db.select(['token'])
 			.from(TABLES.ACCOUNT_VALIDATION)
 			.where({token: token})
-}
-
-exports.updateValidEmail = (email) => {
-	return db.update({valid: 1})
-			.from(TABLES.USERS)
-			.where({email: email})
-			.limit(1)
 }
 
 exports.deleteValidationToken = (token) => {
