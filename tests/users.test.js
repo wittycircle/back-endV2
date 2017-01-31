@@ -118,6 +118,13 @@ describe('Get users', function () {
     })
 });
 
+const joi = require('joi');
+chakram.addMethod('joi', require('chakram-joi'));
+
+const token_schema = joi.object().keys({
+    success: joi.required()
+});
+
 describe('Create users', function () {
 	before('Create a new user', function () {
 			const data = {
@@ -126,11 +133,12 @@ describe('Create users', function () {
 			last_name: 'McTata',
 			password: 'whatever'
 		}
-		new_user = hakram.post(home + '/users',  data)
+	  new_user = chakram.post(home + '/users',  data)
 	})
 
 	it ('Should create a user', function () {
 		expect(new_user).to.have.status(200)
-		expect(new_user).to.have.property('success')
+		expect(new_user).to.joi(token_schema)
+		return chakram.wait()
 	})
 })

@@ -25,6 +25,7 @@ exports.logout = (req, res) => {
 
 exports.localLogin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
+    	console.log("USER HERE", user)
         if (err)
             res.status(400).json({
                 tg: err
@@ -32,13 +33,14 @@ exports.localLogin = (req, res, next) => {
             });
         else if (_.isEmpty(user))
             res.status(400).json({
-                error: 'malformed_request',
+                error: '1',
                 error_description: 'Your request is invalid',
+                user: user
             });
         else
             req.logIn(user, err => {
                 if (err) res.status(400).json({
-                    error: 'malformed_request',
+                    error: '2',
                     error_description: 'Your request is invalid'
                 });
                 else
