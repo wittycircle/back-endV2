@@ -5,7 +5,7 @@
 'use strict';
 
 const {db, TABLES} = require('./index'),
-    user = require('./users');
+    // user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
 	return db.update(body)

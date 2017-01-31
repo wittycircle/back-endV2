@@ -9,24 +9,23 @@ const http = require('http'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     passport = require('passport'),
-    middlewares = require('./app/middlewares/debug');
+    debug = require('./app/middlewares/debug'),
+    error = require('./app/middlewares/error');
 
 let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(logger('dev'));
+app.use(error.error);
+app.use(require('./app/middlewares/validation').validator);
 
-/**
- * Error middleware
- */
-app.use(middlewares.errorLogger);
+app.use(logger('dev'));
 
 /**
  * Debug middleware
  */
-app.use(middlewares.resDebugger);
+app.use(debug.resDebugger);
 
 
 require('./app/config/passport')(passport);
@@ -37,7 +36,6 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public/app/'));
 app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/public/app/styles/css'));
-app.use(require('./app/config/custom_validator'));
 
 router.use(require('./app/routes/index'));
 app.use(router);

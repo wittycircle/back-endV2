@@ -22,5 +22,7 @@ exports.TABLES = {
     RESET: 'reset_passwords',
     RANK: 'rank_of_the_day',
     INVITATION: 'invitation',
-    FIRST_LOG: 'first_log'
+    FIRST_LOG: 'first_log',
+    PROJECTS: 'projects',
+    PROJECT_NETWORK: 'project_network'
 };

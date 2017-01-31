@@ -4,6 +4,7 @@
 const passport = require('passport'),
     session = require('../middlewares/session').session,
     user = require('../models/users'),
+    project = require('../models/projects'),
     schemas = require('../middlewares/validation').schemas,
     _ = require('lodash');
 
@@ -50,7 +51,7 @@ exports.localLogin = (req, res, next) => {
 
 exports.resetPassword = (req, res) => {
     const token = crypto.randomBytes(20).toString('hex'),
-    const link = 'https://www.wittycircle.com/password/reset/' + token;
+    	link = 'https://www.wittycircle.com/password/reset/' + token;
 
 	user.getFromUser(['id'], {email: req.body.email_reset})	
 	.then(r => {
@@ -73,7 +74,38 @@ exports.getUserForResetPassword = (req, res) => {
 			res.send({data: r, message: 'Password Changed !'});
 		}
 	}).catch((e) => console.error(e))
-}     
+}                   
+
+exports.updatePasswordReset = (req, res) => {
+	user.getUserreset(['token'], {token: req.body.token})
+	.then(c => {
+		if (!c.length) {
+			res.status(404).send({message: 'You are not authorized to make this action.'});
+		} else {
+			user.updateUser({password: bcrypt.hashSync(req.body.password)}, {email: req.body.email})
+			.then((r) => {
+				res.send(r)
+			})
+		}
+	}).catch((e) => console.error(e))
+}
+
+exports.verifyProjectNetwork = (req, res) => {
+	project.getFromProjectNetwork(['project_id'], {token: req.params.token})
+	.count('project_id as number')
+	.then(c => {
+		if (c[0].number === 0) {
+			    return res.status(403).send("You are not authorized to do this action.");
+		} else {
+			project.updateProjectNetwork({verified: 1}, {token: req.params.token})
+			.then(r => {
+				project.getFromProjectNetwork(['network'], {project_id: c[0].project_id, verified: 1})
+				.then(res.status(200).send({success: true}))
+			})
+		}
+	})
+}
+
 
 
 
