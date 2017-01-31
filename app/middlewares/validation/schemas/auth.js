@@ -4,15 +4,9 @@
 
 'use strict';
 
-exports.login = {
-    'email': {
-        notEmpty: true,
-        isEmail: {
-            errorMessage: 'validation.email.invalid'
-        }
-    },
-    'password': {
-        notEmpty: true,
-        errorMessage: 'validation.password.invalid'
-    }
-};
+const Joi = require('joi');
+
+exports.local = Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});

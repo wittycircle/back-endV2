@@ -6,7 +6,10 @@
 
 const chakram = require('chakram'),
     expect = chakram.expect,
-    schemas = require('./schemas/auth.schema');
+    schemas = {
+        auth: require('./schemas/auth.schema'),
+        error: require('./schemas/error.schema')
+    };
 
 chakram.addMethod('joi', require('chakram-joi'));
 
@@ -14,7 +17,8 @@ describe('Local auth strategy', function () {
     let user = {
         ok: null,
         wrongEmail: null,
-        wrongPassword: null
+        wrongPassword: null,
+        invalidCredentials: null
     };
 
     before('authenticate user', function () {
@@ -38,12 +42,20 @@ describe('Local auth strategy', function () {
         })
     });
 
+    before('authenticate user with invalid credentials', function () {
+        user.invalidCredentials = chakram.post('http://localhost:3000/api/auth/local', {
+            email: "raphael.toto",
+            password: "dadasdada",
+            test: "Im not needed !"
+        });
+    });
+
     it('should return 200 on success', function () {
         return expect(user.ok).to.have.status(200);
     });
 
     it('should match response format', function () {
-        return expect(user.ok).to.joi(schemas.auth_response_schema);
+        return expect(user.ok).to.joi(schemas.auth.auth_response_schema);
     });
 
     it('should return 400 when the email doesn\'t exist', function () {
@@ -52,5 +64,9 @@ describe('Local auth strategy', function () {
 
     it('should return 400 when the passwords doesn\'t match', function () {
         return expect(user.wrongPassword).to.have.status(400);
+    });
+
+    it('should return correct validation errors', function () {
+        return expect(user.invalidCredentials).to.joi(schemas.error.validation_error_schema);
     });
 });

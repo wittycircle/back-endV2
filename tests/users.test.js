@@ -3,8 +3,6 @@ const chakram = require('chakram'),
     home = 'http://localhost:3000',
     {db, TABLES} = require('../app/models/index');
 
-// describe ('Users test : ', function () {
-
 describe('Get user share', function () {
     it('should return false', function () {
         return chakram.get(home + '/share/999999')
@@ -119,3 +117,20 @@ describe('Get users', function () {
             })
     })
 });
+
+describe('Create users', function () {
+	before('Create a new user', function () {
+			const data = {
+			email: 'cooki@cook.com',
+			first_name: 'Toto',
+			last_name: 'McTata',
+			password: 'whatever'
+		}
+		new_user = hakram.post(home + '/users',  data)
+	})
+
+	it ('Should create a user', function () {
+		expect(new_user).to.have.status(200)
+		expect(new_user).to.have.property('success')
+	})
+})

@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(error.error);
-app.use(require('./app/middlewares/validation').validator);
 
 app.use(logger('dev'));
 

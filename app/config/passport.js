@@ -12,7 +12,8 @@ const Strategy = {
     },
     bcrypt = require('bcrypt-nodejs'),
     session = require('../middlewares/session').session,
-    users = require('../models/users');
+    users = require('../models/users'),
+    config = require('../private').social_auth; //automatically selects prod or dev config
 
 module.exports = function (passport) {
 
@@ -43,28 +44,44 @@ module.exports = function (passport) {
         }
     ));
 
-    passport.use(new Strategy.local({
-            usernameField: 'email',
-        // session: true,
-            passReqToCallback: true
-        }, (req, email, password, done) => {
-            users
-                .getUserBy({email: email})
-                .then(user => {
-                    if (user === null) return done(null, false);
-                    else
-                        user = user[0];
-                    if (bcrypt.compareSync(password, user.password)) {
-                        return done(null, {
-                            id: user.id,
-                            profile_id: user.profile_id,
-                            email: email,
-                            ip: req.ip
-                        });
-                    }
-                    return done(null, false);
-                })
-                .catch(err => done(err))
+    passport.use(new Strategy.facebook({
+            passReqToCallback: true,
+            clientID: config.facebook.clientID,
+            clientSecret: config.facebook.clientSecret,
+            callbackURL: config.facebook.callbackURL
+        }, (req, accessToken, refreshToken, profile, done) => {
+            //todo implement
         }
-    ))
+    ));
+
+    passport.use(new Strategy.google({
+            passReqToCallback: true,
+            clientID: config.google.clientID,
+            clientSecret: config.google.clientSecret,
+            callbackURL: config.google.callbackURL
+        }, (req, accessToken, refreshToken, profile, done) => {
+            //todo implement
+        }
+    ));
+
+    passport.use(new Strategy.local({
+        usernameField: 'email',
+        // session: true,
+        passReqToCallback: true
+    }, (req, email, password, done) => {
+        users.getUserBy({email: email}).then(user => {
+            if (!user.length) return done(null, false);
+            else
+                user = user[0];
+            if (bcrypt.compareSync(password, user.password)) {
+                return done(null, {
+                    id: user.id,
+                    profile_id: user.profile_id,
+                    email: email,
+                    ip: req.ip
+                });
+            }
+            done(null, false);
+        }).catch(err => done(err));
+    }))
 };

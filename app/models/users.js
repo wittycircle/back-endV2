@@ -234,7 +234,7 @@ exports.updateProfile = (info, id) => {
 exports.updateProfileFromUser = (info, id) => {
 	return db(TABLES.USER_PROFILES)
 			.update(info)
-			join(TABLES.USERS, 'users.profile_id', 'profiles.id')
+			.join(TABLES.USERS, 'users.profile_id', 'profiles.id')
 			.where('users.id', id)
 }
 
