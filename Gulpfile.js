@@ -18,6 +18,22 @@ const browser = os.platform() === 'linux' ? 'google-chrome' : (
         os.platform() === 'darwin' ? 'google chrome' : (
                 os.platform() === 'win32' ? 'chrome' : 'firefox'));
 
+gulp.task('run', 'Launch server', ['redis'], function () {
+    let server = spawn('nodemon', ['server.js']);
+
+    server.stdout.on('data', (data) => {
+        console.log(`NODE: ${data}`)
+    });
+
+    server.stderr.on('data', (data) => {
+        console.error(`NODERR: ${data}`)
+    });
+
+    server.on('close', (code) => {
+        console.log(`child process exited with code ${code}`)
+    });
+});
+
 gulp.task('redis', 'Launch redis-server', function () {
     let redis = spawn('redis-server', ['redis.conf']);
 
@@ -39,7 +55,7 @@ gulp.task('redis', 'Launch redis-server', function () {
 gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
     gulp.src('tests/*.test.js')
         .pipe(mocha({
-            reporter: 'mochawesome'
+            reporter: 'mochawesome',
         }))
         /**
          * database lingering connection killer

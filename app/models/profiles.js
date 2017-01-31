@@ -4,8 +4,8 @@
 
 'use strict';
 
-const {db, TABLES} = require('./index'),
-    user = require('./users');
+const {db, TABLES} = require('./index');
+    // user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
 	return db.update(body)
@@ -18,7 +18,4 @@ exports.updateProfilePicture = (body, id) => {
 	return db(TABLES.USER_PROFILES)
 		.update(body)
 		.where({'id': id})
-		//example :
-// update `profiles` set `profile_picture` = ?, `profile_picture_icon` = ? where `id`
- // in (select `profile_id` from `users` where `id` = ?)
 }

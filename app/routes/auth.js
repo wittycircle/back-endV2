@@ -7,12 +7,12 @@
 const auth = require('../controllers/auth'),
     express = require('express'),
     passport = require('passport'),
-    _ = require('lodash'),
-    Validation = require('../middlewares/validation');
+    { validate, schemas } = require('../middlewares/validation'),
+    _ = require('lodash');
 
 let router = express.Router();
 
-router.use('/local', Validation.validate(Validation.schemas.auth.login));
+router.use('/local', validate(schemas.auth.local));
 router.route('/local')
     .post(auth.localLogin);
 

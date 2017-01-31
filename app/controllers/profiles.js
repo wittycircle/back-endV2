@@ -4,7 +4,7 @@
 
 const profiles = require('../models/profiles'),
 
-	_ = require('lodash');
+    _ = require('lodash');
 
 exports.updateProfileLocation = function (req, res) {
     req.checkBody('location_country', 'Location country must be between 1 and 64 characters').optional().max(64);
@@ -17,9 +17,11 @@ exports.updateProfileLocation = function (req, res) {
     const errors = req.validationErrors(true);
     if (errors) return res.status(400).send(errors);
     else {
-    	profiles.updateProfileFromUser(req.body, 2)//req.user.id)
-    		.then(res.send({success: true}))
-    		.catch(err => {console.error("Error updating profile")})
+        profiles.updateProfileFromUser(req.body, 2)//req.user.id)
+            .then(res.send({success: true}))
+            .catch(err => {
+                console.error("Error updating profile")
+            })
     }
 };
 
@@ -33,15 +35,19 @@ exports.updateProfilePicture = function (req, res) {
     if (errors) return res.status(400).send(errors);
     else {
         if (req.user.moderator) {
-        	profiles.updateProfilePicture(req.body.picture, 2)//req.body.profile_id)
-    		.then(res.send({success: true}))
-        	.catch(err => {console.error("Error updating profile picture")})
+            profiles.updateProfilePicture(req.body.picture, 2)//req.body.profile_id)
+                .then(res.send({success: true}))
+                .catch(err => {
+                    console.error("Error updating profile picture")
+                })
         } else {
-        	let object = req.body.picture || req.body;
-        	console.log("else")
-        	profiles.updateProfileFromUser(object, 2)//req.user.id)
-			.then(res.send({success: true}))
-        	.catch(err => {console.error("Error updating profile")})
+            let object = req.body.picture || req.body;
+            console.log("else")
+            profiles.updateProfileFromUser(object, 2)//req.user.id)
+                .then(res.send({success: true}))
+                .catch(err => {
+                    console.error("Error updating profile")
+                })
         }
     }
 };

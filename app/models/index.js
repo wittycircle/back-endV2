@@ -19,7 +19,10 @@ exports.TABLES = {
     USER_EXPERIENCES: 'user_experiences',
     USER_FOLLOWERS: 'user_followers',
     ACCOUNT_VALIDATION: 'account_validation',
+    RESET: 'reset_passwords',
     RANK: 'rank_of_the_day',
     INVITATION: 'invitation',
-    FIRST_LOG: 'first_log'
+    FIRST_LOG: 'first_log',
+    PROJECTS: 'projects',
+    PROJECT_NETWORK: 'project_network'
 };

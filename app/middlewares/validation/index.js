@@ -4,7 +4,7 @@
 
 'use strict';
 
-const expressValidator = require('express-validator'),
+const Validator = require('express-validator'),
     error = {
         error: '',
         error_description: ''
@@ -12,27 +12,39 @@ const expressValidator = require('express-validator'),
     validation_error = {
         error: 'validation',
         error_description: []
-    };
+    },
+    Joi = require('joi'),
+    _ = require('lodash');
 
 exports.schemas = {
-    auth: require('./schemas/auth')
+    auth: require('./schemas/auth'),
+    profile: require('./schemas/profile'),
+    user: require('./schemas/user'),
+    project: require('./schemas/project')
 };
 
-exports.validator = expressValidator();
+const error_formatter = err => {
+    return {
+        error: 'validation',
+        error_description: _.map(err.details, detail => {
+            return {
+                field: detail.path,
+                msg: detail.message,
+                value: detail.context.value || 'none'
+            }
+        })
+    }
+};
 
 exports.validate = (schema) => (req, res, next) => {
-    if (typeof schema !== 'object') throw 'No schema specified for validation middleware';
-
-    req.validate(schema);
-
-    req.getValidationResult().then(result => {
-        if (result.isEmpty())
+    Joi.validate(req.body, schema, {
+        abortEarly: false
+    }, (err, value) => {
+        if (err)
+            res.send(error_formatter(err));
+        else if (value)
             next();
-        else {
-            res.send({
-                error: 'validation',
-                error_description: result.array()
-            });
-        }
-    });
+        else
+            throw 'Empty body'
+    })
 };

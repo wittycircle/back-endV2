@@ -7,7 +7,7 @@
 const joi = require('joi');
 
 const validation_error_description_schema = joi.object().keys({
-    param: joi.string().required(),
+    field: joi.string().required(),
     msg: joi.string().required(),
     value: joi.string().required()
 });

@@ -13,7 +13,7 @@ const Strategy = {
     bcrypt = require('bcrypt-nodejs'),
     session = require('../middlewares/session').session,
     users = require('../models/users'),
-    schemas = require('../middlewares/validation').schemas;
+    config = require('../private').social_auth; //automatically selects prod or dev config
 
 module.exports = function (passport) {
 
@@ -41,6 +41,26 @@ module.exports = function (passport) {
                         return done(null, resp);
                 }
             )
+        }
+    ));
+
+    passport.use(new Strategy.facebook({
+            passReqToCallback: true,
+            clientID: config.facebook.clientID,
+            clientSecret: config.facebook.clientSecret,
+            callbackURL: config.facebook.callbackURL
+        }, (req, accessToken, refreshToken, profile, done) => {
+            //todo implement
+        }
+    ));
+
+    passport.use(new Strategy.google({
+            passReqToCallback: true,
+            clientID: config.google.clientID,
+            clientSecret: config.google.clientSecret,
+            callbackURL: config.google.callbackURL
+        }, (req, accessToken, refreshToken, profile, done) => {
+            //todo implement
         }
     ));
 
