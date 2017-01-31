@@ -14,36 +14,23 @@ const   user = require('../models/users'),
     // pf = require('../utils/profile_functions');
 
 exports.getUserShare = (req, res) => {
-    req.checkParams('user_id', 'username must be an integer.').isInt();
+    user.getUserShare(req.user_id).then(social_share => {
+        if (!social_share[0].social_share)
+            res.send({success: false});
+        else
+            res.send({success: true})
+    }).catch(err => {
 
-    const errors = req.validationErrors(true);
-    if (errors)
-        return res.status(400).send(errors);
-    else {
-        user.getUserShare(req.user_id).then(social_share => {
-            if (!social_share[0].social_share)
-                res.send({success: false});
-            else
-                res.send({success: true})
-        }).catch(err => {
-
-            console.error ("Could not get social share")
-            res.location(home)
-            res.send({success:false})
-        });
-    }
+        console.error ("Could not get social share")
+        res.location(home)
+        res.send({success:false})
+    });
 };
 
 exports.updateUserShare = (req, res) => {
-    // req.checkParams('user_id', 'username must be an integer.').isInt();
-    const errors = req.validationErrors(true);
-    if (errors)
-        return res.status(400).send(errors);
-    else {
-        user.updateUser({social_share: 1}, {id: req.user_id})
-            .then(res.send({success:true}))
-            .catch(err => {console.err ("Error updating user social share")})
-    }
+    user.updateUser({social_share: 1}, {id: req.user_id})
+        .then(res.send({success:true}))
+        .catch(err => {console.err ("Error updating user social share")})
 }
 
 exports.getUsersValidateMail = (req, res) => {
@@ -98,7 +85,7 @@ if (!req.user_id) {
 //v1 : getUserIdByProfileId
 exports.getUserFromProfile = (req, res) => {
     user.getUserFromProfile(req.params.profile_id)
-    .then((id) => res.send({success: true, content: id[0] })) //id or id[0], to test
+    .then((id) => res.send({success: true, content: id[0] }))
     .catch(console.error("Could not get user from profile"))
 
 }
@@ -117,8 +104,6 @@ exports.getProfileId = (req, res) => {
     .catch(console.error("Could not get profile"))
 }
 
-//not done yet //===****==
-
 exports.getUsers = (req, res) => {
     user.getUsers()
     .then(users => {
@@ -134,17 +119,10 @@ exports.getProfiles = (req, res) => {
 }
 
 exports.getUser = (req, res) => { //Unused as of now
-   req.checkParams('id', 'id parameter must be an integer.').isInt().min(1);
-
-    const errors = req.validationErrors(true);
-    if (errors) {
-        return res.status(400).send(errors);
-    } else {
-        user.getUser(req.params.id)
-            .then(user => {
-                res.send(user)
-            }).catch(err => {console.error(err)})
-        }
+    user.getUser(req.params.id)
+        .then(user => {
+            res.send(user)
+        }).catch(err => {console.error(err)})
 }
 
 exports.getCardProfile = (req, res) => {
@@ -155,12 +133,6 @@ exports.getCardProfile = (req, res) => {
 }
 
 exports.getCardProfileHome = (req, res) => {
-    req.checkBody('ip', "error").isString();
-
-    const errors = req.validationErrors(true);
-    if (errors) {
-        return res.status(400).send(errors);
-    }
     geo.getLocation(req.body, function (city, state, country) {
         console.log("INFO: ", city,  state, country)
         user.cardProfileHome(city, state, country)
@@ -170,12 +142,6 @@ exports.getCardProfileHome = (req, res) => {
 }
 
 exports.getUserByEmail = (req, res) => {
-    req.checkParams('email', 'email parameter must be an integer.').isString().max(128).min(1);
-
-    const errors = req.validationErrors(true);
-    if (errors){
-        return res.status(400).send(errors);
-    }
     user.getUserByEmail(req.params.email)
         .then((r) => {
            if (r) { res.send(r) }
@@ -186,12 +152,6 @@ exports.getUserByEmail = (req, res) => {
 
 
 exports.getUserbyUsername = (req, res) => {
-    req.checkParams('username', 'username must be a string.').isString().max(128).min(1);
-
-    const errors = req.validationErrors(true);
-    if (errors) {
-        return res.status(400).send(errors);
-    }
     user.getUserByUsername(req.params.username)
     .then((r) => {
         if (r) { res.send(r) } 
@@ -201,27 +161,15 @@ exports.getUserbyUsername = (req, res) => {
 }
 
 exports.updateProfileView = (req, res) => {
-    req.checkParams('username', 'username must be a string').isString().min(1).max(128);
-
-    const errors = req.validationErrors(true);
-    if (errors) return res.status(400).send(errors);
         user.updateProfileView(req.params.username)
         .then((r) => {
             if (r) { res.send({success: true, toto: r.insertId, tata: "id: " + id}) }
             else { res.send({success: false, msg: "Unknown username"}) }
         })
         .catch((e) => {console.error(e)})
-
 }
 
 exports.searchUser = (req, res) => {
-    req.checkParams('search', 'Search must be a string between 1 and 128 characters.').isString().max(128).min(1);
-    req.sanitize('search').Clean();
-
-    const errors = req.validationErrors(true);
-    if (errors) {
-        return res.status(400).send(errors);
-    }
     user.searchUser(req.params.search)
     .then((r) => {
         if (r) { res.send(r) }
@@ -255,9 +203,6 @@ const checkUsername = (first, last, pswd) => {
 }
 
 exports.createUser = (req, res) => {
-    const errors = req.validationErrors(true);
-    if (errors) { return res.status(400).send(errors) };
-
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
            res.send({sucess: false, msg: 'Email is already taken', exist: exist});
@@ -280,23 +225,14 @@ exports.createUser = (req, res) => {
 }
 
 exports.updateUser = (req, res) => { //validation will be extern
-    var errors      = req.validationErrors(true);
-    var newInfo     =  {
-    email   : req.body.email,
-    username: req.body.username
-    };
-    var newName     = {
-    first_name  : req.body.first_name,
-    last_name   : req.body.last_name
-    };
+    const newInfo = {email : req.body.email, username: req.body.username },
+        newName = {first_name : req.body.first_name, last_name : req.body.last_name };
 
 //remove three lines below (was for testing with postman, will be in test chakram directly)
     req.user = {}
     req.user.username = "Toto"
     req.user.email = "Tata@tata.com"
 
-
-    if (errors) return res.status(400).send(errors);
     if ((req.user.username !== req.body.username) || (req.user.email !== req.body.email)) {
         Promise.all([user.getFromUser(['id', 'username', 'email'], {email: req.body.email}),
                 user.getFromUser(['id', 'username', 'email'], {username: req.body.username})])
@@ -310,16 +246,37 @@ exports.updateUser = (req, res) => { //validation will be extern
                     Promise.all([user.updateProfileFromUser(newName, req.params.id),
                                 user.updateUser(newInfo, {id: req.params.id}) ])
                     .then((result) => {
-                        console.log("WHRE THING SIET")
                         req.user.email = req.body.email;
                         req.user.username = req.body.username;
                         res.send({result: result, success: true, data: req.user});
-                    }).catch((e) => console.error("NOPE PROLEM", e))
+                    }).catch((e) => console.error(e))
                 }
             })
     } else {
         user.updateProfileFromUser(newName, req.params.id)
         .then((result) => res.send({"ELSE":"ELSE", result: result, success: true, data: req.user}))
     }
-
 }
+
+exports.updateUserCredentials = (req, res) => {
+    if (typeof req.body.password === 'undefined')
+        res.send({err: "Undefined password"})
+
+    const newSetting = {password: bcrypt.hashSync(req.body.password), email: req.body.email };
+    user.getFromUser(['password'], {id: req.param.id})
+        .then(pswd => {
+            if (bcrypt.compareSync(req.body.curentPass, pswd)) {
+                user.updateUser(newSetting, {id: req.params.id})
+                .then(res.send({success: true}))
+            } else {
+                res.send({success: false, msg: "Current password does not match"})
+            }
+        }).catch((e) => console.error(e))
+}
+
+exports.deleteUser = (req, res) => {
+    user.deleteFromProfile({id: req.params.id})
+        .then(res.send({success: true}))
+        .catch((e) => console.error(e))
+}
+

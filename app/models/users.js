@@ -36,6 +36,12 @@ const profileStuff = db(TABLES.USER_PROFILES)
 
 // end helper
 
+exports.getFromUser = (need, info) => {
+	return db(TABLES.USERS)
+	.select(need)
+	.where(info)
+}
+
 exports.updateUser = (info, cond) => {
 	return db(TABLES.USERS).update(info).where(cond)
 }
@@ -239,12 +245,10 @@ exports.updateInvitation = (email) => {
 			.andWhere('status', 'pending')
 }
 
-// Update profile stuff
-
-
-exports.getFromUser = (need, info) => {
-	return db(TABLES.USERS)
-	.select(need)
-	.where(info)
+exports.deletefromProfile = (cond) => {
+	return db(TABLES.USER_PROFILES + 'as p')
+			.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
+			.where()
+			.del()
 }
 //===****==
