@@ -3,7 +3,7 @@
  */
 
 const profiles = require('../models/profiles'),
-
+    users = require('../models/users'),
 	_ = require('lodash');
 
 exports.updateProfileLocation = function (req, res) {

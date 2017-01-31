@@ -4,7 +4,7 @@
 
 'use strict';
 
-const {db, TABLES} = require('./index'),
+const {db, TABLES} = require('./index');
     // user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
