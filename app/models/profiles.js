@@ -18,7 +18,4 @@ exports.updateProfilePicture = (body, id) => {
 	return db(TABLES.USER_PROFILES)
 		.update(body)
 		.where({'id': id})
-		//example :
-// update `profiles` set `profile_picture` = ?, `profile_picture_icon` = ? where `id`
- // in (select `profile_id` from `users` where `id` = ?)
 }

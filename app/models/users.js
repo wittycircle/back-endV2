@@ -36,10 +36,10 @@ const profileStuff = db(TABLES.USER_PROFILES)
 
 // end helper
 
-exports.getFromUser = (need, info) => {
+exports.getFromUser = (need, cond) => {
 	return db(TABLES.USERS)
 	.select(need)
-	.where(info)
+	.where(cond)
 }
 
 exports.updateUser = (info, cond) => {
@@ -248,7 +248,18 @@ exports.updateInvitation = (email) => {
 exports.deletefromProfile = (cond) => {
 	return db(TABLES.USER_PROFILES + 'as p')
 			.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
-			.where()
+			.where(cond)
 			.del()
 }
-//===****==
+//===****== Auth stuff
+
+exports.resetPass = (stuff) => {
+	return db(TABLES.RESET)
+			.insert(stuff)			
+}
+
+exports.getUserReset = (stuff, token) => {
+	return db(TABLES.RESET)
+			.select(stuff)
+			.where(token)
+}
