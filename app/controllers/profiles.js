@@ -33,14 +33,19 @@ exports.updateProfile = (req, res, next) => {
 exports.getProfileLikes = (req, res, next) => {
     profiles.getProfileLikes(req.params.id)
     .then(([r]) => {
-        res.send({like: r})
+        res.send({like: {count: r.count, who: r.who.split(',')}})
     })
 }
 
 exports.likeProfile = (req, res, next) => {
-    profiles.likeProfile(req.params.id, req.user.id)
+    profiles.likeProfile(req.params.id, 3719)
     .then(res.send({success: true}))
     .catch(err => next(err))
+}
+
+exports.unlikeProfile = (req, res, next) => {
+    profiles.unlikeProfile(req.params.id, 3719)
+    .then(res.send({success: true}))
 }
 
 // exports.updateLocation = function (req, res) {

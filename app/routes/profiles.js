@@ -21,7 +21,7 @@ router
     .route('/profiles/:id/like')
     .post(profiles.likeProfile)
     .get(profiles.getProfileLikes)
-    // .delete(profiles.deleteProfile);
+    .delete(profiles.unlikeProfile);
 
 // router
 //     .route('/profiles/:id/location')

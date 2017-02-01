@@ -37,6 +37,8 @@ exports.updateProfile = (id, stuff) => {
         .where(id)
 }
 
+//Like 
+
 exports.getProfileLikes = (id) => {
      return db.from(TABLES.USER_PROFILES + ' as p')
         .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
@@ -47,10 +49,15 @@ exports.getProfileLikes = (id) => {
         .where('u.id', id)
 }
 
-exports.likeProfile = (id, followed_id) => {
+exports.likeProfile = (followed_id, id) => {
     return db(TABLES.USER_LIKES)
         .insert({
             user_id: id,
             follow_user_id: followed_id,
         })
+}
+
+exports.unlikeProfile = (followed_id, id) => {
+    return db(TABLES.USER_LIKES).del()
+        .where({user_id: id, follow_user_id: followed_id})
 }
