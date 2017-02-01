@@ -43,10 +43,11 @@ const express = require('express'),
 
 /**
  * @apiDefine ProfileUpdateStub
- * @apiParam {Object} profile
+ * @apiParam {Object} profile                 An object containing fields to be updated
  * @apiParam {String} [profile.first_name]    User first name
  * @apiParam {String} [profile.last_name]     User last name
  * @apiParam {String} [profiles.about]        About User
+ *
  */
 
 /**
