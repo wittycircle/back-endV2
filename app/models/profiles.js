@@ -5,17 +5,28 @@
 'use strict';
 
 const {db, TABLES} = require('./index');
-    // user = require('./users');
+// user = require('./users');
 
 exports.updateProfileFromUser = (body, id) => {
-	return db.update(body)
-		.whereIn('id', function() {
-			this.select('profile_id').from(TABLES.USERS).where({'id':id})
-		}).from(TABLES.USER_PROFILES)
-	}
- 
+    return db.update(body)
+        .whereIn('id', function () {
+            this.select('profile_id').from(TABLES.USERS).where({'id': id})
+        }).from(TABLES.USER_PROFILES)
+};
+
 exports.updateProfilePicture = (body, id) => {
-	return db(TABLES.USER_PROFILES)
-		.update(body)
-		.where({'id': id})
-}
+    return db(TABLES.USER_PROFILES)
+        .update(body)
+        .where({'id': id})
+};
+
+exports.getProfiles = () => {
+    return db(TABLES.USER_PROFILES)
+        .select(['id', 'first_name', 'last_name', 'profile_picture', 'cover_picture', 'about', 'description']);
+};
+
+exports.getProfileBy = (by) => {
+    return db(TABLES.USER_PROFILES)
+        .select(['id', 'first_name', 'last_name', 'profile_picture', 'cover_picture', 'about', 'description'])
+        .where(by);
+};

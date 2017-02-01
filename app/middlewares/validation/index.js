@@ -4,16 +4,7 @@
 
 'use strict';
 
-const Validator = require('express-validator'),
-    error = {
-        error: '',
-        error_description: ''
-    },
-    validation_error = {
-        error: 'validation',
-        error_description: []
-    },
-    Joi = require('joi'),
+const Joi = require('joi'),
     _ = require('lodash');
 
 exports.schemas = {

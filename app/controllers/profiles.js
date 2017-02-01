@@ -3,10 +3,28 @@
  */
 
 const profiles = require('../models/profiles'),
-
     _ = require('lodash');
 
-exports.updateProfileLocation = function (req, res) {
+exports.getProfile = (req, res, next) => {
+    profiles.getProfileBy({'id': req.params.id})
+        .then(profile => {
+            if (_.isEmpty(profile))
+                next({error: 'invalid_id'});
+            else
+                res.send({profile: profile[0]});
+        })
+        .catch(err => next(err));
+};
+
+exports.getProfiles = (req, res, next) => {
+    profiles.getProfiles()
+        .then(profiles => res.send({
+            profiles: profiles
+        }))
+        .catch(err => next(err))
+};
+
+exports.updateLocation = function (req, res) {
     req.checkBody('location_country', 'Location country must be between 1 and 64 characters').optional().max(64);
     req.checkBody('location_city', 'Location city must be between 1 and 64 characters').optional().max(64);
     req.checkBody('location_state', 'Location state must be between 1 and 64 characters').optional().max(64);
@@ -42,7 +60,7 @@ exports.updateProfilePicture = function (req, res) {
                 })
         } else {
             let object = req.body.picture || req.body;
-            console.log("else")
+            console.log("else");;;;;;;;;;;;;;;;;;;;;;;;;;;
             profiles.updateProfileFromUser(object, 2)//req.user.id)
                 .then(res.send({success: true}))
                 .catch(err => {

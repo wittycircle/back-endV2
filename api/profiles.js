@@ -25,8 +25,7 @@ const express = require('express'),
  * @apiSuccess {Number} profiles.id              Profile id
  * @apiSuccess {String} profiles.first_name      User first name
  * @apiSuccess {String} profiles.last_name       User last name
- * @apiSuccess {String} profiles.picture         User profile picture
- * @apiSuccess {String} profiles.gender          User gender
+ * @apiSuccess {String} profiles.profile_picture         User profile picture
  * @apiSuccess {String} profiles.about           About User
  * @apiSuccess {String} profiles.cover_picture   User cover picture
  */
@@ -37,10 +36,17 @@ const express = require('express'),
  * @apiSuccess {Number} profile.id              Profile id
  * @apiSuccess {String} profile.first_name      User first name
  * @apiSuccess {String} profile.last_name       User last name
- * @apiSuccess {String} profile.picture         User profile picture
- * @apiSuccess {String} profile.gender          User gender
+ * @apiSuccess {String} profile.profile_picture User profile picture
  * @apiSuccess {String} profile.about           About User
  * @apiSuccess {String} profile.cover_picture   User cover picture
+ */
+
+/**
+ * @apiDefine ProfileUpdateStub
+ * @apiSuccess {Object} profile
+ * @apiSuccess {String} [profile.first_name]    User first name
+ * @apiSuccess {String} [profile.last_name]     User last name
+ * @apiSuccess {String} [profiles.about]        About User
  */
 
 /**
@@ -89,6 +95,8 @@ router
      * @apiUse ProfileId
      *
      * @apiPermission owner
+     *
+     * @apiUse ProfileUpdateStub
      */
     .put();
 

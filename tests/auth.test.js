@@ -55,7 +55,7 @@ describe('Local auth strategy', function () {
     });
 
     it('should match response format', function () {
-        return expect(user.ok).to.joi(schemas.auth.auth_response_schema);
+        return expect(user.ok).to.joi(schemas.auth.response_schema);
     });
 
     it('should return 400 when the email doesn\'t exist', function () {
