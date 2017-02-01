@@ -210,13 +210,15 @@ exports.createUser = (req, res) => {
         checkUsername(req.body.first_name, req.body.last_name, req.body.password)
         .then(({firstName, lastName, username, password}) => {
             user.createProfile(firstName, lastName)
-               .then((profileId) =>  {
+               .then(([profileId]) =>  {
                     user.createUser(profileId, req.body.email, username, password)
-                    .then(user.updateProfile({username:username}, profileId))
+                    .then(([userId]) => {
+                    user.updateProfile({username:username}, profileId)
                     .then(user.updateInvitation)
-                    .then(res.send({success: true, result: "created"}))
+                    .then(res.send({user: {id: userId, profile_id: profileId}}))
                     .catch((e) => { console.error(e) })
                   })
+                })
            }).catch((e) => {console.error(e)})
        }
         // mailing.sendWelcomeMail();

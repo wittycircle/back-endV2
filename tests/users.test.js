@@ -125,27 +125,25 @@ describe('Get users', function () {
     })
 });
 
-describe('Create users', function () {
+describe.only('Create users', function () {
 	let new_user, existing_user;
-	before('Create a new user', function () {
+	before('Create a new user', function (done) {
 		db.del().from(TABLES.USERS).where({email: 'cooki@cook.com'}).return()
-			const data = {
-			email: 'cooki@cook.com',
-			first_name: 'Toto',
-			last_name: 'McTata',
-			password: 'whatever'
-		};
-		new_user = chakram.post(home + '/users',  data)
+		new_user = chakram.post(home + '/users', 
+		{email: 'cooki@cook.com',
+		first_name: 'Toto',
+		last_name: 'McTata',
+		password: 'whatever'})
+		done()
 	})
-	before ('Already in db', function() {
-		existing = {
-			email: 'raphael@wittycircle.com', 
-			first_name: 'toto',
-			last_name: 'tt',
-			password:  'whocares'
-		}
-		existing_user = chakram.post(home + '/users',  existing)	
+	before ('Already in db', function(done) {
+		existing_user = chakram.post(home + '/users',  {email: 'raphael@wittycircle.com'})
+		done()
 	})
+	after('Clean up', function() {
+		db.del().from(TABLES.USERS).where({email: 'cooki@cook.com'}).return()
+	})
+
 	it ('Should return 200', function () {
 		return expect(new_user).to.have.status(200)
 	})
