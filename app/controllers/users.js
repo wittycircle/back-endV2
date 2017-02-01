@@ -205,7 +205,7 @@ const checkUsername = (first, last, pswd) => {
 exports.createUser = (req, res) => {
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
-           res.send({sucess: false, msg: 'Email is already taken', exist: exist});
+           res.status(400).send({success: false, msg: 'Email is already taken', exist: exist});
    } else {
         checkUsername(req.body.first_name, req.body.last_name, req.body.password)
         .then(({firstName, lastName, username, password}) => {
