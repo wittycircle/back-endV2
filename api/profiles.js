@@ -43,10 +43,10 @@ const express = require('express'),
 
 /**
  * @apiDefine ProfileUpdateStub
- * @apiSuccess {Object} profile
- * @apiSuccess {String} [profile.first_name]    User first name
- * @apiSuccess {String} [profile.last_name]     User last name
- * @apiSuccess {String} [profiles.about]        About User
+ * @apiParam {Object} profile
+ * @apiParam {String} [profile.first_name]    User first name
+ * @apiParam {String} [profile.last_name]     User last name
+ * @apiParam {String} [profiles.about]        About User
  */
 
 /**
@@ -90,6 +90,7 @@ router
      * @apiPermission owner
      *
      * @apiUse ProfileUpdateStub
+     * @apiUse Success
      */
     .put();
 
