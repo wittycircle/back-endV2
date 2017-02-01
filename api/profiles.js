@@ -66,14 +66,7 @@ router
      *
      * @apiUse ProfileListStub
      */
-    .get()
-    /**
-     * @api {post} /profiles Create profile
-     * @apiName CreateProfile
-     * @apiGroup Profile
-     *
-     */
-    .post();
+    .get();
 
 router
     .route('/profiles/:id')
