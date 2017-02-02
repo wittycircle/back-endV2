@@ -33,8 +33,9 @@ exports.updateProfile = (req, res, next) => {
 //likes
 exports.getProfileLikes = (req, res, next) => {
     profiles.getProfileLikes(req.params.id)
-    .then(([r]) => {
-        res.send({like: {count: r.count, who: r.who.split(',')}})
+    .then((r) => {
+        res.send({profiles: r})
+        // res.send({like: {count: r.count, who: r.who.split(',')}})
     }).catch(err => next(err))
 }
 

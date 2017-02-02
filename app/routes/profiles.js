@@ -10,25 +10,21 @@ const express = require('express'),
     {validate, validateParam, schemas} = require('../middlewares/validation');
 
 
-router
-    .route('/profiles')
+router.route('/profiles')
     .get(profiles.getProfiles);
 
 router.param('id', validateParam(schemas.params.id));
 
-router
-    .route('/profiles/:id')
+router.route('/profiles/:id')
     .get(profiles.getProfile)
     .put(validate(schemas.profile.update), profiles.updateProfile);
 
-router
-    .route('/profiles/:id/like')
-.get(profiles.likeProfile)
-.post(profiles.getProfileLikes)
+router.route('/profiles/:id/like')
+.post(profiles.likeProfile)
+.get(profiles.getProfileLikes)
 .delete(profiles.unlikeProfile);
 
-router
-    .route('/profiles/:id/location')
+router.route('/profiles/:id/location')
     .get(profiles.getLocation)
     .put(profiles.updateLocation);
 
