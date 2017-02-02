@@ -8,7 +8,9 @@ const express = require('express');
 let router = express.Router();
 
 router.use(require('./users'));
-router.use(require('./profiles'));
+router.use('/api', require('./profiles'));
 router.use('/api/auth', require('./auth'));
+
+router.use(require('../middlewares/error').error);
 
 module.exports = router;

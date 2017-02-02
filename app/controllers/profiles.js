@@ -5,6 +5,17 @@
 const profiles = require('../models/profiles'),
     _ = require('lodash');
 
+exports.getProfile = (req, res, next) => {
+    profiles.getProfileBy({'id': req.params.id})
+        .then(profile => {
+            if (_.isEmpty(profile))
+                next({code: 404});
+            else
+                res.send({profile: profile[0]});
+        })
+        .catch(err => next(err));
+};
+
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
         .then(profiles => res.send({
@@ -13,16 +24,25 @@ exports.getProfiles = (req, res, next) => {
         .catch(err => next(err))
 };
 
-exports.getProfile = (req, res, next) => {
-    profiles.getProfileBy({'id': req.params.id})
-        .then(profile => {
-            if (_.isEmpty(profile))
-                next({error: 'invalid_id'});
-            else
-                res.send({profile: profile[0]});
-        })
-        .catch(err => next(err));
-};
+
+// exports.getProfiles = (req, res, next) => {
+//     profiles.getProfiles()
+//         .then(profiles => res.send({
+//             profiles: profiles
+//         }))
+//         .catch(err => next(err))
+// };
+
+// exports.getProfile = (req, res, next) => {
+//     profiles.getProfileBy({'id': req.params.id})
+//         .then(profile => {
+//             if (_.isEmpty(profile))
+//                 next({error: 'invalid_id'});
+//             else
+//                 res.send({profile: profile[0]});
+//         })
+//         .catch(err => next(err));
+// };
 
 exports.updateProfile = (req, res, next) => {
     profiles.updateProfile({id: req.params.id}, req.body.profile)
