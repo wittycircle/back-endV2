@@ -36,30 +36,31 @@ exports.updateProfile = (stuff, cnd) => {
     return db(TABLES.USER_PROFILES)
         .update(stuff)
         .where(cnd)
-}
+};
 
 exports.getProfileLikes = (id) => {
     let sub1 = db.select('l.follow_user_id')
                 .from(TABLES.USER_LIKES + ' as l')
-                .where('l.user_id', 1).as('k')
+                .where('l.user_id', 1).as('l')
 
 return db.select(p_array)
         .from(sub1)
-        .join(TABLES.USER_PROFILES + ' as p', 'k.follow_user_id', 'p.id')
+        .join(TABLES.USER_PROFILES + ' as p', 'l.follow_user_id', 'p.id')
 
-}
+};
+
 exports.likeProfile = (followed_id, id) => {
     return db(TABLES.USER_LIKES)
         .insert({
             user_id: id,
             follow_user_id: followed_id,
         })
-}
+};
 
 exports.unlikeProfile = (followed_id, id) => {
     return db(TABLES.USER_LIKES).del()
         .where({user_id: id, follow_user_id: followed_id})
-}
+};
 
 exports.getLocation = (p_id) => {
     return db(TABLES.USER_PROFILES)
@@ -67,4 +68,4 @@ exports.getLocation = (p_id) => {
                 'location_city as city',
                 'location_state as state'])
         .where({id: p_id})
-}
+};
