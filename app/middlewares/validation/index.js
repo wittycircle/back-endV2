@@ -11,7 +11,8 @@ exports.schemas = {
     auth: require('./schemas/auth'),
     profile: require('./schemas/profile'),
     user: require('./schemas/user'),
-    project: require('./schemas/project')
+    project: require('./schemas/project'),
+    params: require('./schemas/params')
 };
 
 const error_formatter = err => {
@@ -38,4 +39,17 @@ exports.validate = (schema) => (req, res, next) => {
         else
             throw 'Empty body'
     })
+};
+
+exports.validateParam = (schema) => (req, res, next, param) => {
+    Joi.validate(param, schema, {
+        abortEarly: false //might not be useful here
+    }, (err, value) => {
+        if (err)
+            res.status(404).send(error_formatter(err));
+        else if (value)
+            next();
+        else
+            throw 'Empty param'
+    });
 };

@@ -9,7 +9,7 @@ exports.getProfile = (req, res, next) => {
     profiles.getProfileBy({'id': req.params.id})
         .then(profile => {
             if (_.isEmpty(profile))
-                next({error: 'invalid_id'});
+                next({code: 404});
             else
                 res.send({profile: profile[0]});
         })
@@ -24,23 +24,11 @@ exports.getProfiles = (req, res, next) => {
         .catch(err => next(err))
 };
 
-exports.updateLocation = function (req, res) {
-    req.checkBody('location_country', 'Location country must be between 1 and 64 characters').optional().max(64);
-    req.checkBody('location_city', 'Location city must be between 1 and 64 characters').optional().max(64);
-    req.checkBody('location_state', 'Location state must be between 1 and 64 characters').optional().max(64);
-    req.sanitize('location_state').Clean(true);
-    req.sanitize('location_city').Clean(true);
-    req.sanitize('location_country').Clean(true);
+exports.updateProfile = (req, res, next) => {
 
-    const errors = req.validationErrors(true);
-    if (errors) return res.status(400).send(errors);
-    else {
-        profiles.updateProfileFromUser(req.body, 2)//req.user.id)
-            .then(res.send({success: true}))
-            .catch(err => {
-                console.error("Error updating profile")
-            })
-    }
+};
+
+exports.updateLocation = function (req, res) {
 };
 
 exports.updateProfilePicture = function (req, res) {
@@ -60,7 +48,7 @@ exports.updateProfilePicture = function (req, res) {
                 })
         } else {
             let object = req.body.picture || req.body;
-            console.log("else");;;;;;;;;;;;;;;;;;;;;;;;;;;
+            console.log("else");
             profiles.updateProfileFromUser(object, 2)//req.user.id)
                 .then(res.send({success: true}))
                 .catch(err => {

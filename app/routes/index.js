@@ -9,4 +9,7 @@ let router = express.Router();
 
 router.use('/api/auth', require('./auth'));
 router.use('/api', require('./profiles'));
+
+router.use(require('../middlewares/error').error);
+
 module.exports = router;

@@ -29,16 +29,10 @@ exports.localLogin = (req, res, next) => {
                 tg: 'tg'
             });
         else if (_.isEmpty(user))
-            res.status(400).json({
-                error: 'malformed_request',
-                error_description: 'Your request is invalid'
-            });
+            next({code: 400});
         else
             req.logIn(user, err => {
-                if (err) res.status(400).json({
-                    error: 'malformed_request',
-                    error_description: 'Your request is invalid'
-                });
+                if (err) next({code: 400});
                 else
                     res.json({
                         auth: _.pick(req.session.passport.user, ['token']),
@@ -55,7 +49,7 @@ exports.resetPassword = (req, res) => {
     user.getFromUser(['id'], {email: req.body.email_reset})
         .then(r => {
             if (!r.length) {
-                res.status(400).send({message: "No account with this email"});
+                next(['user.not_found', 'No account with this email']);
             } else {
                 user.resetPass({token: token, user_id: r[0].id, user_email: req.body.email_reset})
                     .then(res.send({success: true}))

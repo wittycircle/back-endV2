@@ -17,7 +17,8 @@ router.route('/local')
 
 router.route('/google')
     .post(validate(schemas.auth.google), (req, res, next) => {
-        res.status(404).send({
+        next({
+            code: 404,
             error: 'unimplemented',
             error_description: 'This authentification strategy is not implemented yet!'
         })
@@ -25,7 +26,8 @@ router.route('/google')
 
 router.route('/facebook')
     .post((req, res, next) => {
-        res.status(404).send({
+        next({
+            code: 404,
             error: 'unimplemented',
             error_description: 'This authentification strategy is not implemented yet!'
         })

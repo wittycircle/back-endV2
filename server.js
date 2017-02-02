@@ -9,15 +9,12 @@ const http = require('http'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     passport = require('passport'),
-    debug = require('./app/middlewares/debug'),
-    error = require('./app/middlewares/error');
+    debug = require('./app/middlewares/debug');
 
 let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-
-app.use(error.error);
 
 app.use(logger('dev'));
 
