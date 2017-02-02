@@ -21,3 +21,4 @@ exports.profile = Joi.object().keys({
 exports.list = Joi.object().keys({
     profiles: Joi.array().items(detail).optional()
 });
+

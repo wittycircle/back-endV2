@@ -11,6 +11,8 @@ const chakram = require('chakram'),
         error: require('./schemas/error.schema')
     };
 
+chakram.addMethod('joi', require('chakram-joi'));
+
 describe('Profile list', function () {
     let profiles = {
         list: null
@@ -54,4 +56,12 @@ describe('Profile detail', function () {
     it('should return 404 on invalid resource id', function () {
         return expect(profile.invalid).to.have.status(404);
     })
+});
+
+describe('Profile like', function () {
+
+});
+
+describe('Profile location', function () {
+
 });

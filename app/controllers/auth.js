@@ -24,15 +24,12 @@ exports.logout = (req, res) => {
 
 exports.localLogin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-        if (err)
-            res.status(400).json({
-                tg: 'tg'
-            });
+        if (err) next(err);
         else if (_.isEmpty(user))
             next({code: 400});
         else
             req.logIn(user, err => {
-                if (err) next({code: 400});
+                if (err) next({code: 403});
                 else
                     res.json({
                         auth: _.pick(req.session.passport.user, ['token']),
@@ -54,7 +51,7 @@ exports.resetPassword = (req, res) => {
                 user.resetPass({token: token, user_id: r[0].id, user_email: req.body.email_reset})
                     .then(res.send({success: true}))
             }
-        }).catch((e) => console.error(e));
+        }).catch((e) => next(e));
     //mail stuff to do
 };
 

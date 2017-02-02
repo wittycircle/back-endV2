@@ -30,3 +30,26 @@ exports.getProfileBy = (by) => {
         .select(['id', 'first_name', 'last_name', 'profile_picture', 'cover_picture', 'about', 'description'])
         .where(by);
 };
+
+exports.getProfileLikes = (id) => {
+    return db.from(TABLES.USER_PROFILES + ' as p')
+        .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
+        .join(TABLES.USER_LIKES + ' as l', 'l.user_id', 'u.id')
+        .join(TABLES.USERS + ' as u2', 'u2.id', 'l.follow_user_id')
+        .select(db.raw('GROUP_CONCAT(DISTINCT u2.username) as who'))
+        .count('u.username as count')
+        .where('u.id', id)
+};
+
+exports.likeProfile = (followed_id, id) => {
+    return db(TABLES.USER_LIKES)
+        .insert({
+            user_id: id,
+            follow_user_id: followed_id,
+        })
+};
+
+exports.unlikeProfile = (followed_id, id) => {
+    return db(TABLES.USER_LIKES).del()
+        .where({user_id: id, follow_user_id: followed_id})
+};

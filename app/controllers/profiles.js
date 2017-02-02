@@ -25,35 +25,46 @@ exports.getProfiles = (req, res, next) => {
 };
 
 exports.updateProfile = (req, res, next) => {
-
+    profiles.updateProfile({id: req.params.id}, req.body.profile)
+        .then(res.send({success: true}))
+        .catch(err => next(err))
 };
 
-exports.updateLocation = function (req, res) {
+exports.getProfileLikes = (req, res, next) => {
+    profiles.getProfileLikes(req.params.id)
+        .then(([r]) => {
+            res.send({like: {count: r.count, who: r.who.split(',')}})
+        })
+        .catch(err => next(err));
 };
 
-exports.updateProfilePicture = function (req, res) {
-    req.checkBody('profile_picture', 'profile picture must be a string of characters').optional().max(128);
-    req.checkBody('profile_picture_icon', 'profile picture must be a string of characters').optional().max(256);
-    req.checkBody('cover_picture', 'cover picture must be a string of characters').optional().max(128);
-    req.checkBody('cover_picture_cards', 'cover picture cards must be a string').optional().max(258);
+exports.likeProfile = (req, res, next) => {
+    profiles.likeProfile(req.params.id, req.user.id)
+        .then(res.send({success: true}))
+        .catch(err => next(err))
+};
 
-    const errors = req.validationErrors(true);
-    if (errors) return res.status(400).send(errors);
-    else {
-        if (req.user.moderator) {
-            profiles.updateProfilePicture(req.body.picture, 2)//req.body.profile_id)
-                .then(res.send({success: true}))
-                .catch(err => {
-                    console.error("Error updating profile picture")
-                })
-        } else {
-            let object = req.body.picture || req.body;
-            console.log("else");
-            profiles.updateProfileFromUser(object, 2)//req.user.id)
-                .then(res.send({success: true}))
-                .catch(err => {
-                    console.error("Error updating profile")
-                })
-        }
-    }
+
+exports.unlikeProfile = (req, res, next) => {
+    profiles.unlikeProfile(req.params.id, req.user.id)
+        .then(res.send({success: true}))
+        .catch(err => next(err))
+};
+
+
+exports.updateProfile = (req, res, next) => {
+    profiles.updateProfile({id: req.params.id}, req.body.profile)
+        .then(res.send({success: true}))
+        .catch(err => next(err))
+};
+
+exports.getLocation = (req, res, next) => {
+    profiles.getLocation(id)
+        .then(([r]) => res.send({location: r}))
+};
+
+exports.updateLocation = (req, res, next) => {
+    profiles.updateProfileFromUser(req.body, 2)//req.user.id)
+        .then(res.send({success: true}))
+        .catch(err => next(err))
 };

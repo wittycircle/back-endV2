@@ -24,5 +24,6 @@ exports.TABLES = {
     INVITATION: 'invitation',
     FIRST_LOG: 'first_log',
     PROJECTS: 'projects',
+    USER_LIKES: 'user_followers',
     PROJECT_NETWORK: 'project_network'
 };
