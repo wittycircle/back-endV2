@@ -23,9 +23,9 @@ router
     .get(profiles.getProfileLikes)
     .delete(profiles.unlikeProfile);
 
-// router
-//     .route('/profiles/:id/location')
-//     .get(profiles.getLocation)
-//     .put(profiles.updateLocation);
+router
+    .route('/profiles/:id/location')
+    .get(profiles.getLocation)
+    .put(profiles.updateLocation);
 
 module.exports = router;

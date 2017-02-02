@@ -48,28 +48,33 @@ exports.unlikeProfile = (req, res, next) => {
     .then(res.send({success: true}))
 }
 
-// exports.updateLocation = function (req, res) {
-//         profiles.updateProfileFromUser(req.body, 2)//req.user.id)
-//             .then(res.send({success: true}))
-//             .catch(err => {
-//                 console.error("Error updating profile")
-//             })
-// };
+exports.getLocation = (req, res, next) => {
+    profiles.getLocation(id)
+    .then(([r]) => res.send({location: r}))
+}
 
-// exports.updateProfilePicture = function (req, res) {
-//         if (req.user.moderator) {
-//             profiles.updateProfilePicture(req.body.picture, 2)//req.body.profile_id)
-//                 .then(res.send({success: true}))
-//                 .catch(err => {
-//                     console.error("Error updating profile picture")
-//                 })
-//         } else {
-//             let object = req.body.picture || req.body;
-//             console.log("else");;;;;;;;;;;;;;;;;;;;;;;;;;;
-//             profiles.updateProfileFromUser(object, 2)//req.user.id)
-//                 .then(res.send({success: true}))
-//                 .catch(err => {
-//                     console.error("Error updating profile")
-//                 })
-//         }
-// };
+exports.updateLocation = function (req, res) {
+        profiles.updateProfileFromUser(req.body, 2)//req.user.id)
+            .then(res.send({success: true}))
+            .catch(err => {
+                console.error("Error updating profile")
+            })
+};
+
+exports.updateProfilePicture = function (req, res) {
+        if (req.user.moderator) {
+            profiles.updateProfilePicture(req.body.picture, 2)//req.body.profile_id)
+                .then(res.send({success: true}))
+                .catch(err => {
+                    console.error("Error updating profile picture")
+                })
+        } else {
+            let object = req.body.picture || req.body;
+            console.log("else");;;;;;;;;;;;;;;;;;;;;;;;;;;
+            profiles.updateProfileFromUser(object, 2)//req.user.id)
+                .then(res.send({success: true}))
+                .catch(err => {
+                    console.error("Error updating profile")
+                })
+        }
+};
