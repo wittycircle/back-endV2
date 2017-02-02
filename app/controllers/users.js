@@ -7,7 +7,7 @@
 
 const   user = require('../models/users'),
         geo = require('../utils/geolocation'),
-        mailing = require('../utils/mailing'),
+        // mailing = require('../utils/mailing'),
         bcrypt = require('bcrypt-nodejs'),
         _ = require('lodash'),
         home = 'http://localhost:3000';

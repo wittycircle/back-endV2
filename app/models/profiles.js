@@ -7,17 +7,18 @@
 const {db, TABLES} = require('./index');
 // user = require('./users');
 
+// exports.updateProfileFromUser = (body, id) => {
+//     return db.update(body)
+//         .from(TABLES.USER_PROFILES + ' as p')
+//         .join(TABLES.USERS, 'u.profile_id', 'p.id')
+//         .where('u.id', id)
+// }
+
 exports.updateProfileFromUser = (body, id) => {
     return db.update(body)
         .whereIn('id', function () {
             this.select('profile_id').from(TABLES.USERS).where({'id': id})
         }).from(TABLES.USER_PROFILES)
-};
-
-exports.updateProfilePicture = (body, id) => {
-    return db(TABLES.USER_PROFILES)
-        .update(body)
-        .where({'id': id})
 };
 
 exports.getProfiles = () => {
@@ -31,14 +32,13 @@ exports.getProfileBy = (by) => {
         .where(by);
 };
 
-exports.updateProfile = (id, stuff) => {
+exports.updateProfile = (stuff, cnd) => {
     return db(TABLES.USER_PROFILES)
         .update(stuff)
-        .where(id)
+        .where(cnd)
 }
 
 //Like 
-
 exports.getProfileLikes = (id) => {
      return db.from(TABLES.USER_PROFILES + ' as p')
         .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
@@ -60,4 +60,12 @@ exports.likeProfile = (followed_id, id) => {
 exports.unlikeProfile = (followed_id, id) => {
     return db(TABLES.USER_LIKES).del()
         .where({user_id: id, follow_user_id: followed_id})
+}
+
+exports.getLocation = (p_id) => {
+    return db(TABLES.USER_PROFILES)
+        .select(['location_country as country', 
+                'location_city as city',
+                'location_state as state'])
+        .where({id: p_id})
 }
