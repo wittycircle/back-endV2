@@ -4,18 +4,8 @@
 
 'use strict';
 
-const {db, TABLES} = require('./index');
-// user = require('./users');
-let h = { //Helper
-    p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.cover_picture', 'p.about', 'p.description'],
-    p2_array : ['u.id as uid', 'p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.cover_picture', 'p.about', 'p.description']
-}
-
-h.sub_profile = db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').as('p')
-h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u')
-h.u_profile = db.select(h.p2_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id')
-                    .groupBy('p.id').as('p')
-
+const {db, TABLES} = require('./index'),
+        h = require('./helper');
 
 // exports.updateProfileFromUser = (body, id) => {
 //     return db.update(body)
@@ -32,14 +22,14 @@ exports.updateProfileFromUser = (body, id) => {
 };
 
 exports.getProfiles = () => {
-    return db(TABLES.USER_PROFILES)
-        .select(p_array)
+        return h.sub_profile;
 };
-
+// const x = h.sub_profile
 exports.getProfileBy = (by) => {
-    return db(TABLES.USER_PROFILES)
-        .select(p_array)
-        .where(by);
+    // return x.where(by)
+    return db.select(h.p_array)
+        .from(TABLES.USER_PROFILES + ' as p')
+        .where(by)
 };
 
 exports.updateProfile = (stuff, cnd) => {
@@ -48,14 +38,15 @@ exports.updateProfile = (stuff, cnd) => {
         .where(cnd)
 };
 
-exports.getProfileLikes = (id) => {
-    let sub = db.select('l.follow_user_id')
+exports.getProfileLikes = (cond, cond2, id) => {
+    let sub = db.select('l.follow_user_id', 'user_id')
                 .from(TABLES.USER_LIKES + ' as l')
-                .where('l.user_id', id).as('l')
+                .where(cond, id).as('l')
 
     return db.select(h.p_array)
         .from(sub)
         .join(h.u_profile, 'p.uid', 'l.follow_user_id')
+        .groupBy(cond2)
 };
 
 exports.likeProfile = (followed_id, id) => {

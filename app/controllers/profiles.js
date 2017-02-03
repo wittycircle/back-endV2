@@ -7,41 +7,53 @@ const profiles = require('../models/profiles'),
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
-        .then(profiles => res.send({
-            profiles: profiles
-        }))
+        .then(profiles => {
+            if (_.isEmpty(profiles))
+                next({code: 404})
+            else
+                res.send({profiles: profiles})
+        })
         .catch(err => next(err))
 };
 
 exports.getProfile = (req, res, next) => {
     profiles.getProfileBy({'id': req.params.id})
         .then(profile => {
-            if (_.isEmpty(profile))
+            if (_.isEmpty(profile) || !profile.length)
                 next({code: 404});
             else
-                res.send({profile: profile[0]});
+                res.send({l: profile.length, profile: profile});
         })
         .catch(err => next(err));
 };
 
 exports.updateProfile = (req, res, next) => {
-    profiles.updateProfile(req.body.profile, {id: req.params.id})
-    .then(res.send({success: true}))
-    .catch(err => next(err))
+    profiles.updateProfile(req.body.profiles, {id: req.params.id})
+    .then(r => {
+        if (r) 
+            res.send({success: true})
+        else
+            res.send({success: false})
+    })
+    .catch(err => res.send("NOPE"))//next(err))
 }
 
-//likes
+// user_id -> follow_user id to get following, and l_follow_user_id to user_id to get followers
 exports.getProfileLikes = (req, res, next) => {
-    profiles.getProfileLikes(req.params.id)
+    profiles.getProfileLikes('l.user_id', 'l.follow_user_id', req.params.id)
     .then((r) => {
-        res.send({profiles: r})
-        // res.send({like: {count: r.count, who: r.who.split(',')}})
+        if (!r.length)
+            next({code:400})
+        else 
+            res.send({count: r.length,who: r})
     }).catch(err => next(err))
 }
 
 exports.likeProfile = (req, res, next) => {
     profiles.likeProfile(req.params.id, 3719)
-    .then(res.send({success: true}))
+    .then((r) => {
+        res.send({success: true})
+    })
     .catch(err => next(err))
 }
 
