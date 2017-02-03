@@ -22,7 +22,7 @@ exports.getProfile = (req, res, next) => {
             if (_.isEmpty(profile) || !profile.length)
                 next({code: 404});
             else
-                res.send({l: profile.length, profile: profile});
+                res.send({profile: profile[0]});
         })
         .catch(err => next(err));
 };
@@ -71,9 +71,14 @@ exports.getLocation = (req, res, next) => {
 }
 
 exports.updateLocation = function (req, res, next) {
-    // profiles.updateProfile(req.body, {id: req.params.id}) or below if user id
-    profiles.updateProfileFromUser(req.body, req.params.id)
-    .then(res.send({success: true}))
+    // profiles.updateProfileFromUser(req.body, req.params.id)
+    profiles.updateProfile(req.body.location, {id: req.params.id}) //or above if user id
+    .then(r => {
+        if (r) 
+            res.send({success: true})
+        else
+            res.send({success: false})
+    })
     .catch(err => next(err))
 };
 

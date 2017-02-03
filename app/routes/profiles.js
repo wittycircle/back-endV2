@@ -26,6 +26,6 @@ router.route('/profiles/:id/like')
 
 router.route('/profiles/:id/location')
     .get(profiles.getLocation)
-    .put(profiles.updateLocation);
+    .put(validate(schemas.profile.update), profiles.updateLocation);
 
 module.exports = router;

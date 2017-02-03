@@ -50,7 +50,7 @@ exports.getProfileLikes = (cond, cond2, id) => {
 };
 
 exports.likeProfile = (followed_id, id) => {
-    return db(TABLES.USER_LIKES)
+        return db(TABLES.USER_LIKES)
         .insert({
             user_id: id,
             follow_user_id: followed_id,
@@ -64,8 +64,17 @@ exports.unlikeProfile = (followed_id, id) => {
 
 exports.getLocation = (p_id) => {
     return db(TABLES.USER_PROFILES)
-        .select(['location_country as country', 
-                'location_city as city',
-                'location_state as state'])
+        .select(['country', 'city', 'state'])
         .where({id: p_id})
 };
+
+// exports.updateLocation. = (stuff, p_id) => {
+// //can receive directy location_country so can do update(stuff)
+//     return db(TABLES.USER_PROFILES)
+//         .update({
+//             location_country: stuff.country
+//             location_state: stuff.state
+//             location_city: stuff.city
+//         }).where()
+
+// }

@@ -6,12 +6,19 @@
 
 const Joi = require('joi');
 
-const p_update = Joi.object().keys({
+const profile_update = Joi.object().keys({
     first_name: Joi.string().alphanum().trim().min(1).max(64).optional(),
     last_name: Joi.string().alphanum().trim().min(1).max(64).optional(),
     about: Joi.string().max(10000).optional()
 });
 
+const location_update = Joi.object().keys({
+	country: Joi.string().alphanum().trim().min(1).max(64).optional(),
+	city: Joi.string().alphanum().trim().min(1).max(64).optional(),
+	state: Joi.string().alphanum().trim().min(1).max(64).optional()
+})
+
 exports.update = Joi.object().keys({
-	profiles: p_update
+	profiles: profile_update,
+	location: location_update
 })
