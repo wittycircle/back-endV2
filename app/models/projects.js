@@ -10,10 +10,21 @@ exports.getProjectLikes = (project_id) => {
 		.groupBy('p.id')
 };
 
-exports.likeProject = (uid, project_id) => {
+exports.likeProject = (project_id, uid) => {
 	return db(TABLES.PROJECT_LIKES)
-			.insert({user_id: uid, follow_project_id: project_id})
+			.insert({
+				user_id: uid,
+			 follow_project_id: project_id 
+			})
 };
+
+exports.unlikeProject = (project_id, uid) => {
+	return db(TABLES.PROJECT_LIKES) .del()
+			.where({
+				user_id: uid, 
+				follow_project_id: project_id 
+			})
+}
 
 exports.getFromProjectNetwork = (need, cond) => {
 	return db(TABLES.PROJECT_NETWORK)

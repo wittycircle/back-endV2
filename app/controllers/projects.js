@@ -1,13 +1,6 @@
 const project = require('../models/projects'),
     _ = require('lodash');
 
-
-// exports.getProjectLikes = (req, res, next) => {
-// 	project.t1(req.params.id)
-// 	.then(r => {
-// 		r.profiles = 
-// 	})
-// }
 exports.getProjectLikes = (req, res, next) => {
 	project.getProjectLikes(req.params.id)
 		.then(r => {
@@ -17,4 +10,28 @@ exports.getProjectLikes = (req, res, next) => {
 			})
 		})
 		.catch(err => next(err))
+}
+
+exports.likeProject = (req, res, next) => {
+	req.user = {}
+	req.user.id = 3719
+	project.likeProject(req.params.id, req.user.id)
+	.then(r => {
+		if (r) 
+			res.send({success: true}) 
+		else 
+			res.send({success: false})
+    })
+}
+
+exports.unlikeProject = (req, res, next) => {
+		req.user = {}
+	req.user.id = 3719
+	project.unlikeProject(req.params.id, req.user.id)
+	.then(r => {
+		if (r) 
+			res.send({success: true}) 
+		else 
+			res.send({success: false})
+    })
 }
