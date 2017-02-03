@@ -40,7 +40,7 @@ exports.updateProfile = (req, res, next) => {
 
 // user_id -> follow_user id to get following, and l_follow_user_id to user_id to get followers
 exports.getProfileLikes = (req, res, next) => {
-    profiles.getProfileLikes('l.user_id', 'l.follow_user_id', req.params.id)
+    profiles.getProfileLikes( 'l.follow_user_id', 'l.user_id',req.params.id)
     .then((r) => {
         if (!r.length)
             next({code:400})
@@ -71,8 +71,7 @@ exports.getLocation = (req, res, next) => {
 }
 
 exports.updateLocation = function (req, res, next) {
-    // profiles.updateProfileFromUser(req.body, req.params.id)
-    profiles.updateProfile(req.body.location, {id: req.params.id}) //or above if user id
+    profiles.updateProfile(req.body.location, {id: req.params.id})
     .then(r => {
         if (r) 
             res.send({success: true})

@@ -39,14 +39,16 @@ exports.updateProfile = (stuff, cnd) => {
 };
 
 exports.getProfileLikes = (cond, cond2, id) => {
-    let sub = db.select('l.follow_user_id', 'user_id')
+    const uid = db.select('id').from(TABLES.USERS).where('profile_id', id).as('uid')
+
+    const sub = db.select('l.follow_user_id', 'user_id')
                 .from(TABLES.USER_LIKES + ' as l')
-                .where(cond, id).as('l')
+                .join(uid, cond, 'uid.id').as('l')
 
     return db.select(h.p_array)
         .from(sub)
         .join(h.u_profile, 'p.uid', 'l.follow_user_id')
-        .groupBy(cond2)
+        .groupBy(cond2);
 };
 
 exports.likeProfile = (followed_id, id) => {

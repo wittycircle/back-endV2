@@ -34,7 +34,7 @@ router
 router
     .route('/projects/:id/like')
     /**
-     * @api {get} /projects/:id/like Get project
+     * @api {get} /projects/:id/like Get project likes
      * @apiName GetProjectLikes
      * @apiGroup Like
      *

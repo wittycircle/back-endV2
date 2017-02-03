@@ -116,7 +116,7 @@ router
      */
     .post()
     /**
-     * @api {delete} /profiles/:id/like Remove like from profile
+     * @api {delete} /profiles/:id/like unlike profile
      * @apiName UnlikeProfile
      * @apiGroup Like
      *
@@ -128,7 +128,7 @@ router
 router
     .route('/profiles/:id/location')
     /**
-     * @api {get} /profiles/:id/location Get user location
+     * @api {get} /profiles/:id/location Get profile location
      * @apiName GetProfileLocation
      * @apiGroup Location
      *
