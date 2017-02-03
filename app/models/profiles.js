@@ -6,7 +6,17 @@
 
 const {db, TABLES} = require('./index');
 // user = require('./users');
-const p_array = ['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.cover_picture', 'p.about', 'p.description']
+let h = { //Helper
+    p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.cover_picture', 'p.about', 'p.description'],
+    p2_array : ['u.id as uid', 'p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.cover_picture', 'p.about', 'p.description']
+}
+
+h.sub_profile = db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').as('p')
+h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u')
+h.u_profile = db.select(h.p2_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id')
+                    .groupBy('p.id').as('p')
+
+
 // exports.updateProfileFromUser = (body, id) => {
 //     return db.update(body)
 //         .from(TABLES.USER_PROFILES + ' as p')
@@ -39,14 +49,13 @@ exports.updateProfile = (stuff, cnd) => {
 };
 
 exports.getProfileLikes = (id) => {
-    let sub1 = db.select('l.follow_user_id')
+    let sub = db.select('l.follow_user_id')
                 .from(TABLES.USER_LIKES + ' as l')
-                .where('l.user_id', 1).as('l')
+                .where('l.user_id', id).as('l')
 
-return db.select(p_array)
-        .from(sub1)
-        .join(TABLES.USER_PROFILES + ' as p', 'l.follow_user_id', 'p.id')
-
+    return db.select(h.p_array)
+        .from(sub)
+        .join(h.u_profile, 'p.uid', 'l.follow_user_id')
 };
 
 exports.likeProfile = (followed_id, id) => {
