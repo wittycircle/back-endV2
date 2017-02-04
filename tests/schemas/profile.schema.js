@@ -4,20 +4,24 @@
 
 'use strict';
 
-const Joi = require('joi');
+const joi = require('joi');
 
-const detail = Joi.object().keys({
-    id: Joi.number().integer().required(),
-    first_name: Joi.string().allow('').required(),
-    last_name: Joi.string().allow('').required(),
-    about: Joi.string().allow(['', null]).required(),
-    description: Joi.string().allow(['', null]).required()
+const detail = joi.object().keys({
+    id: joi.number().integer().required(),
+    first_name: joi.string().allow('').required(),
+    last_name: joi.string().allow('').required(),
+    about: joi.string().allow(['', null]).required(),
+    description: joi.string().allow(['', null]).required()
 });
 
-exports.profile = Joi.object().keys({
+exports.profile = joi.object().keys({
     profile: detail.required()
 });
 
-exports.list = Joi.object().keys({
-    profiles: Joi.array().items(detail).optional()
+exports.list = joi.object().keys({
+    profiles: joi.array().items(detail).optional()
 });
+
+exports.success = joi.object().keys({
+	success: joi.only(true).required()
+})

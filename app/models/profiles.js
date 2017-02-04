@@ -7,20 +7,6 @@
 const {db, TABLES} = require('./index'),
         h = require('./helper');
 
-// exports.updateProfileFromUser = (body, id) => {
-//     return db.update(body)
-//         .from(TABLES.USER_PROFILES + ' as p')
-//         .join(TABLES.USERS, 'u.profile_id', 'p.id')
-//         .where('u.id', id)
-// }
-
-exports.updateProfileFromUser = (body, id) => {
-    return db.update(body)
-        .whereIn('id', function () {
-            this.select('profile_id').from(TABLES.USERS).where({'id': id})
-        }).from(TABLES.USER_PROFILES)
-};
-
 exports.getProfiles = () => {
         return h.sub_profile;
 };

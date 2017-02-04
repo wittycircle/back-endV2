@@ -28,14 +28,14 @@ exports.getProfile = (req, res, next) => {
 };
 
 exports.updateProfile = (req, res, next) => {
-    profiles.updateProfile(req.body.profiles, {id: req.params.id})
+    profiles.updateProfile(req.body.profile, {id: req.params.id})
     .then(r => {
         if (r) 
             res.send({success: true})
         else
-            res.send({success: false})
+            res.status(400).send({success: false})
     })
-    .catch(err => res.send("NOPE"))//next(err))
+    .catch(err => next(err))
 }
 
 // user_id -> follow_user id to get following, and l_follow_user_id to user_id to get followers
@@ -48,6 +48,16 @@ exports.getProfileLikes = (req, res, next) => {
             res.send({count: r.length,who: r})
     }).catch(err => next(err))
 }
+exports.getLikedProfile = (req, res, next) => {
+    profiles.getProfileLikes('l.user_id', 'l.follow_user_id', req.params.id)
+    .then((r) => {
+        if (!r.length)
+            next({code:400})
+        else 
+            res.send({count: r.length,who: r})
+    }).catch(err => next(err))
+}
+
 
 exports.likeProfile = (req, res, next) => {
     profiles.likeProfile(req.params.id, 3719)

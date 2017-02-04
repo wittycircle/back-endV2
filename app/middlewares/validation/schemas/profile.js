@@ -19,6 +19,6 @@ const location_update = Joi.object().keys({
 })
 
 exports.update = Joi.object().keys({
-	profiles: profile_update,
+	profile: profile_update,
 	location: location_update
 })

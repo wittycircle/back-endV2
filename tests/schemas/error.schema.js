@@ -17,7 +17,11 @@ exports.validation_error_schema = joi.object().keys({
     error_description: joi.array().items(validation_error_description_schema)
 });
 
+exports.success = joi.object().keys({
+	success: joi.only(false).required(),
+});
+
 exports.user_error = joi.object().keys({
 	success: joi.boolean().valid(false).required(),
 	msg: joi.string().required()
-})
+});
