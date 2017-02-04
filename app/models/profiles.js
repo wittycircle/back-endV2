@@ -24,12 +24,9 @@ exports.updateProfileFromUser = (body, id) => {
 exports.getProfiles = () => {
         return h.sub_profile;
 };
-// const x = h.sub_profile
+
 exports.getProfileBy = (by) => {
-    // return x.where(by)
-    return db.select(h.p_array)
-        .from(TABLES.USER_PROFILES + ' as p')
-        .where(by)
+    return h.ws_profile(by)
 };
 
 exports.updateProfile = (stuff, cnd) => {
