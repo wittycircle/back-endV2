@@ -71,7 +71,8 @@ describe('Profile detail [GET /profiles/:id]', function () {
 describe('Modify profile [PUT /profile/:id]', function () {
     let success = {
         test: null,
-        fake: null
+        fake: null,
+        ret: null
     }
 
     before('Update profile', function () {
@@ -79,7 +80,8 @@ describe('Modify profile [PUT /profile/:id]', function () {
             profile: {
                 first_name: "Sequoya"
             }
-        })
+        });
+        return success.ret = chakram.get(home + '/api/profiles/' + test_user.profile_id);
     });
 
     before('Fake profile', function () {
@@ -101,4 +103,10 @@ describe('Modify profile [PUT /profile/:id]', function () {
     it('Should return success: false', function() {
         return expect(success.fake).to.joi(schemas.error.success)
     })
+
+    it('Should have modified the first_name', function () {
+       return success.ret.then(r => {expect(r.body.profile.first_name).to.equal('Sequoya') })
+    })
+
+
 });
