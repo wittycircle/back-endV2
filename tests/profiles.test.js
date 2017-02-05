@@ -7,7 +7,7 @@
 const chakram = require('chakram'),
     expect = chakram.expect,
     route = 'http://localhost:3000/api/profiles/',
-    rnd_string = Math.random().toString(36).slice(-5),
+    rnd_string = Math.random().toString(36).slice(-10),
     test_user = {
         id: 3719,
         profile_id: 3755
@@ -127,8 +127,10 @@ describe('Get location [GET /profiles/:id/location]', function () {
 
 describe('Update location [PUT /profiles/:id/location]', function () {
     let r;
+    let res;
     before('Update profile location', function () {
-        r = chakram.put(route + test_user.profile_id + '/location', {location:{country:"nowhere"}})
+        r = chakram.put(route + test_user.profile_id + '/location', {location:{country:rnd_string, city: rnd_string}})
+        return  res = chakram.get(route + test_user.profile_id + '/location')
     });
 
     it('Should have status 200', function() {
@@ -137,5 +139,9 @@ describe('Update location [PUT /profiles/:id/location]', function () {
 
     it('Should send success true', function () {
         return expect(r).to.joi(schemas.profiles.success)
+    })
+
+    it ('Should have update the country', function () {
+        return res.then(res => {expect (res.body.location.country).to.equal(rnd_string)})
     })
 })
