@@ -16,9 +16,12 @@ const location_update = Joi.object().keys({
 	country: Joi.string().alphanum().trim().min(1).max(64).optional(),
 	city: Joi.string().alphanum().trim().min(1).max(64).optional(),
 	state: Joi.string().alphanum().trim().min(1).max(64).optional()
-})
+}).or('country', 'city', 'state')
 
 exports.update = Joi.object().keys({
 	profile: profile_update,
-	location: location_update
+})
+
+exports.location = Joi.object().keys({
+	location: location_update.required()
 })

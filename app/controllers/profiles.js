@@ -38,7 +38,6 @@ exports.updateProfile = (req, res, next) => {
     .catch(err => next(err))
 }
 
-// user_id -> follow_user id to get following, and l_follow_user_id to user_id to get followers
 exports.getProfileLikes = (req, res, next) => {
     profiles.getProfileLikes( 'l.follow_user_id', 'l.user_id',req.params.id)
     .then((r) => {

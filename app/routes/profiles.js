@@ -19,13 +19,14 @@ router.route('/profiles/:id')
     .get(profiles.getProfile)
     .put(validate(schemas.profile.update), profiles.updateProfile);
 
-router.route('/profiles/:id/like')
-.post(profiles.likeProfile)
-.get(profiles.getProfileLikes)
-.delete(profiles.unlikeProfile);
-
 router.route('/profiles/:id/location')
     .get(profiles.getLocation)
-    .put(validate(schemas.profile.update), profiles.updateLocation);
+    .put(validate(schemas.profile.location), profiles.updateLocation);
+
+router.route('/profiles/:id/like')
+	.post(profiles.likeProfile)
+	.get(profiles.getProfileLikes)
+	.delete(profiles.unlikeProfile);
+
 
 module.exports = router;

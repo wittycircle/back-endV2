@@ -6,7 +6,8 @@
 
 const chakram = require('chakram'),
     expect = chakram.expect,
-    home = 'http://localhost:3000',
+    route = 'http://localhost:3000/api/profiles/',
+    rnd_string = Math.random().toString(36).slice(-5),
     test_user = {
         id: 3719,
         profile_id: 3755
@@ -29,7 +30,7 @@ describe('Profile list [GET /profiles]', function () {
     };
 
     before('Get profile list', function () {
-        profiles.list = chakram.get(home + '/api/profiles')
+        profiles.list = chakram.get(route)
     });
 
     it('should return 200 on success', function () {
@@ -48,11 +49,11 @@ describe('Profile detail [GET /profiles/:id]', function () {
     };
 
     before('Get profile info', function () {
-        profile.quentin = chakram.get(home + '/api/profiles/1')
+        profile.quentin = chakram.get(route + "1")
     });
 
     before('Get profile with wrong id', function () {
-        profile.invalid = chakram.get(home + '/api/profiles/asda')
+        profile.invalid = chakram.get(route + "asda")
     });
 
     it('should return 200 on success', function () {
@@ -65,7 +66,7 @@ describe('Profile detail [GET /profiles/:id]', function () {
 
     it('should return 404 on invalid resource id', function () {
         return expect(profile.invalid).to.have.status(404);
-    })
+    });
 });
 
 describe('Modify profile [PUT /profile/:id]', function () {
@@ -76,37 +77,65 @@ describe('Modify profile [PUT /profile/:id]', function () {
     }
 
     before('Update profile', function () {
-        success.test = chakram.put(home + '/api/profiles/' + test_user.profile_id, {
+        success.test = chakram.put(route + test_user.profile_id, {
             profile: {
-                first_name: "Sequoya"
+                first_name: rnd_string
             }
         });
-        return success.ret = chakram.get(home + '/api/profiles/' + test_user.profile_id);
+        return success.ret = chakram.get(route +  test_user.profile_id);
     });
 
     before('Fake profile', function () {
-        success.fake = chakram.put(home + '/api/profiles/' + fake_user.profile_id, {profile: {first_name: "toto"}})
-    })
+        success.fake = chakram.put(route +  fake_user.profile_id, {profile: {first_name: "toto"}})
+    });
 
     it('Should return 200', function() {
         return expect(success.test).to.have.status(200)
-    })
+    });
 
     it('Should return success: true', function() {
         return expect(success.test).to.joi(schemas.profiles.success)
-    })
+    });
 
     it('Should return 400', function() {
         return expect(success.fake).to.have.status(400)
-    })
+    });
 
     it('Should return success: false', function() {
         return expect(success.fake).to.joi(schemas.error.success)
-    })
+    });
 
     it('Should have modified the first_name', function () {
-       return success.ret.then(r => {expect(r.body.profile.first_name).to.equal('Sequoya') })
+       return success.ret.then(r => {expect(r.body.profile.first_name).to.equal(rnd_string) })
+    });
+});
+
+describe('Get location [GET /profiles/:id/location]', function () {
+    let loc;
+    before('get profile location', function () {
+        loc = chakram.get(route + test_user.profile_id + '/location')
+    });
+
+    it('Should have status 200', function () {
+        return expect(loc).to.have.status(200);
+    });
+
+    it('Should comply to format', function () {
+        return expect(loc).to.joi(schemas.profiles.location)
+    })
+});
+
+describe('Update location [PUT /profiles/:id/location]', function () {
+    let r;
+    before('Update profile location', function () {
+        r = chakram.put(route + test_user.profile_id + '/location', {location:{country:"nowhere"}})
+    });
+
+    it('Should have status 200', function() {
+        return expect(r).to.have.status(200);
     })
 
-
-});
+    it('Should send success true', function () {
+        return expect(r).to.joi(schemas.profiles.success)
+    })
+})
