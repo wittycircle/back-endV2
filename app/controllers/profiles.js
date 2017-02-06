@@ -72,7 +72,14 @@ exports.likeProfile = (req, res, next) => {
 
 exports.unlikeProfile = (req, res, next) => {
     profiles.unlikeProfile(req.params.id, 3719)
-    .then(res.send({success: true}))
+        .then((r) => {
+        if (!r)
+            res.send({ success: false})
+        else 
+            res.send({ success: true})
+    })
+// 
+    // .then(res.send({success: true}))
     .catch(err => next(err))
 }
 

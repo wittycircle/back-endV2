@@ -199,3 +199,15 @@ describe('like profile [POST /profiles/:id/like]', function () {
         return expect(fake).to.joi(schemas.error.success);
     });
 });
+
+describe('Unlike profile [DELETE /profiles/:id/like]', function () {
+    let remove;
+
+    before('Unlike profile', function() {
+        remove = chakram.delete(route + 123 + '/like');
+    });
+
+    it('Should send succes true', function() {
+        return expect(remove).to.joi(schemas.profiles.success);
+    })
+});
