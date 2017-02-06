@@ -23,4 +23,4 @@ module.exports.likes = joi.object().keys({
 	like: p_like
 });
 
-module.exports.detail = detail;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+module.exports.detail = detail;
