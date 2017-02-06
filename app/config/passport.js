@@ -17,6 +17,9 @@ const Strategy = {
 
 module.exports = function (passport) {
 
+    /**
+     * TODO fix this shit
+     */
     passport.serializeUser((user, done) => {
         session.createUserSession(user, (err, token) => {
             if (err) return done(err);
