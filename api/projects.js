@@ -132,6 +132,16 @@ const express = require('express'),
  */
 
 /**
+ * @apiDefine ProjectOpeningListStub
+ * @apiSuccess {Object[]} openings              Opening array
+ * @apiSuccess {String} openings.created_at      Creation date
+ * @apiSuccess {String} openings.skill           Opening skill
+ * @apiSuccess {String} openings.status          Opening status
+ * @apiSuccess {String} openings.description     Opening description
+ * @apiSuccess {String[]} openings.tags          Opening tag array
+ */
+
+/**
  * @apiDefine ProjectOpeningCreationStub
  * @apiParam {String} skill                                             Opening skill
  * @apiParam {String = "any", "tips", "teammate", "mentor"} status      Opening status
@@ -200,6 +210,7 @@ router
      *
      * @apiUse ProjectId
      * @apiPermission owner
+     * @apiUse Success
      */
     .delete();
 
@@ -223,6 +234,7 @@ router
      *
      * @apiUse ProjectId
      * @apiPermission owner
+     * @apiUse Success
      */
     .post()
     /**
@@ -232,7 +244,7 @@ router
      *
      * @apiUse ProjectId
      * @apiPermission owner
-     *
+     * @apiUse Success
      */
     .delete();
 
@@ -245,6 +257,7 @@ router
      * @apiGroup Project
      *
      * @apiUse ProjectId
+     * @apiUse ProjectOpeningListStub
      */
     .get()
     /**
@@ -325,6 +338,7 @@ router
      *
      * @apiUse ProjectId
      * @apiUse DiscussionId
+     * @apiUse Success
      * @apiPermission owner
      */
     .delete();

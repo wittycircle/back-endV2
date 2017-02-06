@@ -4,57 +4,74 @@
 
 'use strict';
 
-const {db, TABLES} = require('./index');
-// user = require('./users');
-
-exports.updateProfileFromUser = (body, id) => {
-    return db.update(body)
-        .whereIn('id', function () {
-            this.select('profile_id').from(TABLES.USERS).where({'id': id})
-        }).from(TABLES.USER_PROFILES)
-};
-
-exports.updateProfilePicture = (body, id) => {
-    return db(TABLES.USER_PROFILES)
-        .update(body)
-        .where({'id': id})
-};
+const {db, TABLES} = require('./index'),
+        _ = require('lodash'),
+        h = require('./helper');
 
 exports.getProfiles = () => {
-    return db(TABLES.USER_PROFILES)
-        .select(['id', 'first_name', 'last_name', 'profile_picture', 'cover_picture', 'about', 'description']);
+        return h.sub_profile;
 };
 
 exports.getProfileBy = (by) => {
-    return db(TABLES.USER_PROFILES)
-        .select(['id', 'first_name', 'last_name', 'profile_picture', 'cover_picture', 'about', 'description'])
-        .where(by);
+    return h.ws_profile(by)
 };
 
-exports.getProfileLikes = (id) => {
-    // return db.from(TABLES.USER_PROFILES + ' as p')
-    //     .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
-    //     .join(TABLES.USER_LIKES + ' as l', 'l.user_id', 'u.id')
-    //     .join(TABLES.USERS + ' as u2', 'u2.id', 'l.follow_user_id')
-    //     .select(db.raw('GROUP_CONCAT(DISTINCT u2.username) as who'))
-    //     .count('u.username as count')
-    //     .where('u.id', id)
-    return db.raw('SELECT profiles.first_name, profiles.last_name, profiles.cover_picture, profiles.profile_picture ' +
-        'FROM (SELECT * FROM user_followers f WHERE ' +
-        'f.user_id = 1) AS k ' +
-        'INNER JOIN ' +
-        'profiles ON k.follow_user_id = profiles.id')
+exports.updateProfile = (stuff, cnd) => {
+    return db(TABLES.USER_PROFILES)
+        .update(stuff)
+        .where(cnd)
+};
+
+exports.getProfileLikes = (cond, cond2, id) => {
+    const sub = db.select('l.follow_user_id', 'l.user_id')
+                .from(TABLES.USER_LIKES + ' as l')
+                .whereIn(cond, function() {
+                    this.select('id').from(TABLES.USERS).where('profile_id', id)
+                })
+                .as('l');
+
+    return db.select(h.p_array)
+        .from(sub)
+        .join(h.u_profile, 'p.uid', 'l.follow_user_id')
+        .groupBy(cond2);
 };
 
 exports.likeProfile = (followed_id, id) => {
-    return db(TABLES.USER_LIKES)
-        .insert({
-            user_id: id,
-            follow_user_id: followed_id,
-        })
+    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
+        if (!_.isEmpty(r))
+         {
+            return db(TABLES.USER_LIKES) 
+            .insert({
+                user_id: id, 
+                follow_user_id: followed_id, 
+            })
+        }
+    })
 };
 
 exports.unlikeProfile = (followed_id, id) => {
-    return db(TABLES.USER_LIKES).del()
-        .where({user_id: id, follow_user_id: followed_id})
+    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
+        if (!_.isEmpty(r)) 
+        {
+            return db(TABLES.USER_LIKES).del()
+            .where({user_id: id, follow_user_id: followed_id})
+        }
+    })
 };
+
+exports.getLocation = (p_id) => {
+    return db(TABLES.USER_PROFILES)
+        .select(['country', 'city', 'state'])
+        .where({id: p_id})
+};
+
+// exports.updateLocation. = (stuff, p_id) => {
+// //can receive directy location_country so can do update(stuff)
+//     return db(TABLES.USER_PROFILES)
+//         .update({
+//             location_country: stuff.country
+//             location_state: stuff.state
+//             location_city: stuff.city
+//         }).where()
+
+// }

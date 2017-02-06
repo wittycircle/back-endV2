@@ -12,13 +12,13 @@ const auth = require('../controllers/auth'),
 
 let router = express.Router();
 
+router.use('/local', validate(schemas.auth.local));
 router.route('/local')
-    .post(validate(schemas.auth.local), auth.localLogin);
+    .post(auth.localLogin);
 
 router.route('/google')
-    .post(validate(schemas.auth.google), (req, res, next) => {
-        next({
-            code: 404,
+    .post((req, res, next) => {
+        res.status(404).send({
             error: 'unimplemented',
             error_description: 'This authentification strategy is not implemented yet!'
         })
@@ -26,8 +26,7 @@ router.route('/google')
 
 router.route('/facebook')
     .post((req, res, next) => {
-        next({
-            code: 404,
+        res.status(404).send({
             error: 'unimplemented',
             error_description: 'This authentification strategy is not implemented yet!'
         })

@@ -24,3 +24,4 @@ exports.response_schema = joi.object().keys({
     auth: token_schema,
     user: user_schema
 });
+

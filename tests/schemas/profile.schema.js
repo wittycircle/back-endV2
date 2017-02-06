@@ -4,20 +4,24 @@
 
 'use strict';
 
-const Joi = require('joi');
+const joi = require('joi'),
+	p_empty = ['', null],
+	detail = require('./common.schema').detail;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-const detail = Joi.object().keys({
-    id: Joi.number().integer().required(),
-    first_name: Joi.string().optional(),
-    last_name: Joi.string().optional(),
-    about: Joi.optional(),
-    description: Joi.optional()
+const p_location = joi.object().keys({
+	country: joi.string().alphanum().trim().allow(p_empty),
+	state: joi.string().alphanum().trim().allow(p_empty),
+	city: joi.string().alphanum().trim().allow(p_empty)
 });
 
-exports.profile = Joi.object().keys({
+exports.profile = joi.object().keys({
     profile: detail.required()
 });
 
-exports.list = Joi.object().keys({
-    profiles: Joi.array().items(detail).optional()
+exports.list = joi.object().keys({
+    profiles: joi.array().items(detail).optional()
+});
+
+exports.location = joi.object().keys({
+	location: p_location
 });

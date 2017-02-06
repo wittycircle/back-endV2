@@ -1,0 +1,15 @@
+<div>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-button md-ink-ripple ng-click="$state.go('index')">
+                <ng-md-icon icon="chevron_left"></ng-md-icon>
+            </md-button>
+            <span class="md-headline">{{profile.first_name}}.{{profile.last_name}}</span>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div btf-markdown="profile.description">
+        </div>
+</div>
+</md-content>
+</div>
