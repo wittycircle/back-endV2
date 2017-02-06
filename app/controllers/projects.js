@@ -16,10 +16,12 @@ exports.getProjectLikes = (req, res, next) => {
 exports.likeProject = (req, res, next) => {
 	project.likeProject(req.params.id, req.user.id)
 	.then(r => {
-		if (r)
+		console.log("ICI")
+		console.log(r)
+		if (!_.isEmpty(r))
 			res.send({success: true}) 
 		else 
-			res.send({success: true})
+			res.send({success: false})
     }).catch(err => next(err))
 }
 

@@ -11,15 +11,19 @@ exports.getProjectLikes = (project_id) => {
 };
 
 exports.likeProject = (project_id, uid) => {
-	return db(TABLES.PROJECT_LIKES)
-			.insert({
-				user_id: uid,
-				follow_project_id: project_id 
-			})
+	return db(TABLES.USERS).select('id').where('id', uid).then(r => {
+		if (r){
+			return db(TABLES.PROJECT_LIKES) 
+				.insert({
+					user_id: uid, 
+					follow_project_id: project_id 
+				}); 
+			} 
+		}); 
 };
 
 exports.unlikeProject = (project_id, uid) => {
-	return db(TABLES.PROJECT_LIKES) .del()
+	return db(TABLES.PROJECT_LIKES)	.del()
 			.where({
 				user_id: uid, 
 				follow_project_id: project_id 
