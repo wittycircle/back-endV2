@@ -148,14 +148,24 @@ describe('Update location [PUT /profiles/:id/location]', function () {
 
 describe ('Get profile likes [GET /profiles/:id/like]', function () {
     let likes;
+    let fake;
     before("Get profile likes", function() {
-        likes = chakram.get(route + 1  + '/like');
+        likes = chakram.get(route + test_user.profile_id  + '/like');
     });
+
+    before('Fake profile', function() {
+        fake = chakram.get(route + fake_user.profile_id + '/like')
+    });
+
     it('Should have status 200', function () {
         return expect(likes).to.have.status(200);
     });
 
     it('Should match schema', function() {
       return  expect(likes).to.joi(schemas.profiles.likes)
+    });
+
+    it('Should send success false', function () {
+        return expect(fake).to.joi(schemas.error.success)
     });
 });
