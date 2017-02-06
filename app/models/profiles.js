@@ -36,20 +36,20 @@ exports.getProfileLikes = (cond, cond2, id) => {
         .groupBy(cond2);
 };
 
-exports.likeProfile = (followed_id, id) => {
-    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
-        if (!_.isEmpty(r))
-         {
+exports.likeProfile = (id,followed_id) => {
+    // return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
+    //     if (!r.length)
+    //      {
             return db(TABLES.USER_LIKES) 
             .insert({
                 user_id: id, 
                 follow_user_id: followed_id, 
             })
-        }
-    })
+    //     }
+    // })
 };
 
-exports.unlikeProfile = (followed_id, id) => {
+exports.unlikeProfile = (id, followed_id) => {
     return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
         if (!_.isEmpty(r)) 
         {

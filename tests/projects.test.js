@@ -3,7 +3,7 @@
 const joi = require('joi'),
 	p_empty = ['', null];
 
-const token = 'Bearer IBAs31sbUArT4X7hnGiMGrDMRDVMYCcO7yL5aTmgBaY2U7hSIjY4MQ4Ziyu0s65w';
+const token = 'Bearer 18UU6ipLkKyHAWvhFxpmet0x9OaAumBHNreE4sPcNAWQXpfLomxfq2cZiyujnqwl'
 const chakram = require('chakram'),
     expect = chakram.expect,
     route = 'http://localhost:3000/api/projects/',
@@ -36,7 +36,27 @@ describe('Get project likes', function() {
 		pl = chakram.get(route + test_project.id + '/like');
 	});
 
-	it('Should like a project', function() {
+	it('Should get followers', function() {
 		return expect(pl).to.joi(schemas.common.likes)
 	});
+});
+
+describe('Like project', function() {
+    let r, v;
+    before('[POST /projects/:id/like]', function() {
+        r = chakram.post(route + test_project.id + '/like');
+        v = chakram.get(route + test_project.id + '/like');
+    });
+
+    it('Should like a profile', function() {
+        return expect(r).to.joi(schemas.common.success);
+        });
+
+    it('Should appear in db', function() {
+        return v.then(res => {
+            console.log(res.body.like.who[res.body.like.who.length - 1])
+            return expect(res.body.like.who[res.body.like.who.length - 1]).to.have.property('id', 3755)
+        })
+    })
+
 });

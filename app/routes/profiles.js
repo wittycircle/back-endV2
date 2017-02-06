@@ -25,9 +25,9 @@ router.route('/profiles/:id/location')
     .put(validate(schemas.profile.location), profiles.updateLocation);
 
 router.route('/profiles/:id/like')
-	.post(passport.authenticate('bearer'), profiles.likeProfile)
 	.get(profiles.getProfileLikes)
-	.delete(profiles.unlikeProfile);
+    .post(passport.authenticate('bearer'), profiles.likeProfile)
+	.delete(passport.authenticate('bearer'), profiles.unlikeProfile);
 
 
 module.exports = router;

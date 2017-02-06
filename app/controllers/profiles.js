@@ -59,7 +59,6 @@ exports.getLikedProfile = (req, res, next) => {
 }
 
 exports.likeProfile = (req, res, next) => {
-    // req.user = {id:3719}
     profiles.likeProfile(req.params.id, req.user.id)
     .then((r) => {
         if (_.isEmpty(r))
