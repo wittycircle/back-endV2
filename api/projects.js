@@ -135,9 +135,9 @@ const express = require('express'),
  * @apiParam {String} about                     Project story as <em>HTML</em>
  * @apiParam {String} network                   Project network
  * @apiParam {Boolean} public                   Project visibility
- * @apiParam {Object} members                   Project members
+ * @apiParam {Object[]} members                   Project members
  * @apiParam {Number} members.id                Member id
- * @apiParam {Object} openings                  Project openings
+ * @apiParam {Object[]} openings                  Project openings
  * @apiParam {String} openings.skill            Opening skill
  * @apiParam {String} openings.status           Opening status
  * @apiParam {String} openings.description      Opening description
@@ -216,6 +216,35 @@ router
      * @api {post} /projects Create project
      * @apiName CreateProject
      * @apiGroup Project
+     *
+     * @apiParamExample {json} Request-Example:
+     * {
+     *      title: "Wittycircle",
+     *      category: "Green",
+     *      description: "Where the world meets future entrepreneurs",
+     *      location: {
+     *          country: "US",
+     *          location: "San Fransisco",
+     *          state: "California"
+     *      },
+     *      picture: "cloudinary url",
+     *      video: "cloudinary url",
+     *      about: "<html>Sample text</html>",
+     *      network: "",
+     *      public: true,
+     *      members: [
+     *          {id: 1}
+     *          {id: 2}
+     *          {id: 3}
+     *      ],
+     *      openings: [],
+     *      feedbacks: [
+     *          {
+     *              title: "Need growth-hacker",
+     *              description: "Hey guys, desperately looking for some growth hackers"
+     *          }
+     *      ]
+     * }
      *
      * @apiPermission logged
      * @apiUse ProjectCreationStub
