@@ -22,11 +22,12 @@ exports.updateProfile = (stuff, cnd) => {
 };
 
 exports.getProfileLikes = (cond, cond2, id) => {
-    const uid = db.select('id').from(TABLES.USERS).where('profile_id', id).as('uid')
-
-    const sub = db.select('l.follow_user_id', 'user_id')
+    const sub = db.select('l.follow_user_id', 'l.user_id')
                 .from(TABLES.USER_LIKES + ' as l')
-                .join(uid, cond, 'uid.id').as('l')
+                .whereIn(cond, function() {
+                    this.select('id').from(TABLES.USERS).where('profile_id', id)
+                })
+                .as('l');
 
     return db.select(h.p_array)
         .from(sub)

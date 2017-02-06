@@ -21,6 +21,11 @@ const p_location = joi.object().keys({
 	city: joi.string().alphanum().trim().allow(p_empty)
 });
 
+const p_like = joi.object().keys({
+	count: joi.number().integer().required(),
+	who: joi.array().items(detail)
+});
+
 exports.profile = joi.object().keys({
     profile: detail.required()
 });
@@ -35,4 +40,8 @@ exports.success = joi.object().keys({
 
 exports.location = joi.object().keys({
 	location: p_location
+});
+
+exports.likes = joi.object().keys({
+	like: p_like
 });

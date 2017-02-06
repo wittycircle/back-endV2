@@ -144,4 +144,18 @@ describe('Update location [PUT /profiles/:id/location]', function () {
     it ('Should have update the country', function () {
         return res.then(res => {expect (res.body.location.country).to.equal(rnd_string)})
     })
-})
+});
+
+describe ('Get profile likes [GET /profiles/:id/like]', function () {
+    let likes;
+    before("Get profile likes", function() {
+        likes = chakram.get(route + 1  + '/like');
+    });
+    it('Should have status 200', function () {
+        return expect(likes).to.have.status(200);
+    });
+
+    it('Should match schema', function() {
+      return  expect(likes).to.joi(schemas.profiles.likes)
+    });
+});

@@ -6,11 +6,9 @@ const {db, TABLES} = require('./index');
 //prototype
 	h.up_array = h.p_array.concat('u.id as uid');
 	h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u');
-	h.u_profile = db.select(h.up_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id').groupBy('p.id').as('p');
 	h.sub_profile = db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').as('p');
+	h.u_profile = db.select(h.up_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id').groupBy('p.id').as('p');
 	h.ws_profile = (cond) => db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
 	// return h
 
 module.exports = h
-
-

@@ -39,24 +39,24 @@ exports.updateProfile = (req, res, next) => {
 }
 
 exports.getProfileLikes = (req, res, next) => {
-    profiles.getProfileLikes( 'l.follow_user_id', 'l.user_id',req.params.id)
-    .then((r) => {
+    profiles.getProfileLikes(  'l.user_id','l.follow_user_id', req.params.id)
+    .then((r) => { 
         if (!r.length)
             next({code:400})
         else 
-            res.send({count: r.length,who: r})
-    }).catch(err => next(err))
-}
-exports.getLikedProfile = (req, res, next) => {
-    profiles.getProfileLikes('l.user_id', 'l.follow_user_id', req.params.id)
-    .then((r) => {
-        if (!r.length)
-            next({code:400})
-        else 
-            res.send({count: r.length,who: r})
+            res.send({like:{count: r.length,who: r}})
     }).catch(err => next(err))
 }
 
+exports.getLikedProfile = (req, res, next) => {
+    profiles.getProfileLikes('l.follow_user_id', 'l.user_id', req.params.id)
+    .then((r) => {
+        if (!r.length)
+            next({code:400})
+        else 
+            res.send({count: r.length,who: r})
+    }).catch(err => next(err))
+}
 
 exports.likeProfile = (req, res, next) => {
     profiles.likeProfile(req.params.id, 3719)
