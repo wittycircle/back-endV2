@@ -14,9 +14,7 @@ const express = require('express'),
 
 /**
  * @apiDefine ProfileLike
- * @apiSuccess {Object} like
- * @apiSuccess {Number} like.count              Like count
- * @apiSuccess {Number[]} like.who              List of profile (who likes this profile)
+ * @apiSuccess {Number} count                   Follower count
  */
 
 /**
@@ -25,7 +23,7 @@ const express = require('express'),
  * @apiSuccess {Number} profiles.id              Profile id
  * @apiSuccess {String} profiles.first_name      User first name
  * @apiSuccess {String} profiles.last_name       User last name
- * @apiSuccess {String} profiles.profile_picture         User profile picture
+ * @apiSuccess {String} profiles.profile_picture User profile picture
  * @apiSuccess {String} profiles.about           About User
  * @apiSuccess {String} profiles.cover_picture   User cover picture
  */
@@ -104,6 +102,15 @@ router
      *
      * @apiUse ProfileId
      * @apiUse ProfileLike
+     * @apiSuccess {Object[]} who Followers profile
+     * @apiSuccess {Number} who.id              Profile id
+     * @apiSuccess {String} who.first_name      User first name
+     * @apiSuccess {String} who.last_name       User last name
+     * @apiSuccess {String} who.profile_picture User profile picture
+     * @apiSuccess {String} who.about           About User
+     * @apiSuccess {String} who.cover_picture   User cover picture
+     *
+     *
      */
     .get()
     /**
