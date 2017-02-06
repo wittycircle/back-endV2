@@ -122,11 +122,49 @@ const express = require('express'),
  */
 
 /**
+ * @apiDefine ProjectCreationStub
+ * @apiParam {String} title                     Project title
+ * @apiParam {String} category                  Project category
+ * @apiParam {Object} location                  Project location
+ * @apiParam {String} location.country          Project country
+ * @apiParam {String} picture                   Project picture
+ * @apiParam {String} video                     Project video
+ * @apiParam {String} location.city             Project city
+ * @apiParam {String} location.state            Project state
+ * @apiParam {String} description               Project short description
+ * @apiParam {String} about                     Project story as <em>HTML</em>
+ * @apiParam {String} network                   Project network
+ * @apiParam {Boolean} public                   Project visibility
+ * @apiParam {Object} members                   Project members
+ * @apiParam {Number} members.id                Member id
+ * @apiParam {Object} openings                  Project openings
+ * @apiParam {String} openings.skill            Opening skill
+ * @apiParam {String} openings.status           Opening status
+ * @apiParam {String} openings.description      Opening description
+ * @apiParam {String[]} openings.tags           Opening tag array
+ * @apiParam {Object} feedbacks                 Project feedbacks
+ * @apiParam {String} feedbacks.title           Feedback title
+ * @apiParam {String} feedbacks.description     Feedback description
+ */
+
+/**
+ * @apiDefine ProjectUpdateStub
+ * @apiParam {Object} project
+ * @apiParam {String} [project.title]           Project title
+ * @apiParam {String} [project.category]        Project category
+ * @apiParam {Boolean} [project.public]         Project visibility
+ * @apiParam {String} [project.picture]         Project picture url
+ * @apiParam {String} [project.video]           Project video url
+ * @apiParam {String} [project.about]           Project story as <em>HTML</em>
+ * @apiParam {String} [project.description]     Project short description
+ */
+
+/**
  * @apiDefine ProjectOpeningStub
  * @apiSuccess {Object} opening                 Opening
  * @apiSuccess {String} opening.created_at      Creation date
  * @apiSuccess {String} opening.skill           Opening skill
- * @apiSuccess {String} opening.status          Opening status
+ * @apiSuccess {String = "any", "tips", "teammate", "mentor"} opening.status      Opening status
  * @apiSuccess {String} opening.description     Opening description
  * @apiSuccess {String[]} opening.tags          Opening tag array
  */
@@ -180,6 +218,7 @@ router
      * @apiGroup Project
      *
      * @apiPermission logged
+     * @apiUse ProjectCreationStub
      */
     .post();
 
@@ -201,6 +240,7 @@ router
      * @apiGroup Project
      *
      * @apiUse ProjectId
+     * @apiUse ProjectUpdateStub
      */
     .put()
     /**
