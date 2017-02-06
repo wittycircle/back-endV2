@@ -32,13 +32,14 @@ exports.updateProfile = (req, res, next) => {
 
 exports.getProfileLikes = (req, res, next) => {
     profiles.getProfileLikes(req.params.id)
-        .then(([r]) => {
-            res.send({like: {count: r.count, who: r.who.split(',')}})
+        .then((r) => {
+            res.send(r)
         })
         .catch(err => next(err));
 };
 
 exports.likeProfile = (req, res, next) => {
+    console.log(req.user);
     profiles.likeProfile(req.params.id, req.user.id)
         .then(res.send({success: true}))
         .catch(err => next(err))

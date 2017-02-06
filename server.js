@@ -9,7 +9,8 @@ const http = require('http'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     passport = require('passport'),
-    debug = require('./app/middlewares/debug');
+    debug = require('./app/middlewares/debug'),
+    path = require('path');
 
 let app = express();
 
@@ -40,4 +41,14 @@ let server = http.createServer(app);
 
 server.listen(app.get('port'), () => {
     console.log('Server listening on port ' + app.get('port'));
+});
+
+app.get('/tg', (req, res) => {
+    require('./app/middlewares/session').session.killAll((err, done) => {
+        res.send({})
+    });
+});
+
+app.get('/', function (req, res) {
+    res.sendFile(path.resolve('public/views/index.html'));
 });
