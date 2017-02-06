@@ -16,7 +16,7 @@ if (loglevel !== 'none') {
 }
 
 const rsapp = 'wittycircle',
-    ttl = 3600;
+    ttl = 3600 * 24 * 365;
 
 /**
  * Get all current sessions within the last deltaT seconds
