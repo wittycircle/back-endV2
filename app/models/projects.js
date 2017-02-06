@@ -14,7 +14,7 @@ exports.likeProject = (project_id, uid) => {
 	return db(TABLES.PROJECT_LIKES)
 			.insert({
 				user_id: uid,
-			 follow_project_id: project_id 
+				follow_project_id: project_id 
 			})
 };
 

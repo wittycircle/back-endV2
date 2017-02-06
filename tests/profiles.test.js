@@ -7,14 +7,6 @@ module.exports = (storage, chakram) => {
     const expect = chakram.expect,
         route = storage.resource('profiles/'),
         rnd_string = Math.random().toString(36).slice(-10),
-        test_user = {
-            id: 3719,
-            profile_id: 3755
-        },
-        fake_user = {
-            id: 9999282292,
-            profile_id: 3939302932
-        },
         schemas = {
             common: require('./schemas/common.schema'),
             profiles: require('./schemas/profile.schema'),
@@ -74,16 +66,16 @@ module.exports = (storage, chakram) => {
             ret: null
         };
         before('Update profile', function () {
-            success.test = chakram.put(route + test_user.profile_id, {
+            success.test = chakram.put(route + storage.user.profile_id, {
                 profile: {
                     first_name: rnd_string
                 }
             });
-            return success.ret = chakram.get(route + test_user.profile_id);
+            return success.ret = chakram.get(route + storage.user.profile_id);
         });
 
         before('Fake profile', function () {
-            success.fake = chakram.put(route + fake_user.profile_id, {profile: {first_name: "toto"}})
+            success.fake = chakram.put(route + storage.fakeId , {profile: {first_name: "toto"}})
         });
 
         it('Should return 200', function () {
@@ -112,7 +104,7 @@ module.exports = (storage, chakram) => {
     describe('Get location [GET /profiles/:id/location]', function () {
         let loc;
         before('get profile location', function () {
-            loc = chakram.get(route + test_user.profile_id + '/location')
+            loc = chakram.get(route + storage.user.profile_id + '/location')
         });
 
         it('Should have status 200', function () {
@@ -128,13 +120,13 @@ module.exports = (storage, chakram) => {
         let r;
         let res;
         before('Update profile location', function () {
-            r = chakram.put(route + test_user.profile_id + '/location', {
+            r = chakram.put(route + storage.user.profile_id + '/location', {
                 location: {
                     country: rnd_string,
                     city: rnd_string
                 }
             });
-            return res = chakram.get(route + test_user.profile_id + '/location')
+            return res = chakram.get(route + storage.user.profile_id + '/location')
         });
 
         it('Should have status 200', function () {
@@ -154,11 +146,11 @@ module.exports = (storage, chakram) => {
         let likes;
         let fake;
         before("Get profile likes", function () {
-            likes = chakram.get(route + test_user.profile_id + '/like');
+            likes = chakram.get(route + storage.user.profile_id + '/like');
         });
 
         before('Fake profile', function () {
-            fake = chakram.get(route + fake_user.profile_id + '/like')
+            fake = chakram.get(route + storage.fakeId + '/like')
         });
 
         it('Should have status 200', function () {
