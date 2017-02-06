@@ -178,7 +178,7 @@ module.exports = (storage, chakram) => {
         let lp;
         let fake;
         before('options', function () {
-            lp = chakram.post(route + 123 + '/like')
+            lp = chakram.post(route + 2 + '/like')
         });
 
         before('false req', function () {
@@ -199,13 +199,19 @@ module.exports = (storage, chakram) => {
 
     describe('Unlike profile [DELETE /profiles/:id/like]', function () {
         let remove;
+        let fake;
 
         before('Unlike profile', function () {
-            remove = chakram.delete(route + 123 + '/like');
+            remove = chakram.delete(route + 2 + '/like');
+            fake = chakram.delete(route + 2928292 + '/like');
         });
 
         it('Should send succes true', function () {
             return expect(remove).to.joi(schemas.common.success);
-        })
+        });
+
+        it('Should send success false', function () {
+            return expect(fake).to.joi(schemas.error.success);
+        });
     });
 };

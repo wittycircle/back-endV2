@@ -77,8 +77,6 @@ exports.unlikeProfile = (req, res, next) => {
         else 
             res.send({ success: true})
     })
-// 
-    // .then(res.send({success: true}))
     .catch(err => next(err))
 }
 
