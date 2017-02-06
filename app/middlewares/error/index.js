@@ -47,9 +47,9 @@ exports.error = (err, req, res, next) => {
         res.send(create_error(err[0], err[1]));
     else if (typeof err.error === 'string')
         res.status(404).send(create_error('resource.not.found', err.error));
-    else if (typeof err.code === 'number') {
+    else if (typeof err.code !== 'undefined') {
         if (typeof err.sqlState !== 'undefined') {
-            res.status(500);
+            res.status(500).send({success: false});
             console.error(err);
         }
         else if (typeof err.error !== 'undefined' || typeof err.error_description !== 'undefined')

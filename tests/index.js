@@ -41,11 +41,7 @@ describe('Authentication of the test client', function () {
 
     it('Should run all the tests', function () {
         require('./profiles.test')(storage, chakram);
-        // require('./projects.test')(storage, chakram);
-        // require('./auth.test')(storage, chakram);
-    });
-
-    after('Should logout current logged user', function () {
-        chakram.get(storage.resource('auth/logout'));
+        require('./projects.test')(storage, chakram);
+        return chakram.wait();
     });
 });
