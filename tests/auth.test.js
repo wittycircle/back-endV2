@@ -23,7 +23,7 @@ describe('Local auth strategy', function () {
 
     before('authenticate user', function () {
         user.ok = chakram.post('http://localhost:3000/api/auth/local', {
-            email: "sequoya@wittycircle.com",
+            email: "raphael@wittycircle.com",
             password: "helloworld"
         })
     });

@@ -3,7 +3,7 @@
  */
 
 'use strict';
-
+const token = 'Bearer IBAs31sbUArT4X7hnGiMGrDMRDVMYCcO7yL5aTmgBaY2U7hSIjY4MQ4Ziyu0s65w';
 const chakram = require('chakram'),
     expect = chakram.expect,
     route = 'http://localhost:3000/api/profiles/',
@@ -20,6 +20,12 @@ const chakram = require('chakram'),
         profiles: require('./schemas/profile.schema'),
         error: require('./schemas/error.schema')
     };
+
+chakram.setRequestDefaults({
+                headers :  {
+                  'Content-Type': 'application/json',
+                  'Authorization': token
+                }});
 
 chakram.addMethod('joi', require('chakram-joi'));
 
@@ -170,24 +176,17 @@ describe ('Get profile likes [GET /profiles/:id/like]', function () {
     });
 });
 
-describe.only('like profile [POST /profiles/:id/like', function () {
+describe('like profile [POST /profiles/:id/like]', function () {
     let lp;
-    let user;
     let fake;
-    before('request', function() {
-     user = chakram.post('http://localhost:3000/api/auth/local', {
-            email: "raphael@wittycircle.com",
-            password: "helloworld"
-        })
-    });
-
-    before('request bail', function() {
+    before('options', function() {
         lp = chakram.post(route + 123 + '/like')
     });
 
-    // before('false req', function() {
-    //     fake = chakram.post(route + )
-    // })
+    before('false req', function() {
+        fake = chakram.post(route + 29323482  + '/like')
+    });
+
     it('Should send 200', function() {
         return expect(lp).to.have.status(200);
     });
@@ -195,4 +194,8 @@ describe.only('like profile [POST /profiles/:id/like', function () {
     it('Should match schema', function() {
         return expect(lp).to.joi(schemas.profiles.success);
     })
+
+    it('Should send error', function() {
+        return expect(fake).to.joi(schemas.error.success);
+    });
 });

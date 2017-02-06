@@ -7,7 +7,8 @@
 const express = require('express'),
     router = express.Router(),
     profiles = require('../controllers/profiles'),
-    {validate, validateParam, schemas} = require('../middlewares/validation');
+    {validate, validateParam, schemas} = require('../middlewares/validation'),
+    passport = require('passport');
 
 
 router.route('/profiles')
@@ -24,7 +25,7 @@ router.route('/profiles/:id/location')
     .put(validate(schemas.profile.location), profiles.updateLocation);
 
 router.route('/profiles/:id/like')
-	.post(profiles.likeProfile)
+	.post(passport.authenticate('bearer'), profiles.likeProfile)
 	.get(profiles.getProfileLikes)
 	.delete(profiles.unlikeProfile);
 
