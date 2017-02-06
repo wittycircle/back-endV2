@@ -6,7 +6,7 @@ exports.getProjectLikes = (project_id) => {
 		.from(TABLES.PROJECT_LIKES + ' as pl')
 		.join(TABLES.PROJECTS + ' as pj', 'pj.id', 'pl.follow_project_id')
 		.join(h.u_profile, 'p.uid', 'pl.user_id')
-		.where({'pj.public_id': project_id})
+		.where({'pj.id': project_id})
 		.groupBy('p.id')
 };
 

@@ -4,10 +4,11 @@ const project = require('../models/projects'),
 exports.getProjectLikes = (req, res, next) => {
 	project.getProjectLikes(req.params.id)
 		.then(r => {
-			res.send({
-				count: r.length,
-				profiles: r,
-			})
+			res.send({ like :{
+				count: r.length, 
+				who: r, 
+				} 
+			}) 
 		})
 		.catch(err => next(err))
 }

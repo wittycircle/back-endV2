@@ -17,6 +17,7 @@ const chakram = require('chakram'),
         profile_id: 3939302932
     },
     schemas = {
+        common: require('./schemas/common.schema'),
         profiles: require('./schemas/profile.schema'),
         error: require('./schemas/error.schema')
     };
@@ -100,7 +101,7 @@ describe('Modify profile [PUT /profile/:id]', function () {
     });
 
     it('Should return success: true', function() {
-        return expect(success.test).to.joi(schemas.profiles.success)
+        return expect(success.test).to.joi(schemas.common.success)
     });
 
     it('Should return 400', function() {
@@ -144,7 +145,7 @@ describe('Update location [PUT /profiles/:id/location]', function () {
     })
 
     it('Should send success true', function () {
-        return expect(r).to.joi(schemas.profiles.success)
+        return expect(r).to.joi(schemas.common.success)
     })
 
     it ('Should have update the country', function () {
@@ -168,7 +169,7 @@ describe ('Get profile likes [GET /profiles/:id/like]', function () {
     });
 
     it('Should match schema', function() {
-      return  expect(likes).to.joi(schemas.profiles.likes)
+      return  expect(likes).to.joi(schemas.common.likes)
     });
 
     it('Should send success false', function () {
@@ -192,7 +193,7 @@ describe('like profile [POST /profiles/:id/like]', function () {
     });
 
     it('Should match schema', function() {
-        return expect(lp).to.joi(schemas.profiles.success);
+        return expect(lp).to.joi(schemas.common.success);
     })
 
     it('Should send error', function() {
@@ -208,6 +209,6 @@ describe('Unlike profile [DELETE /profiles/:id/like]', function () {
     });
 
     it('Should send succes true', function() {
-        return expect(remove).to.joi(schemas.profiles.success);
+        return expect(remove).to.joi(schemas.common.success);
     })
 });
