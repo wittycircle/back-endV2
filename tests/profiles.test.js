@@ -169,3 +169,30 @@ describe ('Get profile likes [GET /profiles/:id/like]', function () {
         return expect(fake).to.joi(schemas.error.success)
     });
 });
+
+describe.only('like profile [POST /profiles/:id/like', function () {
+    let lp;
+    let user;
+    let fake;
+    before('request', function() {
+     user = chakram.post('http://localhost:3000/api/auth/local', {
+            email: "raphael@wittycircle.com",
+            password: "helloworld"
+        })
+    });
+
+    before('request bail', function() {
+        lp = chakram.post(route + 123 + '/like')
+    });
+
+    // before('false req', function() {
+    //     fake = chakram.post(route + )
+    // })
+    it('Should send 200', function() {
+        return expect(lp).to.have.status(200);
+    });
+
+    it('Should match schema', function() {
+        return expect(lp).to.joi(schemas.profiles.success);
+    })
+});

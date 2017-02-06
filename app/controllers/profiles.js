@@ -59,11 +59,15 @@ exports.getLikedProfile = (req, res, next) => {
 }
 
 exports.likeProfile = (req, res, next) => {
-    profiles.likeProfile(req.params.id, 3719)
+    // req.user = {id:3719}
+    profiles.likeProfile(req.params.id, req.user.id)
     .then((r) => {
-        res.send({success: true})
+        if (_.isEmpty(r))
+            res.send({success: false})
+        else 
+            res.send({success: true})
     })
-    .catch(err => next(err))
+    .catch(error => next(error))
 }
 
 exports.unlikeProfile = (req, res, next) => {

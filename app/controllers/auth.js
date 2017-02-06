@@ -5,7 +5,6 @@ const passport = require('passport'),
     session = require('../middlewares/session').session,
     user = require('../models/users'),
     project = require('../models/projects'),
-    schemas = require('../middlewares/validation').schemas,
     _ = require('lodash');
 
 'use strict';
@@ -25,24 +24,12 @@ exports.logout = (req, res) => {
 
 exports.localLogin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-    	console.log("USER HERE", user)
-        if (err)
-            res.status(400).json({
-                tg: err
-
-            });
+        if (err) next(err);
         else if (_.isEmpty(user))
-            res.status(400).json({
-                error: '1',
-                error_description: 'Your request is invalid',
-                user: user
-            });
+            next({code: 400});
         else
             req.logIn(user, err => {
-                if (err) res.status(400).json({
-                    error: '2',
-                    error_description: 'Your request is invalid'
-                });
+                if (err) next({code: 403});
                 else
                     res.json({
                         auth: _.pick(req.session.passport.user, ['token']),
@@ -53,61 +40,61 @@ exports.localLogin = (req, res, next) => {
 };
 
 exports.resetPassword = (req, res) => {
-    const token = crypto.randomBytes(20).toString('hex'),
-    	link = 'https://www.wittycircle.com/password/reset/' + token;
+    const token = crypto.randomBytes(20).toString('hex');
+    let link = 'https://www.wittycircle.com/password/reset/' + token;
 
-	user.getFromUser(['id'], {email: req.body.email_reset})	
-	.then(r => {
-		if (!r.length) {
-			res.status(400).send({message: "No account with this email"});
-		} else {
-			user.resetPass({token: token, user_id: r[0].id, user_email: req.body.email_reset})
-			.then(res.send({success: true}))
-		}
-	}).catch((e) => console.error(e))
-	//mail stuff to do
-}
+    user.getFromUser(['id'], {email: req.body.email_reset})
+        .then(r => {
+            if (!r.length) {
+                next(['user.not_found', 'No account with this email']);
+            } else {
+                user.resetPass({token: token, user_id: r[0].id, user_email: req.body.email_reset})
+                    .then(res.send({success: true}))
+            }
+        }).catch((e) => next(e));
+    //mail stuff to do
+};
 
 exports.getUserForResetPassword = (req, res) => {
-	user.getUserReset(['token', 'user_id', 'user_email'], {token: req.param.token})
-	.then(r => {
-		if (!r.length) {
-			res.status(404).send({message: 'You are not authorized to make this action.'});
-		} else {
-			res.send({data: r, message: 'Password Changed !'});
-		}
-	}).catch((e) => console.error(e))
-}                   
+    user.getUserReset(['token', 'user_id', 'user_email'], {token: req.param.token})
+        .then(r => {
+            if (!r.length) {
+                res.status(404).send({message: 'You are not authorized to make this action.'});
+            } else {
+                res.send({data: r, message: 'Password Changed !'});
+            }
+        }).catch((e) => console.error(e))
+};
 
 exports.updatePasswordReset = (req, res) => {
-	user.getUserreset(['token'], {token: req.body.token})
-	.then(c => {
-		if (!c.length) {
-			res.status(404).send({message: 'You are not authorized to make this action.'});
-		} else {
-			user.updateUser({password: bcrypt.hashSync(req.body.password)}, {email: req.body.email})
-			.then((r) => {
-				res.send(r)
-			})
-		}
-	}).catch((e) => console.error(e))
-}
+    user.getUserreset(['token'], {token: req.body.token})
+        .then(c => {
+            if (!c.length) {
+                res.status(404).send({message: 'You are not authorized to make this action.'});
+            } else {
+                user.updateUser({password: bcrypt.hashSync(req.body.password)}, {email: req.body.email})
+                    .then((r) => {
+                        res.send(r)
+                    })
+            }
+        }).catch((e) => console.error(e))
+};
 
 exports.verifyProjectNetwork = (req, res) => {
-	project.getFromProjectNetwork(['project_id'], {token: req.params.token})
-	.count('project_id as number')
-	.then(c => {
-		if (c[0].number === 0) {
-			    return res.status(403).send("You are not authorized to do this action.");
-		} else {
-			project.updateProjectNetwork({verified: 1}, {token: req.params.token})
-			.then(r => {
-				project.getFromProjectNetwork(['network'], {project_id: c[0].project_id, verified: 1})
-				.then(res.status(200).send({success: true}))
-			})
-		}
-	})
-}
+    project.getFromProjectNetwork(['project_id'], {token: req.params.token})
+        .count('project_id as number')
+        .then(c => {
+            if (c[0].number === 0) {
+                return res.status(403).send("You are not authorized to do this action.");
+            } else {
+                project.updateProjectNetwork({verified: 1}, {token: req.params.token})
+                    .then(r => {
+                        project.getFromProjectNetwork(['network'], {project_id: c[0].project_id, verified: 1})
+                            .then(res.status(200).send({success: true}))
+                    })
+            }
+        })
+};
 
 
 

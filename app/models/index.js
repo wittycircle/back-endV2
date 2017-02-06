@@ -10,7 +10,7 @@ const config = require('../private'),
 // if (process.env.DEBUG === true)
 knex.on('query', (query) => console.log('SQL %s', query.sql));
 
-exports.db = knex;
+exports.db = knex
 
 exports.TABLES = {
     USERS: 'users',

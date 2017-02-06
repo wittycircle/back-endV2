@@ -5,6 +5,7 @@
 'use strict';
 
 const {db, TABLES} = require('./index'),
+        _ = require('lodash'),
         h = require('./helper');
 
 exports.getProfiles = () => {
@@ -36,16 +37,26 @@ exports.getProfileLikes = (cond, cond2, id) => {
 };
 
 exports.likeProfile = (followed_id, id) => {
-        return db(TABLES.USER_LIKES)
-        .insert({
-            user_id: id,
-            follow_user_id: followed_id,
-        })
+    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
+        if (!_.isEmpty(r))
+         {
+            return db(TABLES.USER_LIKES) 
+            .insert({
+                user_id: id, 
+                follow_user_id: followed_id, 
+            })
+        }
+    })
 };
 
 exports.unlikeProfile = (followed_id, id) => {
-    return db(TABLES.USER_LIKES).del()
-        .where({user_id: id, follow_user_id: followed_id})
+    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
+        if (!_.isEmpty(r)) 
+        {
+            return db(TABLES.USER_LIKES).del()
+            .where({user_id: id, follow_user_id: followed_id})
+        }
+    })
 };
 
 exports.getLocation = (p_id) => {

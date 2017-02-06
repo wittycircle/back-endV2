@@ -20,7 +20,8 @@ const user_schema = joi.object().keys({
     email: joi.string().email().required()
 });
 
-exports.auth_response_schema = joi.object().keys({
+exports.response_schema = joi.object().keys({
     auth: token_schema,
     user: user_schema
 });
+

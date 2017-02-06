@@ -41,3 +41,7 @@ let server = http.createServer(app);
 server.listen(app.get('port'), () => {
     console.log('Server listening on port ' + app.get('port'));
 });
+
+app.get('/tg', (req, res) => {
+    require('./app/middlewares/session').session.killAll((err, done) => {res.send({session: 'killed'})});
+});

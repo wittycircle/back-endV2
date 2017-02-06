@@ -1,6 +1,11 @@
 const { db, TABLES } = require('./index');
 
 //Create user stuff
+
+exports.getUserBy = (by) => {
+    return db.select(['id', 'profile_id', 'password']).from(TABLES.USERS).where(by);
+};
+
 exports.getUserByEmail = (email) => {
 	return db.select('id').from(TABLES.USERS)
 		.where('email', email)

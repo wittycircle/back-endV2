@@ -43,6 +43,7 @@ const create_error = (name, description) => {
  */
 
 exports.error = (err, req, res, next) => {
+    console.log(`des bails ${err}`);
     if (_.isArray(err))
         res.send(create_error(err[0], err[1]));
     else if (typeof err.error === 'string')
