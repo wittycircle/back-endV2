@@ -16,9 +16,16 @@ exports.getUserSkills = (req, res, next) => {
     .catch(err => next(err))
 };
 
-// exports.addUserSkill = (req, res, next) => {
-
-// };
+exports.addUserSkill = (req, res, next) => {
+  user.addUserSkill(req.params.id, 3719)
+    .then(r => {
+      if (r && r.length)
+          res.send({skills: r})
+      else
+        next(['No matched skill', 'invalid skill id'])
+    })
+    .catch(err => next(err))
+};
 
 exports.createUser = (req, res, next) => {
     user.getUserByEmail(req.body.email).then((exist) => {

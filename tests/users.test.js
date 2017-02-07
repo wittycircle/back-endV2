@@ -12,13 +12,24 @@ module.exports = (storage, chakram) => {
         	let r, v;
         	before('request', function() {
         		r = chakram.get(route + 1 + '/skills');
-        		// v = chakram.get(route + storage.fake + '/skills');
+        		v = chakram.get(route + storage.fake + '/skills');
         	});
 
         	it('Should get a list of skills', function () {
-        		return expect(r).to.joi(schemas.users.skills)
+        		return expect(r).to.joi(schemas.users.skills);
         	});
 
-        	it('should print', function() {})
+        });
+
+        describe('Add skill to user [POST /users/:id/skills]', function() {
+        	let r, v;
+        	before('request', function() {
+        		r = chakram.post(route + 81 + '/skills');
+        		v = chakram.post(route + 2929292929292 + '/skills');
+        	});
+        
+        	it('Should send the list of updated skills', function() {
+        		return expect(r).to.joi(schemas.users.skills).status(200)
+        	});
         });
 };

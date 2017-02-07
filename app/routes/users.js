@@ -15,6 +15,6 @@ router.route('/users')
 
 router.route('/users/:id/skills')
 	.get(users.getUserSkills)
-	// .post(users.addUserSkill)
+	.post(users.addUserSkill)
 
 module.exports = router

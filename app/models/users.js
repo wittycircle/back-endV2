@@ -6,6 +6,18 @@ exports.getUserSkills = (id) => {
 		.from(TABLES.SKILLS + ' as s')
 		.join(TABLES.USER_SKILLS +  ' as us', 'us.skill_id', 's.id')
 		.where({user_id: id})
+		.groupBy('us.skill_id')
+};
+
+exports.addUserSkill = (id, uid) => {
+	return db(TABLES.SKILLS).select('id').where('id', id).then(r => {
+		if (r && r.length) {
+			console.log(r)
+			return db(TABLES.USER_SKILLS) 
+				.insert({user_id: uid, skill_id: id })
+				.then(() => exports.getUserSkills(uid))
+		}
+	})
 };
 
 exports.getUserBy = (by) => {
