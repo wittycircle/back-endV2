@@ -142,9 +142,9 @@ const express = require('express'),
  * @apiParam {String} openings.status           Opening status
  * @apiParam {String} openings.description      Opening description
  * @apiParam {String[]} openings.tags           Opening tag array
- * @apiParam {Object} feedbacks                 Project feedbacks
- * @apiParam {String} feedbacks.title           Feedback title
- * @apiParam {String} feedbacks.description     Feedback description
+ * @apiParam {Object} discussions                 Project discussion
+ * @apiParam {String} discussions.title           Discussion title
+ * @apiParam {String} discussions.description     Discussion description
  */
 
 /**
