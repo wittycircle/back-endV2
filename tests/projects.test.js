@@ -38,7 +38,7 @@ module.exports = (storage, chakram) => {
         let r, v;
         before('[POST /projects/:id/like]', function() {
             r = chakram.post(route + test_project.id + '/like');
-            // v = chakram.get(route + test_project.id + '/like');
+            v = chakram.get(route + test_project.id + '/like');
         });
 
         it('Should like a project', function() {
@@ -46,17 +46,24 @@ module.exports = (storage, chakram) => {
             return chakram.wait()
             });
 
-        // it('Should appear in db', function() {
-        //     return v.then(res => {
-        //         return expect(res.body.like.who[res.body.like.who.length - 1])
-        //             .to.have.property('id', storage.user.profile_id)
-        //     })
-        // })
+        it('Should appear in db', function() {
+           v.then(res => {
+                return expect(res.body.like.who[res.body.like.who.length - 1])
+                    .to.have.property('id', storage.user.profile_id)
+                    chakram.wait()
+            })
+        })
 
     });
 
     describe('Unlike project', function() {
         let r, v;
-        before('[DELETE /projects/:id/like')
+        before('[DELETE /projects/:id/like', function() {
+            r = chakram.delete(route + test_project.id + '/like')
+        });
+
+        it('Should send success true', function() {
+            return expect(r).to.joi(schemas.common.success)
+        });
     });
 };

@@ -42,7 +42,7 @@ describe('Authentication of the test client', function () {
     });
 
     it('Should run all the tests', function () {
-        require('./profiles.test')(storage, chakram);
+        // require('./profiles.test')(storage, chakram);
         require('./projects.test')(storage, chakram);
         // require('./auth.test')(storage, chakram);
     });
