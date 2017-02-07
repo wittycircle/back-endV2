@@ -37,6 +37,8 @@ exports.addUserSkill = (req, res, next) => {
 };
 
 exports.removeUserSkill = (req, res, next) => {
+    if (!req.body || !req.body.skill_id)
+    next(["skill id", "Skill id required, empty body"])
   user.removeUserSkill(req.body.skill_id, req.params.id)
     .then(r => {
       if (r){

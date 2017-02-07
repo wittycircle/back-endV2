@@ -16,7 +16,7 @@ exports.addUserSkill = (id, uid) => {
 			.insert({user_id: uid, skill_id: id }) 
 			.then(() => exports.getUserSkills(uid)) 
 		}else{
-			return "No mach user"
+			return "No match user"
 		} 
 	})
 
