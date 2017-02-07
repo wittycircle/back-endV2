@@ -5,10 +5,45 @@ const express = require('express'),
     passport = require('passport');
 
 router.param('id', validateParam(schemas.params.id));
+router.param('opening_id', validateParam(schemas.params.id));
+router.param('discussion_id', validateParam(schemas.params.id));
+
+router.route('/projects')
+    .get()
+    .post(passport.authenticate('bearer'));
+
+router.route('/project/:id')
+    .get()
+    .put(passport.authenticate('bearer'))
+    .delete(passport.authenticate('bearer'));
+
+router.route('/projects/:id/upvote')
+    .get()
+    .post(passport.authenticate('bearer'))
+    .delete(passport.authenticate('bearer'));
+
+router.route('/projects/:id/openings')
+    .get()
+    .post(passport.authenticate('bearer'));
+
+router.route('/projects/:id/openings/:opening_id')
+    .get()//not in documentation
+    .put(passport.authenticate('bearer'))
+    .delete(passport.authenticate('bearer'));
+
+router.route('/projects/:id/discussions')
+    .get()
+    .post(passport.authenticate('bearer'));
+
+router.route('/projects/:id/discussions/:discussion_id')
+    .put(passport.authenticate('bearer'))
+    .delete(passport.authenticate('bearer'));
+
 
 router.route('/projects/:id/like')
     .get(projects.getProjectLikes)
     .post(passport.authenticate('bearer'), projects.likeProject)
     .delete(passport.authenticate('bearer'), projects.unlikeProject);
+
 
 module.exports = router;
