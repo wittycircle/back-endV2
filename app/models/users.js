@@ -10,24 +10,44 @@ exports.getUserSkills = (id) => {
 };
 
 exports.addUserSkill = (id, uid) => {
+	sub = db(TABLES.USERS).select('id').where('id', uid).then(r => {
+		if (r && r.length){
+			return db(TABLES.USER_SKILLS) 
+			.insert({user_id: uid, skill_id: id }) 
+			.then(() => exports.getUserSkills(uid)) 
+		}else{
+			return "No mach user"
+		} 
+	})
+
 	return db(TABLES.SKILLS).select('id').where('id', id).then(r => {
 		if (r && r.length) {
-			console.log(r)
-			return db(TABLES.USER_SKILLS) 
-				.insert({user_id: uid, skill_id: id })
-				.then(() => exports.getUserSkills(uid))
+			return db(TABLES.USER_SKILLS).select('id').where({user_id: uid, skill_id: id})
+			.then(r => {
+				if (r && r.length){
+					return exports.getUserSkills(uid) 
+				}else {
+					return sub;
+				} 
+			})
 		}
 	})
 };
 
 exports.removeUserSkill = (id, uid) => {
-	return db(TABLES.SKILLS).select('id').where('id', id).then(r => {
-		if (r && r.length) {
-			console.log(r)
-			return db(TABLES.USER_SKILLS) 
-				.del()
-				.where({'user_id': uid, 'skill_id': id})
-				.then(() => exports.getUserSkills(uid))
+	return db(TABLES.USER_SKILLS).select('id').where('skill_id', id).then(r => {
+		if (r && r.length){
+			return db(TABLES.USERS).select('id').where('id', uid).then(r => {
+				if (r && r.length) {
+					return db(TABLES.USER_SKILLS) 
+						.del()
+						.where({'user_id': uid, 'skill_id': id})
+				}else {
+					return "Invalid id"
+				}
+			})
+		}else {
+			return "Invalid user id"
 		}
 	})
 };

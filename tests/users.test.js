@@ -28,8 +28,8 @@ module.exports = (storage, chakram) => {
         describe('Add skill to user [POST /users/:id/skills]', function() {
         	let r, v;
         	before('request', function() {
-        		r = chakram.post(route + 81 + '/skills');
-        		v = chakram.post(route + storage.fake + '/skills');
+        		r = chakram.post(route + storage.user.id + '/skills', {skill_id: 81});
+        		v = chakram.post(route + storage.fake + '/skills', {skill_id: 81});
         	});
         
         	it('Should send the list of updated skills', function() {
@@ -38,6 +38,18 @@ module.exports = (storage, chakram) => {
 
         	it('Should send an error', function() {
 				return expect(v).to.joi(schemas.error.description).status(404)
+        	});
+        });
+
+        describe('Remove skill from user [DELETE /users/:id/skills]', function() {
+        	let r, v;
+        	before('request', function() {
+        		r = chakram.delete(route + 81 + '/skills');
+        		v = chakram.delete(route + 81 + '/skills');
+        	});
+        
+        	it('Should remove a skill', function() {
+        		return expect(r).to;
         	});
         });
 };

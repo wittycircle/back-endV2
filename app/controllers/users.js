@@ -19,11 +19,16 @@ exports.getUserSkills = (req, res, next) => {
 };
 
 exports.addUserSkill = (req, res, next) => {
-  user.addUserSkill(req.params.id, 3719)
+  if (!req.body || !req.body.skill_id)
+    next(["skill id", "Skill id required, empty body"])
+  user.addUserSkill(req.body.skill_id, req.params.id)
     .then(r => {
       if (r && r.length){
-          res.send({skills: r})
-      }
+        if (typeof r === 'string')
+            next([r, "Invalid user id"])
+          else
+          res.send({skills: r}) 
+      } 
       else{
         next(['No matched skill', 'invalid skill id'])
       }
@@ -32,13 +37,16 @@ exports.addUserSkill = (req, res, next) => {
 };
 
 exports.removeUserSkill = (req, res, next) => {
-  user.removeUserSkill(req.params.id, 3719)
+  user.removeUserSkill(req.body.skill_id, req.params.id)
     .then(r => {
       if (r){
-        res.send({skill: r})
+        if (typeof r === 'string')
+          next([r, 'Did not match any skills']);
+        else
+          res.send({success: true})
       }
-      else{
-        next(["No matched skill", "Could not remove skill"])
+      else {
+        next(["No match" , "No matched skill or last skilled removed"])
       }
     })
     .catch(err => next(err))

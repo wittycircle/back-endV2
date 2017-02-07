@@ -107,6 +107,7 @@ router
      * @apiGroup Skill
      *
      * @apiParam {Number}  id The User's id
+     * @apiParam {Number} skill_id The skill id to add to the user
      *
      * @apiPermission owner
      *
@@ -115,7 +116,7 @@ router
      *
      * @apiParamExample {json} Request-Example:
      *      {
-     *          id: 1337
+     *          skill_id: 1337
      *      }
      *
      * @apiSuccessExample {json} Success-Response:
@@ -146,7 +147,7 @@ router
 router
     .route('/users/:user_id/skills/:skill_id')
     /**
-     * @api {delete} /users/:id/skills/:id Remove skill from user
+     * @api {delete} /users/:id/skills/:skill_id Remove skill from user
      * @apiName RemoveUserSkill
      * @apiGroup Skill
      *
