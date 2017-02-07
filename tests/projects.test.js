@@ -47,13 +47,12 @@ module.exports = (storage, chakram) => {
             });
 
         it('Should appear in db', function() {
-           v.then(res => {
-                return expect(res.body.like.who[res.body.like.who.length - 1])
-                    .to.have.property('id', storage.user.profile_id)
-                    chakram.wait()
+            v.then(res => {
+                return expect(res.body.like.who[res.body.like.who.length - 1]) 
+                    .to.have.property('id', storage.user.profile_id) 
             })
+            // chakram.wait()
         })
-
     });
 
     describe('Unlike project', function() {
@@ -63,7 +62,7 @@ module.exports = (storage, chakram) => {
         });
 
         it('Should send success true', function() {
-            return expect(r).to.joi(schemas.common.success)
+            return expect(r).to.joi(schemas.common.success).to.have.status(200)
         });
     });
 };
