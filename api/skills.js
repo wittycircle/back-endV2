@@ -56,6 +56,8 @@ router.route('/skills')
      * @apiSuccess {String}    skill.category Skill category
      * @apiSuccess {Number}    skill priority Skill priority
      *
+     * @apiPermission admin
+     *
      * @apiParamExample {json}  Request-Example:
      *      {
      *          skill: {

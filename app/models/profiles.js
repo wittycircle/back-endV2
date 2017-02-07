@@ -36,27 +36,22 @@ exports.getProfileLikes = (cond, cond2, id) => {
         .groupBy(cond2);
 };
 
-exports.likeProfile = (id, followed_id) => {
-    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
-        if (!_.isEmpty(r))
+exports.likeProfile = (id, uid) => {
+    return db.select('id').where('id', id).from(TABLES.USERS).then(r => {
+        if (r.length)
          {
-             return db(TABLES.USER_LIKES)
+            return db(TABLES.USER_LIKES) 
             .insert({
-                user_id: id,
-                follow_user_id: followed_id,
+                user_id: id, 
+                follow_user_id: uid, 
             })
         }
     })
 };
 
-exports.unlikeProfile = (id, followed_id) => {
-    return db.select('id').where('id', followed_id).from(TABLES.USERS).then(r => {
-        if (!_.isEmpty(r)) 
-        {
-            return db(TABLES.USER_LIKES).del()
-            .where({user_id: id, follow_user_id: followed_id})
-        }
-    })
+exports.unlikeProfile = (id, uid) => {
+    return db(TABLES.USER_LIKES).del() 
+        .where({user_id: id, follow_user_id: uid})
 };
 
 exports.getLocation = (p_id) => {

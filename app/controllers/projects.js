@@ -16,11 +16,11 @@ exports.getProjectLikes = (req, res, next) => {
 exports.likeProject = (req, res, next) => {
 	project.likeProject(req.params.id, req.user.id)
 	.then(r => {
-		if (r)
-            res.send({success: true});
-		else 
-			res.send({success: false})
-    })
+        if (!_.isEmpty(r))
+            res.send({success: true})
+        else
+            res.send({success: false})
+    }).catch(err => next(err))
 };
 
 exports.unlikeProject = (req, res, next) => {
