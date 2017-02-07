@@ -16,7 +16,11 @@ module.exports = (storage, chakram) => {
         	});
 
         	it('Should get a list of skills', function () {
-        		return expect(r).to.joi(schemas.users.skills);
+        		return expect(r).to.joi(schemas.users.skills).status(200);
+        	});
+
+        	it('should send an error', function () {
+        		return expect(v).to.joi(schemas.error.description).status(404)
         	});
 
         });
@@ -25,11 +29,15 @@ module.exports = (storage, chakram) => {
         	let r, v;
         	before('request', function() {
         		r = chakram.post(route + 81 + '/skills');
-        		v = chakram.post(route + 2929292929292 + '/skills');
+        		v = chakram.post(route + storage.fake + '/skills');
         	});
         
         	it('Should send the list of updated skills', function() {
         		return expect(r).to.joi(schemas.users.skills).status(200)
+        	});
+
+        	it('Should send an error', function() {
+				return expect(v).to.joi(schemas.error.description).status(404)
         	});
         });
 };

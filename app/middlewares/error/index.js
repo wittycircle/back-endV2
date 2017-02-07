@@ -44,7 +44,7 @@ const create_error = (name, description) => {
 
 exports.error = (err, req, res, next) => {
     if (_.isArray(err))
-        res.send(create_error(err[0], err[1]));
+        res.status(404).send(create_error(err[0], err[1]));
     else if (typeof err.error === 'string')
         res.status(404).send(create_error('resource.not.found', err.error));
     else if (typeof err.code !== 'undefined') {
@@ -60,7 +60,7 @@ exports.error = (err, req, res, next) => {
         }
     }
     else{
-        res.send(err);
+        res.send(err).status(400);
                     console.error(err);
     }
 };
