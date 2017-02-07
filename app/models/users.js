@@ -20,6 +20,18 @@ exports.addUserSkill = (id, uid) => {
 	})
 };
 
+exports.removeUserSkill = (id, uid) => {
+	return db(TABLES.SKILLS).select('id').where('id', id).then(r => {
+		if (r && r.length) {
+			console.log(r)
+			return db(TABLES.USER_SKILLS) 
+				.del()
+				.where({'user_id': uid, 'skill_id': id})
+				.then(() => exports.getUserSkills(uid))
+		}
+	})
+};
+
 exports.getUserBy = (by) => {
     return db.select(['id', 'profile_id', 'password']).from(TABLES.USERS).where(by);
 };

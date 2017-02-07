@@ -8,10 +8,12 @@ const   user = require('../models/users'),
 exports.getUserSkills = (req, res, next) => {
   user.getUserSkills(req.params.id)
     .then(r => {
-      if (r.length) 
+      if (r.length) {
         res.send({skills: r})
-      else
+      }
+      else{
         next(['no content', 'User has no skills'])
+      }
     })
     .catch(err => next(err))
 };
@@ -19,10 +21,25 @@ exports.getUserSkills = (req, res, next) => {
 exports.addUserSkill = (req, res, next) => {
   user.addUserSkill(req.params.id, 3719)
     .then(r => {
-      if (r && r.length)
+      if (r && r.length){
           res.send({skills: r})
-      else
+      }
+      else{
         next(['No matched skill', 'invalid skill id'])
+      }
+    })
+    .catch(err => next(err))
+};
+
+exports.removeUserSkill = (req, res, next) => {
+  user.removeUserSkill(req.params.id, 3719)
+    .then(r => {
+      if (r){
+        res.send({skill: r})
+      }
+      else{
+        next(["No matched skill", "Could not remove skill"])
+      }
     })
     .catch(err => next(err))
 };

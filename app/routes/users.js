@@ -16,5 +16,6 @@ router.route('/users')
 router.route('/users/:id/skills')
 	.get(users.getUserSkills)
 	.post(users.addUserSkill)
+	.delete(users.removeUserSkill)
 
 module.exports = router
