@@ -42,8 +42,8 @@ const express = require('express'),
  * @apiSuccess {String} project.owners.first_name       User first name
  * @apiSuccess {String} project.owners.last_name        User last name
  * @apiSuccess {Number} project.followers_count         Followers count
- * @apiSuccess {Object[]} project.feedbacks             Feedbacks
- * @apiSuccess {Number} project.feedbacks.id            Feedback id
+ * @apiSuccess {Object[]} project.discussions           Discussions
+ * @apiSuccess {Number} project.discussions.id          Discussion id
  * @apiSuccess {Object[]} project.openings              Openings
  * @apiSuccess {Number} project.opening.id              Opening id
  *
@@ -135,16 +135,16 @@ const express = require('express'),
  * @apiParam {String} about                     Project story as <em>HTML</em>
  * @apiParam {String} network                   Project network
  * @apiParam {Boolean} public                   Project visibility
- * @apiParam {Object[]} members                   Project members
+ * @apiParam {Object[]} members                 Project members
  * @apiParam {Number} members.id                Member id
- * @apiParam {Object[]} openings                  Project openings
+ * @apiParam {Object[]} openings                Project openings
  * @apiParam {String} openings.skill            Opening skill
  * @apiParam {String} openings.status           Opening status
  * @apiParam {String} openings.description      Opening description
  * @apiParam {String[]} openings.tags           Opening tag array
- * @apiParam {Object} discussions                 Project discussion
- * @apiParam {String} discussions.title           Discussion title
- * @apiParam {String} discussions.description     Discussion description
+ * @apiParam {Object} discussions               Project discussion
+ * @apiParam {String} discussions.title         Discussion title
+ * @apiParam {String} discussions.description   Discussion description
  */
 
 /**
@@ -199,6 +199,9 @@ const express = require('express'),
  * @apiSuccess {String} discussion.message          Discussion message
  * @apiSuccess {String} discussion.creation_date    Discussion creation date
  * @apiSuccess {Object[]} discussion.replies        Discussion replies
+ * @apiSuccess {Number} discussion.replies.user_id  Reply user id
+ * @apiSuccess {String} discussion.replies.message  Reply message
+ * @apiSuccess {String} discussion.replies.creation_date Reply creation date
  */
 
 router
