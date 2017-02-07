@@ -162,7 +162,7 @@ const express = require('express'),
 /**
  * @apiDefine ProjectOpeningStub
  * @apiSuccess {Object} opening                 Opening
- * @apiSuccess {String} opening.created_at      Creation date
+ * @apiSuccess {String} opening.creation_date   Creation date
  * @apiSuccess {String} opening.skill           Opening skill
  * @apiSuccess {String = "any", "tips", "teammate", "mentor"} opening.status      Opening status
  * @apiSuccess {String} opening.description     Opening description
@@ -172,7 +172,7 @@ const express = require('express'),
 /**
  * @apiDefine ProjectOpeningListStub
  * @apiSuccess {Object[]} openings              Opening array
- * @apiSuccess {String} openings.created_at      Creation date
+ * @apiSuccess {String} openings.creation_date      Creation date
  * @apiSuccess {String} openings.skill           Opening skill
  * @apiSuccess {String} openings.status          Opening status
  * @apiSuccess {String} openings.description     Opening description
