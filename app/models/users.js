@@ -1,6 +1,12 @@
 const { db, TABLES } = require('./index');
 
 //Create user stuff
+exports.getUserSkills = (id) => {
+	return db.select(['skill_id as id', 'name', 'category'])
+		.from(TABLES.SKILLS + ' as s')
+		.join(TABLES.USER_SKILLS +  ' as us', 'us.skill_id', 's.id')
+		.where({user_id: id})
+};
 
 exports.getUserBy = (by) => {
     return db.select(['id', 'profile_id', 'password']).from(TABLES.USERS).where(by);

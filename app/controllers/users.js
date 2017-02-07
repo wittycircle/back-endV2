@@ -4,6 +4,22 @@ const   user = require('../models/users'),
         _ = require('lodash'),
         home = 'http://localhost:3000';
 
+
+exports.getUserSkills = (req, res, next) => {
+  user.getUserSkills(req.params.id)
+    .then(r => {
+      if (r.length) 
+        res.send({skills: r})
+      else
+        next(['no content', 'User has no skills'])
+    })
+    .catch(err => next(err))
+};
+
+// exports.addUserSkill = (req, res, next) => {
+
+// };
+
 exports.createUser = (req, res, next) => {
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
@@ -24,4 +40,4 @@ exports.createUser = (req, res, next) => {
            }).catch(err => next(err))
        }
     })
-}
+};

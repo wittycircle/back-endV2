@@ -13,4 +13,8 @@ router.route('/users')
 	.post(users.createUser)
 // 	.get(users.getUsers)
 
+router.route('/users/:id/skills')
+	.get(users.getUserSkills)
+	// .post(users.addUserSkill)
+
 module.exports = router

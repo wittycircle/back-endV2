@@ -1,7 +1,6 @@
 'use strict';
 
-const joi = require('joi'),
-	p_empty = ['', null];
+const p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
@@ -20,9 +19,7 @@ module.exports = (storage, chakram) => {
         projects: require('./schemas/project.schema'),
         error: require('./schemas/error.schema')
     };
-  
-    chakram.addMethod('joi', require('chakram-joi'));
-
+    describe('test', function(){it('should print', function(){})})  
     describe('Get project likes', function() {
     	let pl;
     	before('[GET /projects/:id/like', function() {
