@@ -1,10 +1,15 @@
 /**
- * Created by rdantzer on 19/01/17.
+ * Created by rdantzer on 08/02/17.
  */
 
 'use strict';
 
-const _ = require('lodash');
+const _ = require('lodash'),
+    pretty = require('prettyjson'),
+    sqlColorize = require('./colors'),
+    {db} = require('../../models');
+
+db.on('query', (query) => console.log(sqlColorize(query.sql)));
 
 exports.resDebugger = (req, res, next) => {
     let oldWrite = res.write,
@@ -21,10 +26,10 @@ exports.resDebugger = (req, res, next) => {
         if (chunk)
             chunks.push(new Buffer(chunk));
         const body = Buffer.concat(chunks).toString('utf8');
-        console.log('\nResDebugger: %s %s %s', req.method, req.path, _.truncate(body, {
+        console.log('%s %s %s', req.method, req.path, pretty.render(_.truncate(body, {
             length: 512,
             separator: ' '
-        }));
+        })));
         oldEnd.apply(res, arguments);
     };
     next();
