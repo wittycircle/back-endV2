@@ -6,7 +6,8 @@
 
 const joi = require('joi'),
 	p_empty = ['', null],
-    detail = require('./common.schema').detail;
+	detail = require('./common.schema').detail
+
 const p_location = joi.object().keys({
 	country: joi.string().alphanum().trim().allow(p_empty),
 	state: joi.string().alphanum().trim().allow(p_empty),

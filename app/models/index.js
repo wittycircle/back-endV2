@@ -26,5 +26,6 @@ exports.TABLES = {
     PROJECTS: 'projects',
     USER_LIKES: 'user_followers',
     PROJECT_LIKES: 'project_followers',
-    PROJECT_NETWORK: 'project_network'
+    PROJECT_NETWORK: 'project_network',
+    SKILLS: 'skills'
 };

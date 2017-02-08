@@ -28,6 +28,8 @@ describe('Authentication of the test client', function () {
     it('Should store the token in the storage for later use', function () {
         expect(storage.user).to.have.status(200);
         storage.user.then(function (authResponse) {
+            storage.user = authResponse.body.user;
+            storage.fakeId = 2938232982;
             storage.token = authResponse.body.auth.token;
             chakram.setRequestDefaults({
                 headers: {
@@ -40,8 +42,13 @@ describe('Authentication of the test client', function () {
     });
 
     it('Should run all the tests', function () {
+        require('./auth.test')(storage, chakram);
         require('./profiles.test')(storage, chakram);
         require('./projects.test')(storage, chakram);
-        return chakram.wait();
+        require('./users.test')(storage, chakram);
+    });
+
+    after('Should logout current logged user', function () {
+        chakram.get(storage.resource('auth/logout'));
     });
 });

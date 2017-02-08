@@ -18,16 +18,16 @@ router.param('id', validateParam(schemas.params.id));
 
 router.route('/profiles/:id')
     .get(profiles.getProfile)
-    .put(passport.authenticate('bearer'), validate(schemas.profile.update), profiles.updateProfile);
+    .put(validate(schemas.profile.update), profiles.updateProfile);
 
 router.route('/profiles/:id/location')
     .get(profiles.getLocation)
-    .put(passport.authenticate('bearer'), validate(schemas.profile.location), profiles.updateLocation);
+    .put(validate(schemas.profile.location), profiles.updateLocation);
 
 router.route('/profiles/:id/like')
-	.post(passport.authenticate('bearer'), profiles.likeProfile)
 	.get(profiles.getProfileLikes)
-    .delete(passport.authenticate('bearer'), profiles.unlikeProfile);
+    .post(passport.authenticate('bearer'), profiles.likeProfile)
+	.delete(passport.authenticate('bearer'), profiles.unlikeProfile);
 
 
 module.exports = router;

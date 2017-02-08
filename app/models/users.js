@@ -1,6 +1,56 @@
 const { db, TABLES } = require('./index');
 
 //Create user stuff
+exports.getUserSkills = (id) => {
+	return db.select(['skill_id as id', 'name', 'category'])
+		.from(TABLES.SKILLS + ' as s')
+		.join(TABLES.USER_SKILLS +  ' as us', 'us.skill_id', 's.id')
+		.where({user_id: id})
+		.groupBy('us.skill_id')
+};
+
+exports.addUserSkill = (id, uid) => {
+	sub = db(TABLES.USERS).select('id').where('id', uid).then(r => {
+		if (r && r.length){
+			return db(TABLES.USER_SKILLS) 
+			.insert({user_id: uid, skill_id: id }) 
+			.then(() => exports.getUserSkills(uid)) 
+		}else{
+			return "No match user"
+		} 
+	})
+
+	return db(TABLES.SKILLS).select('id').where('id', id).then(r => {
+		if (r && r.length) {
+			return db(TABLES.USER_SKILLS).select('id').where({user_id: uid, skill_id: id})
+			.then(r => {
+				if (r && r.length){
+					return exports.getUserSkills(uid) 
+				}else {
+					return sub;
+				} 
+			})
+		}
+	})
+};
+
+exports.removeUserSkill = (id, uid) => {
+	return db(TABLES.USER_SKILLS).select('id').where('skill_id', id).then(r => {
+		if (r && r.length){
+			return db(TABLES.USERS).select('id').where('id', uid).then(r => {
+				if (r && r.length) {
+					return db(TABLES.USER_SKILLS) 
+						.del()
+						.where({'user_id': uid, 'skill_id': id})
+				}else {
+					return "Invalid id"
+				}
+			})
+		}else {
+			return "Invalid user id"
+		}
+	})
+};
 
 exports.getUserBy = (by) => {
     return db.select(['id', 'profile_id', 'password']).from(TABLES.USERS).where(by);
