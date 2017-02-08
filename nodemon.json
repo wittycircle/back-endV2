@@ -1,0 +1,19 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules"
+  ],
+  "verbose": true,
+  "events": {
+    "crash": "osascript -e 'display notification \"Server crashed\" with title \"nodemon\"'"
+  },
+  "watch": [
+    "app",
+    "server.js"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js json"
+}

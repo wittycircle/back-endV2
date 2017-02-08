@@ -1,18 +1,33 @@
-const profiles = require('../controllers/profiles'),
-    express = require('express');
+/**
+ * Created by rdantzer on 22/01/17.
+ */
 
-let router = express.Router();
+'use strict';
 
-router.route('/profile/picture')
-	.all((req, res, next) =>{
-		req.user = {
-			moderator: 0
-		};
-		next()
-	})
-	.put(profiles.updateProfilePicture)
-	
-router.route('profile/location')
-	.put(profiles.updateProfileLocation)
+const express = require('express'),
+    router = express.Router(),
+    profiles = require('../controllers/profiles'),
+    {validate, validateParam, schemas} = require('../middlewares/validation'),
+    passport = require('passport');
 
-module.exports = router
+
+router.route('/profiles')
+    .get(profiles.getProfiles);
+
+router.param('id', validateParam(schemas.params.id));
+
+router.route('/profiles/:id')
+    .get(profiles.getProfile)
+    .put(validate(schemas.profile.update), profiles.updateProfile);
+
+router.route('/profiles/:id/location')
+    .get(profiles.getLocation)
+    .put(validate(schemas.profile.location), profiles.updateLocation);
+
+router.route('/profiles/:id/like')
+	.get(profiles.getProfileLikes)
+    .post(passport.authenticate('bearer'), profiles.likeProfile)
+    .delete(passport.authenticate('bearer'), profiles.unlikeProfile);
+
+
+module.exports = router;
