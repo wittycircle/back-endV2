@@ -8,7 +8,7 @@ const config = require('../private'),
     knex = require('knex')(config.database);
 
 // if (process.env.DEBUG === true)
-knex.on('query', (query) => console.log('SQL %s', query.sql));
+// knex.on('query', (query) => console.log('SQL %s', query.sql));
 
 exports.db = knex;
 
