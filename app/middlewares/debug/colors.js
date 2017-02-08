@@ -15,7 +15,7 @@ const _ = require('lodash'),
     queryFormat = require('./query');
 
 module.exports = (query) => {
-    let text = queryFormat(query);
+    let text = query.sql;
 
     const keyWords = [
         'PRAGMA', 'CREATE', 'EXISTS', 'INTEGER', 'PRIMARY', 'VARCHAR',
@@ -73,6 +73,10 @@ module.exports = (query) => {
         const regEx = new RegExp('\\b' + _.upperCase(keyWords[i]) + '\\b', 'gi');
         newText = newText.replace(regEx, line_break(keyWords[i]) + chalk.red.bold(keyWords[i]));
     }
+
+    _.forEach(query.bindings, binding => {
+        newText = newText.replace('\?', chalk.blue(binding));
+    });
 
     return newText;
 
