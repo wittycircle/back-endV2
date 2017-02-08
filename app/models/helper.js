@@ -9,6 +9,6 @@ const {db, TABLES} = require('./index');
 	h.sub_profile = db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').as('p');
 	h.u_profile = db.select(h.up_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id').groupBy('p.id').as('p');
 	h.ws_profile = (cond) => db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
-	// return h
+	h.exist = (table, id) => db(table).select('id').where({'id': id})
 
 module.exports = h;

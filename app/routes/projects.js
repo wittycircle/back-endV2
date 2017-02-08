@@ -33,7 +33,7 @@ router.route('/projects/:id/openings/:opening_id')
 
 router.route('/projects/:id/discussions')
     .get()
-    .post(passport.authenticate('bearer'));
+    .post(passport.authenticate('bearer'), projects.createProjectDiscussion);
 
 router.route('/projects/:id/discussions/:discussion_id')
     .put(passport.authenticate('bearer'))

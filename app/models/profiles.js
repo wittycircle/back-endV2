@@ -37,7 +37,7 @@ exports.getProfileLikes = (cond, cond2, id) => {
 };
 
 exports.likeProfile = (id, uid) => {
-    return db.select('id').where('id', id).from(TABLES.USERS).then(r => {
+    return h.exist(TABLES.USERS, id).then(r => {
         if (r.length)
          {
             return db(TABLES.USER_LIKES) 
@@ -59,14 +59,3 @@ exports.getLocation = (p_id) => {
         .select(['country', 'city', 'state'])
         .where({id: p_id})
 };
-
-// exports.updateLocation. = (stuff, p_id) => {
-// //can receive directy location_country so can do update(stuff)
-//     return db(TABLES.USER_PROFILES)
-//         .update({
-//             location_country: stuff.country
-//             location_state: stuff.state
-//             location_city: stuff.city
-//         }).where()
-
-// }

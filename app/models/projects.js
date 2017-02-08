@@ -1,6 +1,20 @@
 const { db, TABLES } = require('./index'),
 		h = require('./helper');
+//discussions
 
+exports.createProjectDiscussion = (pid, message, title, uid) => {
+	return h.exist(TABLES.PROJECTS, pid).then(r => {
+		if (!r.length){
+			return "could not create project dicussion"
+		} else{
+		return db(TABLES.PROJECT_DISCUSSION)	
+			.insert({project_id: pid, user_id: uid, message: message, title: title})
+		}
+	})
+};
+
+
+//likes
 exports.getProjectLikes = (project_id) => {
 	return db.select(h.p_array)
 		.from(TABLES.PROJECT_LIKES + ' as pl')
@@ -11,14 +25,14 @@ exports.getProjectLikes = (project_id) => {
 };
 
 exports.likeProject = (project_id, uid) => {
-	return db(TABLES.USERS).select('id').where('id', uid).then(r => {
-		if (r){
+	return h.exist(TABLES.PROJECTS, project_id).then(r => {
+		if (r.length){
 			return db(TABLES.PROJECT_LIKES) 
 				.insert({
                     user_id: uid,
                     follow_project_id: project_id
 				}); 
-			} 
+			}
 		}); 
 };
 

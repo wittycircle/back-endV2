@@ -1,6 +1,21 @@
 const project = require('../models/projects'),
     _ = require('lodash');
 
+//Project discussion
+
+exports.createProjectDiscussion = (req, res, next) => {
+	project.createProjectDiscussion(req.params.id, req.body.message, req.body.title, req.user.id)
+		.then(r => {
+			if (typeof r === 'string')
+				return next([r, 'Invalid project id'])
+			else{
+				res.send({success:true}) 
+			} 
+		}) 
+		.catch(err => next(err))
+};
+
+//Project likes
 exports.getProjectLikes = (req, res, next) => {
 	project.getProjectLikes(req.params.id)
 		.then(r => {
