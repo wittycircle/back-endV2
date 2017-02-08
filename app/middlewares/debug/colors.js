@@ -11,8 +11,7 @@
  * @returns {string} colorized output
  */
 const _ = require('lodash'),
-    chalk = require('chalk'),
-    queryFormat = require('./query');
+    chalk = require('chalk');
 
 module.exports = (query) => {
     let text = query.sql;
