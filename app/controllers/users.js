@@ -20,8 +20,7 @@ exports.getUserSkills = (req, res, next) => {
 
 exports.addUserSkill = (req, res, next) => {
   if (!req.body || !req.body.skill_id)
-    next(["skill id", "Skill id required, empty body"])
-  else{
+    return next(["skill id", "Skill id required, empty body"])
     user.addUserSkill(req.body.skill_id, req.params.id)
       .then(r => {
         if (r && r.length){
@@ -35,13 +34,11 @@ exports.addUserSkill = (req, res, next) => {
         }
       })
       .catch(err => next(err))
-  }
 };
 
 exports.removeUserSkill = (req, res, next) => {
     if (!req.body || !req.body.skill_id)
-    next(["skill id", "Skill id required, empty body"])
-  else{
+        return next(["skill id", "Skill id required, empty body"])
     user.removeUserSkill(req.body.skill_id, req.params.id)
       .then(r => {
         if (r){
@@ -55,7 +52,6 @@ exports.removeUserSkill = (req, res, next) => {
         }
       })
       .catch(err => next(err))
-    }
 };
 
 exports.createUser = (req, res, next) => {
