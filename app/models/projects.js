@@ -31,34 +31,35 @@ exports.removeProjectDiscussion = (pid, discussion_id) => {
 	})
 };
 
-
-// exports.getProjectDiscussion = (id) => {
-// 	let sub =  db.select('project_discussion_id', 'message').from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', 1).as('sub')
-// 		 // db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
-// 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
-// 		.select(['id', 'pr.title', 'pr.message', 'pr.creation_date', db.raw('GROUP_CONCAT(sub.message separator "|SEP|") as replies')])
-// 			//'sub.message as replies'])
-// 		.leftJoin(sub, 'sub.project_discussion_id', 'pr.id')
-// 		.where({'pr.project_id': id})
-// 		.groupBy('pr.id')
-// };
-
 exports.getProjectDiscussion = (id) => {
-	let sub =(id) =>  db.select( 'user_id', 'creation_date', 'message').from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', 1).where('project_discussion_id', id)
-		 // db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
+	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
+			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
+
+	let like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id})
+
+	let rep_like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
+
 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
-		.select(['id', 'pr.title', 'pr.message', 'pr.creation_date'])//, db.raw('GROUP_CONCAT(sub.message separator "|SEP|") as replies')])
-			//'sub.message as replies'])
-		// .leftJoin(sub, 'sub.project_discussion_id', 'pr.id')
+		.select(['id', 'pr.title', 'pr.message', 'pr.creation_date'])
 		.where({'pr.project_id': id})
 		.groupBy('pr.id')
 		.then(r => {
 			let x = []
 			r.forEach(el => {
-				x.push(sub(el.id).then(rr=> el.replies = rr))
-			})
+				x.push(like(el.id).then(rr=> el.like = rr))
+				x.push(replies(el.id).then(rr=> {
+					el.replies = rr
+					el.replies.forEach(i => {
+						x.push(rep_like(i.id).then(rr => i.like = rr))
+					})
+				}))
+			});
 			return Promise.all(x)
 			.then((x)=> {
+			// 	r.forEach(el => if (el.replies) {
+			// 		el.replies.forEach()
+			// 	})
+				console.log("VALUE OF X IS ", x)
 				 return r})
 		})
 };
