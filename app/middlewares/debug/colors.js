@@ -11,9 +11,12 @@
  * @returns {string} colorized output
  */
 const _ = require('lodash'),
-    chalk = require('chalk');
+    chalk = require('chalk'),
+    queryFormat = require('./query');
 
-module.exports = (text) => {
+module.exports = (query) => {
+    let text = queryFormat(query);
+
     const keyWords = [
         'PRAGMA', 'CREATE', 'EXISTS', 'INTEGER', 'PRIMARY', 'VARCHAR',
         'DATETIME', 'NULL', 'REFERENCES', 'AND', 'AS', 'ASC', 'INDEX_LIST',

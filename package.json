@@ -41,7 +41,7 @@
     "gulp-open": "^2.0.0",
     "mocha": "^3.2.0",
     "mochawesome": "^2.0.2",
-    "prettyjson": "latest",
+    "prettyjson": "git://github.com/Raphy42/prettyjson.git",
     "chalk": "latest"
   }
 }

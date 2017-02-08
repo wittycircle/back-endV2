@@ -47,8 +47,4 @@ describe('Authentication of the test client', function () {
         require('./projects.test')(storage, chakram);
         require('./users.test')(storage, chakram);
     });
-
-    after('Should logout current logged user', function () {
-        chakram.get(storage.resource('auth/logout'));
-    });
 });
