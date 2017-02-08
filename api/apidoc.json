@@ -1,0 +1,15 @@
+{
+  "name": "wittycircle-api",
+  "version": "1.0.0",
+  "description": "wittycircle api documentation",
+  "title": "Wittycircle api",
+  "url": "https://wittycircle.com/api",
+  "header": {
+  },
+  "footer": {
+  },
+  "template": {
+    "withCompare": false,
+    "withGenerator": true
+  }
+}
