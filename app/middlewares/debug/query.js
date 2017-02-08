@@ -1,21 +1,21 @@
-/**
- * Created by rdantzer on 08/02/17.
- */
+// /**
+//  * Created by rdantzer on 08/02/17.
+//  */
 
-'use strict';
+// 'use strict';
 
-/**
- * Rebuilds the complete sql query
- * @param query
- */
+// /**
+//  * Rebuilds the complete sql query
+//  * @param query
+//  */
 
-const _ = require('lodash');
+// const _ = require('lodash');
 
-module.exports = function(query) {
-    let sql = query.sql;
-    _.forEach(query.bindings, binding => {
-        sql.replace('\?', binding);
-    });
+// module.exports = function(query) {
+//     let sql = query.sql;
+//     _.forEach(query.bindings, binding => {
+//         sql.replace('\?', binding);
+//     });
 
-    return sql;
-};
+//     return sql;
+// };

@@ -31,16 +31,44 @@ exports.removeProjectDiscussion = (pid, discussion_id) => {
 	})
 };
 
-exports.getProjectDiscussion = (id) => {
-	let replies = db.select('project_discussion_id, message')
-		.from(TABLES.PROJECT_DISCUSSION_REPLIES)
-		.as('rep')
 
-	return db(TABLES.PROJECT_DISCUSSION + ' as pr')
-		.select(['pr.title', 'pr.description', 'pr.creation_date'])//, 'rep.message as replies'])
-		// .join(replies, 'rep.project_discussion_id', 'pr.id')
+// exports.getProjectDiscussion = (id) => {
+// 	let sub =  db.select('project_discussion_id', 'message').from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', 1).as('sub')
+// 		 // db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
+// 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
+// 		.select(['id', 'pr.title', 'pr.message', 'pr.creation_date', db.raw('GROUP_CONCAT(sub.message separator "|SEP|") as replies')])
+// 			//'sub.message as replies'])
+// 		.leftJoin(sub, 'sub.project_discussion_id', 'pr.id')
+// 		.where({'pr.project_id': id})
+// 		.groupBy('pr.id')
+// };
+
+exports.getProjectDiscussion = (id) => {
+	let sub =(id) =>  db.select( 'user_id', 'creation_date', 'message').from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', 1).where('project_discussion_id', id)
+		 // db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills') ])
+	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
+		.select(['id', 'pr.title', 'pr.message', 'pr.creation_date'])//, db.raw('GROUP_CONCAT(sub.message separator "|SEP|") as replies')])
+			//'sub.message as replies'])
+		// .leftJoin(sub, 'sub.project_discussion_id', 'pr.id')
 		.where({'pr.project_id': id})
+		.groupBy('pr.id')
+		.then(r => {
+			let x = []
+			r.forEach(el => {
+				x.push(sub(el.id).then(rr=> el.replies = rr))
+			})
+			return Promise.all(x)
+			.then((x)=> {
+				 return r})
+		})
 };
+
+// exports.getProjectDiscussionReplies = (id) => {
+// 	 return db.select('project_discussion_id', 'user_id', 'message')
+// 		.from(TABLES.PROJECT_DISCUSSION_REPLIES)
+// 		.where('project_discussion_id', id)
+// 		.as('rep')
+// }
 
 //likes
 exports.getProjectLikes = (project_id) => {

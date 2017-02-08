@@ -33,12 +33,22 @@ exports.removeProjectDiscussion = (req, res, next) => {
 exports.getProjectDiscussion = (req, res, next) => {
 	project.getProjectDiscussion(req.params.id)
 		.then(r => {
-			if (r){
-				res.send({discussion: r})
-			}
-			else{
-				next([r, r])
-			}
+			res.send({
+				r
+				// id: r.id,
+				// discussion: {
+				// 	title: r.title,
+				// 	message: r.message,
+				// 	creation_date: r.cretation_date,
+				// 	// replies: r.replies.split('|SEP|')
+				// }
+			})
+			// if (r){
+			// 	res.send({discussion: r})
+			// }
+			// else{
+			// 	next([r, r])
+			// }
 		})
 		.catch(err => next(err))
 };
