@@ -23,6 +23,7 @@ app.use(logger('dev'));
  */
 app.use(debug.resDebugger);
 
+
 require('./app/config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());

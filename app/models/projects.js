@@ -13,6 +13,34 @@ exports.createProjectDiscussion = (pid, message, title, uid) => {
 	})
 };
 
+exports.removeProjectDiscussion = (pid, discussion_id) => {
+	return h.exist(TABLES.PROJECTS, pid).then(r => {
+		if (!r.length)
+			return "Invalid project id"
+		else{
+			return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
+				if (!r.length)
+					return "Invalid discussion id"
+				else {
+					return db(TABLES.PROJECT_DISCUSSION)
+						.del()
+						.where({project_id: pid, id: discussion_id})
+				}
+			})
+		}
+	})
+};
+
+exports.getProjectDiscussion = (id) => {
+	let replies = db.select('project_discussion_id, message')
+		.from(TABLES.PROJECT_DISCUSSION_REPLIES)
+		.as('rep')
+
+	return db(TABLES.PROJECT_DISCUSSION + ' as pr')
+		.select(['pr.title', 'pr.description', 'pr.creation_date'])//, 'rep.message as replies'])
+		// .join(replies, 'rep.project_discussion_id', 'pr.id')
+		.where({'pr.project_id': id})
+};
 
 //likes
 exports.getProjectLikes = (project_id) => {

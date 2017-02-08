@@ -4,6 +4,8 @@ const project = require('../models/projects'),
 //Project discussion
 
 exports.createProjectDiscussion = (req, res, next) => {
+	if (!req.body.message && !req.body.message)
+		return next(["Invalid body", "Message or title required"])
 	project.createProjectDiscussion(req.params.id, req.body.message, req.body.title, req.user.id)
 		.then(r => {
 			if (typeof r === 'string')
@@ -14,6 +16,33 @@ exports.createProjectDiscussion = (req, res, next) => {
 		}) 
 		.catch(err => next(err))
 };
+
+exports.removeProjectDiscussion = (req, res, next) => {
+	project.removeProjectDiscussion(req.params.id, req.params.discussion_id)
+		.then(r => {
+			if (typeof r === 'string'){
+				return next([r, r])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.getProjectDiscussion = (req, res, next) => {
+	project.getProjectDiscussion(req.params.id)
+		.then(r => {
+			if (r){
+				res.send({discussion: r})
+			}
+			else{
+				next([r, r])
+			}
+		})
+		.catch(err => next(err))
+};
+
 
 //Project likes
 exports.getProjectLikes = (req, res, next) => {
