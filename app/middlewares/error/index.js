@@ -54,13 +54,13 @@ exports.error = (err, req, res, next) => {
         }
         else if (typeof err.error !== 'undefined' || typeof err.error_description !== 'undefined')
             res.status(err.code).send(err);
-        else{
+        else {
             res.status(err.code).send({success: false});
-                        console.error(err);
+            console.error(err);
         }
     }
-    else{
+    else {
         res.send(err).status(400);
-                    console.error(err);
+        console.error(err);
     }
 };

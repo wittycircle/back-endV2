@@ -2,7 +2,7 @@ const {db, TABLES} = require('./index');
 
 	const h = {
     p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description'],
-}
+    };
 //prototype
 	h.up_array = h.p_array.concat('u.id as uid');
 	h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u');
@@ -11,4 +11,4 @@ const {db, TABLES} = require('./index');
 	h.ws_profile = (cond) => db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
 	// return h
 
-module.exports = h
+module.exports = h;

@@ -18,15 +18,15 @@ exports.validation_error_schema = joi.object().keys({
 });
 
 exports.success = joi.object().keys({
-	success: joi.only(false).required(),
+    success: joi.only(false).required(),
 });
 
 exports.user_error = joi.object().keys({
-	success: joi.boolean().valid(false).required(),
-	msg: joi.string().required()
+    success: joi.boolean().valid(false).required(),
+    msg: joi.string().required()
 });
 
 exports.description = joi.object().keys({
-	error:  joi.string().required(),
-	description: joi.string().required()
-})
+    error: joi.string().required(),
+    description: joi.string().required()
+});;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

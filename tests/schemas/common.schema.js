@@ -1,5 +1,5 @@
 const joi = require('joi'),
-	p_empty = ['', null];
+    p_empty = ['', null];
 
 
 const detail = joi.object().keys({
@@ -11,16 +11,16 @@ const detail = joi.object().keys({
 });
 
 const p_like = joi.object().keys({
-	count: joi.number().integer().required(),
-	who: joi.array().items(detail)
+    count: joi.number().integer().required(),
+    who: joi.array().items(detail)
 });
 
 module.exports.success = joi.object().keys({
-	success: joi.only(true).required()
+    success: joi.only(true).required()
 });
 
 module.exports.likes = joi.object().keys({
-	like: p_like
+    like: p_like
 });
 
-module.exports.detail = detail
+module.exports.detail = detail;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

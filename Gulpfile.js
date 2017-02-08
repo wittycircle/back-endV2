@@ -82,4 +82,3 @@ gulp.task('api', 'Open the latest documentation revision', ['apidoc'], () => {
         .pipe(open({app: browser}))
 
 });
-

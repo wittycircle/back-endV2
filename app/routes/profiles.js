@@ -27,7 +27,7 @@ router.route('/profiles/:id/location')
 router.route('/profiles/:id/like')
 	.get(profiles.getProfileLikes)
     .post(passport.authenticate('bearer'), profiles.likeProfile)
-	.delete(passport.authenticate('bearer'), profiles.unlikeProfile);
+    .delete(passport.authenticate('bearer'), profiles.unlikeProfile);
 
 
 module.exports = router;

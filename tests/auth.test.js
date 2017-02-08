@@ -5,10 +5,10 @@
 'use strict';
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
-    schemas = {
-        auth: require('./schemas/auth.schema'),
-        error: require('./schemas/error.schema')
-    };
+        schemas = {
+            auth: require('./schemas/auth.schema'),
+            error: require('./schemas/error.schema')
+        };
 
 
     describe('Local auth strategy', function () {
@@ -66,6 +66,12 @@ module.exports = (storage, chakram) => {
 
         it('should return correct validation errors', function () {
             return expect(user.invalidCredentials).to.joi(schemas.error.validation_error_schema);
+        });
+    });
+
+    describe('Facebook strategy', function () {
+        it('Should not be implemented', function () {
+            return expect(1).to.equal(1);
         });
     });
 };

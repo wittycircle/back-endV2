@@ -15,8 +15,8 @@ exports.likeProject = (project_id, uid) => {
 		if (r){
 			return db(TABLES.PROJECT_LIKES) 
 				.insert({
-					user_id: uid, 
-					follow_project_id: project_id 
+                    user_id: uid,
+                    follow_project_id: project_id
 				}); 
 			} 
 		}); 
@@ -28,7 +28,7 @@ exports.unlikeProject = (project_id, uid) => {
 				user_id: uid, 
 				follow_project_id: project_id 
 			})
-}
+};
 
 exports.getFromProjectNetwork = (need, cond) => {
 	return db(TABLES.PROJECT_NETWORK)

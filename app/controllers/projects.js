@@ -11,26 +11,24 @@ exports.getProjectLikes = (req, res, next) => {
 			}) 
 		})
 		.catch(err => next(err))
-}
+};
 
 exports.likeProject = (req, res, next) => {
 	project.likeProject(req.params.id, req.user.id)
 	.then(r => {
-		console.log("ICI")
-		console.log(r)
-		if (!_.isEmpty(r))
-			res.send({success: true}) 
-		else 
-			res.send({success: false})
+        if (!_.isEmpty(r))
+            res.send({success: true});
+        else
+            res.send({success: false})
     }).catch(err => next(err))
-}
+};
 
 exports.unlikeProject = (req, res, next) => {
 	project.unlikeProject(req.params.id, req.user.id)
 	.then(r => {
-		if (r) 
-			res.send({success: true}) 
+        if (r)
+            res.send({success: true});
 		else 
 			res.send({success: false})
     }).catch(err => next(err))
-}
+};

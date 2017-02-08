@@ -43,5 +43,7 @@ server.listen(app.get('port'), () => {
 });
 
 app.get('/tg', (req, res) => {
-    require('./app/middlewares/session').session.killAll((err, done) => {res.send({session: 'killed'})});
+    require('./app/middlewares/session').session.killAll((err, done) => {
+        res.send({session: 'killed'})
+    });
 });

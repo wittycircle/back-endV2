@@ -75,7 +75,7 @@ module.exports = (storage, chakram) => {
         });
 
         before('Fake profile', function () {
-            success.fake = chakram.put(route + storage.fakeId , {profile: {first_name: "toto"}})
+            success.fake = chakram.put(route + storage.fakeId, {profile: {first_name: "toto"}})
         });
 
         it('Should return 200', function () {
