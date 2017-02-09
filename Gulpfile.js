@@ -11,7 +11,8 @@ const gulp = require('gulp'),
     open = require('gulp-open'),
     help = require('gulp-help')(gulp),
     //https://nodejs.org/api/child_process.html
-    spawn = require('child_process').spawn;
+    spawn = require('child_process').spawn,
+    git = require('gulp-git');
 
 
 const browser = os.platform() === 'linux' ? 'google-chrome' : (
@@ -49,6 +50,7 @@ gulp.task('redis', 'Launch redis-server', function () {
         console.log(`child process exited with code ${code}`)
     });
 });
+
 /**
  *  Launch unit tests in ./tests
  */
@@ -68,7 +70,7 @@ gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
  * Parse api definition in /api
  * generate an index.html with generated documentation
  */
-gulp.task('apidoc', 'Generates api documentation html', cb => {
+gulp.task('api-gen', 'Generates api documentation html', cb => {
     apidoc({
         src: 'api',
         dest: 'api-build',
@@ -77,7 +79,15 @@ gulp.task('apidoc', 'Generates api documentation html', cb => {
     }, cb);
 });
 
-gulp.task('api', 'Open the latest documentation revision', ['apidoc'], () => {
+/**
+ * Fetch last api revision
+ */
+gulp.task('api-fetch', 'Fetch the latest documentation version', cb => {
+    git.updateSubmodule();
+    cb();
+});
+
+gulp.task('api', 'Open the latest documentation revision', ['api-fetch', 'apidoc'], () => {
     gulp.src('./api-build/index.html')
         .pipe(open({app: browser}))
 
