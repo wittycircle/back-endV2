@@ -96,11 +96,15 @@ module.exports = (storage, chakram) => {
         before('request', function() {
             return r = chakram.put(route + 3 + '/discussions/' + 196, {title: "Changed title!", message: "testy"});
         });
-    
+        before('bad request', function() {
+            return v = chakram.put(route + 3 + '/discussions/' + 196, {title: "Changed title!"});
+        });
+
         it('Should update the info', function() {
             db.select('title').from(TABLES.PROJECT_DISCUSSION).where({id: 196}).then((rr) => {
                 expect(rr[0].title).to.equal('Changed title!')
                 expect(r).to.joi(schemas.common.success)
+                expect(v).to.joi(schemas.error.validation_error_schema)
                 return chakram.wait()
             })
         });
