@@ -36,7 +36,7 @@ router.route('/projects/:id/discussions')
     .post(passport.authenticate('bearer'), projects.createProjectDiscussion);
 
 router.route('/projects/:id/discussions/:discussion_id')
-    .put(passport.authenticate('bearer'))
+    .put(passport.authenticate('bearer'), projects.updateProjectDiscussion)
     .delete(passport.authenticate('bearer'), projects.removeProjectDiscussion);
 
 

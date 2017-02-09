@@ -1,14 +1,28 @@
 const { db, TABLES } = require('./index'),
 		h = require('./helper');
-//discussions
 
-exports.createProjectDiscussion = (pid, message, title, uid) => {
+// ------------------ Discussions ------------------
+
+exports.createProjectDiscussion = (pid, uid, message, title) => {
 	return h.exist(TABLES.PROJECTS, pid).then(r => {
 		if (!r.length){
 			return "could not create project dicussion"
 		} else{
 		return db(TABLES.PROJECT_DISCUSSION)	
 			.insert({project_id: pid, user_id: uid, message: message, title: title})
+		}
+	})
+};
+
+exports.updateProjectDiscussion = (pid, discussion_id, message, title) => {
+		return Promise.all([h.exist(TABLES.PROJECTS, pid),
+			h.exist(TABLES.PROJECT_DISCUSSION, discussion_id) ]).then(r => {
+		if (!r[0].length || !r[1].length){
+			return "could not create project dicussion"
+		} else{
+		return db(TABLES.PROJECT_DISCUSSION)	
+			.update({message: message, title: title})
+			.where({project_id: pid, id: discussion_id})
 		}
 	})
 };
@@ -61,14 +75,8 @@ exports.getProjectDiscussion = (id) => {
 		})
 };
 
-// exports.getProjectDiscussionReplies = (id) => {
-// 	 return db.select('project_discussion_id', 'user_id', 'message')
-// 		.from(TABLES.PROJECT_DISCUSSION_REPLIES)
-// 		.where('project_discussion_id', id)
-// 		.as('rep')
-// }
+// ------------------ Likes ------------------
 
-//likes
 exports.getProjectLikes = (project_id) => {
 	return db.select(h.p_array)
 		.from(TABLES.PROJECT_LIKES + ' as pl')

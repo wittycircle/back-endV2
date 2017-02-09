@@ -1,12 +1,11 @@
 const project = require('../models/projects'),
     _ = require('lodash');
 
-//Project discussion
-
+// ------------------ Discussions ------------------
 exports.createProjectDiscussion = (req, res, next) => {
 	if (!req.body.message && !req.body.message)
 		return next(["Invalid body", "Message or title required"])
-	project.createProjectDiscussion(req.params.id, req.body.message, req.body.title, req.user.id)
+	project.createProjectDiscussion(req.params.id, req.user.id, req.body.message, req.body.title)
 		.then(r => {
 			if (typeof r === 'string')
 				return next([r, 'Invalid project id'])
@@ -14,6 +13,19 @@ exports.createProjectDiscussion = (req, res, next) => {
 				res.send({success:true}) 
 			} 
 		}) 
+		.catch(err => next(err))
+};
+
+exports.updateProjectDiscussion = (req, res, next) => {
+	project.updateProjectDiscussion(req.params.id, req.params.discussion_id, req.body.message, req.body.title)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, "bad id"])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
 		.catch(err => next(err))
 };
 
@@ -40,9 +52,8 @@ exports.getProjectDiscussion = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
-
-
-//Project likes
+	
+// ------------------ Likes ------------------
 exports.getProjectLikes = (req, res, next) => {
 	project.getProjectLikes(req.params.id)
 		.then(r => {
