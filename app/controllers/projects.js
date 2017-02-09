@@ -36,7 +36,7 @@ exports.getProjectDiscussion = (req, res, next) => {
 			if (_.isEmpty(r))
 				next(['Empty discussion', 'Wrong project id'])
 			else
-				res.send({discussions: r[0]})
+				res.send({discussions: r})
 		})
 		.catch(err => next(err))
 };

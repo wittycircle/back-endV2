@@ -42,7 +42,7 @@ exports.getProjectDiscussion = (id) => {
 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
 		.select(['id', 'user_id', 'pr.title', 'pr.message', 'pr.creation_date'])
 		.where({'pr.project_id': id})
-		.groupBy('pr.id')
+		// .groupBy('pr.project_id')
 		.then(r => {
 			let x = []
 			let y = []
