@@ -40,5 +40,5 @@ const p_discussion = joi.object().keys({
 });
 
 module.exports.discussions = joi.object().keys({
-	discussions: p_discussion
+	discussions: joi.array().items(p_discussion)
 });

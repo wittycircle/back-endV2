@@ -78,4 +78,26 @@ module.exports = (storage, chakram) => {
             return expect(v).to.joi(schemas.error.description);
         });
     });
+
+    describe('Create project discussion [POST /projects/:id/discussions]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.post(route + 3 + '/discussions', {message: "Testy test", description: "Waddya do"});
+        });
+    
+        it('', function() {
+            return expect(r).to.joi(schemas.common.success);
+        });
+    });
+
+    describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.delete(route + 3 + '/discussions/' + 194);
+        });
+    
+        it('Should remove the discussion', function() {
+            return expect(r).to.joi(schemas.common.success);
+        });
+    });
 };
