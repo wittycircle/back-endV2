@@ -87,7 +87,7 @@ gulp.task('api-fetch', 'Fetch the latest documentation version', cb => {
     cb();
 });
 
-gulp.task('api', 'Open the latest documentation revision', ['api-fetch', 'apidoc'], () => {
+gulp.task('api', 'Open the latest documentation revision', ['api-fetch', 'api-gen'], () => {
     gulp.src('./api-build/index.html')
         .pipe(open({app: browser}))
 
