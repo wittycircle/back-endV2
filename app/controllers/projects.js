@@ -1,10 +1,8 @@
-const project = require('../models/projects'),
+const project = require('../models/projects'), 
     _ = require('lodash');
 
 // ------------------ Discussions ------------------
 exports.createProjectDiscussion = (req, res, next) => {
-	if (!req.body.message && !req.body.message)
-		return next(["Invalid body", "Message or title required"])
 	project.createProjectDiscussion(req.params.id, req.user.id, req.body.message, req.body.title)
 		.then(r => {
 			if (typeof r === 'string')

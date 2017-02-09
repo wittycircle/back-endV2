@@ -1,5 +1,6 @@
 'use strict';
 
+const { db, TABLES } = require('../app/models/index');
 const p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
@@ -82,22 +83,31 @@ module.exports = (storage, chakram) => {
     describe('Create project discussion [POST /projects/:id/discussions]', function() {
         let r, v;
         before('request', function() {
-            r = chakram.post(route + 3 + '/discussions', {message: "Testy test", description: "Waddya do"});
+            r = chakram.post(route + 3 + '/discussions', {message: "Testy test", title: "Waddya do"});
         });
     
-        it('', function() {
+        it('Should send success', function() {
             return expect(r).to.joi(schemas.common.success);
         });
-    });
 
-    describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
-        let r, v;
-        before('request', function() {
-            r = chakram.delete(route + 3 + '/discussions/' + 194);
-        });
-    
-        it('Should remove the discussion', function() {
-            return expect(r).to.joi(schemas.common.success);
-        });
+        after('Cleanup id', function () {
+            describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
+                let r, v;
+                before('request', function() {
+                    r = chakram.delete(route + 3 + '/discussions/' + 195);
+                });
+            
+                it('Should remove the discussion', function() {
+                    return expect(r).to.joi(schemas.common.success);
+                });
+
+                after('cleanup id', function() {
+                    console.log("HEHREHRHEHRE")
+                    // db.raw('DELETE from project_discussion where project_id = 3 and user_id = ' + storage.user.id).return();
+                    db.raw('alter table project_discussion AUTO_INCREMENT = 195').return();
+                })
+
+            });
+        })
     });
 };
