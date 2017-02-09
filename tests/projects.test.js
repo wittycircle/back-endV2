@@ -104,9 +104,12 @@ module.exports = (storage, chakram) => {
             db.select('title').from(TABLES.PROJECT_DISCUSSION).where({id: 196}).then((rr) => {
                 expect(rr[0].title).to.equal('Changed title!')
                 expect(r).to.joi(schemas.common.success)
-                expect(v).to.joi(schemas.error.validation_error_schema)
                 return chakram.wait()
             })
+        });
+
+        it('Should match validation error', function() {
+            return expect(v).to.joi(schemas.error.validation_error_schema)
         });
     });
 
