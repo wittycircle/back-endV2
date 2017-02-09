@@ -81,7 +81,7 @@ module.exports = (storage, chakram) => {
     });
 
     describe('Create project discussion [POST /projects/:id/discussions]', function() {
-        let r, v;
+        let r,r2, v;
         before('request', function() {
             r = chakram.post(route + 3 + '/discussions', {message: "Testy test", title: "Waddya do"});
         });
@@ -89,25 +89,38 @@ module.exports = (storage, chakram) => {
         it('Should send success', function() {
             return expect(r).to.joi(schemas.common.success);
         });
+    });
 
-        after('Cleanup id', function () {
-            describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
-                let r, v;
-                before('request', function() {
-                    r = chakram.delete(route + 3 + '/discussions/' + 195);
-                });
-            
-                it('Should remove the discussion', function() {
-                    return expect(r).to.joi(schemas.common.success);
-                });
+    describe('Update project discussion [PUT /projects/:id/discussions/:discussion_id', function() {
+        let r, v;
+        before('request', function() {
+            return r = chakram.put(route + 3 + '/discussions/' + 196, {title: "Changed title!", message: "testy"});
+        });
+    
+        it('Should update the info', function() {
+            db.select('title').from(TABLES.PROJECT_DISCUSSION).where({id: 196}).then((rr) => {
+                expect(rr[0].title).to.equal('Changed title!')
+                expect(r).to.joi(schemas.common.success)
+                return chakram.wait()
+            })
+        });
+    });
 
-                after('cleanup id', function() {
-                    console.log("HEHREHRHEHRE")
-                    // db.raw('DELETE from project_discussion where project_id = 3 and user_id = ' + storage.user.id).return();
-                    db.raw('alter table project_discussion AUTO_INCREMENT = 195').return();
-                })
+    describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.delete(route + 3 + '/discussions/' + 195);
+        });
+    
+        it('Should remove the discussion', function() {
+            return expect(r).to.joi(schemas.common.success);
+        });
 
-            });
+        after('cleanup id', function() {
+            db.raw('DELETE from project_discussion where id > 195').return()
+            db.raw('alter table project_discussion AUTO_INCREMENT = 195').return();
         })
     });
+
+
 };
