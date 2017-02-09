@@ -19,10 +19,7 @@ module.exports = (storage, chakram) => {
             projects: require('./schemas/project.schema'),
             error: require('./schemas/error.schema')
         };
-    describe('test', function () {
-        it('should print', function () {
-        })
-    });
+
     describe('Get project likes', function () {
         let pl;
         before('[GET /projects/:id/like', function () {
@@ -63,6 +60,17 @@ module.exports = (storage, chakram) => {
 
         it('Should send success true', function () {
             return expect(r).to.joi(schemas.common.success).to.have.status(200)
+        });
+    });
+
+    describe('Get project discussion [GET /projects/:id/discussions]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.get(route + 242 + '/discussions');
+        });
+    
+        it('Should get a project list', function() {
+            return expect(r).to.joi(schemas.projects.discussions);
         });
     });
 };

@@ -12,6 +12,6 @@ router.use('/api', require('./profiles'));
 router.use('/api/auth', require('./auth'));
 router.use('/api', require('./projects'));
 
-// router.use(require('../middlewares/error').error);
+router.use(require('../middlewares/error').error);
 
 module.exports = router;

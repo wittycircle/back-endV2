@@ -40,27 +40,20 @@ exports.getProjectDiscussion = (id) => {
 	let rep_like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
 
 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
-		.select(['id', 'pr.title', 'pr.message', 'pr.creation_date'])
+		.select(['id', 'user_id', 'pr.title', 'pr.message', 'pr.creation_date'])
 		.where({'pr.project_id': id})
 		.groupBy('pr.id')
 		.then(r => {
 			let x = []
 			r.forEach(el => {
-				x.push(like(el.id).then(rr=> el.like = rr))
-				x.push(replies(el.id).then(rr=> {
+				x.push(like(el.id).then(rr=> el.likes = rr))
+				x.push(replies(el.id).then(rr => {
 					el.replies = rr
-					el.replies.forEach(i => {
-						x.push(rep_like(i.id).then(rr => i.like = rr))
-					})
+					el.replies.forEach(i => {x.push(rep_like(i.id).then(rr => i.likes = rr)) });
 				}))
 			});
 			return Promise.all(x)
-			.then((x)=> {
-			// 	r.forEach(el => if (el.replies) {
-			// 		el.replies.forEach()
-			// 	})
-				console.log("VALUE OF X IS ", x)
-				 return r})
+			.then(()=> {return r})
 		})
 };
 
