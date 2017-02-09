@@ -26,7 +26,7 @@ exports.removeProjectDiscussion = (pid, discussion_id) => {
 						.del()
 						.where({project_id: pid, id: discussion_id})
 				}
-			})
+			});
 		}
 	})
 };
@@ -45,15 +45,18 @@ exports.getProjectDiscussion = (id) => {
 		.groupBy('pr.id')
 		.then(r => {
 			let x = []
+			let y = []
 			r.forEach(el => {
 				x.push(like(el.id).then(rr=> el.likes = rr))
 				x.push(replies(el.id).then(rr => {
 					el.replies = rr
-					el.replies.forEach(i => {x.push(rep_like(i.id).then(rr => i.likes = rr)) });
+					el.replies.forEach(i => {y.push(rep_like(i.id).then(rr => i.likes = rr)) });
 				}))
 			});
 			return Promise.all(x)
-			.then(()=> {return r})
+				.then(()=> {
+					return Promise.all(y).then(() =>{return r})
+				})
 		})
 };
 
