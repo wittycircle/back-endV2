@@ -11,10 +11,6 @@ module.exports = (storage, chakram) => {
             id: 1,
             public_id: 34474
         },
-        fake_project = {
-            id: 9999282292,
-            public_id: 3939302932
-        },
         schemas = {
             common: require('./schemas/common.schema'),
             projects: require('./schemas/project.schema'),
@@ -89,44 +85,6 @@ module.exports = (storage, chakram) => {
         it('Should send success', function() {
             return expect(r).to.joi(schemas.common.success);
         });
-    });
-
-    describe('Update project discussion [PUT /projects/:id/discussions/:discussion_id', function() {
-        let r, v;
-        before('request', function() {
-            return r = chakram.put(route + 3 + '/discussions/' + 196, {title: "Changed title!", message: "testy"});
-        });
-        before('bad request', function() {
-            return v = chakram.put(route + 3 + '/discussions/' + 196, {title: "Changed title!"});
-        });
-
-        it('Should update the info', function() {
-            db.select('title').from(TABLES.PROJECT_DISCUSSION).where({id: 196}).then((rr) => {
-                expect(rr[0].title).to.equal('Changed title!')
-                expect(r).to.joi(schemas.common.success)
-                return chakram.wait()
-            })
-        });
-
-        it('Should match validation error', function() {
-            return expect(v).to.joi(schemas.error.validation_error_schema)
-        });
-    });
-
-    describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
-        let r, v;
-        before('request', function() {
-            r = chakram.delete(route + 3 + '/discussions/' + 195);
-        });
-    
-        it('Should remove the discussion', function() {
-            return expect(r).to.joi(schemas.common.success);
-        });
-
-        after('cleanup id', function() {
-            db.raw('DELETE from project_discussion where id > 195').return()
-            db.raw('alter table project_discussion AUTO_INCREMENT = 195').return();
-        })
     });
 
 

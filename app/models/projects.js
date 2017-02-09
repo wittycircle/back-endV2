@@ -14,37 +14,6 @@ exports.createProjectDiscussion = (pid, uid, message, title) => {
 	})
 };
 
-exports.updateProjectDiscussion = (pid, discussion_id, message, title) => {
-		return Promise.all([h.exist(TABLES.PROJECTS, pid),
-			h.exist(TABLES.PROJECT_DISCUSSION, discussion_id) ]).then(r => {
-		if (!r[0].length || !r[1].length){
-			return "could not create project dicussion"
-		} else{
-		return db(TABLES.PROJECT_DISCUSSION)	
-			.update({message: message, title: title})
-			.where({project_id: pid, id: discussion_id})
-		}
-	})
-};
-
-exports.removeProjectDiscussion = (pid, discussion_id) => {
-	return h.exist(TABLES.PROJECTS, pid).then(r => {
-		if (!r.length)
-			return "Invalid project id"
-		else{
-			return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
-				if (!r.length)
-					return "Invalid discussion id"
-				else {
-					return db(TABLES.PROJECT_DISCUSSION)
-						.del()
-						.where({project_id: pid, id: discussion_id})
-				}
-			});
-		}
-	})
-};
-
 exports.getProjectDiscussion = (id) => {
 	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
 			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
@@ -56,7 +25,7 @@ exports.getProjectDiscussion = (id) => {
 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
 		.select(['id', 'user_id', 'pr.title', 'pr.message', 'pr.creation_date'])
 		.where({'pr.project_id': id})
-		// .groupBy('pr.project_id')
+		.groupBy('pr.project_id')
 		.then(r => {
 			let x = []
 			let y = []

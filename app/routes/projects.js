@@ -35,9 +35,9 @@ router.route('/projects/:id/discussions')
     .get(projects.getProjectDiscussion)
     .post(passport.authenticate('bearer'), validate(schemas.project.discussion), projects.createProjectDiscussion);
 
-router.route('/projects/:id/discussions/:discussion_id')
-    .put(passport.authenticate('bearer'), validate(schemas.project.discussion), projects.updateProjectDiscussion)
-    .delete(passport.authenticate('bearer'), projects.removeProjectDiscussion);
+// router.route('/projects/:id/discussions/:discussion_id')
+//     .put(passport.authenticate('bearer'), validate(schemas.project.discussion), projects.updateProjectDiscussion)
+//     .delete(passport.authenticate('bearer'), projects.removeProjectDiscussion);
 
 
 router.route('/projects/:id/like')
