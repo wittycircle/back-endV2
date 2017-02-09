@@ -67,10 +67,15 @@ module.exports = (storage, chakram) => {
         let r, v;
         before('request', function() {
             r = chakram.get(route + 242 + '/discussions');
+            v = chakram.get(route + storage.fakeId + '/discussions');
         });
     
         it('Should get a project list', function() {
             return expect(r).to.joi(schemas.projects.discussions);
+        });
+
+        it('Should send an error', function() {
+            return expect(v).to.joi(schemas.error.description);
         });
     });
 };

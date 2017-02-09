@@ -33,7 +33,10 @@ exports.removeProjectDiscussion = (req, res, next) => {
 exports.getProjectDiscussion = (req, res, next) => {
 	project.getProjectDiscussion(req.params.id)
 		.then(r => {
-			res.send({discussions: r[0]})
+			if (_.isEmpty(r))
+				next(['Empty discussion', 'Wrong project id'])
+			else
+				res.send({discussions: r[0]})
 		})
 		.catch(err => next(err))
 };
