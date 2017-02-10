@@ -26,7 +26,7 @@ exports.removeProjectDiscussion = (discussion_id) => {
 		} 
 	});
 };
-
+// ------------------ Reply ------------------
 exports.replyDiscussion = (discussion_id, uid, messsage) => {
 		return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
 		if (!r.length) 
@@ -49,7 +49,7 @@ exports.updateReplyDiscussion = (discussion_id, uid, messsage) => {
 		}
 	});
 };
-
+// ------------------ Like ------------------
 exports.likeDiscussion = (discussion_id, uid) => {
 	return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
 		if (!r.length) 

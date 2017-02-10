@@ -35,7 +35,28 @@ module.exports = (storage, chakram) => {
         });
     });
 
-    describe('Remove project discussion [DELETE /projects/:id/discussions/:discussion_id]', function() {
+    // describe('Reply to discussion [POST /discussions/:discussion_id/replies', function() {
+    //     let r, v, v2;
+    //     before('request', function() {
+    //         r = chakram.post(route + 196 + '/replies', {message: "Waltz"});
+    //         v = chakram.post(route + 196 + '/replies');
+    //         v2 = chakram.post(route + storage.fakeId + '/replies', {message: "no luck"});
+    //     });
+    
+    //     it('Should send success', function() {
+    //         return expect(r).to.joi(schemas.common.success).status(200);
+    //     });
+
+    //     it('Should match validation error', function() {
+    //         return expect(v).to.joi(schemas.error.validation_error_schema);
+    //     });
+
+    //     it('Should match description error', function() {
+    //         return expect(v2).to.joi(schemas.error.description);
+    //     });
+    // });
+
+    describe('Remove project discussion [DELETE /discussions/:discussion_id]', function() {
         let r, v;
         before('request', function() {
             r = chakram.delete(route + 196);
