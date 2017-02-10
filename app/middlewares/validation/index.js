@@ -13,6 +13,7 @@ exports.schemas = {
     user: require('./schemas/user'),
     project: require('./schemas/project'),
     discussion: require('./schemas/discussion'),
+    replies: require('./schemas/replies'),
     params: require('./schemas/params')
 };
 
