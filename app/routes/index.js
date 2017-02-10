@@ -14,4 +14,11 @@ router.use('/api', require('./projects'));
 
 router.use(require('../middlewares/error').error);
 
+router.use('*', (req, res, next) => {
+    res.status(404).send({
+        error: 'not_found',
+        error_description: 'resource doesn\'t exist'
+    });
+});
+
 module.exports = router;
