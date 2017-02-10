@@ -27,7 +27,7 @@ exports.removeProjectDiscussion = (discussion_id) => {
 	});
 };
 // ------------------ Reply ------------------
-exports.replyDiscussion = (discussion_id, uid, messsage) => {
+exports.replyDiscussion = (discussion_id, uid, message) => {
 		return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
 		if (!r.length) 
 			return "Invalid discussion id"
@@ -38,17 +38,6 @@ exports.replyDiscussion = (discussion_id, uid, messsage) => {
 	});
 };
 
-exports.updateReplyDiscussion = (discussion_id, uid, messsage) => {
-		return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
-		if (!r.length) 
-			return "Invalid discussion id"
-		else {
-			return db(TABLES.PROJECT_DISCUSSION_REPLIES) 
-				.update({message: message}) 
-				.where({user_id: uid, project_discussion_id: discussion_id})
-		}
-	});
-};
 // ------------------ Like ------------------
 exports.likeDiscussion = (discussion_id, uid) => {
 	return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {

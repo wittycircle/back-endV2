@@ -42,10 +42,11 @@ describe('Authentication of the test client', function () {
     });
 
     it('Should run all the tests', function () {
-        // require('./auth.test')(storage, chakram);
-        // require('./profiles.test')(storage, chakram);
-        // require('./users.test')(storage, chakram);
+        require('./auth.test')(storage, chakram);
+        require('./profiles.test')(storage, chakram);
+        require('./users.test')(storage, chakram);
         require('./projects.test')(storage, chakram);
-        require('./discussions.test')(storage, chakram); //dependant on project
+        // ------------------ discussions.test required in project ------------------
+       // ------------------ replies.test required in discussions.test ------------------
     });
 });

@@ -87,5 +87,6 @@ module.exports = (storage, chakram) => {
         });
     });
 
+    require('./discussions.test')(storage, chakram);
 
 };

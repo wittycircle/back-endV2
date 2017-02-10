@@ -7,17 +7,17 @@ const express = require('express'),
 
 router.param('id', validateParam(schemas.params.id));
 router.param('discussion_id', validateParam(schemas.params.id));
+router.param('reply_id', validateParam(schemas.params.id));
 
 router.route('/discussions/:discussion_id')
     .put(passport.authenticate('bearer'), validate(sd.discussion), discussions.updateProjectDiscussion)
     .delete(passport.authenticate('bearer'), discussions.removeProjectDiscussion);
 
-router.route('/discussion/:discussion_id/like')
+router.route('/discussions/:discussion_id/like')
 	.post(passport.authenticate('bearer'), discussions.likeDiscussion)
 	.delete(passport.authenticate('bearer'), discussions.unlikeDiscussion)
 
-router.route('/discussion/discussion_id/replies')
+router.route('/discussions/:discussion_id/replies')
 	.post(passport.authenticate('bearer'), validate(sd.reply), discussions.replyDiscussion)
-	.put(passport.authenticate('bearer'), validate(sd.reply), discussions.updateReplyDiscussion)
 
 module.exports = router    

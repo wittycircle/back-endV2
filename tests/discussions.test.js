@@ -34,28 +34,32 @@ module.exports = (storage, chakram) => {
             return expect(v).to.joi(schemas.error.validation_error_schema)
         });
     });
+// ------------------ REPLIES ------------------
 
-    // describe('Reply to discussion [POST /discussions/:discussion_id/replies', function() {
-    //     let r, v, v2;
-    //     before('request', function() {
-    //         r = chakram.post(route + 196 + '/replies', {message: "Waltz"});
-    //         v = chakram.post(route + 196 + '/replies');
-    //         v2 = chakram.post(route + storage.fakeId + '/replies', {message: "no luck"});
-    //     });
+    describe('Reply to discussion [POST /discussions/:discussion_id/replies]', function() {
+        let r, v, v2;
+        before('request', function() {
+            r = chakram.post(route + 196 + '/replies', {message: "Waltz"});
+            v = chakram.post(route + 196 + '/replies');
+            v2 = chakram.post(route + storage.fakeId + '/replies', {message: "no luck"});
+        });
     
-    //     it('Should send success', function() {
-    //         return expect(r).to.joi(schemas.common.success).status(200);
-    //     });
+        it('Should send success', function() {
+            return expect(r).to.joi(schemas.common.success).status(200);
+        });
 
-    //     it('Should match validation error', function() {
-    //         return expect(v).to.joi(schemas.error.validation_error_schema);
-    //     });
+        it('Should match validation error', function() {
+            return expect(v).to.joi(schemas.error.validation_error_schema);
+        });
 
-    //     it('Should match description error', function() {
-    //         return expect(v2).to.joi(schemas.error.description);
-    //     });
-    // });
+        it('Should match description error', function() {
+            return expect(v2).to.joi(schemas.error.description);
+        });
+    });
+    
+    require('./replies.test')(storage, chakram);
 
+// ------------------ END REPLIES ------------------
     describe('Remove project discussion [DELETE /discussions/:discussion_id]', function() {
         let r, v;
         before('request', function() {
