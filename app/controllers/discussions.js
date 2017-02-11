@@ -28,7 +28,18 @@ exports.removeProjectDiscussion = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
+
 // ------------------ Reply discussions ------------------
+exports.getDiscussionReplies = (req, res, next) => {
+	discussion.getDiscussionReplies(req.params.discussion_id)
+		.then(r => {
+			if (typeof r === 'string'){
+				return next([r, "Bad id"])
+			}else {
+				res.send({replies: r})
+			}
+		});
+};
 
 exports.replyDiscussion = (req, res, next) => {
 	discussion.replyDiscussion(req.params.discussion_id, req.user.id, req.body.message)

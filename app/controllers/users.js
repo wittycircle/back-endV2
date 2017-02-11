@@ -25,12 +25,12 @@ exports.addUserSkill = (req, res, next) => {
       .then(r => {
         if (r && r.length){
           if (typeof r === 'string')
-              next([r, "Invalid user id"])
+             return next([r, "Invalid user id"])
             else
             res.send({skills: r}) 
         } 
         else{
-          next(['No matched skill', 'invalid skill id'])
+          return next(['No matched skill', 'invalid skill id'])
         }
       })
       .catch(err => next(err))
@@ -43,12 +43,12 @@ exports.removeUserSkill = (req, res, next) => {
       .then(r => {
         if (r){
           if (typeof r === 'string')
-            next([r, 'Did not match any skills']);
+            return next([r, 'Did not match any skills']);
           else
             res.send({success: true})
         }
         else {
-          next(["No match" , "No matched skill or last skilled removed"])
+          return next(["No match" , "No matched skill or last skilled removed"])
         }
       })
       .catch(err => next(err))

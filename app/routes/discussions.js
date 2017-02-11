@@ -18,6 +18,7 @@ router.route('/discussions/:discussion_id/like')
 	.delete(passport.authenticate('bearer'), discussions.unlikeDiscussion)
 
 router.route('/discussions/:discussion_id/replies')
+    .get(discussions.getDiscussionReplies)
 	.post(passport.authenticate('bearer'), validate(sd.reply), discussions.replyDiscussion)
 
 module.exports = router    

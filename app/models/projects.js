@@ -32,8 +32,7 @@ exports.getProjectDiscussion = (id) => {
 			r.forEach(el => {
 				x.push(like(el.id).then(rr=> el.likes = rr))
 				x.push(replies(el.id).then(rr => {
-					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) 
-				}); 
+					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) });
 					return (el.replies = rr); 
 				})) 
 			});

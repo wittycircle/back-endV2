@@ -9,7 +9,7 @@ module.exports = (storage, chakram) => {
         rnd_string = Math.random().toString(36).slice(-10),
         schemas = {
             common: require('./schemas/common.schema'),
-            discussion: require('./schemas/discussion.schema'),
+            discussions: require('./schemas/discussion.schema'),
             error: require('./schemas/error.schema')
         };
 
@@ -56,7 +56,18 @@ module.exports = (storage, chakram) => {
             return expect(v2).to.joi(schemas.error.description);
         });
     });
+
+    describe('Get discussion replies [GET /discussion/discussion_id/replies]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.get(route + 196 + '/replies');
+        });
     
+        it('', function() {
+            return expect(r).to.joi(schemas.discussions.replies);
+        });
+    });
+
     require('./replies.test')(storage, chakram);
 
 // ------------------ END REPLIES ------------------
