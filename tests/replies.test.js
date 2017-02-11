@@ -46,6 +46,20 @@ module.exports = (storage, chakram) => {
     	})
     });
 
+    describe('Should unlike reply', function() {
+    	let r, v;
+    	before('request', function() {
+    		r = chakram.delete(route + 263 + '/like');
+    		v = chakram.delete(route + storage.fakeId + '/like');
+    	});
+        	it('Should send success', function() {
+    		return expect(r).to.joi(schemas.common.success).status(200);
+    	});
+    	it('Should match description error', function() {
+    		return expect(v).to.joi(schemas.error.description).status(404);
+    	});
+
+    });
     describe('Should remove reply [comment] from discussion [DELETE /replies/reply_id]', function() {
         let r, v;
         before('request', function() {

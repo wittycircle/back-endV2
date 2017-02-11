@@ -38,7 +38,7 @@ exports.likeReply = (reply_id, uid) => {
 
 exports.unlikeReply = (reply_id, uid) => {
 	return h.owner(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id, uid).then(r => {
-		if (!r.lentgth)
+		if (!r.length)
 			return "Invalid id"
 		else{
 			return db(TABLES.PROJECT_REPLY_LIKES)
