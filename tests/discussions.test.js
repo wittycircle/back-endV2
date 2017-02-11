@@ -65,7 +65,7 @@ module.exports = (storage, chakram) => {
         });
     
         it('Should send the id of like', function() {
-            return expect(r).to.joi(schemas.common.id);
+            return expect(r).to.joi(schemas.common.id).status(200);
         });
 
         it('Should match description error', function() {
@@ -73,7 +73,7 @@ module.exports = (storage, chakram) => {
         })
     });
 
-    describe('Should unlike reply', function() {
+    describe('Should unlike discussion', function() {
         let r, v;
         before('request', function() {
             r = chakram.delete(route + 196 + '/like');

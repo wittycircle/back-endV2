@@ -8,28 +8,28 @@ router.param('id', validateParam(schemas.params.id));
 router.param('opening_id', validateParam(schemas.params.id));
 router.param('discussion_id', validateParam(schemas.params.id));
 
-router.route('/projects')
-    .get()
-    .post(passport.authenticate('bearer'));
+// router.route('/projects')
+//     .get()
+//     .post(passport.authenticate('bearer'));
 
-router.route('/project/:id')
-    .get()
-    .put(passport.authenticate('bearer'))
-    .delete(passport.authenticate('bearer'));
+// router.route('/project/:id')
+//     .get()
+//     .put(passport.authenticate('bearer'))
+//     .delete(passport.authenticate('bearer'));
 
-router.route('/projects/:id/upvote')
-    .get()
-    .post(passport.authenticate('bearer'))
-    .delete(passport.authenticate('bearer'));
+// router.route('/projects/:id/upvote')
+//     .get()
+//     .post(passport.authenticate('bearer'))
+//     .delete(passport.authenticate('bearer'));
 
 router.route('/projects/:id/openings')
-    .get()
-    .post(passport.authenticate('bearer'));
+    .get(projects.getProjectOpenings)
+    .post(passport.authenticate('bearer'), validate(schemas.project.opening), projects.createOpening);
 
-router.route('/projects/:id/openings/:opening_id')
-    .get()//not in documentation
-    .put(passport.authenticate('bearer'))
-    .delete(passport.authenticate('bearer'));
+// router.route('/projects/:id/openings/:opening_id')
+//     .get()//not in documentation
+//     .put(passport.authenticate('bearer'))
+//     .delete(passport.authenticate('bearer'));
 
 router.route('/projects/:id/discussions')
     .get(projects.getProjectDiscussion)

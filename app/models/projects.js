@@ -3,13 +3,13 @@ const { db, TABLES } = require('./index'),
 
 // ------------------ Discussions ------------------
 
-exports.createProjectDiscussion = (pid, uid, message, title) => {
-	return h.exist(TABLES.PROJECTS, pid).then(r => {
+exports.createProjectDiscussion = (data) => {
+	return h.exist(TABLES.PROJECTS, data.project_id).then(r => {
 		if (!r.length){
 			return "could not create project dicussion"
 		} else{
 		return db(TABLES.PROJECT_DISCUSSION)	
-			.insert({project_id: pid, user_id: uid, message: message, title: title})
+			.insert(data)
 		}
 	})
 };
@@ -18,9 +18,11 @@ exports.getProjectDiscussion = (id) => {
 	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
 			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
 
-	let like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id})
+	let like = (id) => db.select('user_id', 'creation_date')
+			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id})
 
-	let rep_like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
+	let rep_like = (id) => db.select('user_id', 'creation_date')
+			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
 
 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
 		.select(['id', 'user_id', 'pr.title', 'pr.message', 'pr.creation_date'])
@@ -41,6 +43,23 @@ exports.getProjectDiscussion = (id) => {
 					return Promise.all(y).then(() =>{return r})
 				})
 		})
+};
+// ------------------ Opening ------------------
+exports.createOpening = (data) => {
+		return h.exist(TABLES.PROJECTS, data.project_id).then(r => {
+		if (!r.length){
+			return "could not create project opening"
+		} else{
+		return db(TABLES.PROJECT_OPENINGS)	
+			.insert(data)
+		}
+	})
+};
+
+exports.getProjectOpenings = (id) => {
+	return db.select('id', 'created_at', 'status', 'description', 'tags')
+		.from(TABLES.PROJECT_OPENINGS)
+		.where({project_id: id})
 };
 
 // ------------------ Likes ------------------

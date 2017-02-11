@@ -16,7 +16,7 @@ module.exports = (storage, chakram) => {
             projects: require('./schemas/project.schema'),
             error: require('./schemas/error.schema')
         };
-
+// ------------------ LIKES ------------------
     describe('Get project likes', function () {
         let pl;
         before('[GET /projects/:id/like', function () {
@@ -59,7 +59,7 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.common.success).to.have.status(200)
         });
     });
-
+// ------------------ DISCUSSION ------------------
     describe('Get project discussion [GET /projects/:id/discussions]', function() {
         let r, v;
         before('request', function() {
@@ -83,10 +83,36 @@ module.exports = (storage, chakram) => {
         });
     
         it('Should send success', function() {
-            return expect(r).to.joi(schemas.common.success);
+            return expect(r).to.joi(schemas.common.id);
         });
     });
 
     require('./discussions.test')(storage, chakram);
+// ------------------ OPENINGS ------------------
+    describe('Get project openings [GET /projects/:id/openings]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.get(route + 7 + '/openings');
+        });
+    
+        it('should get openings list', function() {
+            return expect(r).to.joi(schemas.projects.openings);
+        });
+    });
 
+    describe('Create project openings [POST /projects/:id/openings]', function() {
+        let r, v;
+        const data = {
+            status: 'any',
+            description: 'very test so chakram',
+            tags: `['mocha', 'chai', 'chakram']`
+    }; 
+        before('request', function() {
+            r = chakram.post(route + 7 + '/openings', data);
+        });
+    
+        it('Should create a project opening', function() {
+            return expect(r).to.joi(schemas.common.id);
+        });
+    });
 };
