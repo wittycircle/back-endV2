@@ -62,7 +62,7 @@ exports.likeDiscussion = (req, res, next) => {
 				return next([r, 'could not like'])
 			}
 			else{
-				res.send({success: true})
+				res.send({id: r[0]})
 			}
 		})
 		.catch(err => next(err))

@@ -57,6 +57,36 @@ module.exports = (storage, chakram) => {
         });
     });
 
+    describe('Should like discussion', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.post(route + 196 + '/like');
+            v = chakram.post(route + storage.fakeId + '/like')
+        });
+    
+        it('Should send the id of like', function() {
+            return expect(r).to.joi(schemas.common.id);
+        });
+
+        it('Should match description error', function() {
+            return expect(v).to.joi(schemas.error.description);
+        })
+    });
+
+    describe('Should unlike reply', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.delete(route + 196 + '/like');
+            v = chakram.delete(route + storage.fakeId + '/like');
+        });
+            it('Should send success', function() {
+            return expect(r).to.joi(schemas.common.success).status(200);
+        });
+        it('Should match description error', function() {
+            return expect(v).to.joi(schemas.error.description).status(404);
+        });
+    });
+
     describe('Get discussion replies [GET /discussion/discussion_id/replies]', function() {
         let r, v;
         before('request', function() {
