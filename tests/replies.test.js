@@ -30,11 +30,27 @@ module.exports = (storage, chakram) => {
         });
     });
 
+    describe('Should lke reply', function() {
+    	let r, v;
+    	before('request', function() {
+    		r = chakram.post(route + 263 + '/like');
+    		v = chakram.post(route + storage.fakeId + '/like')
+    	});
+    
+    	it('Should send the id of like', function() {
+    		return expect(r).to.joi(schemas.common.id);
+    	});
+
+    	it('Should match description error', function() {
+    		return expect(v).to.joi(schemas.error.description);
+    	})
+    });
+
     describe('Should remove reply [comment] from discussion [DELETE /replies/reply_id]', function() {
         let r, v;
         before('request', function() {
             r = chakram.delete(route + 263);
-            v = chakram.delete(route + )
+             // v = chakram.delete(route + )
         });
     
         it('Should send success true', function() {

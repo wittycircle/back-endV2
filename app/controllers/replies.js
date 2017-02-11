@@ -41,7 +41,7 @@ exports.likeReply = (req, res, next) => {
 };
 
 exports.unlikeReply = (req, res, next) => {
-	reply.unlikeReply(req.params.reply_id, req.user_id)
+	reply.unlikeReply(req.params.reply_id, req.user.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Invalid reply id'])

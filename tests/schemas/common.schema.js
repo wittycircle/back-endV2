@@ -23,4 +23,8 @@ module.exports.likes = joi.object().keys({
     like: p_like
 });
 
+module.exports.id = joi.object().keys({
+    id: joi.number().integer().required()
+});
+
 module.exports.detail = detail;

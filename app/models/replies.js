@@ -27,7 +27,7 @@ exports.removeReplyDiscussion = (reply_id, uid) => {
 
 exports.likeReply = (reply_id, uid) => {
 	return h.exist(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id).then(r => {
-		if (!r.lentgth)
+		if (!r.length)
 			return "Invalid id"
 		else{
 			return db(TABLES.PROJECT_REPLY_LIKES)
@@ -37,7 +37,7 @@ exports.likeReply = (reply_id, uid) => {
 };
 
 exports.unlikeReply = (reply_id, uid) => {
-	return h.exist(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id).then(r => {
+	return h.owner(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id, uid).then(r => {
 		if (!r.lentgth)
 			return "Invalid id"
 		else{

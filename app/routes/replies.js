@@ -11,5 +11,7 @@ router.route('/replies/:reply_id')
 	.delete(passport.authenticate('bearer'), replies.removeReplyDiscussion)
 
 router.route('/replies/:reply_id/like')
-	.post(passport.authenticate('bearer'), validate(schemas.replies.reply))
+	.post(passport.authenticate('bearer'), replies.likeReply)
+	.delete(passport.authenticate('bearer'), replies.unlikeReply)
+	
 module.exports = router
