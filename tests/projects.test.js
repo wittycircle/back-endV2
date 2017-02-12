@@ -16,6 +16,43 @@ module.exports = (storage, chakram) => {
             projects: require('./schemas/project.schema'),
             error: require('./schemas/error.schema')
         };
+
+// ------------------ Projects [main methods] ------------------
+
+    describe.only('Create project [POST /projects]', function() {
+        let r, v;
+        before('request', function() {
+            let data = {
+                title: "Chakram",
+                category: 1,
+                description: "Creating a project",
+                about: "Lost of stuff with <p> tags <div> urls </div> </p> and stuff",
+                location: {
+                country: "France"
+                },
+                picture: "",
+                video: "",
+                network: "",
+                // public: true,
+                members: [1, 2, 3],
+                openings: [{
+                    skill: "Javascript",
+                    status: "any",
+                    description: "Help for things and stuff",
+                    tags: "",
+                }],
+                discussions: [{
+                    title: "Very much conversation",
+                    message: "Heart of space"
+                }],
+            };
+            r = chakram.post(route, data);
+        });
+    
+        it('Should send back the id', function() {
+            return expect(r).to.joi(schemas.common.id);
+        });
+    });
 // ------------------ LIKES ------------------
     describe('Get project likes', function () {
         let pl;

@@ -1,6 +1,33 @@
 const { db, TABLES } = require('./index'),
 		h = require('./helper');
 
+// ------------------ Projects [main methods] ------------------
+
+exports.createProject = (project_data, members, openings, discussions) => {
+	let x = []
+	return db(TABLES.PROJECTS).insert(project_data)
+			.then(([id]) => {
+				openings.forEach(el => {
+					el.project_id = id;
+					x.push(exports.createOpening(el).return())
+				});
+				discussions.forEach(el => {
+					el.project_id = id;
+					el.user_id = project_data.creator_user_id;
+					x.push(exports.createProjectDiscussion(el).return())
+				});
+				members.forEach(el => {
+					x.push(db(TABLES.PROJECT_MEMBERS).insert({project_id: id, user_id: el}).return())
+				});
+				return Promise.all(x)
+				.then(() => {return id})
+			})
+};
+
+exports.removeProject = (id) => {
+	return db(TABLES.PROJECT).del().where('id', id);
+};
+
 // ------------------ Discussions ------------------
 
 exports.createProjectDiscussion = (data) => {
@@ -8,7 +35,7 @@ exports.createProjectDiscussion = (data) => {
 		if (!r.length){
 			return "could not create project dicussion"
 		} else{
-		return db(TABLES.PROJECT_DISCUSSION)	
+		return db(TABLES.PROJECT_DISCUSSION)
 			.insert(data)
 		}
 	})
