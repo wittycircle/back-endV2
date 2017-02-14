@@ -21,5 +21,5 @@ exports.user_schema = joi.object().keys({
 });
 
 exports.skills = joi.object().keys({
-    skills: joi.array().items(p_skill)
+    skills: joi.array().items(p_skill).required()
 });

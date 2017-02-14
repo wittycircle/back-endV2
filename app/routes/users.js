@@ -14,7 +14,7 @@ router.route('/users')
 
 router.route('/users/:id/skills')
     .get(users.getUserSkills)
-    .post(users.addUserSkill)
-    .delete(users.removeUserSkill);
+    .post(passport.authenticate('bearer'), users.addUserSkill)
+    .delete(passport.authenticate('bearer'), users.removeUserSkill);
 
 module.exports = router;

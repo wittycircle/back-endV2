@@ -1,5 +1,6 @@
 'use strict';
 
+const { db, TABLES } = require('../app/models/index');
 const p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
@@ -10,19 +11,12 @@ module.exports = (storage, chakram) => {
             id: 1,
             public_id: 34474
         },
-        fake_project = {
-            id: 9999282292,
-            public_id: 3939302932
-        },
         schemas = {
             common: require('./schemas/common.schema'),
             projects: require('./schemas/project.schema'),
             error: require('./schemas/error.schema')
         };
-    describe('test', function () {
-        it('should print', function () {
-        })
-    });
+
     describe('Get project likes', function () {
         let pl;
         before('[GET /projects/:id/like', function () {
@@ -65,4 +59,34 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.common.success).to.have.status(200)
         });
     });
+
+    describe('Get project discussion [GET /projects/:id/discussions]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.get(route + 242 + '/discussions');
+            v = chakram.get(route + storage.fakeId + '/discussions');
+        });
+    
+        it('Should get a project list', function() {
+            return expect(r).to.joi(schemas.projects.discussions);
+        });
+
+        it('Should send an error', function() {
+            return expect(v).to.joi(schemas.error.description);
+        });
+    });
+
+    describe('Create project discussion [POST /projects/:id/discussions]', function() {
+        let r,r2, v;
+        before('request', function() {
+            r = chakram.post(route + 3 + '/discussions', {message: "Testy test", title: "Waddya do"});
+        });
+    
+        it('Should send success', function() {
+            return expect(r).to.joi(schemas.common.success);
+        });
+    });
+
+    require('./discussions.test')(storage, chakram);
+
 };

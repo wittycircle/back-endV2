@@ -24,12 +24,24 @@ exports.logout = (req, res) => {
 
 exports.localLogin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-        if (err) next(err);
+        if (err) next({
+            code: 401,
+            error: 'unauthorized',
+            error_description: 'invalid token'
+        });
         else if (_.isEmpty(user))
-            next({code: 400});
+            next({
+                code: 400,
+                error: 'invalid_resource',
+                error_description: 'No such User'
+            });
         else
             req.logIn(user, err => {
-                if (err) next({code: 403});
+                if (err) next({
+                    code: 500,
+                    error: 'internal_error',
+                    error_description: 'Please try later'
+                });
                 else
                     res.json({
                         auth: _.pick(req.session.passport.user, ['token']),

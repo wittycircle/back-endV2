@@ -54,16 +54,28 @@ gulp.task('redis', 'Launch redis-server', function () {
 /**
  *  Launch unit tests in ./tests
  */
-gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
+gulp.task('test', 'Executes unit tests', cb => {
     gulp.src('tests/index.js')
         .pipe(mocha({
             reporter: 'mochawesome',
+            reporterOptions: {
+                inlineAssets: true
+            }
         }))
         /**
          * database lingering connection killer
          */
         .once('error', () => process.exit(1))
-        .once('end', () => process.exit());
+        .once('end', () => cb());
+    cb();
+});
+
+/**
+ * Launch and open the tests results
+ */
+gulp.task('test-gui', 'Executes unit tests and open them in mocha reporter', ['test'], () => {
+     gulp.src('./mochawesome-reports/mochawesome.html')
+         .pipe(open({app: browser}));
 });
 
 /**
