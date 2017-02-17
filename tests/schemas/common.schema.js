@@ -10,7 +10,7 @@ const detail = joi.object().keys({
     description: joi.string().trim().allow(p_empty).required()
 });
 
-const p_like = joi.object().keys({
+const p_follow = joi.object().keys({
     count: joi.number().integer().required(),
     who: joi.array().items(detail)
 });
@@ -19,8 +19,6 @@ module.exports.success = joi.object().keys({
     success: joi.only(true).required()
 });
 
-module.exports.likes = joi.object().keys({
-    like: p_like
-});
+module.exports.follow = p_follow;
 
 module.exports.detail = detail;
