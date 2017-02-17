@@ -87,7 +87,7 @@ gulp.task('api-gen', 'Generates api documentation html', cb => {
         src: 'api-doc',
         dest: 'api-build',
         debug: true,
-        template: './api/template/'
+        template: './api-doc/template/'
     }, cb);
 });
 
