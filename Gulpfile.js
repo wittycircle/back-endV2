@@ -84,7 +84,7 @@ gulp.task('test-gui', 'Executes unit tests and open them in mocha reporter', ['t
  */
 gulp.task('api-gen', 'Generates api documentation html', cb => {
     apidoc({
-        src: 'api',
+        src: 'api-doc',
         dest: 'api-build',
         debug: true,
         template: './api/template/'
@@ -95,7 +95,7 @@ gulp.task('api-gen', 'Generates api documentation html', cb => {
  * Fetch last api revision
  */
 gulp.task('api-fetch', 'Fetch the latest documentation version', cb => {
-    git.updateSubmodule();
+    // git.updateSubmodule();
     cb();
 });
 

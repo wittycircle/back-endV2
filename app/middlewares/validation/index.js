@@ -35,7 +35,7 @@ exports.validate = (schema) => (req, res, next) => {
         abortEarly: false
     }, (err, value) => {
         if (err)
-            res.send(error_formatter(err));
+            res.status(400).send(error_formatter(err));
         else if (value)
             next();
         else

@@ -31,7 +31,7 @@ exports.localLogin = (req, res, next) => {
         });
         else if (_.isEmpty(user))
             next({
-                code: 400,
+                code: 404,
                 error: 'invalid_resource',
                 error_description: 'No such User'
             });
