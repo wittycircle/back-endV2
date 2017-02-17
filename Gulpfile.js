@@ -104,3 +104,14 @@ gulp.task('api', 'Open the latest documentation revision', ['api-fetch', 'api-ge
         .pipe(open({app: browser}))
 
 });
+
+gulp.task('sql-fix', 'Execute sql_mode query', () => {
+    const {db} = require('./app/models');
+
+    db.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
+        .then(result => {
+            console.log(`Query ok: ${result[0].affectedRows} affected row(s)`);
+            process.exit()
+        })
+        .catch(console.log);
+});
