@@ -31,9 +31,9 @@ exports.localLogin = (req, res, next) => {
         });
         else if (_.isEmpty(user))
             next({
-                code: 404,
-                error: 'invalid_resource',
-                error_description: 'No such User'
+                code: 400,
+                error: 'malformed',
+                error_description: 'invalid credentials'
             });
         else
             req.logIn(user, err => {
@@ -71,7 +71,7 @@ exports.getUserForResetPassword = (req, res) => {
     user.getUserReset(['token', 'user_id', 'user_email'], {token: req.param.token})
         .then(r => {
             if (!r.length) {
-                res.status(404).send({message: 'You are not authorized to make this action.'});
+                res.status(403).send({message: 'You are not authorized to make this action.'});
             } else {
                 res.send({data: r, message: 'Password Changed !'});
             }
@@ -82,7 +82,7 @@ exports.updatePasswordReset = (req, res) => {
     user.getUserreset(['token'], {token: req.body.token})
         .then(c => {
             if (!c.length) {
-                res.status(404).send({message: 'You are not authorized to make this action.'});
+                res.status(403).send({message: 'You are not authorized to make this action.'});
             } else {
                 user.updateUser({password: bcrypt.hashSync(req.body.password)}, {email: req.body.email})
                     .then((r) => {
