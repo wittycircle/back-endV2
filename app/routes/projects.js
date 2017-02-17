@@ -39,7 +39,7 @@ router.route('/projects/:id/discussions')
 //     .put(passport.authenticate('bearer'), validate(schemas.project.discussion), projects.updateProjectDiscussion)
 //     .delete(passport.authenticate('bearer'), projects.removeProjectDiscussion);
 
-
+//todo replace by upvotes
 router.route('/projects/:id/like')
     .get(projects.getProjectLikes)
     .post(passport.authenticate('bearer'), projects.likeProject)
