@@ -53,7 +53,7 @@ exports.localLogin = (req, res, next) => {
 
 exports.resetPassword = (req, res) => {
     const token = crypto.randomBytes(20).toString('hex');
-    let link = 'https://www.wittycircle.com/password/reset/' + token;
+    let link = 'https://www.wittycircle.com/password/reset/' + token; //todo add method
 
     user.getFromUser(['id'], {email: req.body.email_reset})
         .then(r => {
