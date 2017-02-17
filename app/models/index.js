@@ -5,7 +5,8 @@
 'use strict';
 
 const config = require('../private'),
-    knex = require('knex')(config.database);
+    knex = require('knex')(config.database),
+    _ = require('lodash');
 
 // if (process.env.DEBUG === true)
 // knex.on('query', (query) => console.log('SQL %s', query.sql));
@@ -27,10 +28,9 @@ exports.TABLES = {
     PROJECTS: 'projects',
     PROJECT_LIKES: 'project_followers',
     PROJECT_NETWORK: 'project_network',
-    PROJECT_REPLY_LIKES :'project_reply_likes',
+    PROJECT_REPLY_LIKES: 'project_reply_likes',
     PROJECT_DISCUSSION: 'project_discussion',
-    PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',   
+    PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',
     PROJECT_DISCUSSION_REPLIES: 'project_discussion_replies',
-    
     SKILLS: 'skills'
 };

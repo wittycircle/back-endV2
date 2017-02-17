@@ -16,21 +16,21 @@ exports.createProjectDiscussion = (pid, uid, message, title) => {
 
 exports.getProjectDiscussion = (id) => {
 	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
-			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
+        .from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id);
 
-	let like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id})
+    let like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id});
 
-	let rep_like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
+    let rep_like = (id) => db.select('user_id', 'creation_date').from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id});
 
 	return db.from(TABLES.PROJECT_DISCUSSION + ' as pr')
 		.select(['id', 'user_id', 'pr.title', 'pr.message', 'pr.creation_date'])
 		.where({'pr.project_id': id})
 		.groupBy('pr.project_id')
 		.then(r => {
-			let x = []
-			let y = []
+            let x = [];
+            let y = [];
 			r.forEach(el => {
-				x.push(like(el.id).then(rr=> el.likes = rr))
+                x.push(like(el.id).then(rr => el.likes = rr));
 				x.push(replies(el.id).then(rr => {
 					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) 
 				}); 

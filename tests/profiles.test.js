@@ -6,7 +6,7 @@
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
         route = storage.resource('profiles/'),
-        rnd_string = Math.random().toString(36).slice(-10),
+        rnd_string = 'random_string_shouldnt_be_used',
         schemas = {
             common: require('./schemas/common.schema'),
             profiles: require('./schemas/profile.schema'),
@@ -198,7 +198,7 @@ module.exports = (storage, chakram) => {
             fake = chakram.delete(route + 2928292 + '/like');
         });
 
-        it('Should send succes true', function () {
+        it('Should send success true', function () {
             return expect(remove).to.joi(schemas.common.success);
         });
 
