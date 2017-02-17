@@ -39,43 +39,43 @@ exports.updateProfile = (req, res, next) => {
 };
 
 exports.getProfileLikes = (req, res, next) => {
-    profiles.getProfileLikes(  'l.user_id','l.follow_user_id', req.params.id)
-    .then((r) => { 
+    profiles.getProfileLikes('l.user_id', 'l.follow_user_id', req.params.id)
+        .then((r) => {
         if (!r.length)
             next({code: 400});
-        else 
-            res.send({like:{count: r.length,who: r}})
+        else
+            res.send({follow: {count: r.length, who: r}})
     }).catch(err => next(err))
 };
 
-exports.getLikedProfile = (req, res, next) => {
-    profiles.getProfileLikes('l.follow_user_id', 'l.user_id', req.params.id)
+exports.getProfileFollowers = (req, res, next) => {
+    profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
     .then((r) => {
         if (!r.length)
             next({code: 400});
-        else 
+        else
             res.send({count: r.length,who: r})
     }).catch(err => next(err))
 };
 
-exports.likeProfile = (req, res, next) => {
-    profiles.likeProfile(req.params.id, req.user.id)
+exports.followProfile = (req, res, next) => {
+    profiles.followProfile(req.params.id, req.user.id)
     .then((r) => {
         if (_.isEmpty(r))
             res.send({success: false});
-        else 
+        else
             res.send({success: true})
     })
     .catch(error => next(error))
 };
 
-exports.unlikeProfile = (req, res, next) => {
-    profiles.unlikeProfile(req.params.id, 3719)
+exports.unfollowProfile = (req, res, next) => {
+    profiles.unfollowProfile(req.params.id, 3719)
         .then((r) => {
         if (!r)
             res.send({success: false});
-        else 
-            res.send({ success: true})
+        else
+            res.send({success: true})
     })
     .catch(err => next(err))
 };

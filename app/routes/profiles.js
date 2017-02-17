@@ -24,10 +24,10 @@ router.route('/profiles/:id/location')
     .get(profiles.getLocation)
     .put(passport.authenticate('bearer'), validate(schemas.profile.location), profiles.updateLocation);
 
-router.route('/profiles/:id/like')
-	.get(profiles.getProfileLikes)
-    .post(passport.authenticate('bearer'), profiles.likeProfile)
-    .delete(passport.authenticate('bearer'), profiles.unlikeProfile);
+router.route('/profiles/:id/follow')
+    .get(profiles.getProfileFollowers)
+    .post(passport.authenticate('bearer'), profiles.followProfile)
+    .delete(passport.authenticate('bearer'), profiles.unfollowProfile);
 
 
 module.exports = router;
