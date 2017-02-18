@@ -40,10 +40,10 @@ router.route('/projects/:id/discussions')
 //     .delete(passport.authenticate('bearer'), projects.removeProjectDiscussion);
 
 //todo replace by upvotes
-router.route('/projects/:id/like')
-    .get(projects.getProjectLikes)
-    .post(passport.authenticate('bearer'), projects.likeProject)
-    .delete(passport.authenticate('bearer'), projects.unlikeProject);
+router.route('/projects/:id/up')
+    .get(projects.getProjectUpvotes)
+    .post(passport.authenticate('bearer'), projects.upvoteProject)
+    .delete(passport.authenticate('bearer'), projects.unupvoteProject);
 
 
 module.exports = router;

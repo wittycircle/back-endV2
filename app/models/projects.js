@@ -46,7 +46,7 @@ exports.getProjectDiscussion = (id) => {
 
 // ------------------ Likes ------------------
 
-exports.getProjectLikes = (project_id) => {
+exports.getProjectUpvotes = (project_id) => {
 	return db.select(h.p_array)
 		.from(TABLES.PROJECT_LIKES + ' as pl')
 		.join(TABLES.PROJECTS + ' as pj', 'pj.id', 'pl.follow_project_id')
@@ -55,7 +55,7 @@ exports.getProjectLikes = (project_id) => {
 		.groupBy('p.id')
 };
 
-exports.likeProject = (project_id, uid) => {
+exports.upvoteProject = (project_id, uid) => {
 	return h.exist(TABLES.PROJECTS, project_id).then(r => {
 		if (r.length){
 			return db(TABLES.PROJECT_LIKES) 
@@ -67,7 +67,7 @@ exports.likeProject = (project_id, uid) => {
 		}); 
 };
 
-exports.unlikeProject = (project_id, uid) => {
+exports.unupvoteProject = (project_id, uid) => {
 	return db(TABLES.PROJECT_LIKES)	.del()
 			.where({
 				user_id: uid, 
