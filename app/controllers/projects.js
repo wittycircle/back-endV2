@@ -6,7 +6,7 @@ exports.createProjectDiscussion = (req, res, next) => {
 	project.createProjectDiscussion(req.params.id, req.user.id, req.body.message, req.body.title)
 		.then(r => {
 			if (typeof r === 'string')
-                return next([r, 'Invalid project id']);;;;;
+                return next([r, 'Invalid project id']);
 			else{
 				res.send({success:true}) 
 			} 
@@ -18,7 +18,7 @@ exports.getProjectDiscussion = (req, res, next) => {
 	project.getProjectDiscussion(req.params.id)
 		.then(r => {
 			if (_.isEmpty(r))
-                next(['Empty discussion', 'Wrong project id']);;;;;
+                next(['Empty discussion', 'Wrong project id']);
 			else
 				res.send({discussions: r})
 		})
@@ -37,34 +37,23 @@ exports.getProjectUpvotes = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
-;;;;
 
 exports.upvoteProject = (req, res, next) => {
     project.upvoteProject(req.params.id, req.user.id)
 	.then(r => {
 		if (!_.isEmpty(r))
             res.send({success: true});
-        ;
-        ;
-        ;
-        ;
 		else 
 			res.send({success: false})
     }).catch(err => next(err))
 };
-;;;;
 
 exports.unupvoteProject = (req, res, next) => {
     project.unupvoteProject(req.params.id, req.user.id)
 	.then(r => {
 		if (r)
             res.send({success: true});
-        ;
-        ;
-        ;
-        ;
 		else 
 			res.send({success: false})
     }).catch(err => next(err))
 };
-;;;;
