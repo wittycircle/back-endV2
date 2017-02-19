@@ -9,7 +9,10 @@ const http = require('http'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     passport = require('passport'),
-    debug = require('./app/middlewares/debug');
+    debug = require('./app/middlewares/debug'),
+    cache = require('./app/services/cache');
+
+cache.init();
 
 let app = express();
 
