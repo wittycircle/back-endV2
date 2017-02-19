@@ -3,7 +3,8 @@
  */
 
 const profiles = require('../models/profiles'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    cache = require('../services/cache');
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
@@ -63,8 +64,10 @@ exports.followProfile = (req, res, next) => {
     .then((r) => {
         if (_.isEmpty(r))
             res.send({success: false});
-        else
+        else {
+            cache.pub.publish('')
             res.send({success: true})
+        }
     })
     .catch(error => next(error))
 };
@@ -74,8 +77,9 @@ exports.unfollowProfile = (req, res, next) => {
         .then((r) => {
         if (!r)
             res.send({success: false});
-        else
+        else {
             res.send({success: true})
+        }
     })
     .catch(err => next(err))
 };

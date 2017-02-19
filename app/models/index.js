@@ -32,5 +32,6 @@ exports.TABLES = {
     PROJECT_DISCUSSION: 'project_discussion',
     PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',
     PROJECT_DISCUSSION_REPLIES: 'project_discussion_replies',
+    RANKS: 'rank_of_the_day',
     SKILLS: 'skills'
 };
