@@ -9,7 +9,7 @@ exports.createProject = (req, res, next) => {
 		title: req.body.title,
 		category_id: req.body.category, //id and not a string (there is a table categories)
 		description: req.body.description,
-		post: req.body.about,
+		about: req.body.about,
 		country: req.body.location.country,
 		city: req.body.location.city,
 		state: req.body.location.state,
@@ -39,6 +39,19 @@ exports.removeProject = (req, res, next) => {
 			}
 			else{
 				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.getProject = (req, res, next) => {
+	project.getProject(req.params.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Invalid id'])
+			}
+			else{
+				res.send({project: r[0]})
 			}
 		})
 		.catch(err => next(err))

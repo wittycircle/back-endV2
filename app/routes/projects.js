@@ -12,10 +12,10 @@ router.route('/projects')
     // .get()
     .post(passport.authenticate('bearer'), validate(schemas.project.creation), projects.createProject);
 
-// router.route('/project/:id')
+router.route('/project/:id')
 //     .get()
 //     .put(passport.authenticate('bearer'))
-//     .delete(passport.authenticate('bearer'));
+    .delete(passport.authenticate('bearer'), projects.removeProject);
 
 // router.route('/projects/:id/upvote')
 //     .get()

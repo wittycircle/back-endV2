@@ -152,4 +152,17 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.common.id);
         });
     });
+
+// ------------------ PROJECTS [main methods: remove project] ------------------
+
+    describe('Remove project [DELETE /projects/:id]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.delete(route + 502);
+        });
+    
+        it('Should remove a project', function() {
+            return expect(r).to.joi(schemas.common.success);
+        });
+    });
 };
