@@ -24,12 +24,24 @@ exports.logout = (req, res) => {
 
 exports.localLogin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-        if (err) next(err);
+        if (err) next({
+            code: 401,
+            error: 'unauthorized',
+            error_description: 'invalid token'
+        });
         else if (_.isEmpty(user))
-            next({code: 400});
+            next({
+                code: 400,
+                error: 'malformed',
+                error_description: 'invalid credentials'
+            });
         else
             req.logIn(user, err => {
-                if (err) next({code: 403});
+                if (err) next({
+                    code: 500,
+                    error: 'internal_error',
+                    error_description: 'Please try later'
+                });
                 else
                     res.json({
                         auth: _.pick(req.session.passport.user, ['token']),
@@ -41,7 +53,7 @@ exports.localLogin = (req, res, next) => {
 
 exports.resetPassword = (req, res) => {
     const token = crypto.randomBytes(20).toString('hex');
-    let link = 'https://www.wittycircle.com/password/reset/' + token;
+    let link = 'https://www.wittycircle.com/password/reset/' + token; //todo add method
 
     user.getFromUser(['id'], {email: req.body.email_reset})
         .then(r => {
@@ -59,7 +71,7 @@ exports.getUserForResetPassword = (req, res) => {
     user.getUserReset(['token', 'user_id', 'user_email'], {token: req.param.token})
         .then(r => {
             if (!r.length) {
-                res.status(404).send({message: 'You are not authorized to make this action.'});
+                res.status(403).send({message: 'You are not authorized to make this action.'});
             } else {
                 res.send({data: r, message: 'Password Changed !'});
             }
@@ -70,7 +82,7 @@ exports.updatePasswordReset = (req, res) => {
     user.getUserreset(['token'], {token: req.body.token})
         .then(c => {
             if (!c.length) {
-                res.status(404).send({message: 'You are not authorized to make this action.'});
+                res.status(403).send({message: 'You are not authorized to make this action.'});
             } else {
                 user.updateUser({password: bcrypt.hashSync(req.body.password)}, {email: req.body.email})
                     .then((r) => {

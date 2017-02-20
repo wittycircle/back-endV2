@@ -54,16 +54,28 @@ gulp.task('redis', 'Launch redis-server', function () {
 /**
  *  Launch unit tests in ./tests
  */
-gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
+gulp.task('test', 'Executes unit tests', cb => {
     gulp.src('tests/index.js')
         .pipe(mocha({
             reporter: 'mochawesome',
+            reporterOptions: {
+                inlineAssets: true
+            }
         }))
         /**
          * database lingering connection killer
          */
         .once('error', () => process.exit(1))
-        .once('end', () => process.exit());
+        .once('end', () => cb());
+    cb();
+});
+
+/**
+ * Launch and open the tests results
+ */
+gulp.task('test-gui', 'Executes unit tests and open them in mocha reporter', ['test'], () => {
+     gulp.src('./mochawesome-reports/mochawesome.html')
+         .pipe(open({app: browser}));
 });
 
 /**
@@ -72,10 +84,10 @@ gulp.task('test', 'Executes unit tests and open them in mocha reporter', () => {
  */
 gulp.task('api-gen', 'Generates api documentation html', cb => {
     apidoc({
-        src: 'api',
+        src: 'api-doc',
         dest: 'api-build',
         debug: true,
-        template: './api/template/'
+        template: './api-doc/template/'
     }, cb);
 });
 
@@ -83,7 +95,7 @@ gulp.task('api-gen', 'Generates api documentation html', cb => {
  * Fetch last api revision
  */
 gulp.task('api-fetch', 'Fetch the latest documentation version', cb => {
-    git.updateSubmodule();
+    // git.updateSubmodule();
     cb();
 });
 
@@ -91,4 +103,15 @@ gulp.task('api', 'Open the latest documentation revision', ['api-fetch', 'api-ge
     gulp.src('./api-build/index.html')
         .pipe(open({app: browser}))
 
+});
+
+gulp.task('sql-fix', 'Execute sql_mode query', () => {
+    const {db} = require('./app/models');
+
+    db.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
+        .then(result => {
+            console.log(`Query ok: ${result[0].affectedRows} affected row(s)`);
+            process.exit()
+        })
+        .catch(console.log);
 });
