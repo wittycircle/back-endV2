@@ -3,9 +3,9 @@
  */
 'use strict';
 
-const express = require('express');
-
-let router = express.Router();
+const express = require('express'),
+    router = express.Router(),
+    path = require('path');
 
 router.use('/api', require('./users'));
 router.use('/api', require('./profiles'));
