@@ -4,8 +4,8 @@
 
 'use strict';
 
-const Joi = require('joi');
-const p_empty = ['', null]
+const Joi = require('joi'),
+    p_empty = ['', null];
 
 module.exports.discussion = Joi.object().keys({
 	title: Joi.string().trim().allow(p_empty).required(),
