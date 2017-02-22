@@ -25,7 +25,7 @@ exports.createProject = (project_data, members, openings, discussions) => {
 };
 
 exports.removeProject = (id) => {
-	return db(TABLES.PROJECT).del().where('id', id);
+	return db(TABLES.PROJECTS).del().where('id', id);
 };
 
 // ------------------ Discussions ------------------
