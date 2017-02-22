@@ -49,6 +49,10 @@ app.use(router);
 
 let server = http.createServer(app);
 
+// bootstraps socket.io
+require('./app/services/socket')(server);
+
 server.listen(app.get('port'), () => {
     console.log('Server listening on port ' + app.get('port'));
 });
+
