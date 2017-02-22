@@ -66,11 +66,13 @@ module.exports = (storage, chakram) => {
             ret: null
         };
         before('Update profile', function () {
-            success.test = chakram.put(route + storage.user.profile_id, {
+            return success.test = chakram.put(route + storage.user.profile_id, {
                 profile: {
                     first_name: rnd_string
                 }
             });
+        });
+        before('Get profile', function() {
             return success.ret = chakram.get(route + storage.user.profile_id);
         });
 
@@ -100,7 +102,7 @@ module.exports = (storage, chakram) => {
             })
         });
     });
-
+// ------------------ Location ------------------
     describe('Get location [GET /profiles/:id/location]', function () {
         let loc;
         before('get profile location', function () {
@@ -120,14 +122,16 @@ module.exports = (storage, chakram) => {
         let r;
         let res;
         before('Update profile location', function () {
-            r = chakram.put(route + storage.user.profile_id + '/location', {
+            return r = chakram.put(route + storage.user.profile_id + '/location', {
                 location: {
                     country: rnd_string,
-                    city: rnd_string
                 }
             });
-            return res = chakram.get(route + storage.user.profile_id + '/location')
         });
+
+        before('Get profile location', function() {
+            return res = chakram.get(route + storage.user.profile_id + '/location')
+        })
 
         it('Should have status 200', function () {
             return expect(r).to.have.status(200);
@@ -141,7 +145,7 @@ module.exports = (storage, chakram) => {
             })
         })
     });
-
+// ------------------ Follow ------------------
     describe('Get profile follows [GET /profiles/:id/follow]', function () {
         let follows;
         let fake;
