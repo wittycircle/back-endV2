@@ -5,7 +5,7 @@ const project = require('../models/projects'),
 
 exports.createProject = (req, res, next) => {
 	const project_data = {
-		creator_user_id: req.user.id,
+		user_id: req.user.id,
 		title: req.body.title,
 		category_id: req.body.category, //id and not a string (there is a table categories)
 		description: req.body.description,

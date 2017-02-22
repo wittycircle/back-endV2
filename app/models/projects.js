@@ -13,7 +13,7 @@ exports.createProject = (project_data, members, openings, discussions) => {
 				});
 				discussions.forEach(el => {
 					el.project_id = id;
-					el.user_id = project_data.creator_user_id;
+					el.user_id = project_data.user_id;
 					x.push(exports.createProjectDiscussion(el).return())
 				});
 				members.forEach(el => {
