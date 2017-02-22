@@ -38,16 +38,7 @@ exports.updateProfile = (req, res, next) => {
     })
     .catch(err => next(err))
 };
-
-exports.getProfileLikes = (req, res, next) => {
-    profiles.getProfileLikes('l.user_id', 'l.follow_user_id', req.params.id)
-        .then((r) => {
-        if (!r.length)
-            next({code: 400});
-        else
-            res.send({follow: {count: r.length, who: r}})
-    }).catch(err => next(err))
-};
+// ------------------ Follow ------------------
 
 exports.getProfileFollowers = (req, res, next) => {
     profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
@@ -55,7 +46,7 @@ exports.getProfileFollowers = (req, res, next) => {
         if (!r.length)
             next({code: 400});
         else
-            res.send({count: r.length,who: r})
+            res.send({like: {count: r.length,who: r}})
     }).catch(err => next(err))
 };
 
@@ -65,7 +56,7 @@ exports.followProfile = (req, res, next) => {
         if (_.isEmpty(r))
             res.send({success: false});
         else {
-            cache.pub.publish('')
+            // cache.pub.publish('')
             res.send({success: true})
         }
     })

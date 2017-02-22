@@ -142,23 +142,23 @@ module.exports = (storage, chakram) => {
         })
     });
 
-    describe('Get profile likes [GET /profiles/:id/like]', function () {
-        let likes;
+    describe('Get profile follows [GET /profiles/:id/follow]', function () {
+        let follows;
         let fake;
-        before("Get profile likes", function () {
-            likes = chakram.get(route + storage.user.profile_id + '/like');
+        before("Get profile follows", function () {
+            follows = chakram.get(route + storage.user.profile_id + '/follow');
         });
 
         before('Fake profile', function () {
-            fake = chakram.get(route + storage.fakeId + '/like')
+            fake = chakram.get(route + storage.fakeId + '/follow')
         });
 
         it('Should have status 200', function () {
-            return expect(likes).to.have.status(200);
+            return expect(follows).to.have.status(200);
         });
 
         it('Should match schema', function () {
-            return expect(likes).to.joi(schemas.common.likes)
+            return expect(follows).to.joi(schemas.common.likes)
         });
 
         it('Should send success false', function () {
@@ -166,15 +166,15 @@ module.exports = (storage, chakram) => {
         });
     });
 
-    describe('like profile [POST /profiles/:id/like]', function () {
+    describe('follow profile [POST /profiles/:id/follow]', function () {
         let lp;
         let fake;
         before('options', function () {
-            lp = chakram.post(route + 2 + '/like')
+            lp = chakram.post(route + 2 + '/follow')
         });
 
         before('false req', function () {
-            fake = chakram.post(route + 29323482 + '/like')
+            fake = chakram.post(route + 29323482 + '/follow')
         });
 
         it('Should send 200', function () {
@@ -189,13 +189,13 @@ module.exports = (storage, chakram) => {
         });
     });
 
-    describe('Unlike profile [DELETE /profiles/:id/like]', function () {
+    describe('Unfollow profile [DELETE /profiles/:id/follow]', function () {
         let remove;
         let fake;
 
-        before('Unlike profile', function () {
-            remove = chakram.delete(route + 2 + '/like');
-            fake = chakram.delete(route + 2928292 + '/like');
+        before('Unfollow profile', function () {
+            remove = chakram.delete(route + 2 + '/follow');
+            fake = chakram.delete(route + 2928292 + '/follow');
         });
 
         it('Should send succes true', function () {
