@@ -94,7 +94,7 @@ exports.getProjectOpenings = (id) => {
 exports.getProjectLikes = (project_id) => {
 	return db.select(h.p_array)
 		.from(TABLES.PROJECT_LIKES + ' as pl')
-		.join(TABLES.PROJECTS + ' as pj', 'pj.id', 'pl.follow_project_id')
+		.join(TABLES.PROJECTS + ' as pj', 'pj.id', 'pl.project_id')
 		.join(h.u_profile, 'p.uid', 'pl.user_id')
 		.where({'pj.id': project_id})
 		.groupBy('p.id')
@@ -106,7 +106,7 @@ exports.likeProject = (project_id, uid) => {
 			return db(TABLES.PROJECT_LIKES) 
 				.insert({
                     user_id: uid,
-                    follow_project_id: project_id
+                    project_id: project_id
 				}); 
 			}
 		}); 
@@ -116,7 +116,7 @@ exports.unlikeProject = (project_id, uid) => {
 	return db(TABLES.PROJECT_LIKES)	.del()
 			.where({
 				user_id: uid, 
-				follow_project_id: project_id 
+				project_id: project_id 
 			})
 };
 
