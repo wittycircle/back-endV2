@@ -44,11 +44,12 @@ exports.cardProfile = (selector) => {
             .andWhere('p.profile_picture', '!=', 'NULL')
             .andWhere('p.fake', '=', '0');
         if (selector.about)
-            _query.andWhere('p.about', selector.about);
+            _query.andWhere(selector.about);
         if (!_.isEmpty(location)) {
-            _query.where('p.city', 'like', '%' + location + '%')
-                .orWhere('p.state', 'like', '%' + location + '%')
-                .orWhere('p.country', 'like', '%' + location + '%')
+            const _location = _.words(location);
+            _query.where('p.city', 'like', '%' + _location[0] + '%')
+                .orWhere('p.state', 'like', '%' + _location[0] + '%')
+                .orWhere('p.country', 'like', '%' + _location[1] + '%')
         }
         return _query.as('p')
     };

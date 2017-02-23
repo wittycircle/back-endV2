@@ -12,8 +12,9 @@ const field_lookup = {
     'follower': 'follower',
     'id': 'sort.id',
     'skills': 'skills',
-    'about': 'about',
-    'location': 'location'
+    'about': 'p.about',
+    'location': 'location',
+    'magic': 'RAND()'
 };
 
 exports.searchProfile = (req, res, next) => {
@@ -24,8 +25,7 @@ exports.searchProfile = (req, res, next) => {
     console.log(selector);
 
     search.cardProfile(selector)
-        .orderBy(field_lookup[query.sort.field], query.sort.reverse ?
-            'desc' : 'asc')
+        .orderByRaw(`${field_lookup[query.sort.field]} ${ query.sort.reverse ? 'desc' : 'asc'}`)
         .where(field_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
