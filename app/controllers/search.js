@@ -10,19 +10,22 @@ const search = require('../models/search'),
 const field_lookup = {
     'rank': 'sort.rank',
     'follower': 'follower',
-    'id': 'sort.id'
+    'id': 'sort.id',
+    'skills': 'skills',
+    'about': 'about',
+    'location': 'location'
 };
 
 exports.searchProfile = (req, res, next) => {
-    const {paginate, query} = req.body,
-        selector = _.fromPairs(query.members.map(member => [member.field, member.value]));
+    const {paginate, query} = req.body;
 
-    console.log(query);
+    const selector = _.fromPairs(query.members.map(member => [field_lookup[member.field], member.value]));
 
-    search.cardProfile()
+    console.log(selector);
+
+    search.cardProfile(selector)
         .orderBy(field_lookup[query.sort.field], query.sort.reverse ?
             'desc' : 'asc')
-        .where(selector)
         .where(field_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
