@@ -13,14 +13,16 @@ const field_lookup = {
 };
 
 exports.searchProfile = (req, res, next) => {
-    const query = req.body.query,
+    const {paginate, query} = req.body,
         selector = _.fromPairs(query.members.map(member => [member.field, member.value]));
+
+    console.log(query);
 
     search.cardProfile()
         .orderBy(field_lookup[query.sort.field], query.sort.reverse ?
             'desc' : 'asc')
         .where(selector)
-        .limit(query.paginate.limit)
+        .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))
                 res.send(results);
