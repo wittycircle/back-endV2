@@ -42,11 +42,8 @@ exports.cardProfile = (selector) => {
             .select(_.concat(h.p_array, db.raw('CONCAT (p.city, ", ",  p.country) as location')))
             .where('p.description', '!=', 'NULL')
             .andWhere('p.profile_picture', '!=', 'NULL')
-            .andWhere('p.fake', '=', '0');
-        if (selector.network)
-            _query.andWhere(selector.network);
-        if (selector.about)
-            _query.andWhere(selector.about);
+            .andWhere('p.fake', '=', '0')
+            .andWhere(_.pick(selector, ['p.about', 'p.network']));
         if (!_.isEmpty(location)) {
             const _location = _.words(location);
             _query.where('p.city', 'like', '%' + _location[0] + '%')
@@ -56,7 +53,9 @@ exports.cardProfile = (selector) => {
         return _query.as('p')
     };
 
-    return db.select(['sort.*', 'p.*'])
+    return db.select([
+        // 'sort.*',
+         'p.*'])
         .from(TABLES.USERS + ' as u')
         .join(profileStuff(selector.location), 'u.profile_id', 'p.id')
         .join(sortCardProfile, 'sort.id', 'u.id')
