@@ -36,10 +36,9 @@ module.exports = (storage, chakram) => {
                 // public: true,
                 members: [1, 2, 3],
                 openings: [{
-                    skill: "Javascript",
                     status: "any",
                     description: "Help for things and stuff",
-                    tags: "",
+                    tags: "Javascript, php",
                 }],
                 discussions: [{
                     title: "Very much conversation",

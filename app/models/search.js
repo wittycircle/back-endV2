@@ -43,6 +43,8 @@ exports.cardProfile = (selector) => {
             .where('p.description', '!=', 'NULL')
             .andWhere('p.profile_picture', '!=', 'NULL')
             .andWhere('p.fake', '=', '0');
+        if (selector.network)
+            _query.andWhere(selector.network);
         if (selector.about)
             _query.andWhere(selector.about);
         if (!_.isEmpty(location)) {
