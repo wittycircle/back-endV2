@@ -25,7 +25,10 @@ exports.searchProfile = (req, res, next) => {
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))
-                res.send(results);
+                res.send(_.map(results, result => {
+                    result.skills = _.split(result.skills, ',');
+                    return result;
+                }));
             else
                 next({code: 404});
         })
