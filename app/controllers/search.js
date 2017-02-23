@@ -9,7 +9,8 @@ const search = require('../models/search'),
 
 const field_lookup = {
     'rank': 'sort.rank',
-    'follower': 'follower'
+    'follower': 'follower',
+    'id': 'sort.id'
 };
 
 exports.searchProfile = (req, res, next) => {
@@ -22,6 +23,7 @@ exports.searchProfile = (req, res, next) => {
         .orderBy(field_lookup[query.sort.field], query.sort.reverse ?
             'desc' : 'asc')
         .where(selector)
+        .where(field_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))

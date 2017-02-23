@@ -79,7 +79,7 @@ exports.cardProfile = () => {
         .from(TABLES.USERS + ' as u')
         .join(profileStuff, 'u.profile_id', 'p.id')
         .join(sortCardProfile, 'sort.id', 'u.id')
-        .join(exp, 'e.user_id', 'sort.user_id')
-        .groupBy('u.id')
-        .where('sort.rank', '>', '0') //todo remove
+        .leftOuterJoin(exp, 'e.user_id', 'sort.user_id')
+        .groupBy('u.id');
+    // .where('sort.rank', '>', '0') //todo remove
 };
