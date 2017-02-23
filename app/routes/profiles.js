@@ -7,12 +7,16 @@
 const express = require('express'),
     router = express.Router(),
     profiles = require('../controllers/profiles'),
+    search = require('../controllers/search'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
     passport = require('passport');
 
 
 router.route('/profiles')
     .get(profiles.getProfiles);
+
+router.route('/profiles/search')
+    .post(search.searchProfile);
 
 router.param('id', validateParam(schemas.params.id));
 
@@ -28,6 +32,5 @@ router.route('/profiles/:id/follow')
     .get(profiles.getProfileFollowers)
     .post(passport.authenticate('bearer'), profiles.followProfile)
     .delete(passport.authenticate('bearer'), profiles.unfollowProfile);
-
 
 module.exports = router;
