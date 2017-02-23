@@ -1,3 +1,6 @@
 [submodule "api"]
 	path = api
 	url = https://github.com/wittycircle/api-doc.git
+[submodule "api-doc"]
+	path = api-doc
+	url = https://github.com/wittycircle/api-doc.git
