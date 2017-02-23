@@ -14,6 +14,7 @@ const field_lookup = {
     'skills': 'skills',
     'about': 'p.about',
     'location': 'location',
+    'network' : 'network',
     'magic': 'RAND()'
 };
 
