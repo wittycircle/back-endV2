@@ -47,8 +47,8 @@ exports.removeProject = (req, res, next) => {
 exports.getProject = (req, res, next) => {
 	project.getProject(req.params.id)
 		.then(r => {
-			if (typeof r === 'string') {
-				return next([r, 'Invalid id'])
+			if (r.id === null) {
+				return next(["Could not retrieve project", 'Invalid id'])
 			}
 			else{
 				res.send({project: r})
