@@ -32,7 +32,7 @@ exports.cardProfile = (selector) => {
         db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills')])
         .from(TABLES.USERS + ' as u')
         .join(skills, 'u.id', 's.user_id')
-        .join(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+        .join(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftouterjoin to get those without rank
         .leftOuterJoin(follower, 'ssu.user_id', 'u.id')
         .leftOuterJoin(following, 'su.follow_user_id', 'u.id')
         .groupBy('u.id').as('sort');
@@ -53,9 +53,7 @@ exports.cardProfile = (selector) => {
         return _query.as('p')
     };
 
-    return db.select([
-        // 'sort.*',
-         'p.*'])
+    return db.select(['sort.*', 'p.*'])
         .from(TABLES.USERS + ' as u')
         .join(profileStuff(selector.location), 'u.profile_id', 'p.id')
         .join(sortCardProfile, 'sort.id', 'u.id')
