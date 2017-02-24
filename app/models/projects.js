@@ -28,16 +28,13 @@ exports.createProject = (project_data, members, openings, discussions) => {
 exports.removeProject = (id) => {
 	return db(TABLES.PROJECTS).del().where('id', id);
 };
-//owners
-//followers count
-//discussions
-//openings
+
 exports.getProject = (id) => {
 	const pr_array = [
 		'pr.id', 'pr.title', 'pr.picture', 'pr.description',
 		'pr.about', 'pr.video', 
 	];
-	const getMembers = (id) => {
+	const getMembers = (id) => {//Not sure about this, if project contributor or project user
 		return db.select('u.id', 'p.first_name', 'p.last_name') 
 			.from(h.sub_user) 
 			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
@@ -49,18 +46,24 @@ exports.getProject = (id) => {
 		};
 
 	let x = []
-	return db.select(pr_array).count('l.id as follower_count')
-			.from(TABLES.PROJECTS + ' as pr')	
-			.join(TABLES.PROJECT_LIKES + ' as l', 'pr.id', 'l.project_id')
-			.where('pr.id', id)
-			.then( (r) => {
-			r = r[0]
-			x.push(exports.getProjectDiscussion(id).then(rr => {r.discussions = rr}));
-			x.push(exports.getProjectOpenings(id).then(rr => {r.openings = rr}));
-			x.push(getMembers(id).then(rr=> r.members = rr));
-			return Promise.all(x)
-				.then(() => r);
-			});
+		return h.exist(TABLES.PROJECTS, id).then(r => {
+		if (!r.length){
+			return "could not retrieve project"
+		} else{
+			return db.select(pr_array).count('l.id as follower_count')
+					.from(TABLES.PROJECTS + ' as pr')	
+					.join(TABLES.PROJECT_LIKES + ' as l', 'pr.id', 'l.project_id')
+					.where('pr.id', id)
+					.then( (r) => {
+					r = r[0]
+					x.push(exports.getProjectDiscussion(id).then(rr => {r.discussions = rr}));
+					x.push(exports.getProjectOpenings(id).then(rr => {r.openings = rr}));
+					x.push(getMembers(id).then(rr=> r.members = rr));
+					return Promise.all(x)
+						.then(() => r);
+					});
+			}
+		})
 };
 
 // ------------------ Discussions ------------------
