@@ -40,3 +40,16 @@ exports.searchProfile = (req, res, next) => {
         })
         .catch(err => next(err));
 };
+
+// exports.searchProject = (req, res, next) => {
+//     search.cardProject
+//         .then(r => {
+//             if (typeof r === 'string') {
+//                 return next([r, ''])
+//             }
+//             else{
+//                 res.send()
+//             }
+//         })
+//         .catch(err => next(err))
+// };

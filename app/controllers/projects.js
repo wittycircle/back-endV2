@@ -51,7 +51,7 @@ exports.getProject = (req, res, next) => {
 				return next([r, 'Invalid id'])
 			}
 			else{
-				res.send({project: r[0]})
+				res.send({project: r})
 			}
 		})
 		.catch(err => next(err))

@@ -13,7 +13,7 @@ router.route('/projects')
     .post(passport.authenticate('bearer'), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/:id')
-//     .get()
+    .get(projects.getProject)
 //     .put(passport.authenticate('bearer'))
     .delete(passport.authenticate('bearer'), projects.removeProject);
 

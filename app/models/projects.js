@@ -1,4 +1,5 @@
 const { db, TABLES } = require('./index'),
+		_ = require('lodash'),
 		h = require('./helper');
 
 // ------------------ Projects [main methods] ------------------
@@ -26,6 +27,40 @@ exports.createProject = (project_data, members, openings, discussions) => {
 
 exports.removeProject = (id) => {
 	return db(TABLES.PROJECTS).del().where('id', id);
+};
+//owners
+//followers count
+//discussions
+//openings
+exports.getProject = (id) => {
+	const pr_array = [
+		'pr.id', 'pr.title', 'pr.picture', 'pr.description',
+		'pr.about', 'pr.video', 
+	];
+	const getMembers = (id) => {
+		return db.select('u.id', 'p.first_name', 'p.last_name') 
+			.from(h.sub_user) 
+			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+			.join(TABLES.PROJECTS + ' as pr', 'u.id', 'pr.user_id') 
+			.leftOuterJoin(TABLES.PROJECT_CONTRIBUTOR + ' as prc', function() {
+				this.on('prc.user_id', '=', 'u.id').andOn('prc.project_id', 'pr.id') 
+			})
+			.where('pr.id', id)
+		};
+
+	let x = []
+	return db.select(pr_array).count('l.id as follower_count')
+			.from(TABLES.PROJECTS + ' as pr')	
+			.join(TABLES.PROJECT_LIKES + ' as l', 'pr.id', 'l.project_id')
+			.where('pr.id', id)
+			.then( (r) => {
+			r = r[0]
+			x.push(exports.getProjectDiscussion(id).then(rr => {r.discussions = rr}));
+			x.push(exports.getProjectOpenings(id).then(rr => {r.openings = rr}));
+			x.push(getMembers(id).then(rr=> r.members = rr));
+			return Promise.all(x)
+				.then(() => r);
+			});
 };
 
 // ------------------ Discussions ------------------
@@ -90,7 +125,6 @@ exports.getProjectOpenings = (id) => {
 };
 
 // ------------------ Likes ------------------
-
 exports.getProjectLikes = (project_id) => {
 	return db.select(h.p_array)
 		.from(TABLES.PROJECT_LIKES + ' as pl')
@@ -120,6 +154,7 @@ exports.unlikeProject = (project_id, uid) => {
 			})
 };
 
+// ------------------ Network ------------------
 exports.getFromProjectNetwork = (need, cond) => {
 	return db(TABLES.PROJECT_NETWORK)
 		.select(need)

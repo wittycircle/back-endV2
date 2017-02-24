@@ -58,6 +58,6 @@ exports.cardProfile = (selector) => {
         .join(profileStuff(selector.location), 'u.profile_id', 'p.id')
         .join(sortCardProfile, 'sort.id', 'u.id')
         .leftOuterJoin(exp, 'e.user_id', 'sort.user_id')
-        .groupBy('u.id');
-    // .where('sort.rank', '>', '0') //todo remove
+        .groupBy('u.id') 
+        .where('sort.rank', '>', '0') //todo remove
 };
