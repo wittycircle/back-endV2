@@ -42,26 +42,33 @@ const getMembers = (id) => {//Not sure about this, if project contributor or pro
 		})
 	};
 
+const getFollowerCount = (id) => {
+	return  db.count('project_id as count').from(TABLES.PROJECT_LIKES + ' as l') 
+	 	.join(TABLES.PROJECTS + ' as p', 'p.id', 'l.project_id').where('p.id', id)
+	};
+
 exports.getProject = (id) => {
 	const pr_array = [
 		'pr.id', 'pr.title', 'pr.picture', 'pr.description',
 		'pr.about', 'pr.video'
 	],
 	x = [];
-	return db.select(pr_array).count('l.id as follower_count')
+const req = db.distinct(pr_array)
 			.from(TABLES.PROJECTS + ' as pr')	
-			.join(TABLES.PROJECT_LIKES + ' as l', 'pr.id', 'l.project_id')
-			.where('pr.id', id)
-			.then( (r) => {
-			r = r[0]
-			x.push(exports.getProjectDiscussion(id).then(rr => {r.discussions = rr}));
-			x.push(exports.getProjectOpenings(id).then(rr => {r.openings = rr}));
-			x.push(getMembers(id).then(rr=> r.members = rr));
+			if (id)
+				req.where('pr.id', id)
+
+		return req.then( (r) => {
+			r.forEach(el => {
+			x.push(exports.getProjectDiscussion(el.id).then(rr => {el.discussions = rr}));
+			x.push(exports.getProjectOpenings(el.id).then(rr => {el.openings = rr}));
+			x.push(getMembers(el.id).then(rr => el.members = rr));
+			x.push(getFollowerCount(el.id).then(rr => {el.follower_count = rr[0].count}));
+			})
 			return Promise.all(x)
 				.then(() => r);
-			});
+		});
 };
-
 // ------------------ Discussions ------------------
 
 exports.createProjectDiscussion = (data) => {

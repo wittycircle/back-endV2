@@ -9,7 +9,7 @@ router.param('opening_id', validateParam(schemas.params.id));
 router.param('discussion_id', validateParam(schemas.params.id));
 
 router.route('/projects')
-    // .get()
+    .get(projects.getProject)
     .post(passport.authenticate('bearer'), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/:id')
