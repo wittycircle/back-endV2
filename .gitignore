@@ -7,4 +7,5 @@ app/private
 [Pp]ublic/bower_components
 mochawesome-reports
 api-build
+test_code.js
 *.rdb

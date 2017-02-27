@@ -59,7 +59,7 @@ exports.getProject = (req, res, next) => {
 };
 
 exports.getProjects = (req, res, next) => {
-	project.getProject()
+	project.getProjectList()
 		.then(r => {
 			if (r.id === null) {
 				return next(["Could not retrieve project", 'Invalid id'])
@@ -97,8 +97,8 @@ exports.getProjectDiscussion = (req, res, next) => {
 			if (_.isEmpty(r))
 				next(['Empty discussion', 'Wrong project id'])
 			else
-				res.send({discussions: format.discussion(r)})
-				// res.send({discussions: r})
+				// res.send({discussions: format.discussion(r)})
+				res.send({discussions: r})
 		})
 		.catch(err => next(err))
 };

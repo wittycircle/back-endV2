@@ -34,5 +34,6 @@ exports.TABLES = {
     PROJECT_OPENINGS: 'project_openings',
     PROJECT_MEMBERS: 'project_users',
     PROJECT_CONTRIBUTOR: 'project_contributor',
+    CATEGORIES: 'categories',
     SKILLS: 'skills'
 };

@@ -53,23 +53,41 @@ exports.getProject = (id) => {
 		'pr.about', 'pr.video'
 	],
 	x = [];
-const req = db.distinct(pr_array)
+	const req = db.distinct(pr_array)
 			.from(TABLES.PROJECTS + ' as pr')
-			// .limit(27) //User see 9 at a time, so preload 2 more
-			if (id)
-				req.where('pr.id', id)
+			req.where('pr.id', id)
 
-		return req.then( (r) => {
-			r.forEach(el => {
-				x.push(exports.getProjectDiscussion(el.id).then(rr => {el.discussions = rr}));
-				x.push(exports.getProjectOpenings(el.id).then(rr => {el.openings = rr}));
-				x.push(getMembers(el.id).then(rr => el.members = rr));
-				x.push(getFollowerCount(el.id).then(rr => {el.follower_count = rr[0].count}));
-			})
-			return Promise.all(x)
-				.then(() => r);
-		});
+	return req.then( (r) => {
+		r.forEach(el => {
+			x.push(exports.getProjectDiscussion(el.id).then(rr => {el.discussions = rr}));
+			x.push(exports.getProjectOpenings(el.id).then(rr => {el.openings = rr}));
+			x.push(getMembers(el.id).then(rr => el.members = rr));
+			x.push(getFollowerCount(el.id).then(rr => {el.follower_count = rr[0].count}));
+		})
+		return Promise.all(x)
+			.then(() => r);
+	});
 };
+
+exports.getProjectList = () => {
+	const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+	 'c.id as category_id', 'c.name as category_name',
+	 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+	 db.raw('CONCAT (city, ", ", country) as location')
+	 ];
+
+	 const sub_members = db(TABLES.PROJECT_MEMBERS).select('project_id', 'user_id').where('n_accept', 1).as('m')
+	 
+	 return db.select(p_array)
+	 		.countDistinct('pl.id as followers')
+	 		.countDistinct('m.user_id as members')
+	 		.from(TABLES.PROJECTS + ' as pr')
+	 		.join(h.u_profile, 'p.uid', 'pr.user_id')
+	 		.join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+	 		.leftJoin(TABLES.PROJECT_LIKES + ' as pl', 'pl.project_id', 'pr.id')
+	 		.leftJoin(sub_members, 'm.project_id', 'pr.id')
+	 		.groupBy('pr.id')
+}
 // ------------------ Discussions ------------------
 
 exports.createProjectDiscussion = (data) => {
@@ -83,105 +101,36 @@ exports.createProjectDiscussion = (data) => {
 	})
 };
 
-//make a request whereIn from array of id, then hydrate the main object. so 4 request instead of 4 * number of
 exports.getProjectDiscussion = (id) => {
-	let mega_array = ['pr.id', 'pr.user_id', 'pr.title', 'pr.message', 'pr.creation_date',
-			db.raw('GROUP_CONCAT (DISTINCT r.id) as rep_id'), db.raw('GROUP_CONCAT (DISTINCT r.user_id) as rep_user_id'),
-			db.raw('GROUP_CONCAT (r.creation_date) as rep_creation_date'), db.raw('GROUP_CONCAT (r.message  SEPARATOR "€€¢€€") as rep_message'),
-			db.raw('GROUP_CONCAT (prl_user_id) as prl_user_id'), db.raw('GROUP_CONCAT (prl_creation_date) as prl_creation_date'),
-			db.raw(`GROUP_CONCAT(l_user_id) as like_user_id`), db.raw(`GROUP_CONCAT(l_creation_date) as like_creation_date`)
-			];
+	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
+			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
 
-	let p_rep = ['r.project_discussion_id', 'r.id', 'r.user_id', 'r.creation_date', 'r.message',
-				db.raw('CONCAT (r.id, "-", prl.user_id) as prl_user_id'), 'prl.creation_date as prl_creation_date']
+	let like = (id) => db.select('user_id', 'creation_date')
+			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id}).as('likes')
 
-	let p_like = ['l.project_discussion_id', 'l.user_id as l_user_id', 'l.creation_date as l_creation_date']
+	let rep_like = (id) => db.select('user_id', 'creation_date')
+			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
 
-	let reply = db.distinct(p_rep)
-					.from(TABLES.PROJECT_DISCUSSION_REPLIES + ' as r')
-					.leftJoin(TABLES.PROJECT_REPLY_LIKES + ' as prl', 'prl.project_reply_id', 'r.id')
-					.groupBy('prl_user_id', 'r.id')
-					.as('r')
-
-	let likes = db.distinct(p_like)
-		.from(TABLES.PROJECT_DISCUSSION_LIKES + ' as l')
-		.groupBy('l.project_discussion_id')
-		.as('l')
-
-	return db.distinct(mega_array)
+	return db.select(_.concat(['pr.id', 'pr.user_id', 'pr.title', 'pr.message', 'pr.creation_date']))
 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
-		.leftJoin(reply, 'pr.id', 'r.project_discussion_id')
-		.leftJoin(likes, 'l.project_discussion_id', 'pr.id')
-		.where({'pr.project_id': id})
+		.where('pr.project_id', id)
 		.groupBy('pr.id')
+		.then(r => {
+			let x = []
+			let y = []
+			r.forEach(el => {
+				x.push(like(el.id).then(rr=> el.likes = rr))
+				x.push(replies(el.id).then(rr => {
+					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) });
+					return (el.replies = rr); 
+				})) 
+			});
+			return Promise.all(x)
+				.then(()=> {
+					return Promise.all(y).then(() =>{return r})
+				})
+		})
 };
-
-// exports.getProjectDiscussion = (id) => {
-
-// 	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
-// 			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
-
-// 	let like = (id) => db.select('user_id', 'creation_date')
-// 			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id}).as('likes')
-
-
-// 	let rep_like = (id) => db.select('user_id', 'creation_date')
-// 			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
-
-// 	return db.select(_.concat(['pr.id', 'pr.user_id', 'pr.title', 'pr.message', 'pr.creation_date']))
-// 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
-// 		.where({'pr.project_id': id})
-// 		.groupBy('pr.id')
-// 		.then(r => {
-// 			let x = []
-// 			let y = []
-// 			r.forEach(el => {
-// 				x.push(like(el.id).then(rr=> el.likes = rr))
-// 				x.push(replies(el.id).then(rr => {
-// 					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) });
-// 					return (el.replies = rr); 
-// 				})) 
-// 			});
-// 			return Promise.all(x)
-// 				.then(()=> {
-// 					return Promise.all(y).then(() =>{return r})
-// 				})
-// 		})
-// };
-
-// exports.getProjectDiscussion = (id) => {
-
-// 	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
-// 			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
-
-// 	let like = (id) => db.select('user_id', 'creation_date')
-// 			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id}).as('likes')
-
-
-// 	let rep_like = (id) => db.select('user_id', 'creation_date')
-// 			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
-
-
-// 	return db.select(_.concat(['pr.id', 'pr.user_id', 'pr.title', 'pr.message', 'pr.creation_date']))
-// 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
-// 		.where({'pr.project_id': id})
-// 		.groupBy('pr.id')
-// 		.then(r => {
-// 			let x = []
-// 			let y = []
-// 			r.forEach(el => {
-// 				x.push(like(el.id).then(rr=> el.likes = rr))
-// 				x.push(replies(el.id).then(rr => {
-// 					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) });
-// 					return (el.replies = rr); 
-// 				})) 
-// 			});
-// 			return Promise.all(x)
-// 				.then(()=> {
-// 					return Promise.all(y).then(() =>{return r})
-// 				})
-// 		})
-// };
 
 // ------------------ Opening ------------------
 exports.createOpening = (data) => {
