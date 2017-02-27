@@ -77,7 +77,7 @@ exports.getProjectList = () => {
 	 ];
 
 	 const sub_members = db(TABLES.PROJECT_MEMBERS).select('project_id', 'user_id').where('n_accept', 1).as('m')
-	 
+
 	 return db.select(p_array)
 	 		.countDistinct('pl.id as followers')
 	 		.countDistinct('m.user_id as members')
@@ -86,6 +86,7 @@ exports.getProjectList = () => {
 	 		.join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
 	 		.leftJoin(TABLES.PROJECT_LIKES + ' as pl', 'pl.project_id', 'pr.id')
 	 		.leftJoin(sub_members, 'm.project_id', 'pr.id')
+	 		.whereRaw('pr.picture_card <> ""')
 	 		.groupBy('pr.id')
 }
 // ------------------ Discussions ------------------
