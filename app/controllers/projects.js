@@ -1,4 +1,5 @@
 const project = require('../models/projects'), 
+	format = require('./format'),
     _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
@@ -51,7 +52,20 @@ exports.getProject = (req, res, next) => {
 				return next(["Could not retrieve project", 'Invalid id'])
 			}
 			else{
-				res.send({project: r})
+				res.send({project: r[0]})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.getProjects = (req, res, next) => {
+	project.getProject()
+		.then(r => {
+			if (r.id === null) {
+				return next(["Could not retrieve project", 'Invalid id'])
+			}
+			else{
+				res.send({projects: r})
 			}
 		})
 		.catch(err => next(err))
@@ -83,7 +97,8 @@ exports.getProjectDiscussion = (req, res, next) => {
 			if (_.isEmpty(r))
 				next(['Empty discussion', 'Wrong project id'])
 			else
-				res.send({discussions: r})
+				res.send({discussions: format.discussion(r)})
+				// res.send({discussions: r})
 		})
 		.catch(err => next(err))
 };
