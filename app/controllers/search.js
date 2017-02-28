@@ -13,7 +13,8 @@ const profile_lookup = {
     'magic': 'RAND()',
     'skills': 'skills',
     'location': 'location',
-    'network' : 'p.network',
+    'network' : 'network',
+    'about': 'about',
 },
     project_lookup = {
         'id': 'pr.id',
@@ -24,6 +25,7 @@ const profile_lookup = {
         'skills': 'skills',
         'followers': 'followers',
         'magic': 'RAND()',
+        'network': 'network'
     };
 
 exports.searchProfile = (req, res, next) => {

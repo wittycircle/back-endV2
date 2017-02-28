@@ -43,7 +43,6 @@ exports.cardProfile = (selector) => {
             .where('p.description', '!=', 'NULL')
             .andWhere('p.profile_picture', '!=', 'NULL')
             .andWhere('p.fake', '=', '0')
-            .andWhere(_.pick(selector, ['p.about', 'p.network']))
         addLocation('p', location, _query)
         return _query.as('p')
     };
@@ -60,10 +59,13 @@ exports.cardProfile = (selector) => {
     let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skill_name LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
         q.orderByRaw('CASE ' + selected + ' else 100  END , sort.skill_name');
     }
+    if (selector.network)
+        q.orderByRaw('CASE WHEN network = "' + selector.network + '" THEN 1 else 2 END, network')
+    if (selector.about)
+        q.orderByRaw('CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about')
     return q;
 };
-//skills are important, verify if good join instead of leftJoin 
-//test leftjoin on skill project and move the or
+
 // ------------------ Project ------------------
 exports.cardProject = (selector) => {
     const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
@@ -75,14 +77,6 @@ exports.cardProject = (selector) => {
      const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
             sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o'),
             sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
-     
-    if (selector.skills){
-        let selected =  _.words(selector.skills).map((el, i) => 'WHEN o.tags LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
-        sub_openings.orderByRaw('CASE ' + selected + ' END , o.tags')
-    };
-
-     if (selector.opening)
-        sub_openings.orderByRaw('CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END, o.status')
 
      const query = db.select(p_array)
             .countDistinct('pl.id as followers')
@@ -96,12 +90,21 @@ exports.cardProject = (selector) => {
             .where('pr.project_visibility', 1)
             .groupBy('pr.id')
 
-    addLocation('pr', selector.location, query);
+//network is creator network
+    if (selector.network)
+            query.orderByRaw('CASE WHEN p.network = "' + selector.network + '" THEN 1 else 2 END, p.network')
     if (selector.opening || selector.skills)
-            query.join(sub_openings, 'o.project_id', 'pr.id')
+            query.leftJoin(sub_openings, 'o.project_id', 'pr.id')
+    if (selector.skills){
+        let selected =  _.words(selector.skills).map((el, i) => 'WHEN o.tags LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        query.orderByRaw('CASE ' + selected + ' END , o.tags')
+    };
+    addLocation('pr', selector.location, query);
+     if (selector.opening)
+        query.orderByRaw('CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END, o.status')
     if (selector.category)
         query.orderByRaw('(c.name = "' + selector.category + '") DESC, c.name')
     if (selector.status)
-        query.orderByRaw('CASE WHEN pr.status = "' + selector.status + '" THEN 1 else 2 END, pr.status')
+            query.orderByRaw('CASE WHEN pr.status = "' + selector.status + '" THEN 1 else 2 END, pr.status')
     return query;
 };
