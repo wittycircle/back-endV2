@@ -14,14 +14,11 @@ const profile_lookup = {
     'skills': 'skills',
     'location': 'location',
     'network' : 'p.network',
-    // 'about': 'p.about',
-    // 'follower': 'follower',
 },
     project_lookup = {
         'id': 'pr.id',
         'status': 'pr.status',
         'category': 'category',
-        'sc': 'c.name',
         'location': 'location',
         'help' : 'help',
         'skills': 'skills',
@@ -32,8 +29,6 @@ const profile_lookup = {
 exports.searchProfile = (req, res, next) => {
     const {paginate, query} = req.body,
     selector = _.fromPairs(query.members.map(member => [profile_lookup[member.field], member.value]));
-
-    console.log(selector);
 
     search.cardProfile(selector)
         .orderByRaw(`${profile_lookup[query.sort.field]} ${ query.sort.reverse ? 'desc' : 'asc'}`)
@@ -56,19 +51,13 @@ exports.searchProject = (req, res, next) => {
     const {paginate, query} = req.body,
      selector = _.fromPairs(query.members.map(member => [project_lookup[member.field], member.value]));
 
-    console.log(selector);
-
     search.cardProject(selector)
         .orderByRaw(`${project_lookup[query.sort.field]} ${ query.sort.reverse ? 'desc' : 'asc'}`)
         .where(project_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))
-                // res.send({project: results})
-                res.send(_.map(results, result => {
-                    result.skills = _.words(result.skills);
-                    return result;
-                }));
+                res.send({project: results})
             else
                 next({code: 404});
         })
