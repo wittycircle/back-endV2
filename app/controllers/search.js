@@ -17,10 +17,10 @@ const profile_lookup = {
 },
     project_lookup = {
         'id': 'pr.id',
-        'status': 'pr.status',
+        'status': 'status',
         'category': 'category',
         'location': 'location',
-        'help' : 'help',
+        'opening' : 'opening',
         'skills': 'skills',
         'followers': 'followers',
         'magic': 'RAND()',

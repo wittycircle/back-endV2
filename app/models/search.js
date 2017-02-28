@@ -17,35 +17,25 @@ const addLocation = (table, location, query) => {
             .orderBy(table + '.city')
     }
 };
-
+// ------------------ Profile ------------------
 exports.cardProfile = (selector) => {
-    let exp = db.select('user_id')
-        .from(TABLES.USER_EXPERIENCES).as('e');
-
-    let skills;
-    if (typeof selector.skills !== 'undefined')
-        skills = db.select('*').from(TABLES.USER_SKILLS + ' as s').whereIn('s.skill_name', selector.skills).as('s');
-    else
+    let exp = db.select('user_id').from(TABLES.USER_EXPERIENCES).as('e'),
         skills = db.select('*').from(TABLES.USER_SKILLS + ' as s').as('s');
 
-
-    const follower = db.select('user_id').count('user_id as total')
-        .from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu');
-
-    const following = db.select('follow_user_id').count('follow_user_id as MA')
-        .from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su');
-
+    const follower = db.select('user_id').count('user_id as total').from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu'),
+        following = db.select('follow_user_id').count('follow_user_id as MA').from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su');
 
     const sortCardProfile = db.select(['u.id', 'u.username', 'u.profile_id',
         's.user_id', 'r.rank as rank',
         db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
-        db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills')])
+        db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills'), 'skill_name'])
         .from(TABLES.USERS + ' as u')
-        .join(skills, 'u.id', 's.user_id')
-        .join(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank
-        .leftOuterJoin(follower, 'ssu.user_id', 'u.id')
-        .leftOuterJoin(following, 'su.follow_user_id', 'u.id')
+        .leftJoin(skills, 'u.id', 's.user_id')
+        .leftJoin(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank
+        .leftJoin(follower, 'ssu.user_id', 'u.id')
+        .leftJoin(following, 'su.follow_user_id', 'u.id')
         .groupBy('u.id').as('sort');
+
 
     const profileStuff = (location) => {
         let _query = db(TABLES.USER_PROFILES + ' as p')
@@ -58,32 +48,41 @@ exports.cardProfile = (selector) => {
         return _query.as('p')
     };
 
-    return db.select(['sort.*', 'p.*'])
+    let q =  db.select(['sort.*', 'p.*'])
         .from(TABLES.USERS + ' as u')
         .join(profileStuff(selector.location), 'u.profile_id', 'p.id')
         .join(sortCardProfile, 'sort.id', 'u.id')
-        .leftOuterJoin(exp, 'e.user_id', 'sort.user_id')
+        .leftJoin(exp, 'e.user_id', 'sort.user_id')
         .groupBy('u.id') 
         .where('sort.rank', '>', '0') //todo remove
-};
 
+    if (selector.skills){
+    let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skill_name LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        q.orderByRaw('CASE ' + selected + ' else 100  END , sort.skill_name');
+    }
+    return q;
+};
+//skills are important, verify if good join instead of leftJoin 
+//test leftjoin on skill project and move the or
+// ------------------ Project ------------------
 exports.cardProject = (selector) => {
     const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
-     'c.id as category_id', 'c.name as category_name', 'p.network',
-     'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+     'c.id as category_id', 'c.name as category_name',
+     'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
      db.raw('CONCAT (city, ", ", country) as location')
      ];
 
-     const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m')
-     const sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o')
-     const sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c')
+     const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
+            sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o'),
+            sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
      
-     if (selector.help)
-        sub_openings.where('o.status', selector.help)
     if (selector.skills){
-        _.words(selector.skills).forEach(el => { sub_openings.orWhere('o.tags', 'like', '%'+ el + '%') })
-        sub_openings.orderBy('o.tags')
-    }
+        let selected =  _.words(selector.skills).map((el, i) => 'WHEN o.tags LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        sub_openings.orderByRaw('CASE ' + selected + ' END , o.tags')
+    };
+
+     if (selector.opening)
+        sub_openings.orderByRaw('CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END, o.status')
 
      const query = db.select(p_array)
             .countDistinct('pl.id as followers')
@@ -98,10 +97,11 @@ exports.cardProject = (selector) => {
             .groupBy('pr.id')
 
     addLocation('pr', selector.location, query);
-    if (selector.help || selector.skills)
+    if (selector.opening || selector.skills)
             query.join(sub_openings, 'o.project_id', 'pr.id')
     if (selector.category)
         query.orderByRaw('(c.name = "' + selector.category + '") DESC, c.name')
-
+    if (selector.status)
+        query.orderByRaw('CASE WHEN pr.status = "' + selector.status + '" THEN 1 else 2 END, pr.status')
     return query;
 };
