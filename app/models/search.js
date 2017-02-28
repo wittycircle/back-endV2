@@ -42,7 +42,7 @@ exports.cardProfile = (selector) => {
         db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills')])
         .from(TABLES.USERS + ' as u')
         .join(skills, 'u.id', 's.user_id')
-        .join(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftouterjoin to get those without rank
+        .join(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank
         .leftOuterJoin(follower, 'ssu.user_id', 'u.id')
         .leftOuterJoin(following, 'su.follow_user_id', 'u.id')
         .groupBy('u.id').as('sort');
@@ -78,8 +78,6 @@ exports.cardProject = (selector) => {
      const sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o')
      const sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c')
      
-    if (selector.category)
-        sub_category.where('c.name', selector.category)
      if (selector.help)
         sub_openings.where('o.status', selector.help)
     if (selector.skills){
@@ -102,6 +100,8 @@ exports.cardProject = (selector) => {
     addLocation('pr', selector.location, query);
     if (selector.help || selector.skills)
             query.join(sub_openings, 'o.project_id', 'pr.id')
+    if (selector.category)
+        query.orderByRaw('(c.name = "' + selector.category + '") DESC, c.name')
 
     return query;
 };

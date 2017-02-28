@@ -20,7 +20,8 @@ const profile_lookup = {
     project_lookup = {
         'id': 'pr.id',
         'status': 'pr.status',
-        'category': 'c.name',
+        'category': 'category',
+        'sc': 'c.name',
         'location': 'location',
         'help' : 'help',
         'skills': 'skills',
