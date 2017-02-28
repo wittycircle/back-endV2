@@ -131,7 +131,7 @@ exports.getProjectOpenings = (req, res, next) => {
 			}
 			else{
 				r.forEach(el => {
-					el.tags = el.tags.split(',')
+					el.tags = _.words(el.tags)
 				})
 				res.send({openings: r})
 			}

@@ -8,6 +8,16 @@ const {db, TABLES} = require('./index'),
     h = require('./helper'),
     _ = require('lodash');
 
+const addLocation = (table, location, query) => {
+    if (!_.isEmpty(location)) {
+        const _location = _.words(location);
+        query.where(table + '.city', 'like', '%' + _location[0] + '%')
+            .orWhere(table + '.state', 'like', '%' + _location[1] + '%')
+            .orWhere(table + '.country', 'like', '%' + _location[1] + '%')
+            .orderBy(table + '.city')
+    }
+};
+
 exports.cardProfile = (selector) => {
     let exp = db.select('user_id')
         .from(TABLES.USER_EXPERIENCES).as('e');
@@ -43,13 +53,8 @@ exports.cardProfile = (selector) => {
             .where('p.description', '!=', 'NULL')
             .andWhere('p.profile_picture', '!=', 'NULL')
             .andWhere('p.fake', '=', '0')
-            .andWhere(_.pick(selector, ['p.about', 'p.network']));
-        if (!_.isEmpty(location)) {
-            const _location = _.words(location);
-            _query.where('p.city', 'like', '%' + _location[0] + '%')
-                .orWhere('p.state', 'like', '%' + _location[0] + '%')
-                .orWhere('p.country', 'like', '%' + _location[1] + '%')
-        }
+            .andWhere(_.pick(selector, ['p.about', 'p.network']))
+        addLocation('p', location, _query)
         return _query.as('p')
     };
 
@@ -60,4 +65,43 @@ exports.cardProfile = (selector) => {
         .leftOuterJoin(exp, 'e.user_id', 'sort.user_id')
         .groupBy('u.id') 
         .where('sort.rank', '>', '0') //todo remove
+};
+
+exports.cardProject = (selector) => {
+    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+     'c.id as category_id', 'c.name as category_name', 'p.network',
+     'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+     db.raw('CONCAT (city, ", ", country) as location')
+     ];
+
+     const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m')
+     const sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o')
+     const sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c')
+     
+    if (selector.category)
+        sub_category.where('c.name', selector.category)
+     if (selector.help)
+        sub_openings.where('o.status', selector.help)
+    if (selector.skills){
+        _.words(selector.skills).forEach(el => { sub_openings.orWhere('o.tags', 'like', '%'+ el + '%') })
+        sub_openings.orderBy('o.tags')
+    }
+
+     const query = db.select(p_array)
+            .countDistinct('pl.id as followers')
+            .countDistinct('m.user_id as members')
+            .from(TABLES.PROJECTS + ' as pr')
+            .join(h.u_profile, 'p.uid', 'pr.user_id')
+            .join(sub_category, 'c.id', 'pr.category_id')
+            .leftJoin(TABLES.PROJECT_LIKES + ' as pl', 'pl.project_id', 'pr.id')
+            .leftJoin(sub_members, 'm.project_id', 'pr.id')
+            .whereRaw('pr.picture_card <> ""')
+            .where('pr.project_visibility', 1)
+            .groupBy('pr.id')
+
+    addLocation('pr', selector.location, query);
+    if (selector.help || selector.skills)
+            query.join(sub_openings, 'o.project_id', 'pr.id')
+
+    return query;
 };

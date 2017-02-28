@@ -1,7 +1,7 @@
 const {db, TABLES} = require('./index');
 
 	const h = {
-    p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description'],
+    p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network'],
     };
 //prototype
 	h.up_array = h.p_array.concat('u.id as uid');
