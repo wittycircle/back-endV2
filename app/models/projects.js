@@ -25,6 +25,10 @@ exports.createProject = (project_data, members, openings, discussions) => {
 			})
 };
 
+exports.updateProject = (id, project_data) => {
+	return db(TABLES.PROJECTS).update(project_data).where('id', id)
+};
+
 exports.removeProject = (id) => {
 	return h.exist(TABLES.PROJECTS, id).then(r => {
 		if (!r.length){

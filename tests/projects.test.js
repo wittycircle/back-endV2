@@ -9,8 +9,7 @@ module.exports = (storage, chakram) => {
         route = storage.resource('projects/'),
         rnd_string = Math.random().toString(36).slice(-10),
         test_project = {
-            id: 1,
-            public_id: 34474
+            id: 502
         },
         schemas = {
             common: require('./schemas/common.schema'),
@@ -34,7 +33,7 @@ module.exports = (storage, chakram) => {
                 picture: "",
                 video: "",
                 network: "",
-                // public: true,
+                public: true,
                 members: [1, 2, 3],
                 openings: [{
                     status: "any",
@@ -47,11 +46,43 @@ module.exports = (storage, chakram) => {
                 }],
             };
             r = chakram.post(route, data);
+            v = chakram.post(route, {video:"to"})
         });
     
         it('Should send back the id', function() {
             return expect(r).to.joi(schemas.common.id);
         });
+        it('Should fail', function() {
+            return expect(v).to.joi(schemas.error.validation_error_schema)
+        });
+    });
+
+    describe('Update project [POST /projects/:id]', function() {
+        let data = {
+            title: "Chakram 2.0",
+            category: 1,
+            description: "Creating and Updating project",
+            about: "UPDATED about"
+        };
+        let r, v;
+        before('request', function() {
+            r = chakram.post(route + test_project.id, data);
+        });
+    
+        it('Should send success', function() {
+            return expect(r).to.joi(schemas.common.success);
+        });
+
+        it('Should have updated the data', function () {
+         return   db.select(['title', 'description', 'about']).from(TABLES.PROJECTS).where({id: test_project.id})
+            .then(r => {
+                return expect(r[0].about).to.equal('UPDATED about')
+            })
+            
+        })
+//            ***    To check if the value is correct.     ***
+        // after('Verify', function() {
+        // })
     });
 // ------------------ LIKES ------------------
     describe('Get project likes', function () {
@@ -169,4 +200,5 @@ module.exports = (storage, chakram) => {
             db.raw('alter table projects AUTO_INCREMENT = 502').return();
         });
 });
+
 };

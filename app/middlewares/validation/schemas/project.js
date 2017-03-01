@@ -33,8 +33,20 @@ module.exports.creation = Joi.object().keys({
 	description: Joi.string().trim().allow(p_empty).required(),
 	about: Joi.string().trim().allow(p_empty).required(),
 	network: Joi.string().trim().allow(p_empty).required(),
-	// public: Joi.boolean().required(),
+	public: Joi.boolean().required(),
 	members: Joi.array().items(Joi.number().integer().required()),
 	openings: Joi.array().items(opening),
 	discussions: Joi.array().items(discussion)
+});
+
+module.exports.update = Joi.object().keys({
+	title: Joi.string().trim().allow(p_empty),
+	category: Joi.number().integer(),
+	// location: common.location,
+	picture: Joi.string().trim().allow(p_empty),
+	video: Joi.string().trim().allow(p_empty),
+	description: Joi.string().trim().allow(p_empty),
+	about: Joi.string().trim().allow(p_empty),
+	network: Joi.string().trim().allow(p_empty),
+	public: Joi.boolean(),
 });

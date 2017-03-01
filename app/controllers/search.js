@@ -38,10 +38,10 @@ exports.searchProfile = (req, res, next) => {
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))
-                res.send(_.map(results, result => {
+                res.send({profiles: _.map(results, result => {
                     result.skills = _.split(result.skills, ',');
                     return result;
-                }));
+                })});
             else
                 next({code: 404});
         })
@@ -59,7 +59,10 @@ exports.searchProject = (req, res, next) => {
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))
-                res.send({project: results})
+                res.send({projects: _.map(results, result => {
+                    result.skills = _.split(result.skills).toString().replace('//\/g');
+                    return result;
+                })});
             else
                 next({code: 404});
         })
