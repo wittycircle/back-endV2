@@ -26,7 +26,13 @@ exports.createProject = (project_data, members, openings, discussions) => {
 };
 
 exports.removeProject = (id) => {
-	return db(TABLES.PROJECTS).del().where('id', id);
+	return h.exist(TABLES.PROJECTS, id).then(r => {
+		if (!r.length){
+			return "could not remove project"
+		} else{
+			return db(TABLES.PROJECTS).del().where('id', id);
+		}
+	})
 };
 
 const getMembers = (id) => {//Not sure about this, if project contributor or project user

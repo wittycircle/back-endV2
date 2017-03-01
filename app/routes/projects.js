@@ -15,7 +15,7 @@ router.route('/projects')
     .post(passport.authenticate('bearer'), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/search')
-    .post(search.searchProject)
+    .post(validate(schemas.search.project), search.searchProject)
     
 router.route('/projects/:id')
     .get(projects.getProject)

@@ -15,6 +15,7 @@ exports.schemas = {
     discussion: require('./schemas/discussion'),
     replies: require('./schemas/replies'),
     common: require('./schemas/common'),
+    search: require('./schemas/search'),
     params: require('./schemas/params')
 };
 

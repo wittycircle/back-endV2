@@ -15,7 +15,7 @@ exports.createProject = (req, res, next) => {
 		city: req.body.location.city,
 		state: req.body.location.state,
 		picture: req.body.picture,
-		main_video: req.body.video,
+		video: req.body.video,
 		network: req.body.network,
 		// public: req.body.public,//public_id => what shows in the url
 	};
@@ -40,6 +40,19 @@ exports.removeProject = (req, res, next) => {
 			}
 			else{
 				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.updateProject = (req, res, next) => {
+	project.updateProject(req.params.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Invalid id'])
+			}
+			else{
+				res.send({success: true})//make model base on create, look at the docs
 			}
 		})
 		.catch(err => next(err))
@@ -70,7 +83,6 @@ exports.getProjects = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
-
 
 // ------------------ Discussions ------------------
 exports.createProjectDiscussion = (req, res, next) => {

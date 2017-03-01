@@ -1,6 +1,7 @@
 'use strict';
 
-const { db, TABLES } = require('../app/models/index');
+const { db, TABLES } = require('../app/models/index'),
+    g = require('./generic.test');
 const p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
@@ -153,7 +154,6 @@ module.exports = (storage, chakram) => {
     });
 
 // ------------------ PROJECTS [main methods: remove project] ------------------
-
     describe('Remove project [DELETE /projects/:id]', function() {
         let r, v;
         before('request', function() {
@@ -163,5 +163,10 @@ module.exports = (storage, chakram) => {
         it('Should remove a project', function() {
             return expect(r).to.joi(schemas.common.success);
         });
-    });
+
+        after('cleanup id', function() {
+            db.raw('DELETE from projects where id > 501').return()
+            db.raw('alter table projects AUTO_INCREMENT = 502').return();
+        });
+});
 };
