@@ -15,7 +15,7 @@ router.route('/projects')
     .post(auth('bearer'), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/search')
-    .post(auth('bearer'), validate(schemas.search.project), search.searchProject)
+    .post(validate(schemas.search.project), search.searchProject)
     
 router.route('/projects/:id')
     .get(projects.getProject)

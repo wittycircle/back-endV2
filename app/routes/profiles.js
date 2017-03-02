@@ -12,12 +12,11 @@ const express = require('express'),
     passport = require('passport'),
     auth = (x) => passport.authenticate(x);
 
-2
 router.route('/profiles')
     .get(profiles.getProfiles);
 
 router.route('/profiles/search')
-    .post(auth('bearer'), validate(schemas.search.profile), search.searchProfile);
+    .post(validate(schemas.search.profile), search.searchProfile);
 
 router.param('id', validateParam(schemas.params.id));
 

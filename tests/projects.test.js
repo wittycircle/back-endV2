@@ -13,6 +13,7 @@ module.exports = (storage, chakram) => {
         schemas = {
             common: require('./schemas/common.schema'),
             projects: require('./schemas/project.schema'),
+            search: require('./schemas/search.schema'),
             error: require('./schemas/error.schema')
         };
 
@@ -78,6 +79,28 @@ module.exports = (storage, chakram) => {
                 return expect(r[0].about).to.equal('UPDATED about')
             })
         })
+    });
+
+    describe('Get project detail [/projects/:id]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.get(route + test_project.id);
+        });
+    
+        it('Should match schema', function() {
+            return expect(r).to.joi(schemas.projects.details);
+        });
+    });
+
+    describe('Get project list [/projects]', function() {
+        let r, v;
+        before('request', function() {
+            r = chakram.get(route);
+        });
+    
+        it('Should match schema', function() {
+            return expect(r).to.joi(schemas.search.projects);
+        });
     });
 // ------------------ Upvotes ------------------
     describe('Get project likes', function () {
@@ -148,7 +171,7 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.common.id);
         });
     });
-
+//            ***    require    ***
     require('./discussions.test')(storage, chakram);
 // ------------------ OPENINGS ------------------
     describe('Get project openings [GET /projects/:id/openings]', function() {
@@ -177,6 +200,7 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.common.id);
         });
     });
+    //            ***    Require    ***
     require('./openings.test')(storage, chakram)
 
 // ------------------ PROJECTS [main methods: remove project] ------------------

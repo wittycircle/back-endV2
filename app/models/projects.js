@@ -41,11 +41,12 @@ exports.removeProject = (id) => {
 
 const getMembers = (id) => {//Not sure about this, if project contributor or project user
 	const members = db.select('p.user_id as creator', 'pcr.user_id')
-					.from(TABLES.PROJECT_CONTRIBUTOR + ' as pcr')
+					.from(TABLES.PROJECT_MEMBERS + ' as pcr')
 					.join(TABLES.PROJECTS + ' as p', 'p.id', 'pcr.project_id')
 					.where('project_id', id).as('pcr')
 
-	return db.distinct('p.uid as id', 'p.first_name', 'p.last_name') 
+	return db.distinct(['p.uid as id', 'p.first_name', 'p.last_name',
+	 db.raw('CONCAT (p.first_name, " ", p.last_name) as username')]) 
 		.from(h.u_profile)
 		.join(members, function() {
 			this.on('p.uid', '=', 'pcr.user_id').orOn('p.uid', '=', 'creator')
@@ -81,7 +82,7 @@ exports.getProject = (id) => {
 
 exports.getProjectList = () => {
 	const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
-	 'c.id as category_id', 'c.name as category_name',
+	 'c.id as category_id', 'c.name as category_name', 'p.network',
 	 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
 	 db.raw('CONCAT (city, ", ", country) as location')
 	 ];
