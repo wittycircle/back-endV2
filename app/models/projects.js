@@ -143,7 +143,7 @@ exports.getProjectDiscussion = (id) => {
 		})
 };
 
-// ------------------ Opening ------------------
+// ------------------ Openings ------------------
 exports.createOpening = (data) => {
 		return h.exist(TABLES.PROJECTS, data.project_id).then(r => {
 		if (!r.length){

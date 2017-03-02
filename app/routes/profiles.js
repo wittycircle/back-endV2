@@ -12,7 +12,7 @@ const express = require('express'),
     passport = require('passport'),
     auth = (x) => passport.authenticate(x);
 
-
+2
 router.route('/profiles')
     .get(profiles.getProfiles);
 

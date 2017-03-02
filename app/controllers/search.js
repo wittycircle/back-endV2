@@ -32,8 +32,9 @@ exports.searchProfile = (req, res, next) => {
     const {paginate, query} = req.body,
     selector = _.fromPairs(query.members.map(member => [profile_lookup[member.field], member.value]));
 
+    let order_by = profile_lookup[query.sort.field] ? profile_lookup[query.sort.field] : profile_lookup["magic"]
     search.cardProfile(selector)
-        .orderByRaw(`${profile_lookup[query.sort.field]} ${ query.sort.reverse ? 'desc' : 'asc'}`)
+        .orderByRaw(`${order_by} ${ query.sort.reverse ? 'desc' : 'asc'}`)
         .where(profile_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
@@ -53,16 +54,14 @@ exports.searchProject = (req, res, next) => {
     const {paginate, query} = req.body,
      selector = _.fromPairs(query.members.map(member => [project_lookup[member.field], member.value]));
 
+    let order_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : project_lookup["magic"]
     search.cardProject(selector)
-        .orderByRaw(`${project_lookup[query.sort.field]} ${ query.sort.reverse ? 'desc' : 'asc'}`)
+        .orderByRaw(`${order_by} ${ query.sort.reverse ? 'desc' : 'asc'}`)
         .where(project_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results))
-                res.send({projects: _.map(results, result => {
-                    result.skills = _.split(result.skills).toString().replace('//\/g');
-                    return result;
-                })});
+                res.send({projects: results})
             else
                 next({code: 404});
         })

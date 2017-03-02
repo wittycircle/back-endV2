@@ -30,7 +30,7 @@ router.route('/projects/:id/discussions')
     .get(projects.getProjectDiscussion)
     .post(auth('bearer'), validate(schemas.project.discussion), projects.createProjectDiscussion);
 
-router.route('/projects/:id/like')
+router.route('/projects/:id/up')
     .get(projects.getProjectLikes)
     .post(auth('bearer'), projects.likeProject)
     .delete(auth('bearer'), projects.unlikeProject);

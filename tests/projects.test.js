@@ -1,8 +1,7 @@
 'use strict';
 
 const { db, TABLES } = require('../app/models/index'),
-    g = require('./generic.test');
-const p_empty = ['', null];
+     p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
@@ -78,49 +77,44 @@ module.exports = (storage, chakram) => {
             .then(r => {
                 return expect(r[0].about).to.equal('UPDATED about')
             })
-            
         })
-//            ***    To check if the value is correct.     ***
-        // after('Verify', function() {
-        // })
     });
-// ------------------ LIKES ------------------
+// ------------------ Upvotes ------------------
     describe('Get project likes', function () {
         let pl;
-        before('[GET /projects/:id/like', function () {
-            pl = chakram.get(route + test_project.id + '/like');
+        before('[GET /projects/:id/up', function () {
+            pl = chakram.get(route + test_project.id + '/up');
         });
 
         it('Should get followers', function () {
-            return expect(pl).to.joi(schemas.common.likes)
+            return expect(pl).to.joi(schemas.common.upvotes)
         });
     });
 
-    describe('Like project', function () {
+    describe('up project', function () {
         let r, v;
-        before('[POST /projects/:id/like]', function () {
-            r = chakram.post(route + test_project.id + '/like');
-            v = chakram.get(route + test_project.id + '/like');
+        before('[POST /projects/:id/up]', function () {
+            r = chakram.post(route + test_project.id + '/up');
+            v = chakram.get(route + test_project.id + '/up');
         });
 
-        it('Should like a project', function () {
+        it('Should up a project', function () {
             expect(r).to.joi(schemas.common.success).to.have.status(200);
             return chakram.wait()
         });
 
         it('Should appear in db', function () {
             v.then(res => {
-                return expect(res.body.like.who[res.body.like.who.length - 1])
+                return expect(res.body.upvotes.who[res.body.upvotes.who.length - 1])
                     .to.have.property('id', storage.user.profile_id)
             });
-            // chakram.wait()
         })
     });
 
-    describe('Unlike project', function () {
+    describe('Unup project', function () {
         let r, v;
-        before('[DELETE /projects/:id/like', function () {
-            r = chakram.delete(route + test_project.id + '/like')
+        before('[DELETE /projects/:id/up', function () {
+            r = chakram.delete(route + test_project.id + '/up')
         });
 
         it('Should send success true', function () {
@@ -147,7 +141,7 @@ module.exports = (storage, chakram) => {
     describe('Create project discussion [POST /projects/:id/discussions]', function() {
         let r,r2, v;
         before('request', function() {
-            r = chakram.post(route + 3 + '/discussions', {message: "Testy test", title: "Waddya do"});
+            r = chakram.post(route + test_project.id + '/discussions', {message: "Testy test", title: "Waddya do"});
         });
     
         it('Should send success', function() {
@@ -183,6 +177,7 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.common.id);
         });
     });
+    require('./openings.test')(storage, chakram)
 
 // ------------------ PROJECTS [main methods: remove project] ------------------
     describe('Remove project [DELETE /projects/:id]', function() {
@@ -201,4 +196,4 @@ module.exports = (storage, chakram) => {
         });
 });
 
-};
+};// ------------------ end module ------------------

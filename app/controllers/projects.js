@@ -1,5 +1,5 @@
 const project = require('../models/projects'), 
-	format = require('./format'),
+	// format = require('./format'),
     _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
@@ -149,7 +149,7 @@ exports.getProjectOpenings = (req, res, next) => {
 			}
 			else{
 				r.forEach(el => {
-					el.tags = _.words(el.tags)
+					el.tags = _.split(el.tags, ',')
 				})
 				res.send({openings: r})
 			}
@@ -157,11 +157,11 @@ exports.getProjectOpenings = (req, res, next) => {
 		.catch(err => next(err))
 };
 
-// ------------------ Likes ------------------
+// ------------------ Upvotes ------------------
 exports.getProjectLikes = (req, res, next) => {
 	project.getProjectLikes(req.params.id)
 		.then(r => {
-			res.send({ like :{
+			res.send({ upvotes :{
 				count: r.length, 
 				who: r, 
 				} 

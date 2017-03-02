@@ -23,6 +23,10 @@ module.exports.likes = joi.object().keys({
     like: p_like
 });
 
+module.exports.upvotes = joi.object().keys({
+    upvotes: p_like
+});
+
 module.exports.id = joi.object().keys({
     id: joi.number().integer().required()
 });
