@@ -47,6 +47,7 @@ describe('Authentication of the test client', function () {
         require('./users.test')(storage, chakram);
         require('./projects.test')(storage, chakram);
         require('./search.test')(storage, chakram);
+        require('./skills.test')(storage, chakram);
         // ------------------ discussions.test required in project ------------------
        // ------------------ replies.test required in discussions.test ------------------
     });

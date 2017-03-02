@@ -14,6 +14,7 @@ router.use('/api', require('./projects'));
 router.use('/api', require('./discussions'));
 router.use('/api', require('./replies'));
 router.use('/api', require('./openings'));
+router.use('/api', require('./skills'));
 
 router.use(require('../middlewares/error').error);
 

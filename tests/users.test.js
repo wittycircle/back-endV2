@@ -7,7 +7,7 @@ module.exports = (storage, chakram) => {
             users: require('./schemas/user.schema'),
             error: require('./schemas/error.schema')
         };
-
+// ------------------ Get skills ------------------
     describe('Get user skills lists [GET /users/:id/skills]', function () {
         let r, v;
         before('request', function () {
@@ -24,7 +24,7 @@ module.exports = (storage, chakram) => {
         });
 
     });
-
+// ------------------ Add skill ------------------
     describe('Add skill to user [POST /users/:id/skills]', function () {
         let r, v, v2, v3;
         before('request', function () {
@@ -49,7 +49,7 @@ module.exports = (storage, chakram) => {
         });
 
     });
-
+// ------------------ Remove skill ------------------
     describe('Remove skill from user [DELETE /users/:id/skills]', function () {
         let r, v, v2, v3;
         before('request', function () {
