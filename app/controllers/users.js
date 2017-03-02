@@ -54,6 +54,7 @@ exports.removeUserSkill = (req, res, next) => {
       .catch(err => next(err))
 };
 
+// ------------------ Main methods ------------------
 exports.createUser = (req, res, next) => {
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {

@@ -27,6 +27,8 @@ const profile_lookup = {
         'magic': 'RAND()',
         'network': 'network'
     };
+//Main page: les projects upvoted less than 48h ago
+//main page: profiles around you [got ip (string) ]
 
 exports.searchProfile = (req, res, next) => {
     const {paginate, query} = req.body,

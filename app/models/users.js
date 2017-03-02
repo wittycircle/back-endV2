@@ -1,55 +1,13 @@
-const { db, TABLES } = require('./index');
+const { db, TABLES } = require('./index'),
+    h = require('./helper')
 
-//Create user stuff
+// ------------------ Main methods ------------------
 exports.getUserSkills = (id) => {
     return db.select(['skill_id as id', 'name', 'category'])
         .from(TABLES.SKILLS + ' as s')
         .join(TABLES.USER_SKILLS + ' as us', 'us.skill_id', 's.id')
         .where({user_id: id})
         .groupBy('us.skill_id')
-};
-
-exports.addUserSkill = (id, uid) => {
-    sub = db(TABLES.USERS).select('id').where('id', uid).then(r => {
-        if (r && r.length) {
-            return db(TABLES.USER_SKILLS)
-                .insert({user_id: uid, skill_id: id})
-                .then(() => exports.getUserSkills(uid))
-        } else {
-            return "No match user"
-        }
-    });
-
-    return db(TABLES.SKILLS).select('id').where('id', id).then(r => {
-        if (r && r.length) {
-            return db(TABLES.USER_SKILLS).select('id').where({user_id: uid, skill_id: id})
-                .then(r => {
-                    if (r && r.length) {
-                        return exports.getUserSkills(uid)
-                    } else {
-                        return sub;
-                    }
-                })
-        }
-    })
-};
-
-exports.removeUserSkill = (id, uid) => {
-    return db(TABLES.USER_SKILLS).select('id').where('skill_id', id).then(r => {
-        if (r && r.length) {
-            return db(TABLES.USERS).select('id').where('id', uid).then(r => {
-                if (r && r.length) {
-                    return db(TABLES.USER_SKILLS)
-                        .del()
-                        .where({'user_id': uid, 'skill_id': id})
-                } else {
-                    return "Invalid id"
-                }
-            })
-        } else {
-            return "Invalid user id"
-        }
-    })
 };
 
 exports.getUserBy = (by) => {
@@ -80,4 +38,44 @@ exports.createUser = (profile_id, email, username, password) => {
 		'username': username,
 		'password': password
 	})
+};
+// ------------------ Skills ------------------
+
+exports.addUserSkill = (id, uid) => {
+    return Promise.all([h.exist(TABLES.SKILLS, id), h.exist(TABLES.USERS, uid)])
+    .then(([r1, r2]) => {
+        if (!r1.length || !r2.length){
+            return (!r1.length ? "Invalid skill id" : "Invalid user id")
+        } else {
+            return db(TABLES.USER_SKILLS).select('id')
+                .where({user_id: uid, skill_id: id})
+                .then(r => {
+                    if (!r.length) {
+                        return db(TABLES.USER_SKILLS)
+                        .insert({user_id: uid, skill_id: id}) 
+                        .then(() => exports.getUserSkills(uid))
+                    } else {
+                        return exports.getUserSkills(uid)
+                    }
+                });
+        }
+    });
+};
+
+exports.removeUserSkill = (id, uid) => {
+    return db(TABLES.USER_SKILLS).select('id').where('skill_id', id).then(r => {
+        if (r && r.length) {
+            return db(TABLES.USERS).select('id').where('id', uid).then(r => {
+                if (r && r.length) {
+                    return db(TABLES.USER_SKILLS)
+                        .del()
+                        .where({'user_id': uid, 'skill_id': id})
+                } else {
+                    return "Invalid id"
+                }
+            })
+        } else {
+            return "Invalid user id"
+        }
+    })
 };
