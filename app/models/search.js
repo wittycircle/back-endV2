@@ -94,15 +94,15 @@ exports.cardProject = (selector) => {
             .where('pr.project_visibility', 1)
             .groupBy('pr.id')
 
+    if (selector.network)
+        query.orderByRaw('CASE WHEN p.network like "' + selector.network + '" THEN 1 else 2 END')
+    addLocation('pr', selector.location, query);
     if (selector.opening || selector.skills)
         query.leftJoin(sub_openings, 'o.project_id', 'pr.id')
     if (selector.skills){
         let selected =  _.words(selector.skills).map((el, i) => 'WHEN GROUP_CONCAT(o.tags) LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
         query.orderByRaw('CASE ' + selected + ' ELSE 100 END')
     };
-    if (selector.network)
-        query.orderByRaw('CASE WHEN p.network like "' + selector.network + '" THEN 1 else 2 END')
-    addLocation('pr', selector.location, query);
      if (selector.opening)
         query.orderByRaw('CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END')
     if (selector.category)
