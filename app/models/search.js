@@ -6,7 +6,6 @@
 
 const {db, TABLES} = require('./index'),
     h = require('./helper'),
-    m_project = require('./projects'),
     _ = require('lodash');
 
 const addLocation = (table, location, query) => {
@@ -83,7 +82,7 @@ exports.cardProject = (selector) => {
             sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o'),
             sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
 
-     const query = db.select(p_array)
+     const query = db.distinct(p_array)
             .countDistinct('pl.id as followers')
             .countDistinct('m.user_id as members')
             .from(TABLES.PROJECTS + ' as pr')
@@ -123,7 +122,7 @@ And if a user plays with loop (like, unlike),
 As the table never clears, and keep record of thing 
 [TO DO way later, first finish v2]
 */
-
+// ------------------ Project ------------------
 exports.mainProjects = (exact) => {
     const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
      'c.id as category_id', 'c.name as category_name', 'p.network',
@@ -149,7 +148,13 @@ exports.mainProjects = (exact) => {
             .groupBy('pl.creation_date', 'pr.id' )
 };
 
-// exports.mainProfiles = () => {
-//     return m_project.getProjectList()
-//             .where('pl.creation_date', '>', '(NOW() - INTERVAL 48 HOUR')
-// };
+
+
+
+
+
+
+
+
+
+
