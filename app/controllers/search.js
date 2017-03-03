@@ -69,3 +69,17 @@ exports.searchProject = (req, res, next) => {
         })
         .catch(err => next(err));
 };
+// ------------------ Main page ------------------
+
+exports.mainProjects = (req, res, next) => {
+    search.exactMainProjects("Wrg")
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Error ! [oups]'])
+            }
+            else{
+                res.send({projects: r})
+            }
+        })
+        .catch(err => next(err))
+};

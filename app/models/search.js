@@ -6,6 +6,7 @@
 
 const {db, TABLES} = require('./index'),
     h = require('./helper'),
+    m_project = require('./projects'),
     _ = require('lodash');
 
 const addLocation = (table, location, query) => {
@@ -49,7 +50,7 @@ exports.cardProfile = (selector) => {
         addLocation('p', location, _query)
         return _query.as('p')
     };
-    const ret_array = ['username', 'rank', 'sort.id as user_id', 'p.id as profile_id', 'profile_picture',
+    const ret_array = ['username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture',
       'cover_picture', 'about', 'description', 'network' , 'location', 'follower', 'following', 'skills']
 
     let q =  db.select(ret_array)
@@ -111,3 +112,44 @@ exports.cardProject = (selector) => {
             query.orderByRaw('CASE WHEN pr.status = "' + selector.status + '" THEN 1 else 2 END')
     return query;
 };
+
+// ------------------ Main page ------------------
+/*
+Instead of followers, create a table to get a project ranking
+example: How many users did stuff (wether like, comment or anything)
+So count all user actions on a project.
+And if a user plays with loop (like, unlike),
+ it won't put the project to the top
+As the table never clears, and keep record of thing 
+[TO DO way later, first finish v2]
+*/
+
+exports.mainProjects = (exact) => {
+    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+     'c.id as category_id', 'c.name as category_name', 'p.network',
+     'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+     db.raw('CONCAT (city, ", ", country) as location')
+     ];
+
+     const sub_members = db(TABLES.PROJECT_MEMBERS).select('project_id', 'user_id').where('n_accept', 1).as('m')
+     const sub_likes = db(TABLES.PROJECT_LIKES).select().as('pl')
+     if (exact)
+        sub_likes.whereRaw('creation_date > (NOW() - INTERVAL 48 HOUR)').as('pl')
+
+     return db.distinct(p_array)
+            .countDistinct('pl.id as followers')
+            .countDistinct('m.user_id as members')
+            .from(TABLES.PROJECTS + ' as pr')
+            .join(h.u_profile, 'p.uid', 'pr.user_id')
+            .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+            .join(sub_likes, 'pl.project_id', 'pr.id')
+            .leftJoin(sub_members, 'm.project_id', 'pr.id')
+            .whereRaw('pr.picture_card <> ""')
+            .orderByRaw('pl.creation_date DESC')
+            .groupBy('pl.creation_date', 'pr.id' )
+};
+
+// exports.mainProfiles = () => {
+//     return m_project.getProjectList()
+//             .where('pl.creation_date', '>', '(NOW() - INTERVAL 48 HOUR')
+// };
