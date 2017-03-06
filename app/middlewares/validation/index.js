@@ -16,6 +16,8 @@ exports.schemas = {
     replies: require('./schemas/replies'),
     common: require('./schemas/common'),
     search: require('./schemas/search'),
+    account: require('./schemas/account'),
+    article: require('./schemas/article'),
     params: require('./schemas/params')
 };
 

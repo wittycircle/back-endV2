@@ -18,7 +18,9 @@ router.route('/profiles')
 router.route('/profiles/search')
     .post(validate(schemas.search.profile), search.searchProfile);
 
+// ------------------ Params ------------------
 router.param('id', validateParam(schemas.params.id));
+// ------------------ Params ------------------
 
 router.route('/profiles/:id')
     .get(profiles.getProfile)

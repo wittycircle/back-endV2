@@ -31,8 +31,8 @@ const profile_lookup = {
 //main page: profiles around you [got ip (string) ]
 
 exports.searchProfile = (req, res, next) => {
-    const {paginate, query} = req.body,
-        selector = {},
+    const {paginate, query} = req.body;
+    let selector = {},
         order_by = profile_lookup["magic"];
 
     if (query) {
@@ -44,7 +44,7 @@ exports.searchProfile = (req, res, next) => {
     let q = search.cardProfile(selector)
             .orderByRaw(`${order_by} ${ query && query.sort && query.sort.reverse ? 'desc' : 'asc'}`)
     if (paginate)
-        search.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit)
+        q.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit)
     q.then(results => {
         if (!_.isEmpty(results))
             res.send({profiles: _.map(results, result => {
@@ -78,7 +78,7 @@ exports.searchProject = (req, res, next) => {
 // ------------------ Main page ------------------
 
 exports.mainProjects = (req, res, next) => {
-    search.mainProjects("Wrg")
+    search.mainProjects()
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'Error ! [oups]'])
