@@ -1,4 +1,3 @@
-
 'use strict';
 
 const express = require('express'),
@@ -9,8 +8,6 @@ const express = require('express'),
     passport = require('passport'),
     auth = (x) => passport.authenticate(x);
 
-
-//AUTH ADMIN (TABLES.USERS moderator?) [AA]
 router.route('/articles')
 	.post(article.createArticle)//AA
 	.get(article.getArticles)
@@ -25,13 +22,14 @@ router.route('/articles/:article_id')
 	.put(article.updateArticle)//AA
 
 
-// ------------------ ARTICLES TAGS ------------------
+// // ------------------ ARTICLES TAGS ------------------
 
-router.route('/articles_tags')
-	.get(article.getTags)
-	.post(article.createTags)//AA
+// router.route('/articles_tags')
+// 	.get(article.getTags)
+// 	.post(article.createTags)//AA
 
-router.route('/articles_tags/:tags_id')
-	.delete(article.removeTags)
-	.update(article.updateTags)
+// router.route('/articles_tags/:tags_id')
+// 	.delete(article.removeTags)
+// 	.update(article.updateTags)
+
 module.exports = router

@@ -8,4 +8,4 @@ app/private
 mochawesome-reports
 api-build
 test_code.js
-*.rdb
+db_modif.github

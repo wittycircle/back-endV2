@@ -13,6 +13,7 @@ const config = require('../private'),
 exports.db = knex;
 
 exports.TABLES = {
+//            ***    USERS    ***
     ACCOUNT_VALIDATION: 'account_validation',
     USERS: 'users',
     USER_PROFILES: 'profiles',
@@ -21,9 +22,8 @@ exports.TABLES = {
     USER_LIKES: 'user_followers',
     USER_FOLLOWERS: 'user_followers',
     RESET: 'reset_passwords',
-    RANK: 'rank_of_the_day',
-    INVITATION: 'invitation',
     FIRST_LOG: 'first_log',
+//            ***    PROJECTS    ***
     PROJECTS: 'projects',
     PROJECT_LIKES: 'project_followers',
     PROJECT_NETWORK: 'project_network',
@@ -34,6 +34,13 @@ exports.TABLES = {
     PROJECT_OPENINGS: 'project_openings',
     PROJECT_MEMBERS: 'project_users',
     PROJECT_CONTRIBUTOR: 'project_contributor',
+//            ***    ARTICLES    ***
+    ARTICLES: 'articles',
+    TAG_ARTICLES: 'tag_articles',
+    ARTICLE_TAGS: 'article_tags',
+//            ***    MISC    ***
     CATEGORIES: 'categories',
+    RANK: 'rank_of_the_day',
+    INVITATION: 'invitation',
     SKILLS: 'skills'
 };

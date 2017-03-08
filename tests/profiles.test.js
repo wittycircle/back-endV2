@@ -13,14 +13,15 @@ module.exports = (storage, chakram) => {
             error: require('./schemas/error.schema')
         };
 
-//Tests
+// ------------------ Tests ------------------
+
     describe('Profile list [GET /profiles]', function () {
         let profiles = {
             list: null
         };
 
         before('Get profile list', function () {
-            profiles.list = chakram.get(route)
+            profiles.list = chakram.get(route);
         });
 
         it('should return 200 on success', function () {
@@ -210,4 +211,4 @@ module.exports = (storage, chakram) => {
             return expect(fake).to.joi(schemas.error.success);
         });
     });
-};
+};// ------------------ end module ------------------
