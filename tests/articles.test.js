@@ -31,7 +31,7 @@ module.exports = (storage, chakram) => {
 		});
 	});
 
-	describe('Update article', function() {
+	describe('Update article [PUT /articles:article_id]', function() {
 		let r, v;
 		const data = {
 			title: "Updated fake",
@@ -46,7 +46,18 @@ module.exports = (storage, chakram) => {
 		});
 	});
 
-	describe('remove article', function() {
+	describe('Get Articles list [GET /articles]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.get(route);
+		});
+	
+		it('Should match schema', function() {
+			return expect(r).to.joi(schemas.articles.list);
+		});
+	});
+
+	describe('remove article [DELETE /articles/:article_id]', function() {
 		let r, v;
 		before('request', function() {
 			r = chakram.delete(route + ART_ID);

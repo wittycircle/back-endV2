@@ -54,9 +54,11 @@ exports.createArticle = (data) => {
 };
 
 exports.getArticles = () => {
-	const a_articles = ['a.id', 'author_id', 'creation_date',
-			'picture', 'read_time', 'title', 'views',
-			db.raw('GROUP_CONCAT(t.name)')
+	const a_articles = ['a.id', 'author_id', 'a.creation_date',
+			'picture', 'title', 'text',
+			db.raw('IFNULL (views, 0) as views'),
+			db.raw('IFNULL (read_time, 0) as read_time'),
+			db.raw('GROUP_CONCAT(t.name) as tags')
 			]
 	return db.select(a_articles)
 			.from(TABLES.ARTICLES + ' as a')
