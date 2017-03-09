@@ -1,4 +1,8 @@
 'use strict';
+
+const { db, TABLES } = require('../app/models/index'),
+     p_empty = ['', null];
+
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
         route = storage.resource('articles/'),
@@ -32,7 +36,6 @@ module.exports = (storage, chakram) => {
 		const data = {
 			title: "Updated fake",
 			tags: [2, 5],
-			article_id: 5
 		}
 		before('request', function() {
 			r = chakram.put(route + ART_ID, data);
@@ -40,6 +43,22 @@ module.exports = (storage, chakram) => {
 	
 		it('Should match schema', function() {
 			return expect(r).to.joi(schemas.common.success);
+		});
+	});
+
+	describe('remove article', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.delete(route + ART_ID);
+		});
+	
+		it('Should match schema', function() {
+			return expect(r).to.joi(schemas.common.success);
+		});
+
+		after('Cleanup table articles', function () {
+			db.raw('DELETE from articles where id > 4').return();
+			db.raw('alter table articles AUTO_INCREMENT = 5').return();
 		});
 	});
 }; // ------------------ end module ------------------

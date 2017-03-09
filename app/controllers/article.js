@@ -3,7 +3,7 @@ const articles = require('../models/article'),
 
 // ------------------ Main methods ------------------
 exports.createArticle = (req, res, next) => {
-	req.body.uid = 1//req.user.id ;
+	req.body.uid = req.user.id ;
 	articles.createArticle(req.body)
 		.then(r => {
 			if (r > 0){
@@ -28,7 +28,7 @@ exports.getArticles = (req, res, next) => {
 };
 
 exports.removeArticle = (req, res, next) => {
-	articles.removeArticle(req.body.article_id)
+	articles.removeArticle(req.params.article_id, req.user.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad article id'])
@@ -42,8 +42,8 @@ exports.removeArticle = (req, res, next) => {
 
 
 exports.updateArticle = (req, res, next) => {
-	req.body.uid = 1//req.user.id;
-	articles.updateArticle(req.body)
+	req.body.uid = req.user.id;
+	articles.updateArticle(req.body, req.params.article_id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad id'])

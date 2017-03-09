@@ -31,7 +31,7 @@ const articles_tags = () => db.schema.createTable('article_tags', function(t) {
 		t.increments();
 		t.string('name').notNullable();
 		t.unique('name');
-		t.timestamp('created_at').defaultTo(db.raw('CURRENT_TIMESTAMP'))
+		t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'))
 		t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
 });
 
@@ -39,7 +39,7 @@ const tag_articles = () => db.schema.createTable('tag_articles', function(t) {
 		t.increments();
 		t.integer('article_id').notNullable();
 		t.integer('tag_id').unsigned().notNullable();
-		t.timestamp('created_at').defaultTo(db.raw('CURRENT_TIMESTAMP'))
+		t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'))
 		t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
 //			***	Relations	***		
 		t.foreign('article_id').references('articles.id').onDelete('cascade');

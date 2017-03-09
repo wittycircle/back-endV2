@@ -215,7 +215,7 @@ module.exports = (storage, chakram) => {
         });
 
         after('cleanup id', function() {
-            db.raw('DELETE from projects where id > 501').return()
+            db.raw('DELETE from projects where id > 501').return();
             db.raw('alter table projects AUTO_INCREMENT = 502').return();
         });
 });

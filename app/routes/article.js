@@ -9,7 +9,7 @@ const express = require('express'),
     auth = (x) => passport.authenticate(x);
 
 router.route('/articles')
-	.post(article.createArticle)//AA
+	.post(auth('bearer'), article.createArticle)//AA
 	.get(article.getArticles)
 
 //			***	PARAMS	***
@@ -18,8 +18,8 @@ router.param('tags_id', validateParam(schemas.params.id))
 //			***	PARAMS	***
 
 router.route('/articles/:article_id')
-	.delete(article.removeArticle)//AA
-	.put(article.updateArticle)//AA
+	.delete(auth('bearer'), article.removeArticle)//AA
+	.put(auth('bearer'), article.updateArticle)//AA
 
 
 // // ------------------ ARTICLES TAGS ------------------

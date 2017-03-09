@@ -5,10 +5,10 @@ const {db, TABLES} = require('./index'),
 
 // ------------------ Local helpers ------------------
 
-const getTagsFromArticleId = (data) => db.select('t.name', 'ta.id as tagged_id', 't.id')
+const getTagsFromArticleId = (data, id) => db.select('t.name', 'ta.id as tagged_id', 't.id')
 					.from(TABLES.ARTICLE_TAGS + ' as t')
 					.join(TABLES.TAG_ARTICLES + ' as ta', 'ta.tag_id', 't.id')
-					.where('ta.article_id',  data.article_id)
+					.where('ta.article_id',  id)
 					.then(r => {console.log("R IS", r)
 						return [r, data]})
 
@@ -35,7 +35,7 @@ exports.createArticle = (data) => {
 	const i_data = {
 		title: data.title,
 		text: data.text,
-		read_time: data.text.length / 400,
+		read_time: (data.text.length / 400) + 1,
 		author_id: data.uid
 	}
 	if (data.picture) i_data.picture = data.picture;
@@ -75,43 +75,27 @@ exports.removeArticle = (id, uid) => {
 	});
 };
 
-
-const addNewTag = (tags) => {
-
-};
-
-exports.updateArticle = (data) => {
+exports.updateArticle = (data, id) => {
 	let x = [];
 	const i_data = {};
 	if (data.title) i_data.title = data.title;
 	if (data.text) i_data.text = data.text;
 	if (data.picture) i_data.picture = data.picture;
 
-	return h.admin(TABLES.ARTICLES, data.article_id, data.uid).then(([r, r1]) => {
+	return h.admin(TABLES.ARTICLES, id, data.uid).then(([r, r1]) => {
 		if (!r.length || !r1.length || !data.tags)
 			return "Not an admin"
 		else {
-			return db(TABLES.ARTICLES).update(i_data).where('id', data.article_id) 
-				.then(() => getTagsFromArticleId(data))
+			return db(TABLES.ARTICLES).update(i_data).where('id', id) 
+				.then(() => getTagsFromArticleId(data, id))
 				.then(removeOldTag)
 				.then((res) => {
 					res.forEach((el, i) => {
-						console.log("EL", el)
 						x.push(db(TABLES.TAG_ARTICLES)
-							.insert({article_id: data.article_id, tag_id: el}).return())
+							.insert({article_id: id, tag_id: el}).return())
 					}); 
 					return Promise.all(x).then(() => ["Finished"])
 				});
 			}
 	});
 };
-		// .then(([id]) => {
-		// 	data.tags.forEach((el, i) => {
-		// 		x.push(db(TABLES.TAG_ARTICLES)
-		// 		.insert({
-		// 			article_id: id, 
-		// 			tag_id: el 
-		// 		}));
-		// 	}); 
-		// 	return Promise.all(x).then(() => id) 
-		// }); 
