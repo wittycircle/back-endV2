@@ -10,6 +10,11 @@ module.exports = (storage, chakram) => {
             discussion: require('./schemas/discussion.schema'),
             error: require('./schemas/error.schema')
         };
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Replies ------------------\n");
+    })
+});
 
     describe('Should update reply from discussion [PUT /replies/reply_id]', function() {
         let r, v, v2;

@@ -14,6 +14,11 @@ module.exports = (storage, chakram) => {
             projects: require('./schemas/project.schema'),
             error: require('./schemas/error.schema')
         };
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Openings ------------------\n");
+    })
+});
 
     describe('Update opening [/openings/:opening_id]', function() {
         let r, v;

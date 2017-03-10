@@ -1,6 +1,6 @@
 'use strict';
 
-const Joi = require('joi');
+const Joi = require('Joi');
 const 	p_empty = ['', null],
 		p_status = ['any', 'tips', 'teammate', 'mentor'];
 
@@ -14,4 +14,6 @@ module.exports.email = Joi.object().keys({
 	email: Joi.string().email().required()
 });
 
-module.exports.password = Joi.string().min(4).max(26).required();
+module.exports.password = Joi.object().keys({
+	password: Joi.string().min(4).max(26).required()
+});

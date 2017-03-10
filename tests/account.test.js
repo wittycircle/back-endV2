@@ -17,12 +17,18 @@ module.exports = (storage, chakram) => {
         test = {
             token:null,
             reset_token: null,
+            uid: null,
             email: rnd_string +"@divine.com",
             password: "angel",
+            update_password: "helloworld",
             new_password: "Archangel",
-            verify_password: null,
         };
 // ------------------ main Tests ------------------
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ ACCOUNTS ------------------\n");
+    })
+});
         describe('Create account [POST /accounts/register]', function() {
             let r, v;
             const data = {
@@ -44,9 +50,10 @@ module.exports = (storage, chakram) => {
             after('Get token', function() {
                 let max_id = db(TABLES.ACCOUNT_VALIDATION).select(db.raw('MAX(id)'));
                 return db(TABLES.ACCOUNT_VALIDATION)
-                    .select('token').where('id', max_id)
+                    .select('token', 'id').where('id', max_id)
                 .then(r => {
                     test.token = r[0].token;
+                    test.uid = r[0].id;
                 });
             });
         });
@@ -111,8 +118,27 @@ module.exports = (storage, chakram) => {
                 let max_id = db(TABLES.USERS).select(db.raw('MAX(id)'));
                 return db(TABLES.USERS).select('password').where('id', max_id)
                 .then(r => {
-                    return expect(bcrypt.compareSync("test.new_password", r[0].password)).to.equal(true);
+                    return expect(bcrypt.compareSync(test.new_password, r[0].password)).to.equal(true);
                 });
             });
+        });
+
+        describe('Update password [PUT /accounts/password]', function() {
+            let r, v;
+            before('request', function() {
+                r = chakram.put(route + "password", {password: test.update_password});
+            });
+        
+            it('Should match schema', function() {
+                return expect(r).to.joi(schemas.common.success);
+            });
+
+            it('Should have modify db', function() {
+                return db(TABLES.USERS).select('password').where('id', 3719)
+                .then(r => {
+                    return expect(bcrypt.compareSync(test.update_password, r[0].password)).to.equal(true);
+                });
+            });
+
         });
 }// ------------------ end module ------------------

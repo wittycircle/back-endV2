@@ -7,6 +7,11 @@ module.exports = (storage, chakram) => {
         skills: require('./schemas/skill.schema'),
         error: require('./schemas/error.schema')
     };
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Skills ------------------\n");
+    })
+});
 
     describe('Get skill list [/skills]', function() {
     	let r, v;

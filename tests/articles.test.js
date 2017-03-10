@@ -14,6 +14,11 @@ module.exports = (storage, chakram) => {
             error: require('./schemas/error.schema')
         };
 // ------------------ Tests ------------------
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Articles ------------------\n");
+    })
+});
 
 	describe('Create article [POST /articles]', function() {
 		let r, v;

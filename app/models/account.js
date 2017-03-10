@@ -77,14 +77,14 @@ exports.recoverPassword = (email, token) => {
 	})
 };
 
-exports.updatePassword = (token, email) => {
-	return h.exist(TABLES.USERS, email, 'email').then(r => {
+exports.updatePassword = (password, uid) => {
+	return h.exist(TABLES.USERS, uid).then(r => {
 		if (!r.length)
-			return "bad email"
+			return "bad user id"
 		else {
 			return db(TABLES.USERS).update({password: password})
-				.where({email: email})
+				.where({id: uid})
 		}
-	})
+	});
 };
 

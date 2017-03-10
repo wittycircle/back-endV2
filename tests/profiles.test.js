@@ -14,6 +14,11 @@ module.exports = (storage, chakram) => {
         };
 
 // ------------------ Tests ------------------
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Profiles ------------------\n");
+    })
+});
 
     describe('Profile list [GET /profiles]', function () {
         let profiles = {

@@ -12,6 +12,12 @@ module.exports = (storage, chakram) => {
 	        search: require('./schemas/search.schema'),
 	        error: require('./schemas/error.schema')
     };
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Search ------------------\n");
+    })
+});
+
     describe('Project cards [/projects/search]', function() {
     	const data =  {
  	"query": {

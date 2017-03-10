@@ -18,8 +18,13 @@ module.exports = (storage, chakram) => {
         };
 
 // ------------------ Projects [main methods] ------------------
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Projects ------------------\n");
+    })
+});
 
-    describe.only('Create project [POST /projects]', function() {
+    describe('Create project [POST /projects]', function() {
         let r, v;
         before('request', function() {
             let data = {
