@@ -9,3 +9,7 @@ mochawesome-reports
 api-build
 test_code.js
 db_modif.github
+stupid_db_test.js
+dump.rdb
+fetch_doc.bash
+todo.perso

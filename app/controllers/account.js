@@ -1,13 +1,16 @@
 const account = require('../models/account'),
+	bcrypt = require('bcrypt-nodejs'),
+	crypto = require('crypto'),
     _ = require('lodash');	
 
 // ------------------ Little helpers ------------------
-const checkUsername = (data) => {
+const checkRegisterData = (data) => {
 	let nd = {//new_data
 		username: null,
 		password: bcrypt.hashSync(data.password),
 		first_name: data.first_name.replace(/\s+/g, ''),
 		last_name: data.last_name.replace(/\s+/g, ''),
+		email: data.email
 	}
     let a_username = [];
     for (let i = nd.first_name.length; i > 0; i--) {
@@ -19,35 +22,39 @@ const checkUsername = (data) => {
     return account.checkUsername(a_username)
     .then((r) => {
         if (r.length === a_username.length){
-            username = nd.first_name + '.' + nd.last_name + Math.floor((Math.random() * 10000) + 1)
+            nd.username = nd.first_name + '.' + nd.last_name + Math.floor((Math.random() * 10000) + 1)
         } else {
-            // let nr = _.map(r, v => v.username)
             let nr = r.map(v => v.username)
-           username =  _.differenceWith(a_username, nr, _.isEqual)[0]
+           nd.username =  _.differenceWith(a_username, nr, _.isEqual)[0]
         }
         return (nd)
     })
 };
 // ------------------ Main methods ------------------
-exports.activate = (req, res, next) => {
-	account.activate(req.body.token, req.body.email)
+exports.register = (req, res, next) => {
+	let token = crypto.randomBytes(64).toString('hex').substring(0,40)
+	checkRegisterData(req.body.account)
+	.then(data => {
+		account.register(data, token) 
 		.then(r => {
 			if (typeof r === 'string') {
-				return next([r, 'Bad token'])
-			}
+				return next([r, 'Bad info [email or password]']) 
+			} 
 			else{
-				res.send({success: true})
-			}
-		})
-		.catch(err => next(err))
+				res.send({success: true}) 
+			} 
+		}).catch(err => next(err))
+//			***	Send confirmation mail and stuff [account_alidation]	*** 
+	});
 };
 
-exports.register = (req, res, next) => {
-	const data = checkUsername(req.body.account)
-	account.register(req.body.account)
+exports.activate = (req, res, next) => {
+	console.log("ACTIVATE")
+	account.activate(req.params.token)
 		.then(r => {
+			console.log("INSIDE ACI", r)
 			if (typeof r === 'string') {
-				return next([r, 'Bad info [email or password]'])
+				return next([r, 'Bad token'])
 			}
 			else{
 				res.send({success: true})
@@ -84,7 +91,7 @@ exports.recoverPassword = (req, res, next) => {
 };
 
 exports.updatePassword = (req, res, next) => {
-	account.updatePassword(req.body.password, req.body.email)
+	account.updatePassword(bcrypt.hashSync(req.body.password), req.user.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad format [password]'])
