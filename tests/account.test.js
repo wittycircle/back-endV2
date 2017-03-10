@@ -1,6 +1,7 @@
 'use strict';
 
 const { db, TABLES } = require('../app/models/index'),
+    bcrypt = require('bcrypt-nodejs'),
      p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
@@ -15,6 +16,11 @@ module.exports = (storage, chakram) => {
         },
         test = {
             token:null,
+            reset_token: null,
+            email: rnd_string +"@divine.com",
+            password: "angel",
+            new_password: "Archangel",
+            verify_password: null,
         };
 // ------------------ main Tests ------------------
         describe('Create account [POST /accounts/register]', function() {
@@ -23,8 +29,8 @@ module.exports = (storage, chakram) => {
                 account: {
                 first_name : "Creation",
                 last_name: "Divine",
-                email: rnd_string +"@divine.com",
-                password: "angel"
+                email: test.email,
+                password: test.password,
                 }
             }
             before('request', function() {
@@ -57,10 +63,55 @@ module.exports = (storage, chakram) => {
 
             it('row "valid" from users should be 1', function() {
                 let max_id = db(TABLES.USERS).select(db.raw('MAX(id)'));
-                return db(TABLES.USERS)
-                    .select('valid').where('id', max_id)
+                return db(TABLES.USERS).select('valid').where('id', max_id)
                 .then(r => {
                     return expect(r[0].valid).to.equal(1) 
+                });
+            });
+        });
+
+        describe('Recover password [POST /accounts/password-reset]', function() {
+            let r, v;
+            let data = {
+                email: test.email,
+            };
+            before('request', function() {
+                r = chakram.post(route + "password-reset", data);
+            });
+        
+            it('Should send success', function() {
+                return expect(r).to.joi(schemas.common.success);
+            });
+
+            it('Should have modify db', function() {
+                let max_id = db(TABLES.RESET_PASSWORDS).select(db.raw('MAX(id)'));
+                return db(TABLES.RESET_PASSWORDS).select('user_email', 'token').where('id', max_id)
+                .then(r => {
+                    test.reset_token = r[0].token;
+                    return expect(r[0].user_email).to.equal(test.email);
+                });
+            });
+        });
+
+        describe('Reset password [PUT /accounts/password-reset/:token]', function() {
+            let r, v;
+            let data = {
+                email: test.email,
+                password: test.new_password,
+            };
+            before('request', function() {
+                r = chakram.put(route + "password-reset/" + test.reset_token, data);
+            });
+        
+            it('Should send success', function() {
+                return expect(r).to.joi(schemas.common.success);
+            });
+
+            it('Should have modify db', function() {
+                let max_id = db(TABLES.USERS).select(db.raw('MAX(id)'));
+                return db(TABLES.USERS).select('password').where('id', max_id)
+                .then(r => {
+                    return expect(bcrypt.compareSync("test.new_password", r[0].password)).to.equal(true);
                 });
             });
         });

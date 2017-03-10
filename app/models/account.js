@@ -45,33 +45,35 @@ exports.register = (data, token) => {
 			.then((profileId) => {
 				user_data.profile_id = profileId[0];
 				return db(TABLES.USERS).insert(user_data)
-					.then((uid) => {
-						return db(TABLES.ACCOUNT_VALIDATION)
-							.insert({user_email: data.email, token: token})
-					});
+				.then(() => db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token:token}))
 			});
 		}
 	})
 };
 
-exports.resetPassword = (token, email) => {
-	return h.exist(TABLES.USERS, email, 'email').then(r => {
-		if (!r.length)
-			return "bad email"
-		else {
-			return db(TABLES.USERS).update({password: password})
-				.where({email: email})
-		}
-	})
+exports.resetPassword = (token, email, password) => {
+	return db(TABLES.RESET_PASSWORDS).first('id')
+			.where({user_email: email, token: token})
+		.then(r => {
+			if (!r)
+				return "bad email"
+			else {
+				return db(TABLES.USERS).update({password: password})
+					.where({email: email})
+			}
+		});
 };
 
-exports.recoverPassword = (email) => {
-	return h.exist(TABLES.USERS, email, 'email').then(r => {
-		if (!r.length)
-			return "Invalid email"
-		else {
-			return {success: true}
-		}
+exports.recoverPassword = (email, token) => {
+	return db(TABLES.USERS).first('id')
+			.where('email', email)
+		.then(user => {
+			if (!user) 
+				return "Invalid email"
+			else {
+				return db(TABLES.RESET_PASSWORDS) 
+					.insert({user_email: email, user_id: user.id, token: token}) 
+			}
 	})
 };
 

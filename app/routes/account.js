@@ -12,7 +12,7 @@ router.route('/accounts/password')
 	.put(auth('bearer'), validate(schemas.common.password), account.updatePassword)
 
 router.route('/accounts/register')
-	.post(/*validate(schemas.account.register),*/ account.register);
+	.post(validate(schemas.account.register), account.register);
 
 router.route('/accounts/password-reset')
 	.post(validate(schemas.common.email), account.recoverPassword)

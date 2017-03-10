@@ -32,7 +32,7 @@ const checkRegisterData = (data) => {
 };
 // ------------------ Main methods ------------------
 exports.register = (req, res, next) => {
-	let token = crypto.randomBytes(64).toString('hex').substring(0,40)
+	const token = crypto.randomBytes(20).toString('hex')
 	checkRegisterData(req.body.account)
 	.then(data => {
 		account.register(data, token) 
@@ -49,10 +49,8 @@ exports.register = (req, res, next) => {
 };
 
 exports.activate = (req, res, next) => {
-	console.log("ACTIVATE")
 	account.activate(req.params.token)
 		.then(r => {
-			console.log("INSIDE ACI", r)
 			if (typeof r === 'string') {
 				return next([r, 'Bad token'])
 			}
@@ -64,7 +62,8 @@ exports.activate = (req, res, next) => {
 };
 
 exports.resetPassword = (req, res, next) => {
-	account.resetPassword(req.body.token, req.body.email)
+	const password = bcrypt.hashSync(req.body.password);
+	account.resetPassword(req.params.token, req.body.email, password)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad token'])
@@ -77,7 +76,8 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.recoverPassword = (req, res, next) => {
-	account.recoverPassword(req.body.email)
+	const token = crypto.randomBytes(20).toString('hex')
+	account.recoverPassword(req.body.email, token)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad format'])

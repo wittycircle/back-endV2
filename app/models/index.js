@@ -15,6 +15,7 @@ exports.db = knex;
 exports.TABLES = {
 //            ***    USERS    ***
     ACCOUNT_VALIDATION: 'account_validation',
+    RESET_PASSWORDS: 'reset_passwords',
     USERS: 'users',
     USER_PROFILES: 'profiles',
     USER_SKILLS: 'user_skills',
