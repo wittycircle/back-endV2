@@ -12,8 +12,8 @@ describe('', function() {
         console.log( "\x1b[35m" + " ------------------ Users ------------------\n");
     })
 });
-
-// ------------------ Get skills ------------------
+// ------------------ Main methods ------------------
+// ------------------ Skills ------------------
     describe('Get user skills lists [GET /users/:id/skills]', function () {
         let r, v;
         before('request', function () {
@@ -30,7 +30,7 @@ describe('', function() {
         });
 
     });
-// ------------------ Add skill ------------------
+
     describe('Add skill to user [POST /users/:id/skills]', function () {
         let r, v, v2, v3;
         before('request', function () {
@@ -55,7 +55,7 @@ describe('', function() {
         });
 
     });
-// ------------------ Remove skill ------------------
+
     describe('Remove skill from user [DELETE /users/:id/skills]', function () {
         let r, v, v2, v3;
         before('request', function () {
