@@ -28,8 +28,12 @@ router.route('/articles/:article_id/article_tags')
 // ------------------ Upvotes ------------------
 
 router.route('/articles/:article_id/up')
+    .get(article.getArticleUpvotes)
     .post(auth('bearer'), article.upvoteArticle)
     .delete(auth('bearer'), article.unUpvoteArticle);
+
+router.route('/articles/:article_id/article_tags/:tags_id')
+    .delete(auth('bearer'), article.removeTagArticle);
 // // ------------------ ARTICLES TAGS ------------------
 
 // router.route('/articles_tags')

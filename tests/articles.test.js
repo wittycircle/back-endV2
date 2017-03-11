@@ -47,25 +47,6 @@ describe('', function() {
 		});
 	});
 
-	describe('Add tag to article [POST /articles/:article_id/article_tags]', function() {
-		let r, v;
-		before('request', function() {
-			r = chakram.post(route + test.article_id + "/article_tags", {tag: "popcorn"});
-		});
-	
-		it('Should send success', function() {
-			return expect(r).to.joi(schemas.common.id);
-		});
-
-		it('Should have modify db', function() {
-		    let max_id = db(TABLES.TAG_ARTICLES).select(db.raw('MAX(id)'));
-		    return db(TABLES.TAG_ARTICLES).select('article_id', 'tag_id').where('id', max_id)
-		    .then(r => {
-		        return expect(r[0].tag_id).to.equal(6)
-		    });
-		});
-	});
-
 	describe('Update article [PUT /articles:article_id]', function() {
 		let r, v;
 		const data = {
@@ -91,9 +72,40 @@ describe('', function() {
 			return expect(r).to.joi(schemas.articles.list);
 		});
 	});
+// ------------------ TAG ------------------
+	describe('Add tag to article [POST /articles/:article_id/article_tags]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.post(route + test.article_id + "/article_tags", {tag: "popcorn"});
+		});
+	
+		it('Should send success', function() {
+			return expect(r).to.joi(schemas.common.id);
+		});
+
+		it('Should have modify db', function() {
+		    let max_id = db(TABLES.TAG_ARTICLES).select(db.raw('MAX(id)'));
+		    return db(TABLES.TAG_ARTICLES).select('article_id', 'tag_id').where('id', max_id)
+		    .then(r => {
+		        return expect(r[0].tag_id).to.equal(6)
+		    });
+		});
+	});
+
+	describe('Remove tag from article [DELETE /articles/:article_id/article_tags/:tags_id]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.delete(route + test.article_id + "/article_tags/" + 6);
+		});
+	
+		it('Should send success', function() {
+			return expect(r).to.joi(schemas.common.success);
+		});
+	});
+
 // ------------------ Upvotes ------------------
 
-	describe('Upvote article [POST /articles/article_id/up]', function() {
+	describe('Upvote article [POST /articles/:article_id/up]', function() {
 		let r, v;
 		before('request', function() {
 			r = chakram.post(route + test.article_id + "/up");
@@ -112,7 +124,18 @@ describe('', function() {
 		});
 	});
 
-	describe('Un upvote article [DELETE /articles/article_id/up]', function() {
+	describe('Get article upvotes [GET /articles/:article_id/up]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.get(route + 4 + "/up");
+		});
+	
+		it('Should send the count', function() {
+			return expect(r).to.joi(schemas.common.upvotes);
+		});
+	});
+
+	describe('Un upvote article [DELETE /articles/:article_id/up]', function() {
 		let r, v;
 		before('request', function() {
 			r = chakram.delete(route + test.article_id + '/up');
@@ -130,7 +153,7 @@ describe('', function() {
 		    });
 		});
 	});
-//			*** Remove article ***
+	// 		// *** Remove article ***
 	// describe('remove article [DELETE /articles/:article_id]', function() {
 	// 	let r, v;
 	// 	before('request', function() {

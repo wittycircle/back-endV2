@@ -3,18 +3,6 @@ const articles = require('../models/article'),
 
 // ------------------ Main methods ------------------
 
-exports.addTagArticle = (req, res, next) => {
-	articles.addTagArticle(req.params.article_id, req.body.tag, req.user.id)
-		.then(r => {
-			if (typeof r === 'string') {
-				return next([r, 'tag format : [string || id]'])
-			}
-			else{
-				res.send({id: r[0]})
-			}
-		})
-		.catch(err => next(err))
-};
 
 exports.createArticle = (req, res, next) => {
 	req.body.uid = req.user.id ;
@@ -69,6 +57,34 @@ exports.updateArticle = (req, res, next) => {
 		.catch(err => next(err))
 };
 
+// ------------------ Tag ------------------
+exports.addTagArticle = (req, res, next) => {
+	articles.addTagArticle(req.params.article_id, req.body.tag, req.user.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'tag format : [string || id]'])
+			}
+			else{
+				res.send({id: r[0]})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.removeTagArticle = (req, res, next) => {
+	articles.removeTagArticle(req.params.article_id, req.params.tags_id, req.user.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				console.log("TROUBL", r)
+				return next([r, 'Could not remove'])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
 // ------------------ Upvotes ------------------
 
 exports.upvoteArticle = (req, res, next) => {
@@ -92,6 +108,19 @@ exports.unUpvoteArticle = (req, res, next) => {
 			}
 			else{
 				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.getArticleUpvotes = (req, res, next) => {
+	articles.getArticleUpvotes(req.params.article_id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Bad id'])
+			}
+			else{
+				res.send({upvotes: {who:r, count: r.length}});
 			}
 		})
 		.catch(err => next(err))

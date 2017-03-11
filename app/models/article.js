@@ -30,32 +30,6 @@ const removeOldTag = ([res, data]) => {
 
 // ------------------ Main methods ------------------
 
-exports.addTagArticle = (article_id, tag, uid) => {
-	const insert = (t_id) => {
-		return h.exist(TABLES.ARTICLE_TAGS, t_id).then(r => {
-			if (!r.length)
-				return "Bad tag id"
-			else {
-				return db(TABLES.TAG_ARTICLES) 
-					.insert({article_id: article_id, tag_id: t_id})
-			}
-		});
-	};
-
-	return h.admin(TABLES.ARTICLES, article_id, uid).then(([r, r2]) => {
-		if (!r.length || !r2.length)
-			return "Bad article id"
-		else{
-			if (typeof tag == 'string'){
-			return db(TABLES.ARTICLE_TAGS).first('id').where('name', tag)
-					.then(t => insert(t.id));
-			}
-			else {
-				return insert(tag);
-			}
-		}
-	})
-};
 
 exports.createArticle = (data) => {
 	let x = [];
@@ -128,6 +102,45 @@ exports.updateArticle = (data, id) => {
 			}
 	});
 };
+// ------------------ Tag ------------------
+exports.addTagArticle = (article_id, tag, uid) => {
+	const insert = (t_id) => {
+		return h.exist(TABLES.ARTICLE_TAGS, t_id).then(r => {
+			if (!r.length)
+				return "Bad tag id"
+			else {
+				return db(TABLES.TAG_ARTICLES) 
+					.insert({article_id: article_id, tag_id: t_id})
+			}
+		});
+	};
+
+	return h.admin(TABLES.ARTICLES, article_id, uid).then(([r, r2]) => {
+		if (!r.length || !r2.length)
+			return "Bad article id"
+		else{
+			if (typeof tag == 'string'){
+			return db(TABLES.ARTICLE_TAGS).first('id').where('name', tag)
+					.then(t => insert(t.id));
+			}
+			else {
+				return insert(tag);
+			}
+		}
+	})
+};
+
+exports.removeTagArticle = (article_id, tag_id, uid) => {
+	return h.admin(TABLES.ARTICLES, article_id, uid).then(([r, r1]) => {
+		if (!r.length || !r1.length) 
+			return "Invalid: " + !r.length ? "article id" : "not an admin"
+		else {
+			return db(TABLES.TAG_ARTICLES) 
+			.del() 
+			.where({article_id, tag_id}) 
+		} 
+	});
+};
 
 // ------------------ Upvotes ------------------
 
@@ -150,5 +163,19 @@ exports.upvoteArticle = (article_id, user_id) => {
 };
 
 exports.unUpvoteArticle = (article_id, user_id) => {
-	return db(TABLES.ARTICLE_LIKES).del().where({article_id, user_id})
+	return db(TABLES.ARTICLE_LIKES).first('id').where({article_id, user_id})
+	.then(r=> {
+		if (!r)
+			return "No upvote exist for this article id"
+		else{
+			return db(TABLES.ARTICLE_LIKES).del().where({article_id, user_id})
+		}
+	})
+};
+
+exports.getArticleUpvotes = (article_id) => {
+	return db(TABLES.ARTICLE_LIKES + ' as l')
+		.join(h.u_profile, 'p.uid', 'l.user_id')
+		.distinct(h.p_array)
+		.where({article_id})
 };
