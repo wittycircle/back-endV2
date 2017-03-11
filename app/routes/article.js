@@ -36,12 +36,12 @@ router.route('/articles/:article_id/article_tags/:tags_id')
     .delete(auth('bearer'), article.removeTagArticle);
 // // ------------------ ARTICLES TAGS ------------------
 
-// router.route('/articles_tags')
-// 	.get(article.getTags)
-// 	.post(article.createTags)//AA
+router.route('/article_tags')
+	.get(article.getTags)
+	.post(auth('bearer'), article.createArticleTag)//AA
 
-// router.route('/articles_tags/:tags_id')
-// 	.delete(article.removeTags)
-// 	.update(article.updateTags)
+router.route('/article_tags/:tags_id')
+	.put(auth('bearer'), article.updateTags)
+    .delete(auth('bearer'), article.removeTags)
 
 module.exports = router

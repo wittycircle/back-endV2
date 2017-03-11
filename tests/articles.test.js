@@ -6,6 +6,7 @@ const { db, TABLES } = require('../app/models/index'),
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
         route = storage.resource('articles/'),
+        tag_route = 'http://localhost:3000/api/article_tags/',
         rnd_string = Math.random().toString(36).slice(-10),
         schemas = {
             common: require('./schemas/common.schema'),
@@ -14,6 +15,7 @@ module.exports = (storage, chakram) => {
         },
         test = {
         	article_id: null,
+        	tag_id: null,
         };
 // ------------------ Tests ------------------
 describe('', function() {
@@ -51,7 +53,7 @@ describe('', function() {
 		let r, v;
 		const data = {
 			title: "Updated fake",
-			tags: [2, 5],
+			tags: [2, 3],
 		}
 		before('request', function() {
 			r = chakram.put(route + test.article_id, data);
@@ -153,7 +155,7 @@ describe('', function() {
 		    });
 		});
 	});
-	// 		// *** Remove article ***
+			// *** Remove article ***
 	// describe('remove article [DELETE /articles/:article_id]', function() {
 	// 	let r, v;
 	// 	before('request', function() {
@@ -169,4 +171,60 @@ describe('', function() {
 	// 		db.raw('alter table articles AUTO_INCREMENT = 5').return();
 	// 	});
 	// });
+// ------------------ ARTICLES TAGS ------------------
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + "			*** Article TAGS ***");
+    })
+});
+
+	describe('Create article tag [POST /article_tags]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.post(tag_route, {tag: "inspiring"});
+		});
+	
+		it('Should create tag', function() {
+			 expect(r).to.joi(schemas.common.id);
+			 r.then(rr => {
+			 	test.tag_id = rr.body.id;
+				 return db(TABLES.ARTICLE_TAGS).first('name').where({id: rr})
+				 .then(rr => expect(rr.name).to.equal("inspiring"))
+			 })
+			return chakram.wait();
+		});
+	});
+
+	describe('update article tag [PUT /article_tags/tags_id]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.put(tag_route + test.tag_id, {tag: {name: "Something inspiring"}});
+		});
+	
+		it('Should update the tag', function() {
+			return expect(r).to.joi(schemas.common.success);
+		});
+	});
+
+	describe('Remove article tag [DELETE /article_tags/tags_id]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.delete(tag_route +  test.tag_id);
+		});
+	
+		it('Should remove tag', function() {
+			return expect(r).to.joi(schemas.common.success);
+		});
+	});
+
+	describe('Get article tags [GET /article_tags]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.get(tag_route);
+		});
+	
+		it('Should give a list of tags', function() {
+			return expect(r).to.joi(schemas.articles.tag_list);
+		});
+	});
 }; // ------------------ end module ------------------

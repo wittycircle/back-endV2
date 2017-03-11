@@ -16,6 +16,16 @@ const article = joi.object().keys({
 		joi.array().items(joi.string().trim().allow(p_empty)))])
 });
 
+const tags = joi.object().keys({
+	id: joi.number().integer().required(),
+	name: joi.string().trim().allow(p_empty).required(),
+	creation_date: joi.string().trim().allow(p_empty).required(),
+});
+
+module.exports.tag_list = joi.object().keys({
+	tags: joi.array().items(tags)
+});
+
 module.exports.list = joi.object().keys({
 	articles: joi.array().items(article)
 });

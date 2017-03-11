@@ -115,8 +115,8 @@ exports.addTagArticle = (article_id, tag, uid) => {
 		});
 	};
 
-	return h.admin(TABLES.ARTICLES, article_id, uid).then(([r, r2]) => {
-		if (!r.length || !r2.length)
+	return h.admin(TABLES.ARTICLES, article_id, uid).then(([r, r1]) => {
+		if (!r.length || !r1.length)
 			return "Bad article id"
 		else{
 			if (typeof tag == 'string'){
@@ -178,4 +178,60 @@ exports.getArticleUpvotes = (article_id) => {
 		.join(h.u_profile, 'p.uid', 'l.user_id')
 		.distinct(h.p_array)
 		.where({article_id})
+};
+
+// ------------------ Articles Tags ------------------
+
+exports.createArticleTag = (name, uid) => {
+	return db(TABLES.USERS).select('id').where({id: uid, moderator: 1})
+	.then(r => {
+		if (!r.length){
+			return "Need to be an administrator"
+		} else{
+			return db(TABLES.ARTICLE_TAGS).first('id').where({name})
+			.then(r => {
+				if (!r) 
+					return db(TABLES.ARTICLE_TAGS).insert({name})
+				else
+					return "Already exist"
+			});
+		}
+	});
+};
+
+exports.removeTags = (id, uid) => {
+	return h.admin(TABLES.ARTICLE_TAGS, id, uid).then(([r, r1]) => {
+		if (!r.length || !r1.length){
+			return !r.length ? "Bad article id": "Not an admin"
+		}
+		else{
+			return db(TABLES.ARTICLE_TAGS)
+				.del()
+				.where({id})
+		}
+	});
+};
+
+exports.getTags = () => {
+	return db(TABLES.ARTICLE_TAGS)
+		.select(['id', 'name', 'creation_date'])
+};
+
+exports.updateTags = (id, name, uid) => {
+	return h.admin(TABLES.ARTICLE_TAGS, id, uid).then(([r, r1]) => {
+		if (!r.length || !r1.length){
+			return !r.length ? "Bad article id" : "Not an admin"
+		}
+		else {
+		return db(TABLES.ARTICLE_TAGS).first('id').where({name}).then(r => {
+			if (!r){
+			return db(TABLES.ARTICLE_TAGS) 
+				.update({name}) 
+				.where({id})
+			} else {
+				return "Already exist";
+			}
+		});
+		}
+	});
 };
