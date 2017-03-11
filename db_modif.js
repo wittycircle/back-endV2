@@ -9,8 +9,10 @@ const config = require('./app/private'),
 
 //Put drop Table in right order, to allow foreign key constraints
 
-const drop_tables = () => db.schema.dropTableIfExists('tag_articles')
-							.dropTableIfExists('article_tags');
+
+const drop_tables = () => db.schema
+.dropTableIfExists('tag_articles')
+								.dropTableIfExists('article_tags')
 
 // ------------------ Alter tables ------------------
 
@@ -127,21 +129,21 @@ const tag_articles = () => db.schema.createTable('tag_articles', function(t) {
 // ------------------ Insert tables ------------------
 const test_insert = () => {
 	let x = [];
-	return db.distinct('tag_name').from('old_article_tags').then(selection => {
-		selection = selection.map(r => r.tag_name)
-	selection.forEach((r) => {
+	let tags = ['mentoring', 'entrepreneurship', 'community', 'event', 'generationstartup', 'popcorn'];
+	tags.forEach((r) => {
+		console.log(r)
 		x.push(db('article_tags').insert({name: r}).return());
 	});
 	return Promise.all(x).then(() => console.log("inserted succesffuly"))
-	});
+	
 };
 
 const modify_db = () => {
 	return drop_tables()
-	//			*** Create ***
+				// *** Create ***
 	.then(() => articles_tags())
 	.then(() => tag_articles())
-	//			*** Alter ***
+//				*** Alter ***
 	.then(() => alter_articles())
 	.then(() => alter_location('profiles'))
 	.then(() => alter_location('projects'))
