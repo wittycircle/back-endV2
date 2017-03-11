@@ -9,8 +9,12 @@ const config = require('./app/private'),
 
 //Put drop Table in right order, to allow foreign key constraints
 
+const add_admin = () => 
+	db(TABLES.USERS).update('moderator', 1).where('id', 3719)
+
 const profile_description_text = () => 
 	db.schema.raw('alter table profiles change column description description TEXT(10000)');
+
 
 const all_utf8 = () => {
 	let x = [];
@@ -41,6 +45,15 @@ const alter_articles = () => {
 		if (exists)
 			return db.schema.table('articles',
 				t => t.renameColumn('view', 'views'))
+	}),
+	db.schema.hasColumn('articles', 'user_id')
+	.then(exists => {
+		if (exists)
+			return db.schema.table('articles',
+				t => {
+					t.foreign('user_id').references('users.id').onDelete('cascade')
+					t.foreign('article_id').references('articles.id').onDelete('cascade')
+				})
 	})
 		]);
 
@@ -149,6 +162,7 @@ const insert_article_tags = () => {
 };
 const modify_db = () => {
 	return drop_tables()
+	.then(() => add_admin())
 	//			*** Create ***
 	.then(() => articles_tags())
 	.then(() => tag_articles())

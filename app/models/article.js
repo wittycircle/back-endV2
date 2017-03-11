@@ -9,8 +9,7 @@ const getTagsFromArticleId = (data, id) => db.select('t.name', 'ta.id as tagged_
 					.from(TABLES.ARTICLE_TAGS + ' as t')
 					.join(TABLES.TAG_ARTICLES + ' as ta', 'ta.tag_id', 't.id')
 					.where('ta.article_id',  id)
-					.then(r => {console.log("R IS", r)
-						return [r, data]})
+					.then(r => [r, data])
 
 const removeOldTag = ([res, data]) => {
 	const tomap = _.difference(res.map(e => e.id), data.tags)
@@ -30,6 +29,34 @@ const removeOldTag = ([res, data]) => {
 };
 
 // ------------------ Main methods ------------------
+
+exports.addTagArticle = (article_id, tag, uid) => {
+	const insert = (t_id) => {
+		return h.exist(TABLES.ARTICLE_TAGS, t_id).then(r => {
+			if (!r.length)
+				return "Bad tag id"
+			else {
+				return db(TABLES.TAG_ARTICLES) 
+					.insert({article_id: article_id, tag_id: t_id})
+			}
+		});
+	};
+
+	return h.admin(TABLES.ARTICLES, article_id, uid).then(([r, r2]) => {
+		if (!r.length || !r2.length)
+			return "Bad article id"
+		else{
+			if (typeof tag == 'string'){
+			return db(TABLES.ARTICLE_TAGS).first('id').where('name', tag)
+					.then(t => insert(t.id));
+			}
+			else {
+				return insert(tag);
+			}
+		}
+	})
+};
+
 exports.createArticle = (data) => {
 	let x = [];
 	const i_data = {
@@ -100,4 +127,28 @@ exports.updateArticle = (data, id) => {
 				});
 			}
 	});
+};
+
+// ------------------ Upvotes ------------------
+
+exports.upvoteArticle = (article_id, user_id) => {
+	return h.exist(TABLES.ARTICLES, article_id).then(r => {
+		if (!r.length)
+			return "Bad article id"
+		else {
+			return db(TABLES.ARTICLE_LIKES).first('id').where({article_id, user_id})
+				.then(r => {
+					if (r)
+						return "Already upvoted"
+					else {
+					return db(TABLES.ARTICLE_LIKES)
+						.insert({article_id, user_id})
+					}
+				})
+		}
+	})
+};
+
+exports.unUpvoteArticle = (article_id, user_id) => {
+	return db(TABLES.ARTICLE_LIKES).del().where({article_id, user_id})
 };

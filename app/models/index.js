@@ -39,6 +39,7 @@ exports.TABLES = {
     ARTICLES: 'articles',
     TAG_ARTICLES: 'tag_articles',
     ARTICLE_TAGS: 'article_tags',
+    ARTICLE_LIKES: 'article_likes',
 //            ***    MISC    ***
     CATEGORIES: 'categories',
     RANK: 'rank_of_the_day',

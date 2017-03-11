@@ -2,6 +2,20 @@ const articles = require('../models/article'),
     _ = require('lodash');
 
 // ------------------ Main methods ------------------
+
+exports.addTagArticle = (req, res, next) => {
+	articles.addTagArticle(req.params.article_id, req.body.tag, req.user.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'tag format : [string || id]'])
+			}
+			else{
+				res.send({id: r[0]})
+			}
+		})
+		.catch(err => next(err))
+};
+
 exports.createArticle = (req, res, next) => {
 	req.body.uid = req.user.id ;
 	articles.createArticle(req.body)
@@ -47,6 +61,34 @@ exports.updateArticle = (req, res, next) => {
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad id'])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+// ------------------ Upvotes ------------------
+
+exports.upvoteArticle = (req, res, next) => {
+	articles.upvoteArticle(req.params.article_id, req.user.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Not found'])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.unUpvoteArticle = (req, res, next) => {
+	articles.unUpvoteArticle(req.params.article_id, req.user.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Not found'])
 			}
 			else{
 				res.send({success: true})

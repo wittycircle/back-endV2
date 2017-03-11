@@ -22,6 +22,14 @@ router.route('/articles/:article_id')
 	.put(auth('bearer'), article.updateArticle)//AA
 
 
+router.route('/articles/:article_id/article_tags')
+    .post(auth('bearer'), article.addTagArticle);
+
+// ------------------ Upvotes ------------------
+
+router.route('/articles/:article_id/up')
+    .post(auth('bearer'), article.upvoteArticle)
+    .delete(auth('bearer'), article.unUpvoteArticle);
 // // ------------------ ARTICLES TAGS ------------------
 
 // router.route('/articles_tags')

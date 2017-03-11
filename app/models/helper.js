@@ -10,13 +10,6 @@ const {db, TABLES} = require('./index');
 		x.push(db(TABLES.USERS)
 			.select('id').where({id: uid, moderator: 1}))
 		return Promise.all(x)
-		// return h.exist(table, id).then(r => {
-		// 	if (r.length){
-		// 		return db(TABLES.USERS).select('id').where({id: uid, moderator: 1})
-		// 	} else {
-		// 		return []
-		// 	}
-		// })
 	};
 
 //prototype
