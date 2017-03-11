@@ -12,17 +12,16 @@ const config = require('./app/private'),
 const profile_description_text = () => 
 	db.schema.raw('alter table profiles change column description description TEXT(10000)');
 
-
 const all_utf8 = () => {
-	let x = []
-for (var key in TABLES) {
-   if (TABLES.hasOwnProperty(key)) {
-   	x.push(db.schema.raw('alter table ' + TABLES[key] + '  CONVERT TO CHARACTER SET utf8').return());
-   }
-}
+	let x = [];
+	for (var key in TABLES) {
+	   if (TABLES.hasOwnProperty(key)) {
+	   	x.push(db.schema.raw('alter table ' + TABLES[key] + '  CONVERT TO CHARACTER SET utf8').return());
+	   }
+	};
    return Promise.all(x).then(r => r)
-
 };
+
 const drop_tables = () => db.schema.dropTableIfExists('tag_articles')
 							.dropTableIfExists('article_tags');
 
@@ -139,17 +138,15 @@ const tag_articles = () => db.schema.createTable('tag_articles', function(t) {
 });
 
 // ------------------ Insert tables ------------------
-const test_insert = () => {
+const insert_article_tags = () => {
 	let x = [];
-	return db.distinct('tag_name').from('old_article_tags').then(selection => {
-		selection = selection.map(r => r.tag_name)
-	selection.forEach((r) => {
+	let tags = ['mentoring', 'entrepreneurship', 'community', 'event', 'generationstartup', 'popcorn'];
+	tags.forEach((r) => {
 		x.push(db('article_tags').insert({name: r}).return());
 	});
 	return Promise.all(x).then(() => console.log("inserted succesffuly"))
-	});
+	
 };
-
 const modify_db = () => {
 	return drop_tables()
 	//			*** Create ***
@@ -163,7 +160,7 @@ const modify_db = () => {
 	.then(() => alter_projects())
 	.then(() => alter_project_openings())
 	//			*** Insert ***
-	.then(() => test_insert())
+	.then(() => insert_article_tags())
 	//			*** Modify ***
 	.then(() => profile_description_text())
 	.then(() => all_utf8())
