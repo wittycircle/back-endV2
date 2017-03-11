@@ -1,5 +1,5 @@
 const config = require('./app/private'),
-    db = require('knex')(config.database);
+    {db, TABLES} = require('./app/models/index');
 
 //articles
 //article_tags => List of tags for article
@@ -9,6 +9,20 @@ const config = require('./app/private'),
 
 //Put drop Table in right order, to allow foreign key constraints
 
+const profile_description_text = () => 
+	db.schema.raw('alter table profiles change column description description TEXT(10000)');
+
+
+const all_utf8 = () => {
+	let x = []
+for (var key in TABLES) {
+   if (TABLES.hasOwnProperty(key)) {
+   	x.push(db.schema.raw('alter table ' + TABLES[key] + '  CONVERT TO CHARACTER SET utf8').return());
+   }
+}
+   return Promise.all(x).then(r => r)
+
+};
 const drop_tables = () => db.schema.dropTableIfExists('tag_articles')
 							.dropTableIfExists('article_tags');
 
@@ -150,6 +164,9 @@ const modify_db = () => {
 	.then(() => alter_project_openings())
 	//			*** Insert ***
 	.then(() => test_insert())
+	//			*** Modify ***
+	.then(() => profile_description_text())
+	.then(() => all_utf8())
 // //			***	Done	***
 	.then(() => {
 		console.log("Done modifying db")
