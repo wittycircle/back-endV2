@@ -75,7 +75,7 @@ exports.unfollowProfile = (req, res, next) => {
     .catch(err => next(err))
 };
 
-//location
+// ------------------ Location ------------------
 exports.getLocation = (req, res, next) => {
     profiles.getLocation(req.params.id)
     .then(([r]) => res.send({location: r}))
