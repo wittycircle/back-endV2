@@ -16,6 +16,7 @@ module.exports = (storage, chakram) => {
         test = {
         	article_id: null,
         	tag_id: null,
+        	popcorn: null,
         };
 // ------------------ Tests ------------------
 describe('', function() {
@@ -77,6 +78,14 @@ describe('', function() {
 // ------------------ TAG ------------------
 	describe('Add tag to article [POST /articles/:article_id/article_tags]', function() {
 		let r, v;
+		before('popcorn', function() {
+			return db(TABLES.ARTICLE_TAGS).first('id').where({name: 'popcorn'})
+			.then(r => {
+				test.popcorn = r.id
+				return r.id;
+			})
+		});
+
 		before('request', function() {
 			r = chakram.post(route + test.article_id + "/article_tags", {tag: "popcorn"});
 		});
@@ -89,7 +98,7 @@ describe('', function() {
 		    let max_id = db(TABLES.TAG_ARTICLES).select(db.raw('MAX(id)'));
 		    return db(TABLES.TAG_ARTICLES).select('article_id', 'tag_id').where('id', max_id)
 		    .then(r => {
-		        return expect(r[0].tag_id).to.equal(6)
+		        return expect(r[0].tag_id).to.equal(test.popcorn)
 		    });
 		});
 	});
