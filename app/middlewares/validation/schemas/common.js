@@ -1,6 +1,6 @@
 'use strict';
 
-const Joi = require('Joi');
+const Joi = require('joi');
 const 	p_empty = ['', null],
 		p_status = ['any', 'tips', 'teammate', 'mentor'];
 
