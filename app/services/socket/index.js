@@ -4,19 +4,29 @@
 
 'use strict';
 
-module.exports = (server) => {
-    const io = require('socket.io')(server);
+const _ = require('lodash'),
+    channels = {
+        NOTIFICATION: 'server::notification',
+        ONLINE: 'room::online::visitor',
+        ONLINE_AUTH: 'room::online',
+        ONLINE_FRIENDS: 'room::online::friends'
+    };
 
-    io.on('connection', socket => {
+const client = {
+    pub: [
+        {
+            name: 'tg',
+            fn: console.log
+        }
 
-        console.log(`ws: ${socket.id} just logged in`);
+    ],
+    sub: []
+};
 
-        io.on('user::message', data => io.emit('server::notification', data));
-
-        io.emit('server::notification', {
-            type: 'login',
-            message: `hello ${socket.id}`
-        });
+module.exports = server => {
+    const io = require('socket.io')(server, {
+        serveClient: false
     });
 
+    require('./auth')(io);
 };
