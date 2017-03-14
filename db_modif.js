@@ -16,6 +16,8 @@ const add_admin = () =>
 const profile_description_text = () =>
     db.schema.raw('alter table profiles change column description description TEXT(10000)');
 
+// const alter_articles = () => {/
+// };
 
 const all_utf8 = () => {
     let x = [];
@@ -34,9 +36,11 @@ const drop_tables = () => db.schema.dropTableIfExists('tag_articles')
 
 // ------------------ Alter tables ------------------
 
-//			***	Articles ***
+//          *** Articles ***
 const alter_articles = () => {
     return Promise.all([
+        db.schema.raw('alter table articles CHANGE COLUMN picture picture varchar(512) NULL DEFAULT NULL'),
+        db.schema.raw('alter table articles CHANGE COLUMN article_id article_id int(11) NULL DEFAULT NULL'),
         db.schema.hasColumn('articles', 'creator_user_id')
             .then(exists => {
                 if (exists)
