@@ -20,14 +20,17 @@ const addLocation = (table, location, query) => {
 // ------------------ Profile ------------------
 exports.cardProfile = (selector) => {
     let exp = db.select('user_id').from(TABLES.USER_EXPERIENCES).as('e'),
-        skills = db.select('*').from(TABLES.USER_SKILLS + ' as s').as('s');
+        skills = db.select('user_id', 'name')
+        .from(TABLES.USER_SKILLS + ' as us')
+        .join(TABLES.SKILLS + ' as s', 'us.skill_id', 's.id')
+        .as('s');
 
     const follower = db.select('user_id').count('user_id as total').from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu'),
         following = db.select('follow_user_id').count('follow_user_id as MA').from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su');
 
     const sortCardProfile = db.select(['u.id', 'u.profile_id', 'r.rank as rank',
         db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
-        db.raw('GROUP_CONCAT(DISTINCT skill_name) as skills'), 'skill_name'])
+        db.raw('GROUP_CONCAT(DISTINCT name) as skills')])
         .from(TABLES.USERS + ' as u')
         .leftJoin(skills, 'u.id', 's.user_id')
         .leftJoin(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank [All users will have a rank?]
@@ -60,8 +63,8 @@ exports.cardProfile = (selector) => {
         .where('sort.rank', '>', '0') //todo remove
 
     if (selector.skills){
-    let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skill_name LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
-        q.orderByRaw('CASE ' + selected + ' else 100  END , sort.skill_name');
+    let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skills LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        q.orderByRaw('CASE ' + selected + ' else 100  END');
     }
     if (selector.network)
         q.orderByRaw('CASE WHEN network = "' + selector.network + '" THEN 1 else 2 END, network')
