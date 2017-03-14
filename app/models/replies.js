@@ -3,8 +3,8 @@ const { db, TABLES } = require('./index'),
 
 exports.updateReplyDiscussion = (reply_id, uid, message) => {
 		return h.owner(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id, uid).then(r => {
-		if (!r.length)
-            return "Invalid discussion id";
+            if (!r.length)
+                return "Invalid discussion id"
 		else {
 			return db(TABLES.PROJECT_DISCUSSION_REPLIES) 
 				.update({message: message}) 
@@ -16,7 +16,7 @@ exports.updateReplyDiscussion = (reply_id, uid, message) => {
 exports.removeReplyDiscussion = (reply_id, uid) => {
 	return h.owner(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id, uid).then(r => {
 		if (!r.length)
-            return "Invalid id";
+            return "Invalid id"
 		else{
 		return db(TABLES.PROJECT_DISCUSSION_REPLIES) 
 			.del() 
@@ -27,8 +27,8 @@ exports.removeReplyDiscussion = (reply_id, uid) => {
 
 exports.likeReply = (reply_id, uid) => {
 	return h.exist(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id).then(r => {
-		if (!r.lentgth)
-            return "Invalid id";
+        if (!r.length)
+            return "Invalid id"
 		else{
 			return db(TABLES.PROJECT_REPLY_LIKES)
 				.insert({project_reply_id: reply_id, user_id: uid})
@@ -37,9 +37,9 @@ exports.likeReply = (reply_id, uid) => {
 };
 
 exports.unlikeReply = (reply_id, uid) => {
-	return h.exist(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id).then(r => {
-		if (!r.lentgth)
-            return "Invalid id";
+    return h.owner(TABLES.PROJECT_DISCUSSION_REPLIES, reply_id, uid).then(r => {
+        if (!r.length)
+            return "Invalid id"
 		else{
 			return db(TABLES.PROJECT_REPLY_LIKES)
 				.del()

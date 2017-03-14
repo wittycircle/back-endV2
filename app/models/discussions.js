@@ -18,7 +18,7 @@ exports.updateProjectDiscussion = (discussion_id, message, title) => {
 exports.removeProjectDiscussion = (discussion_id) => {
     return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
         if (!r.length)
-            return "Invalid discussion id";
+            return "Invalid discussion id"
         else {
             return db(TABLES.PROJECT_DISCUSSION)
                 .del()
@@ -27,10 +27,30 @@ exports.removeProjectDiscussion = (discussion_id) => {
     });
 };
 // ------------------ Reply ------------------
+exports.getDiscussionReplies = (discussion_id) => {
+    let rep_like = (id) => db.select('user_id', 'creation_date')
+        .from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
+
+    return db.select('id', 'user_id', 'creation_date', 'message')
+        .from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', discussion_id)
+        .then(r => {
+            let x = []
+            r.forEach(el => {
+                x.push((rep_like(el.id).then(rr => {
+                    return el.likes = rr
+                })))
+            });
+            return Promise.all(x).then(() => {
+                return r
+            })
+        })
+};
+
+
 exports.replyDiscussion = (discussion_id, uid, message) => {
     return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
         if (!r.length)
-            return "Invalid discussion id";
+            return "Invalid discussion id"
         else {
             return db(TABLES.PROJECT_DISCUSSION_REPLIES)
                 .insert({user_id: uid, project_discussion_id: discussion_id, message: message})
@@ -42,7 +62,7 @@ exports.replyDiscussion = (discussion_id, uid, message) => {
 exports.likeDiscussion = (discussion_id, uid) => {
     return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
         if (!r.length)
-            return "Invalid discussion id";
+            return "Invalid discussion id"
         else {
             return db(TABLES.PROJECT_DISCUSSION_LIKES)
                 .insert({project_discussion_id: discussion_id, user_id: uid})
@@ -53,7 +73,7 @@ exports.likeDiscussion = (discussion_id, uid) => {
 exports.unlikeDiscussion = (discussion_id, uid) => {
     return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
         if (!r.length)
-            return "Invalid discussion id";
+            return "Invalid discussion id"
         else {
             return db(TABLES.PROJECT_DISCUSSION_LIKES)
                 .del()

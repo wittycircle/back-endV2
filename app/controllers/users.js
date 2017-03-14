@@ -20,42 +20,41 @@ exports.getUserSkills = (req, res, next) => {
 
 exports.addUserSkill = (req, res, next) => {
     if (!req.body || !req.body.skill_id)
-        next(["skill id", "Skill id required, empty body"]);
-    else
-        user.addUserSkill(req.body.skill_id, req.params.id)
-            .then(r => {
-                if (r && r.length) {
-                    if (typeof r === 'string')
-                        next([r, "Invalid user id"]);
-                    else
-                        res.send({skills: r})
-                }
-                else {
-                    next(['No matched skill', 'invalid skill id'])
-                }
-            })
-            .catch(err => next(err))
+        return next(["skill id", "Skill id required, empty body"]);
+    user.addUserSkill(req.body.skill_id, req.params.id)
+        .then(r => {
+            if (r && r.length) {
+                if (typeof r === 'string')
+                    return next([r, "Invalid user id"]);
+                else
+                    res.send({skills: r})
+            }
+            else {
+                return next(['No matched skill', 'invalid skill id'])
+            }
+        })
+        .catch(err => next(err))
 };
 
 exports.removeUserSkill = (req, res, next) => {
     if (!req.body || !req.body.skill_id)
-        next(["skill id", "Skill id required, empty body"]);
-    else
-        user.removeUserSkill(req.body.skill_id, req.params.id)
-            .then(r => {
-                if (r) {
-                    if (typeof r === 'string')
-                        next([r, 'Did not match any skills']);
-                    else
-                        res.send({success: true})
-                }
-                else {
-                    next(["No match", "No matched skill or last skilled removed"])
-                }
-            })
-            .catch(err => next(err))
+        return next(["skill id", "Skill id required, empty body"]);
+    user.removeUserSkill(req.body.skill_id, req.params.id)
+        .then(r => {
+            if (r) {
+                if (typeof r === 'string')
+                    return next([r, 'Did not match any skills']);
+                else
+                    res.send({success: true})
+            }
+            else {
+                return next(["No match", "No matched skill or last skilled removed"])
+            }
+        })
+        .catch(err => next(err))
 };
 
+// ------------------ Main methods ------------------
 exports.createUser = (req, res, next) => {
     user.getUserByEmail(req.body.email).then((exist) => {
         if (exist.length) {

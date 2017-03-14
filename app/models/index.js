@@ -5,8 +5,7 @@
 'use strict';
 
 const config = require('../private'),
-    knex = require('knex')(config.database),
-    _ = require('lodash');
+    knex = require('knex')(config.database);
 
 // if (process.env.DEBUG === true)
 // knex.on('query', (query) => console.log('SQL %s', query.sql));
@@ -14,7 +13,9 @@ const config = require('../private'),
 exports.db = knex;
 
 exports.TABLES = {
+//            ***    USERS    ***
     ACCOUNT_VALIDATION: 'account_validation',
+    RESET_PASSWORDS: 'reset_passwords',
     USERS: 'users',
     USER_PROFILES: 'profiles',
     USER_SKILLS: 'user_skills',
@@ -22,9 +23,8 @@ exports.TABLES = {
     USER_LIKES: 'user_followers',
     USER_FOLLOWERS: 'user_followers',
     RESET: 'reset_passwords',
-    RANK: 'rank_of_the_day',
-    INVITATION: 'invitation',
     FIRST_LOG: 'first_log',
+//            ***    PROJECTS    ***
     PROJECTS: 'projects',
     PROJECT_LIKES: 'project_followers',
     PROJECT_NETWORK: 'project_network',
@@ -32,6 +32,19 @@ exports.TABLES = {
     PROJECT_DISCUSSION: 'project_discussion',
     PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',
     PROJECT_DISCUSSION_REPLIES: 'project_discussion_replies',
-    RANKS: 'rank_of_the_day',
+    PROJECT_OPENINGS: 'project_openings',
+    PROJECT_MEMBERS: 'project_users',
+    PROJECT_CONTRIBUTOR: 'project_contributor',
+//            ***    ARTICLES    ***
+    ARTICLES: 'articles',
+    TAG_ARTICLES: 'tag_articles',
+    ARTICLE_TAGS: 'article_tags',
+    ARTICLE_LIKES: 'article_likes',
+//            ***    CHAT    ***
+    MESSAGES: 'messages',
+//            ***    MISC    ***
+    CATEGORIES: 'categories',
+    RANK: 'rank_of_the_day',
+    INVITATION: 'invitation',
     SKILLS: 'skills'
 };

@@ -7,16 +7,10 @@
 const loglevel = process.env.RS_LOGLEVEL || 'dev',
     Redis = require('redis-sessions'),
     rs = new Redis(require('../../private/index').redis),
-    _ = require('lodash'),
-    express = require('express'),
-    app = express();
-
-if (loglevel !== 'none') {
-    app.use(require('morgan')(loglevel));
-}
+    _ = require('lodash');
 
 const rsapp = 'wittycircle',
-    ttl = 3600 * 24 * 365;
+    ttl = 3600 * 24;
 
 /**
  * Get all current sessions within the last deltaT seconds

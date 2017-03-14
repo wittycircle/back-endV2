@@ -21,7 +21,7 @@ exports.updateProfile = (stuff, cnd) => {
         .update(stuff)
         .where(cnd)
 };
-
+// ------------------ Follow ------------------
 exports.getProfileFollowers = (cond, cond2, id) => {
     const sub = db.select('l.follow_user_id', 'l.user_id')
                 .from(TABLES.USER_LIKES + ' as l')
@@ -53,7 +53,7 @@ exports.unfollowProfile = (id, uid) => {
     return db(TABLES.USER_LIKES).del() 
         .where({user_id: id, follow_user_id: uid})
 };
-
+// ------------------ Location ------------------
 exports.getLocation = (p_id) => {
     return db(TABLES.USER_PROFILES)
         .select(['country', 'city', 'state'])

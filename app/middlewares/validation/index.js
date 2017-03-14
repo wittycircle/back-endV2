@@ -14,6 +14,10 @@ exports.schemas = {
     project: require('./schemas/project'),
     discussion: require('./schemas/discussion'),
     replies: require('./schemas/replies'),
+    common: require('./schemas/common'),
+    search: require('./schemas/search'),
+    account: require('./schemas/account'),
+    article: require('./schemas/article'),
     params: require('./schemas/params')
 };
 
@@ -35,7 +39,7 @@ exports.validate = (schema) => (req, res, next) => {
         abortEarly: false
     }, (err, value) => {
         if (err)
-            res.status(400).send(error_formatter(err));
+            res.send(error_formatter(err));
         else if (value)
             next();
         else
