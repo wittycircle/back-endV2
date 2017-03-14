@@ -25,6 +25,7 @@ const profile_lookup = {
         'skills': 'skills',
         'followers': 'followers',
         'magic': 'RAND()',
+        'last_upvoted': 'pl.creation_date',
         'network': 'network'
     };
 //Main page: les projects upvoted less than 48h ago
@@ -63,8 +64,10 @@ exports.searchProject = (req, res, next) => {
      selector = _.fromPairs(query.members.map(member => [project_lookup[member.field], member.value]));
 
     let order_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : project_lookup["magic"]
+    let group_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : 'pr.id'
     search.cardProject(selector)
         .orderByRaw(`${order_by} ${ query.sort.reverse ? 'desc' : 'asc'}`)
+        .groupBy(`${group_by}`, 'pr.id')
         .where(project_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
@@ -77,32 +80,32 @@ exports.searchProject = (req, res, next) => {
 };
 // ------------------ Main page ------------------
 
-exports.mainProjects = (req, res, next) => {
-    search.mainProjects()
-        .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'Error ! [oups]'])
-            }
-            else{
-                res.send({projects: r})
-            }
-        })
-        .catch(err => next(err))
-};
+// exports.mainProjects = (req, res, next) => {
+//     search.mainProjects()
+//         .then(r => {
+//             if (typeof r === 'string') {
+//                 return next([r, 'Error ! [oups]'])
+//             }
+//             else{
+//                 res.send({projects: r})
+//             }
+//         })
+//         .catch(err => next(err))
+// };
 
-exports.mainProfiles = (req, res, next) => {
-    const get_ip = "Berlin"
-    const selector = {
-        location: get_ip
-    }
-    search.cardProfile(selector)
-        .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'Something went wrong'])
-            }
-            else{
-                res.send({profiles: r})
-            }
-        })
-        .catch(err => next(err))
-};
+// exports.mainProfiles = (req, res, next) => {
+//     const get_ip = "Berlin"
+//     const selector = {
+//         location: get_ip
+//     }
+//     search.cardProfile(selector)
+//         .then(r => {
+//             if (typeof r === 'string') {
+//                 return next([r, 'Something went wrong'])
+//             }
+//             else{
+//                 res.send({profiles: r})
+//             }
+//         })
+//         .catch(err => next(err))
+// };

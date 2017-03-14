@@ -93,9 +93,9 @@ exports.cardProject = (selector) => {
             .join(sub_category, 'c.id', 'pr.category_id')
             .leftJoin(TABLES.PROJECT_LIKES + ' as pl', 'pl.project_id', 'pr.id')
             .leftJoin(sub_members, 'm.project_id', 'pr.id')
-            .whereRaw('pr.picture_card <> ""')
             .where('pr.project_visibility', 1)
-            .groupBy('pr.id')
+            .whereRaw('pr.picture_card <> ""')
+            // .groupBy( 'pl.creation_date','pr.id')
 
     if (selector.network)
         query.orderByRaw('CASE WHEN p.network like "' + selector.network + '" THEN 1 else 2 END')
