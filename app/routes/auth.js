@@ -12,8 +12,9 @@ const auth = require('../controllers/auth'),
 
 let router = express.Router();
 
+router.use('/local', validate(schemas.auth.local));
 router.route('/local')
-    .post(validate(schemas.auth.local), auth.localLogin);
+    .post(auth.localLogin);
 
 router.route('/google')
     .post((req, res, next) => {

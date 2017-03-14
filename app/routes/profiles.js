@@ -9,28 +9,30 @@ const express = require('express'),
     profiles = require('../controllers/profiles'),
     search = require('../controllers/search'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
-    passport = require('passport');
-
+    passport = require('passport'),
+    auth = (x) => passport.authenticate(x);
 
 router.route('/profiles')
     .get(profiles.getProfiles);
 
 router.route('/profiles/search')
-    .post(search.searchProfile);
+    .post(validate(schemas.search.profile), search.searchProfile);
 
+// ------------------ Params ------------------
 router.param('id', validateParam(schemas.params.id));
+// ------------------ Params ------------------
 
 router.route('/profiles/:id')
     .get(profiles.getProfile)
-    .put(passport.authenticate('bearer'), validate(schemas.profile.update), profiles.updateProfile);
+    .put(auth('bearer'), validate(schemas.profile.update), profiles.updateProfile);
 
 router.route('/profiles/:id/location')
     .get(profiles.getLocation)
-    .put(passport.authenticate('bearer'), validate(schemas.profile.location), profiles.updateLocation);
+    .put(auth('bearer'), validate(schemas.profile.location), profiles.updateLocation);
 
 router.route('/profiles/:id/follow')
     .get(profiles.getProfileFollowers)
-    .post(passport.authenticate('bearer'), profiles.followProfile)
-    .delete(passport.authenticate('bearer'), profiles.unfollowProfile);
+    .post(auth('bearer'), profiles.followProfile)
+    .delete(auth('bearer'), profiles.unfollowProfile);
 
 module.exports = router;

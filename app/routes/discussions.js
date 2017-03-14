@@ -2,7 +2,7 @@ const express = require('express'),
     router = express.Router(),
     discussions = require('../controllers/discussions'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
-    sd = schemas.discussion;
+    sd = schemas.discussion
     passport = require('passport');
 
 router.param('id', validateParam(schemas.params.id));
@@ -15,9 +15,10 @@ router.route('/discussions/:discussion_id')
 
 router.route('/discussions/:discussion_id/like')
 	.post(passport.authenticate('bearer'), discussions.likeDiscussion)
-    .delete(passport.authenticate('bearer'), discussions.unlikeDiscussion);
+    .delete(passport.authenticate('bearer'), discussions.unlikeDiscussion)
 
 router.route('/discussions/:discussion_id/replies')
-    .post(passport.authenticate('bearer'), validate(sd.reply), discussions.replyDiscussion);
+    .get(discussions.getDiscussionReplies)
+    .post(passport.authenticate('bearer'), validate(sd.reply), discussions.replyDiscussion)
 
-module.exports = router;
+module.exports = router    

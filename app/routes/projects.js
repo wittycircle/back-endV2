@@ -3,40 +3,38 @@ const express = require('express'),
     projects = require('../controllers/projects'),
     search = require('../controllers/search'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
-    passport = require('passport');
+    passport = require('passport'),
+    auth = (x) => passport.authenticate(x);
 
 router.param('id', validateParam(schemas.params.id));
 router.param('opening_id', validateParam(schemas.params.id));
 router.param('discussion_id', validateParam(schemas.params.id));
 
 router.route('/projects')
-    .get()
-    .post(passport.authenticate('bearer'));
+    .get(projects.getProjects)
+    .post(auth('bearer'), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/search')
-    .post(search.searchProfile);
+    .post(validate(schemas.search.project), search.searchProject)
 
-router.route('/project/:id')
-    .get()
-    .put(passport.authenticate('bearer'))
-    .delete(passport.authenticate('bearer'));
-
-router.route('/projects/:id/upvote')
-    .get()
-    .post(passport.authenticate('bearer'))
-    .delete(passport.authenticate('bearer'));
+router.route('/projects/:id')
+    .get(projects.getProject)
+    .post(auth('bearer'), validate(schemas.project.update), projects.updateProject)
+    .delete(auth('bearer'), projects.removeProject);
 
 router.route('/projects/:id/openings')
-    .get()
-    .post(passport.authenticate('bearer'));
+    .get(projects.getProjectOpenings)
+    .post(auth('bearer'), validate(schemas.project.opening), projects.createOpening);
 
 router.route('/projects/:id/discussions')
     .get(projects.getProjectDiscussion)
-    .post(passport.authenticate('bearer'), validate(schemas.project.discussion), projects.createProjectDiscussion);
+    .post(auth('bearer'), validate(schemas.project.discussion), projects.createProjectDiscussion);
 
 router.route('/projects/:id/up')
-    .get(projects.getProjectUpvotes)
-    .post(passport.authenticate('bearer'), projects.upvoteProject)
-    .delete(passport.authenticate('bearer'), projects.unupvoteProject);
+    .get(projects.getProjectLikes)
+    .post(auth('bearer'), projects.likeProject)
+    .delete(auth('bearer'), projects.unlikeProject);
+    
+
 
 module.exports = router;

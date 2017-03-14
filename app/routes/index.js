@@ -3,9 +3,9 @@
  */
 'use strict';
 
-const express = require('express'),
-    router = express.Router(),
-    path = require('path');
+const express = require('express');
+
+let router = express.Router();
 
 router.use('/api', require('./users'));
 router.use('/api', require('./profiles'));
@@ -13,6 +13,11 @@ router.use('/api/auth', require('./auth'));
 router.use('/api', require('./projects'));
 router.use('/api', require('./discussions'));
 router.use('/api', require('./replies'));
+router.use('/api', require('./openings'));
+router.use('/api', require('./skills'));
+router.use('/api', require('./account'));
+router.use('/api', require('./article'));
+router.use('/api', require('./main_page'));
 
 router.use(require('../middlewares/error').error);
 
