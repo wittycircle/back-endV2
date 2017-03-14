@@ -28,9 +28,9 @@ exports.TABLES = {
     PROJECTS: 'projects',
     PROJECT_LIKES: 'project_followers',
     PROJECT_NETWORK: 'project_network',
-    PROJECT_REPLY_LIKES :'project_reply_likes',
+    PROJECT_REPLY_LIKES: 'project_reply_likes',
     PROJECT_DISCUSSION: 'project_discussion',
-    PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',   
+    PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',
     PROJECT_DISCUSSION_REPLIES: 'project_discussion_replies',
     PROJECT_OPENINGS: 'project_openings',
     PROJECT_MEMBERS: 'project_users',
@@ -40,6 +40,8 @@ exports.TABLES = {
     TAG_ARTICLES: 'tag_articles',
     ARTICLE_TAGS: 'article_tags',
     ARTICLE_LIKES: 'article_likes',
+//            ***    CHAT    ***
+    MESSAGES: 'messages',
 //            ***    MISC    ***
     CATEGORIES: 'categories',
     RANK: 'rank_of_the_day',
