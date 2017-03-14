@@ -30,7 +30,7 @@
     "redis-sessions": "^1.1.0",
     "satelize": "^0.2.0",
     "socket.io": "^1.7.3",
-    "socketio": "^1.0.0"
+    "socket.io-redis": "^4.0.0"
   },
   "devDependencies": {
     "chakram": "^1.5.0",
@@ -44,6 +44,7 @@
     "gulp-open": "^2.0.0",
     "mocha": "^3.2.0",
     "mochawesome": "^2.0.2",
+    "nightmare": "^2.10.0",
     "prettyjson": "git://github.com/Raphy42/prettyjson.git"
   }
 }

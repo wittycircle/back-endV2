@@ -67,7 +67,6 @@ gulp.task('test', 'Executes unit tests', cb => {
          */
         .once('error', () => process.exit(1))
         .once('end', () => cb());
-    cb();
 });
 
 /**
@@ -91,15 +90,7 @@ gulp.task('api-gen', 'Generates api documentation html', cb => {
     }, cb);
 });
 
-/**
- * Fetch last api revision
- */
-gulp.task('api-fetch', 'Fetch the latest documentation version', cb => {
-    // git.updateSubmodule();
-    cb();
-});
-
-gulp.task('api', 'Open the latest documentation revision', ['api-fetch', 'api-gen'], () => {
+gulp.task('api', 'Open the latest documentation revision', ['api-gen'], () => {
     gulp.src('./api-build/index.html')
         .pipe(open({app: browser}))
 

@@ -13,7 +13,7 @@ const http = require('http'),
     cache = require('./app/services/cache'),
     path = require('path');
 
-cache.init();
+// cache.init();
 
 let app = express();
 
@@ -25,10 +25,11 @@ router.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve('public/index.html'));
-});
+/**
+ * TODO remove
+ */
+if (process.env.NODE_ENV === 'development')
+    app.disable('etag');
 
 app.use(logger('dev'));
 
@@ -36,7 +37,6 @@ app.use(logger('dev'));
  * Debug middleware
  */
 // app.use(debug.resDebugger);
-
 
 require('./app/config/passport')(passport);
 app.use(passport.initialize());
@@ -49,7 +49,7 @@ app.use(router);
 
 let server = http.createServer(app);
 
-// bootstraps socket.io
+// bootstraps socket.io with express app
 require('./app/services/socket')(server);
 
 server.listen(app.get('port'), () => {
