@@ -9,10 +9,15 @@ module.exports = (storage, chakram) => {
         rnd_string = Math.random().toString(36).slice(-10),
         schemas = {
             common: require('./schemas/common.schema'),
-            discussion: require('./schemas/discussion.schema'),
+            discussions: require('./schemas/discussion.schema'),
             error: require('./schemas/error.schema')
         };
-
+    describe('', function () {
+        it('should print something big', function () {
+            console.log("\x1b[35m" + " ------------------ Discussions ------------------\n");
+        })
+    });
+ 
     describe('Update project discussion [PUT /discussions/:discussion_id', function() {
         let r, v;
         before('request', function() {
@@ -56,7 +61,48 @@ module.exports = (storage, chakram) => {
             return expect(v2).to.joi(schemas.error.description);
         });
     });
-    
+
+    describe('Should like discussion', function () {
+        let r, v;
+        before('request', function () {
+            r = chakram.post(route + 196 + '/like');
+            v = chakram.post(route + storage.fakeId + '/like')
+        });
+
+        it('Should send the id of like', function () {
+            return expect(r).to.joi(schemas.common.id).status(200);
+        });
+
+        it('Should match description error', function () {
+            return expect(v).to.joi(schemas.error.description);
+        })
+    });
+
+    describe('Should unlike discussion', function () {
+        let r, v;
+        before('request', function () {
+            r = chakram.delete(route + 196 + '/like');
+            v = chakram.delete(route + storage.fakeId + '/like');
+        });
+        it('Should send success', function () {
+            return expect(r).to.joi(schemas.common.success).status(200);
+        });
+        it('Should match description error', function () {
+            return expect(v).to.joi(schemas.error.description).status(404);
+        });
+    });
+
+    describe('Get discussion replies [GET /discussion/discussion_id/replies]', function () {
+        let r, v;
+        before('request', function () {
+            r = chakram.get(route + 196 + '/replies');
+        });
+
+        it('', function () {
+            return expect(r).to.joi(schemas.discussions.replies);
+        });
+    });
+
     require('./replies.test')(storage, chakram);
 
 // ------------------ END REPLIES ------------------

@@ -7,7 +7,13 @@ module.exports = (storage, chakram) => {
             users: require('./schemas/user.schema'),
             error: require('./schemas/error.schema')
         };
-
+    describe('', function () {
+        it('should print something big', function () {
+            console.log("\x1b[35m" + " ------------------ Users ------------------\n");
+        })
+    });
+// ------------------ Main methods ------------------
+// ------------------ Skills ------------------
     describe('Get user skills lists [GET /users/:id/skills]', function () {
         let r, v;
         before('request', function () {
@@ -30,7 +36,7 @@ module.exports = (storage, chakram) => {
         before('request', function () {
             r = chakram.post(route + storage.user.id + '/skills', {skill_id: 81});
             v = chakram.post(route + storage.user_id + '/skills', {skill_id: 81929292});
-            v2 = chakram.post(route + storage.fake + '/skills', {skill_id: 81});
+            v2 = chakram.post(route + storage.fakeId + '/skills', {skill_id: 81});
             v3 = chakram.post(route + storage.user_id + '/skills');
         });
 
@@ -38,12 +44,16 @@ module.exports = (storage, chakram) => {
             return expect(r).to.joi(schemas.users.skills).status(200)
         });
 
-        it('Should send an error', function () {
-            expect(v).to.joi(schemas.error.description).status(404);
-            expect(v2).to.joi(schemas.error.description).status(404);
-            expect(v3).to.joi(schemas.error.description).status(404);
-            return chakram.wait()
+        it('Should send an error 1', function () {
+            return expect(v).to.joi(schemas.error.description).status(404);
         });
+        it('Should send an error 2', function () {
+            return expect(v2).to.joi(schemas.error.description).status(404);
+        });
+        it('Should send an error 3', function () {
+            return expect(v3).to.joi(schemas.error.description).status(404);
+        });
+
     });
 
     describe('Remove skill from user [DELETE /users/:id/skills]', function () {

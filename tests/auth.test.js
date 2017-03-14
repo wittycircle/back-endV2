@@ -10,6 +10,11 @@ module.exports = (storage, chakram) => {
             error: require('./schemas/error.schema')
         };
 
+    describe('', function () {
+        it('should print something big', function () {
+            console.log("\x1b[35m" + " ------------------ Auth ------------------\n");
+        })
+    });
 
     describe('Local auth strategy', function () {
         let user = {
@@ -56,12 +61,12 @@ module.exports = (storage, chakram) => {
             return expect(user.ok).to.joi(schemas.auth.response_schema);
         });
 
-        it('should return 400 when the email doesn\'t exist', function () {
-            return expect(user.wrongEmail).to.have.status(400);
+        it('should return 404 when the email doesn\'t exist', function () {
+            return expect(user.wrongEmail).to.have.status(404);
         });
 
-        it('should return 400 when the passwords doesn\'t match', function () {
-            return expect(user.wrongPassword).to.have.status(400);
+        it('should return 404 when the passwords doesn\'t match', function () {
+            return expect(user.wrongPassword).to.have.status(404);
         });
 
         it('should return correct validation errors', function () {

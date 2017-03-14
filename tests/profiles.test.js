@@ -6,21 +6,27 @@
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
         route = storage.resource('profiles/'),
-        rnd_string = 'random_string_shouldnt_be_used',
+        rnd_string = Math.random().toString(36).slice(-10),
         schemas = {
             common: require('./schemas/common.schema'),
             profiles: require('./schemas/profile.schema'),
             error: require('./schemas/error.schema')
         };
 
-//Tests
+// ------------------ Tests ------------------
+    describe('', function () {
+        it('should print something big', function () {
+            console.log("\x1b[35m" + " ------------------ Profiles ------------------\n");
+        })
+    });
+
     describe('Profile list [GET /profiles]', function () {
         let profiles = {
             list: null
         };
 
         before('Get profile list', function () {
-            profiles.list = chakram.get(route)
+            profiles.list = chakram.get(route);
         });
 
         it('should return 200 on success', function () {
@@ -66,11 +72,13 @@ module.exports = (storage, chakram) => {
             ret: null
         };
         before('Update profile', function () {
-            success.test = chakram.put(route + storage.user.profile_id, {
+            return success.test = chakram.put(route + storage.user.profile_id, {
                 profile: {
                     first_name: rnd_string
                 }
             });
+        });
+        before('Get profile', function () {
             return success.ret = chakram.get(route + storage.user.profile_id);
         });
 
@@ -100,7 +108,7 @@ module.exports = (storage, chakram) => {
             })
         });
     });
-
+// ------------------ Location ------------------
     describe('Get location [GET /profiles/:id/location]', function () {
         let loc;
         before('get profile location', function () {
@@ -120,14 +128,16 @@ module.exports = (storage, chakram) => {
         let r;
         let res;
         before('Update profile location', function () {
-            r = chakram.put(route + storage.user.profile_id + '/location', {
+            return r = chakram.put(route + storage.user.profile_id + '/location', {
                 location: {
                     country: rnd_string,
-                    city: rnd_string
                 }
             });
-            return res = chakram.get(route + storage.user.profile_id + '/location')
         });
+
+        before('Get profile location', function () {
+            return res = chakram.get(route + storage.user.profile_id + '/location')
+        })
 
         it('Should have status 200', function () {
             return expect(r).to.have.status(200);
@@ -141,11 +151,11 @@ module.exports = (storage, chakram) => {
             })
         })
     });
-
-    describe('Get profile followers [GET /profiles/:id/follow]', function () {
+// ------------------ Follow ------------------
+    describe('Get profile follows [GET /profiles/:id/follow]', function () {
         let follows;
         let fake;
-        before("Get profile followers", function () {
+        before("Get profile follows", function () {
             follows = chakram.get(route + storage.user.profile_id + '/follow');
         });
 
@@ -158,7 +168,7 @@ module.exports = (storage, chakram) => {
         });
 
         it('Should match schema', function () {
-            return expect(follows).to.joi(schemas.common.follow)
+            return expect(follows).to.joi(schemas.common.likes)
         });
 
         it('Should send success false', function () {
@@ -166,7 +176,7 @@ module.exports = (storage, chakram) => {
         });
     });
 
-    describe('Follow profile [POST /profiles/:id/follow]', function () {
+    describe('follow profile [POST /profiles/:id/follow]', function () {
         let lp;
         let fake;
         before('options', function () {
@@ -198,7 +208,7 @@ module.exports = (storage, chakram) => {
             fake = chakram.delete(route + 2928292 + '/follow');
         });
 
-        it('Should send success true', function () {
+        it('Should send succes true', function () {
             return expect(remove).to.joi(schemas.common.success);
         });
 
@@ -206,4 +216,4 @@ module.exports = (storage, chakram) => {
             return expect(fake).to.joi(schemas.error.success);
         });
     });
-};
+};// ------------------ end module ------------------
