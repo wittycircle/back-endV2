@@ -66,6 +66,21 @@ const alter_articles = () => {
 
 };
 
+
+//            *** Profiles ***
+const alter_profiles = () => {
+    return Promise.all([
+        db.schema.raw('alter table profiles change COLUMN facebook_id facebook_id bigint(20) unsigned NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN twitter_id twitter_id bigint(20) unsigned NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN google_id google_id varchar(255) NULL DEFAULT NULL'),
+        
+        db.schema.raw('alter table profiles change COLUMN facebook_token facebook_token varchar(255) NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN twitter_token twitter_token varchar(255) NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN google_token google_token varchar(255) NULL DEFAULT NULL')
+
+        ])
+
+}
 //			***	Location ***
 const alter_location = (table) => {
     return Promise.all([
@@ -192,6 +207,7 @@ const modify_db = () => {
         .then(() => Promise.all(table_creation_foreign))
         //			*** Alter ***
         .then(() => alter_articles())
+        .then(() => alter_profiles())
         .then(() => alter_location('profiles'))
         .then(() => alter_location('projects'))
         .then(() => alter_project_followers())
