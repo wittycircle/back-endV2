@@ -168,11 +168,11 @@ describe('', function() {
         });
 
         it('Should match schema', function () {
-            return expect(follows).to.joi(schemas.common.likes)
+            return expect(follows).to.joi(schemas.profiles.listfollow)
         });
 
         it('Should send success false', function () {
-            return expect(fake).to.joi(schemas.error.success)
+            return expect(fake).to.joi(schemas.error.description)
         });
     });
 

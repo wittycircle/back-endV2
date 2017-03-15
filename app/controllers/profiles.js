@@ -41,12 +41,15 @@ exports.updateProfile = (req, res, next) => {
 // ------------------ Follow ------------------
 
 exports.getProfileFollowers = (req, res, next) => {
+    Promise.all([
+    profiles.getProfileFollowers( 'l.user_id','l.follow_user_id', req.params.id),
     profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
-    .then((r) => {
-        if (!r.length)
-            next({code: 400});
+        ])
+    .then(([r, r1]) => {
+        if (typeof r === 'string')
+            return next([r, "Invalid id"])
         else
-            res.send({like: {count: r.length,who: r}})
+            res.send({following: r, followers: r1})
     }).catch(err => next(err))
 };
 

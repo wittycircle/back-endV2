@@ -25,3 +25,8 @@ exports.list = joi.object().keys({
 exports.location = joi.object().keys({
     location: p_location
 });
+
+exports.listfollow = joi.object().keys({
+	following: joi.array().items(detail),
+	followers: joi.array().items(detail)
+});

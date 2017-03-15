@@ -22,18 +22,17 @@ exports.updateProfile = (stuff, cnd) => {
         .where(cnd)
 };
 // ------------------ Follow ------------------
-exports.getProfileFollowers = (cond, cond2, id) => {
-    const sub = db.select('l.follow_user_id', 'l.user_id')
-                .from(TABLES.USER_LIKES + ' as l')
-                .whereIn(cond, function() {
-                    this.select('id').from(TABLES.USERS).where('profile_id', id)
-                })
-                .as('l');
-
-    return db.select(h.p_array)
-        .from(sub)
-        .join(h.u_profile, 'p.uid', 'l.follow_user_id')
-        .groupBy(cond2);
+exports.getProfileFollowers = (cond, cond2, p_id) => {
+    return h.exist(TABLES.USER_PROFILES, p_id).then(r => {
+        if (!r.length)
+            return "Bad profile id"
+        else {
+            return db.distinct(h.p_array) 
+                .from(TABLES.USER_LIKES + ' as l') 
+                .join(h.u_profile, 'p.uid', cond2) 
+                .where(cond, p_id)
+        }
+    });
 };
 
 exports.followProfile = (id, uid) => {
