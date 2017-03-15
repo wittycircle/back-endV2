@@ -165,21 +165,21 @@ describe('', function() {
 		});
 	});
 			// *** Remove article ***
-	// describe('remove article [DELETE /articles/:article_id]', function() {
-	// 	let r, v;
-	// 	before('request', function() {
-	// 		r = chakram.delete(route + test.article_id);
-	// 	});
+	describe('remove article [DELETE /articles/:article_id]', function() {
+		let r, v;
+		before('request', function() {
+			r = chakram.delete(route + test.article_id);
+		});
 	
-	// 	it('Should match schema', function() {
-	// 		return expect(r).to.joi(schemas.common.success);
-	// 	});
+		it('Should match schema', function() {
+			return expect(r).to.joi(schemas.common.success);
+		});
 
-	// 	after('Cleanup table articles', function () {
-	// 		db.raw('DELETE from articles where id > 4').return();
-	// 		db.raw('alter table articles AUTO_INCREMENT = 5').return();
-	// 	});
-	// });
+		after('Cleanup table articles', function () {
+			db.raw('DELETE from articles where id > 4').return();
+			db.raw('alter table articles AUTO_INCREMENT = 5').return();
+		});
+	});
 // ------------------ ARTICLES TAGS ------------------
 describe('', function() {
     it ('should print something big', function() {
