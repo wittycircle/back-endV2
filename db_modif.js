@@ -134,23 +134,13 @@ const alter_project_openings = () => {
 };
 
 // ------------------ Create tables ------------------
-const table_creation = [
+const table_creation_no_foreign = [
     db.schema.createTable('article_tags', function (t) {
         t.increments();
         t.string('name').notNullable();
         t.unique('name');
         t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
         t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
-    }),
-    db.schema.createTable('tag_articles', function (t) {
-        t.increments();
-        t.integer('article_id').notNullable();
-        t.integer('tag_id').unsigned().notNullable();
-        t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-        t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-//			***	Relations	***
-        t.foreign('article_id').references('articles.id').onDelete('cascade');
-        t.foreign('tag_id').references('article_tags.id').onDelete('cascade');
     }),
     db.schema.createTable(TABLES.MESSAGES, function (t) {
         t.increments();
@@ -162,6 +152,18 @@ const table_creation = [
     })
 ];
 
+const table_creation_foreign = [
+    db.schema.createTable('tag_articles', function (t) {
+        t.increments();
+        t.integer('article_id').notNullable();
+        t.integer('tag_id').unsigned().notNullable();
+        t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+        t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+//			***	Relations	***
+        t.foreign('article_id').references('articles.id').onDelete('cascade');
+        t.foreign('tag_id').references('article_tags.id').onDelete('cascade');
+    })
+    ];
 // ------------------ Insert tables ------------------
 const table_insert = [
     db.batchInsert(TABLES.ARTICLE_TAGS,
@@ -182,9 +184,8 @@ const modify_db = () => {
     return drop_tables()
         .then(() => add_admin())
         //			*** Create ***
-        .then(() => {
-            return Promise.all(table_creation)
-        })
+        .then(() => Promise.all(table_creation_no_foreign))
+        .then(() => Promise.all(table_creation_foreign))
         //			*** Alter ***
         .then(() => alter_articles())
         .then(() => alter_location('profiles'))
@@ -193,9 +194,7 @@ const modify_db = () => {
         .then(() => alter_projects())
         .then(() => alter_project_openings())
         //			*** Insert ***
-        .then(() => {
-            return Promise.all(table_insert)
-        })
+        .then(() => Promise.all(table_insert))
         //			*** Modify ***
         .then(() => profile_description_text())
         .then(() => all_utf8())

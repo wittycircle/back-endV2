@@ -4,7 +4,7 @@
 
 const profiles = require('../models/profiles'),
     _ = require('lodash'),
-    cache = require('../services/cache');
+    cache = require('../../socket-server/lib/cache');
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()

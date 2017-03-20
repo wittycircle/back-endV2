@@ -1,9 +1,6 @@
 [submodule "api-doc"]
 	path = api-doc
 	url = https://github.com/wittycircle/api-doc.git
-[submodule "public"]
-	path = public
-	url = https://github.com/wittycircle/front-end-test.git
 [submodule "socket-server"]
 	path = socket-server
 	url = https://github.com/wittycircle/socket-server.git
