@@ -75,7 +75,7 @@ exports.cardProfile = (selector) => {
 
 // ------------------ Project ------------------
 exports.cardProject = (selector) => {
-    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+    const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
      'c.id as category_id', 'c.name as category_name',  /*db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'),*/ /*<- Debug to see if order correctly*/
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
      db.raw('CONCAT (city, ", ", country) as location')
@@ -85,7 +85,7 @@ exports.cardProject = (selector) => {
             sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o'),
             sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
 
-     const query = db.distinct(p_array)
+     const query = db.distinct(pr_array)
             .countDistinct('pl.id as followers')
             .countDistinct('m.user_id as members')
             .from(TABLES.PROJECTS + ' as pr')
@@ -96,6 +96,10 @@ exports.cardProject = (selector) => {
             .where('pr.project_visibility', 1)
             .whereRaw('pr.picture_card <> ""')
             // .groupBy( 'pl.creation_date','pr.id')
+
+     if (selector.uid){
+        pr_array.push(db.raw('GROUP_CONCAT(DISTINCT IF(pl.user_id = ' + selector.uid + ', true, null))  as follow'))
+     }
 
     if (selector.network)
         query.orderByRaw('CASE WHEN p.network like "' + selector.network + '" THEN 1 else 2 END')
@@ -126,30 +130,30 @@ As the table never clears, and keep record of thing
 [TO DO way later, first finish v2]
 */
 // ------------------ Project ------------------
-exports.mainProjects = (exact) => {
-    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
-     'c.id as category_id', 'c.name as category_name', 'p.network',
-     'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-     db.raw('CONCAT (city, ", ", country) as location')
-     ];
+// exports.mainProjects = (exact) => {
+//     const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+//      'c.id as category_id', 'c.name as category_name', 'p.network',
+//      'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+//      db.raw('CONCAT (city, ", ", country) as location')
+//      ];
 
-     const sub_members = db(TABLES.PROJECT_MEMBERS).select('project_id', 'user_id').where('n_accept', 1).as('m')
-     const sub_likes = db(TABLES.PROJECT_LIKES).select().as('pl')
-     if (exact)
-        sub_likes.whereRaw('creation_date > (NOW() - INTERVAL 48 HOUR)').as('pl')
+//      const sub_members = db(TABLES.PROJECT_MEMBERS).select('project_id', 'user_id').where('n_accept', 1).as('m')
+//      const sub_likes = db(TABLES.PROJECT_LIKES).select().as('pl')
+//      if (exact)
+//         sub_likes.whereRaw('creation_date > (NOW() - INTERVAL 48 HOUR)').as('pl')
 
-     return db.distinct(p_array)
-            .countDistinct('pl.id as followers')
-            .countDistinct('m.user_id as members')
-            .from(TABLES.PROJECTS + ' as pr')
-            .join(h.u_profile, 'p.uid', 'pr.user_id')
-            .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
-            .join(sub_likes, 'pl.project_id', 'pr.id')
-            .leftJoin(sub_members, 'm.project_id', 'pr.id')
-            .whereRaw('pr.picture_card <> ""')
-            .orderByRaw('pl.creation_date DESC')
-            .groupBy('pl.creation_date', 'pr.id' )
-};
+//      return db.distinct(p_array)
+//             .countDistinct('pl.id as followers')
+//             .countDistinct('m.user_id as members')
+//             .from(TABLES.PROJECTS + ' as pr')
+//             .join(h.u_profile, 'p.uid', 'pr.user_id')
+//             .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+//             .join(sub_likes, 'pl.project_id', 'pr.id')
+//             .leftJoin(sub_members, 'm.project_id', 'pr.id')
+//             .whereRaw('pr.picture_card <> ""')
+//             .orderByRaw('pl.creation_date DESC')
+//             .groupBy('pl.creation_date', 'pr.id' )
+// };
 
 
 
