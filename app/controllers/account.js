@@ -1,4 +1,5 @@
 const account = require('../models/account'),
+	mailer = require('../services/mailer'),
 	bcrypt = require('bcrypt-nodejs'),
 	crypto = require('crypto'),
     _ = require('lodash');	
@@ -55,7 +56,12 @@ exports.activate = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
+				console.log("ACCOUNT HERE", r[0])
+				mailer.welcome(r[0])
+				// console.log(mailer.welcome())
+				console.log("AFTER")
 				res.send({success: true})
+				return null;
 			}
 		})
 		.catch(err => next(err))
