@@ -5,11 +5,10 @@ const express = require('express'),
     router = express.Router(),
     account = require('../controllers/account'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
-    passport = require('passport'),
-    auth = (x) => passport.authenticate(x);
+    {auth, AUTH} = require('../services/auth');
 
 router.route('/accounts/password')
-	.put(auth('bearer'), validate(schemas.common.password), account.updatePassword)
+	.put(auth(AUTH.PRIVATE), validate(schemas.common.password), account.updatePassword)
 
 router.route('/accounts/register')
 	.post(validate(schemas.account.register), account.register);

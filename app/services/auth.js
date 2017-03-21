@@ -12,7 +12,7 @@ const AUTH_MODE = exports.AUTH = {
 
 const passport = require('passport');
 
-exports.midauth = (privilege) => (req, res, next) => passport.authenticate('bearer', function (err, user, info) {
+exports.auth = (privilege) => (req, res, next) => passport.authenticate('bearer', {session: false}, function (err, user, info) {
     if (err) next(err);
     else if (!user && privilege === AUTH_MODE.PRIVATE)
         next({code: 400});
