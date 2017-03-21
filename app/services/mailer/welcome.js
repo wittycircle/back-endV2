@@ -6,25 +6,22 @@ const {db, TABLES} = require('../../models/index');
 args : {
 	email, str
 }
-
 */
+const _ = require('lodash');
 const welcome = (args) => {
 console.log("ARGS ARGS ARGS", args)
 let	mail = new helper.Mail(),
 	pers = new helper.Personalization();
 
 
-return db.first(db.raw('CONCAT (p.first_name, " ", p.last_name) as username'))
+return db.select(db.raw('CONCAT (p.first_name, " ", p.last_name) as username'))
 		.from(TABLES.USERS + ' as u')
 		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
 		.where({email: args.email})
 	.then(username => {
-		console.log("USERNAME")
-		console.log(username)
-		console.log(wm)
-		// return "toto";
+		username = _.map(username, 'username')
 			sub = { "-FNAME-" : username };
-			list_mail = [args.email, "sequoya@wittycircle.com"]
+			list_mail = [args.email, "sequoya@wittycircle.com", 'raphael.dantzer@yahoo.fr']
 
 			wm.subject(mail, pers, "Welcome to Witty !");
 			wm.to(pers, "noreply@nope.nope");
