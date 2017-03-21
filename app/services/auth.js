@@ -1,0 +1,25 @@
+/**
+ * Created by rdantzer on 21/03/17.
+ */
+
+'use strict';
+
+
+const AUTH_MODE = exports.AUTH = {
+    PRIVATE: 1,
+    PUBLIC: 2
+};
+
+const passport = require('passport');
+
+exports.auth = (privilege) => (req, res, next) => passport.authenticate('bearer', function (err, user, info) {
+    if (err && privilege !== AUTH_MODE.PUBLIC)
+        next(err);
+    else if (!user && privilege)
+        next({code: 400});
+    else
+        req.logIn(user, err => {
+            if (err) next(err);
+            else next();
+        })
+})(req, res, next);
