@@ -4,7 +4,8 @@ const express = require('express'),
     search = require('../controllers/search'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
     passport = require('passport'),
-    auth = (x) => passport.authenticate(x);
+    auth = (x) => passport.authenticate(x),
+    { midauth, AUTH } = require('../services/auth');
 
 router.param('id', validateParam(schemas.params.id));
 router.param('opening_id', validateParam(schemas.params.id));
@@ -15,7 +16,7 @@ router.route('/projects')
     .post(auth('bearer'), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/search')
-    .post(validate(schemas.search.project), search.searchProject)
+    .post(midauth(AUTH.PUBLIC), validate(schemas.search.project), search.searchProject)
     
 router.route('/projects/:id')
     .get(projects.getProject)

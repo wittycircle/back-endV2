@@ -49,6 +49,7 @@ describe('', function() {
     	});
     
     	it('Should match schema', function() {
+            return r.then(rr => console.log(rr.body.projects))
     		return expect(r).to.joi(schemas.search.projects);
     	});
     	it('Should match validation error', function () {
