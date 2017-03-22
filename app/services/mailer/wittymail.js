@@ -51,14 +51,45 @@ wm.send = send;
 module.exports.wm = wm
 
 module.exports.TEMPLATES =  {
-	welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',
-
+	// ask_project: ,
+	// upvote_project: ,
+	// invite_user:, 
+	// invite_team: ,
+	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
+	// new_project: ,
+	// reply_project: ,
+	// reset_password: ,
+	// suggestion_profile: ,
+	// suggestion_project: ,
+	// uc_invitation: ,
+	// user_follow:,
+	// validate_account: ,
+	// validation-network: ,
+	// verification_network: ,
+	// profile_views:,
+		welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',
 }
 
-/*
-WITTY ACCOUNT 
+
+/* WITTY ACCOUNT 
+
 module.exports.TEMPLATES =  {
+	ask_project: ,
+	upvote_project: ,
+	invite_user:, 
+	invite_team: ,
+	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
+	new_project: ,
+	reply_project: ,
+	reset_password: ,
+	suggestion_profile: ,
+	suggestion_project: ,
+	uc_invitation: ,
+	user_follow:,
+	validate_account: ,
+	validation-network: ,
+	verification_network: ,
+	profile_views:,
 	welcome : 'f98676a1-51f8-4164-91fe-9e4178d46553',
 }
-
 */

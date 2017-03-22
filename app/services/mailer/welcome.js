@@ -6,7 +6,7 @@ const _ = require('lodash');
 const welcome = (args) => {
 let	mail = new helper.Mail(),
 	pers = new helper.Personalization();
-
+args.email = 'Qntvrr@gmail.com';
 return db.select(db.raw('CONCAT (p.first_name, " ", p.last_name) as username'))
 		.from(TABLES.USERS + ' as u')
 		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')

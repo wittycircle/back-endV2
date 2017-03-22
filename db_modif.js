@@ -2,6 +2,17 @@ const config = require('./app/private'),
     {db, TABLES} = require('./app/models/index'),
     _ = require('lodash');
 
+
+/*
+// ------------------ TABLES THAT SEEMS UNUSED ------------------
+- notification_view
+- history
+- portfolios_likes
+- project_polls
+-undefined
+
+*/
+
 //articles
 //article_tags => List of tags for article
 // tag_articles => relation table
