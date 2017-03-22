@@ -12,6 +12,7 @@ const Strategy = {
     },
     bcrypt = require('bcrypt-nodejs'),
     session = require('../middlewares/session').session,
+    account = require('../models/account'),
     users = require('../models/users'),
     config = require('../private').social_auth; //automatically selects prod or dev config
 
@@ -30,7 +31,7 @@ module.exports = function (passport) {
     });
 
     passport.use(new Strategy.bearer({
-            session: false
+        session: true
         }, (token, done) => {
             session.getUser(token, function (err, resp) {
                     if (err)
@@ -44,13 +45,39 @@ module.exports = function (passport) {
         }
     ));
 
+    const oauth_helper = {
+        logon: (req, user, done, profile, origin) => {
+            console.log(profile);
+            users.getUserBySocialId(profile.id, origin)
+                .then(user => {
+                    if (user.length) {
+                        user = user[0];
+                        done(null, {
+                            id: user.id,
+                            profile_id: user.profile_id,
+                            email: user.email,
+                            ip: req.ip
+                        })
+                    } else {
+                        return account.socialRegister(profile, origin)
+                    }
+                })
+                .then(console.log)
+                .catch(err => done(err))
+        }
+    };
+
     passport.use(new Strategy.facebook({
             passReqToCallback: true,
             clientID: config.facebook.clientID,
             clientSecret: config.facebook.clientSecret,
-            callbackURL: config.facebook.callbackURL
+        callbackURL: config.facebook.callbackURL,
+        profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
         }, (req, accessToken, refreshToken, profile, done) => {
-            //todo implement
+        users.getUserBySocialId(profile.id, 'facebook')
+            .then(user => oauth_helper.logon(req, user, done, profile, 'facebook'))
+            .then(console.log)
+            .catch(err => done(err))
         }
     ));
 
@@ -60,7 +87,9 @@ module.exports = function (passport) {
             clientSecret: config.google.clientSecret,
             callbackURL: config.google.callbackURL
         }, (req, accessToken, refreshToken, profile, done) => {
-            //todo implement
+        users.getUserBySocialId(profile.id, 'google')
+            .then(user => oauth_helper.logon(req, user, done, profile, 'google'))
+            .catch(err => done(err))
         }
     ));
 
