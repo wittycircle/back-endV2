@@ -49,19 +49,13 @@ module.exports = function (passport) {
         logon: (req, user, profile, origin) => {
             if (user.length) {
                 user = user[0]; 
-                console.log(user)
                 return {
                     id: user.id, 
                     profile_id: user.profile_id, 
                     email: user.email ,
                 }; 
             } else {
-                let aa = account.socialRegister(profile, origin)
-             return aa.then(r => {
-                console.log("ICI")
-                console.log(r)
-                return r
-            })
+                return account.socialRegister(profile, origin).then(r => r)
             }
         }
     };
@@ -76,7 +70,6 @@ module.exports = function (passport) {
         users.getUserBySocialId(profile.id, 'facebook')
             .then(user => oauth_helper.logon(req, user, profile, 'facebook')  )
             .then(data => {
-                console.log('Social register', data);
                 data.ip = req.ip;
                 done(null, data);
             })
