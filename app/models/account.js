@@ -67,7 +67,14 @@ exports.socialRegister = (data, origin) => {
         .then((profileId) => {
             helper.user.profile_id = profileId;
             helper.user.password = '';
-            db(TABLES.USERS).insert(helper.user)
+            return db(TABLES.USERS).insert(helper.user)
+        })
+        .then((userId) => {
+            return {
+                user_id: userId,
+                profile_id: helper.user.profile_id,
+                email: helper.user.email
+            }
         })
 };
 

@@ -36,7 +36,6 @@ exports.watch = () => {
 };
 
 const send = (channel, payload) => {
-    console.log(`Published ${channel} ${payload}`);
     pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload));
 };
 

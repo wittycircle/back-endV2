@@ -48,26 +48,17 @@ module.exports = function (passport) {
     const oauth_helper = {
         logon: (req, user, done, profile, origin) => {
             console.log(profile);
-            users.getUserBySocialId(profile.id, origin)
-                .then(user => {
-                    if (user.length) {
-                        user = user[0];
-                        done(null, {
-                            id: user.id,
-                            profile_id: user.profile_id,
-                            email: user.email,
-                            ip: req.ip
-                        })
-                    } else {
-                        return account.socialRegister(profile, origin)
-                    }
+            if (user.length) {
+                user = user[0];
+                done(null, {
+                    id: user.id,
+                    profile_id: user.profile_id,
+                    email: user.email,
+                    ip: req.ip
                 })
-                .then(data => {
-                    console.log('Social register', data);
-                    if (data !== null)
-                        done(null, {});
-                })
-                .catch(err => done(err))
+            } else {
+                return account.socialRegister(profile, origin)
+            }
         }
     };
 
@@ -79,7 +70,25 @@ module.exports = function (passport) {
         profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
         }, (req, accessToken, refreshToken, profile, done) => {
         users.getUserBySocialId(profile.id, 'facebook')
-            .then(user => oauth_helper.logon(req, user, done, profile, 'facebook'))
+            .then(user => {
+                if (user.length) {
+                    user = user[0];
+                    done(null, {
+                        id: user.id,
+                        profile_id: user.profile_id,
+                        email: user.email,
+                        ip: req.ip
+                    })
+                } else {
+                    console.log('register')
+                    return account.socialRegister(profile, 'facebook')
+                }
+            })
+            .then(data => {
+                console.log('Social register', data);
+                if (data !== null)
+                    done(null, {});
+            })
             .catch(err => done(err))
         }
     ));
@@ -91,7 +100,27 @@ module.exports = function (passport) {
             callbackURL: config.google.callbackURL
         }, (req, accessToken, refreshToken, profile, done) => {
         users.getUserBySocialId(profile.id, 'google')
-            .then(user => oauth_helper.logon(req, user, done, profile, 'google'))
+            .then(user => {
+                if (user.length) {
+                    console.log(user[0]);
+                    console.log("BELELE")
+                    user = user[0];
+                    return {
+                        id: user.id,
+                        profile_id: user.profile_id,
+                        email: user.email
+                    }
+                } else {
+                    console.log("BELA")
+                    let bla = account.socialRegister(profile, 'google')
+                    console.log("BLA", bla)
+                    return bla
+                }
+            })
+            .then(data => {
+                data.ip = req.ip;
+                done(null, data);
+            })
             .catch(err => done(err))
         }
     ));
@@ -116,4 +145,5 @@ module.exports = function (passport) {
             done(null, false);
         }).catch(err => done(err));
     }))
-};
+}
+;
