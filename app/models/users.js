@@ -10,6 +10,15 @@ exports.getUserSkills = (id) => {
         .groupBy('us.skill_id')
 };
 
+// SELECT * FROM profiles p INNER JOIN users u ON p.id = u.profile_id WHERE ${auth}_id = ${id}
+exports.getUserBySocialId = (id, auth) => {
+    let key = `${auth}_id`;
+    return db.select('*')
+        .from(`${TABLES.USER_PROFILES} as p`)
+        .innerJoin(`${TABLES.USERS} as u`, 'p.id', 'u.profile_id')
+        .where(key, id)
+};
+
 exports.getUserBy = (by) => {
     return db.select(['id', 'profile_id', 'password']).from(TABLES.USERS).where(by);
 };

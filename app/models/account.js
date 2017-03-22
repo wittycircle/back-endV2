@@ -18,12 +18,57 @@ exports.activate = (token) => {
 			return "Bad token"
 		} else{
 			return Promise.all([
-				db(TABLES.USERS).first('email').where('email', r[0].user_email),
 				db(TABLES.USERS).update({valid : 1}).where('email', r[0].user_email),
-				db(TABLES.ACCOUNT_VALIDATION).del().where('token', token),
+				db(TABLES.ACCOUNT_VALIDATION).del().where('token', token)
 				]);
 		} 
 	});
+};
+
+const social_helper = {
+	'facebook': (data) => {
+		return {
+			profile: {
+				facebook_id: data.id,
+				facebook_url: data.profileUrl,
+				first_name: data.name.givenName,
+				last_name: data.name.familyName,
+				profile_picture: data.photos[0].value
+			},
+			user: {
+				email: data.emails[0].value,
+                username: _.escape(data.displayName)
+			}
+		}
+	},
+	'google': (data) => {
+		data = JSON.parse(data._raw);
+		return {
+			profile: {
+				google_id: data.id,
+				google_url: data.url,
+				first_name: data.name.givenName,
+				last_name: data.name.familyName,
+				profile_picture: data.image.url
+			},
+			user: {
+				email: data.emails[0].value,
+                username: _.escape(data.displayName)
+			}
+		}
+	}
+};
+
+exports.socialRegister = (data, origin) => {
+	console.log(data);
+	const helper = social_helper[origin](data);
+	return db(TABLES.USER_PROFILES)
+		.insert(helper.profile)
+		.then((profileId) => {
+			helper.user.profile_id = profileId;
+			helper.user.password = '';
+			return db(TABLES.USERS).insert(helper.user)
+		})
 };
 
 exports.register = (data, token) => {

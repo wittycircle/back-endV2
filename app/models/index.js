@@ -40,6 +40,7 @@ exports.TABLES = {
     TAG_ARTICLES: 'tag_articles',
     ARTICLE_TAGS: 'article_tags',
     ARTICLE_LIKES: 'article_likes',
+    ARTICLE_MSG: 'article_message',
 //            ***    CHAT    ***
     MESSAGES: 'messages',
 //            ***    MISC    ***
