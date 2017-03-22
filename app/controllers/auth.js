@@ -2,7 +2,6 @@
  * Created by rdantzer on 19/01/17.
  */
 const passport = require('passport'),
-    session = require('../middlewares/session').session,
     user = require('../models/users'),
     project = require('../models/projects'),
     _ = require('lodash');
@@ -22,8 +21,35 @@ exports.logout = (req, res) => {
         });
 };
 
+const generic_login = (req, res, next) => (err, user) => {
+    if (err) next({
+        code: 401,
+        error: 'unauthorized',
+        error_description: 'invalid token'
+    });
+    else if (_.isEmpty(user))
+        next({
+            code: 400,
+            error: 'malformed',
+            error_description: 'invalid credentials'
+        });
+    else
+        req.logIn(user, err => {
+            if (err) next({
+                code: 500,
+                error: 'internal_error',
+                error_description: 'Please try later'
+            });
+            else
+                res.json({
+                    auth: _.pick(req.session.passport.user, ['token']),
+                    user: _.pick(req.user, ['id', 'profile_id', 'email'])
+                });
+        });
+};
+
 exports.localLogin = (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', (err, user) => {
         if (err) next({
             code: 401,
             error: 'unauthorized',
@@ -43,6 +69,37 @@ exports.localLogin = (req, res, next) => {
                     error_description: 'Please try later'
                 });
                 else
+                    req.broadcastEvent('user_online', {id: req.user.id});
+                res.json({
+                    auth: _.pick(req.session.passport.user, ['token']),
+                    user: _.pick(req.user, ['id', 'profile_id', 'email'])
+                });
+            });
+    })(req, res, next);
+};
+
+exports.socialLogin = (auth, opts) => (req, res, next) => {
+    passport.authenticate(auth, opts, (err, user) => {
+        if (err) next({
+            code: 401,
+            error: 'unauthorized',
+            error_description: 'invalid token'
+        });
+        else if (_.isEmpty(user))
+            next({
+                code: 400,
+                error: 'malformed',
+                error_description: 'invalid credentials'
+            });
+        else
+            req.logIn(user, err => {
+                if (err) next({
+                    code: 500,
+                    error: 'internal_error',
+                    error_description: 'Please try later'
+                });
+                else
+                    req.broadcastEvent('user_online', {id: req.user.id});
                     res.json({
                         auth: _.pick(req.session.passport.user, ['token']),
                         user: _.pick(req.user, ['id', 'profile_id', 'email'])
@@ -107,22 +164,3 @@ exports.verifyProjectNetwork = (req, res) => {
             }
         })
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
