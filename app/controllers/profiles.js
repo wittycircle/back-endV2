@@ -58,7 +58,7 @@ exports.followProfile = (req, res, next) => {
         if (_.isEmpty(r))
             res.send({success: false});
         else {
-            // cache.pub.publish('')
+            req.broadcastEvent('user_follow', [req.params.id, req.user.id]);
             res.send({success: true})
         }
     })
