@@ -63,20 +63,25 @@ exports.socialRegister = (data, origin) => {
     const helper = social_helper[origin](data);
     console.log("MODELMODEL", helper)
     console.log("--------------------------------")
-    return h.exist(TABLES.USERS, 'data.email', 'email').then(r => {
-        if (r.length)
+    return h.exist(TABLES.USERS, helper.user.email, 'email').then(r => {
+        // console.log("REXIST IS", r)
+        if (r.length){
+            console.log("TAKEN")
             return "Email already taken"
+        }
         else {
+            // console.log("FREEs")
          return db(TABLES.USER_PROFILES).insert(helper.profile)
             .then(profileId => {
                 helper.user.profile_id = profileId; 
                 helper.user.password = '';
                  return db(TABLES.USERS).insert(helper.user)
                     .then((r) => {
+                        console.log("ETLALALA")
                         return {
                         id: r[0],
                         profile_id: helper.user.profile_id[0], 
-                        email: helper.user.email 
+                        email: helper.user.email ,
                         }
                 });
             });

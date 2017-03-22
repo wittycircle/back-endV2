@@ -49,13 +49,19 @@ module.exports = function (passport) {
         logon: (req, user, profile, origin) => {
             if (user.length) {
                 user = user[0]; 
+                console.log(user)
                 return {
                     id: user.id, 
                     profile_id: user.profile_id, 
-                    email: user.email 
+                    email: user.email ,
                 }; 
             } else {
-                 return account.socialRegister(profile, origin).then(r => r)
+                let aa = account.socialRegister(profile, origin)
+             return aa.then(r => {
+                console.log("ICI")
+                console.log(r)
+                return r
+            })
             }
         }
     };
