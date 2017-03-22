@@ -56,10 +56,7 @@ exports.activate = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
-				console.log("ACCOUNT HERE", r[0])
-				mailer.welcome(r[0])
-				// console.log(mailer.welcome())
-				console.log("AFTER")
+				// mailer.welcome(r[0])
 				res.send({success: true})
 				return null;
 			}

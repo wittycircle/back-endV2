@@ -186,7 +186,7 @@ const table_creation_foreign = [
 // ------------------ Insert tables ------------------
 const table_insert = [
     db.batchInsert(TABLES.ARTICLE_TAGS,
-        ['mentoring', 'entrepreneurship', 'community', 'event', 'startupgeneration', 'popcorn']
+        ['mentoring', 'entrepreneurship', 'community', 'event', 'startup generation', 'popcorn']
             .map(tag => {
                 return {name: tag}
             })
@@ -195,7 +195,12 @@ const table_insert = [
         {room_id: 1, user_id: 1, data: 'Hello world'},
         {room_id: 1, user_id: 2, data: 'This is a test'},
         {room_id: 2, user_id: 3, data: 'This is another test'}
-    ])
+    ]),
+    db.batchInsert(TABLES.TAG_ARTICLES, [
+        {article_id: 4, tag_id:2},
+        {article_id: 4, tag_id:5},
+        {article_id: 4, tag_id:3}
+        ])
 ];
 
 

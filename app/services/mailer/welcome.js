@@ -1,18 +1,11 @@
 const wm = require('./wittymail');
 const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
-
-/*
-args : {
-	email, str
-}
-*/
 const _ = require('lodash');
+
 const welcome = (args) => {
-console.log("ARGS ARGS ARGS", args)
 let	mail = new helper.Mail(),
 	pers = new helper.Personalization();
-
 
 return db.select(db.raw('CONCAT (p.first_name, " ", p.last_name) as username'))
 		.from(TABLES.USERS + ' as u')
