@@ -2,7 +2,6 @@
  * Created by rdantzer on 19/01/17.
  */
 const passport = require('passport'),
-    session = require('../middlewares/session').session,
     user = require('../models/users'),
     project = require('../models/projects'),
     _ = require('lodash');
@@ -107,22 +106,3 @@ exports.verifyProjectNetwork = (req, res) => {
             }
         })
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
