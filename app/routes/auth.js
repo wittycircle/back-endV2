@@ -17,18 +17,18 @@ router.route('/local')
     .post(auth.localLogin);
 
 router.route('/google')
-    .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
+    .get(auth.socialLogin('google', { scope: ['profile', 'email'] }));
 
 router.route('/google/callback')
-    .get(passport.authenticate('google'), (req, res) => {
+    .get(auth.socialLogin('google'), (req, res) => {
         res.send({success: req.user})
     });
 
 router.route('/facebook')
-    .get(passport.authenticate('facebook', { scope: ['email'] }));
+    .get(auth.socialLogin('facebook', { scope: ['email'] }));
 
 router.route('/facebook/callback')
-    .get(passport.authenticate('facebook'), (req, res) => {
+    .get(auth.socialLogin('facebook'), (req, res) => {
         res.send({success: req.user})
     });
 

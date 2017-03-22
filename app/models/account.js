@@ -60,23 +60,29 @@ const social_helper = {
 };
 
 exports.socialRegister = (data, origin) => {
-    console.log(data);
     const helper = social_helper[origin](data);
-    return db(TABLES.USER_PROFILES)
-        .insert(helper.profile)
-        .then((profileId) => {
-            helper.user.profile_id = profileId;
-            helper.user.password = '';
-            return db(TABLES.USERS).insert(helper.user)
-        })
-        .then((userId) => {
-            return {
-                user_id: userId,
-                profile_id: helper.user.profile_id,
-                email: helper.user.email
-            }
-        })
-};
+    console.log("MODELMODEL", helper)
+    console.log("--------------------------------")
+    return h.exist(TABLES.USERS, 'data.email', 'email').then(r => {
+        if (r.length)
+            return "Email already taken"
+        else {
+         return db(TABLES.USER_PROFILES).insert(helper.profile)
+            .then(profileId => {
+                helper.user.profile_id = profileId; 
+                helper.user.password = '';
+                 return db(TABLES.USERS).insert(helper.user)
+                    .then((r) => {
+                        return {
+                        id: r[0],
+                        profile_id: helper.user.profile_id[0], 
+                        email: helper.user.email 
+                        }
+                });
+            });
+        }
+    });
+ };
 
 exports.register = (data, token) => {
     let profile_data = {
@@ -90,7 +96,7 @@ exports.register = (data, token) => {
             username: data.username,
         };
 
-    return h.exist(TABLES.USERS, "data.email", 'email').then(r => {
+    return h.exist(TABLES.USERS, data.email, 'email').then(r => {
         if (r.length)
             return "Email already taken"
         else {
