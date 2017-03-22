@@ -18,7 +18,6 @@ exports.activate = (token) => {
                 return "Bad token"
             } else {
                 return Promise.all([
-                    db(TABLES.USERS).first('email').where('email', r[0].user_email),
                     db(TABLES.USERS).update({valid: 1}).where('email', r[0].user_email),
                     db(TABLES.ACCOUNT_VALIDATION).del().where('token', token)
                 ]);
@@ -26,7 +25,6 @@ exports.activate = (token) => {
         });
 };
 
-// ------------------ SOCIAL ------------------
 const social_helper = {
     'facebook': (data) => {
         return {
@@ -69,10 +67,16 @@ exports.socialRegister = (data, origin) => {
         .then((profileId) => {
             helper.user.profile_id = profileId;
             helper.user.password = '';
-            db(TABLES.USERS).insert(helper.user)
+            return db(TABLES.USERS).insert(helper.user)
+        })
+        .then((userId) => {
+            return {
+                user_id: userId,
+                profile_id: helper.user.profile_id,
+                email: helper.user.email
+            }
         })
 };
-// ------------------ END SOCIAL ------------------
 
 exports.register = (data, token) => {
     let profile_data = {
