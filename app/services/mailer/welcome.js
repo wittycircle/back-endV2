@@ -1,4 +1,4 @@
-const wm = require('./wittymail');
+const {wm, TEMPLATES} = require('./wittymail');
 const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
@@ -10,21 +10,19 @@ let	mail = new helper.Mail(),
 return db.select(db.raw('CONCAT (p.first_name, " ", p.last_name) as username'))
 		.from(TABLES.USERS + ' as u')
 		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
-		.where({email: args.email})
+		.where('u.email', args.email)
 	.then(username => {
 		username = _.map(username, 'username')
 			sub = { "-FNAME-" : username };
-			list_mail = [args.email, "sequoya@wittycircle.com", 'raphael.dantzer@yahoo.fr']
 
 			wm.subject(mail, pers, "Welcome to Witty !");
-			wm.to(pers, "noreply@nope.nope");
-		  	wm.from(mail, "bail@test.com", "Growth Hacker");
-		  	wm.bcc(pers, list_mail)
+			wm.to(pers, /*args.email*/ 'sequoya@wittycircle.com');
+		  	wm.from(mail, 'quentin@wittycircle.com', "Quentin Verriere");
 			wm.substitutions(pers, sub)
 			wm.content(mail)
 			wm.reply(mail, "reply@bail.com");
 		    mail.addPersonalization(pers)
-			mail.setTemplateId("db2fc916-37b5-42dd-b7b7-99d6163fd6ff")
+			mail.setTemplateId(TEMPLATES.welcome)
 
 		  wm.send(mail);
 		  return null;

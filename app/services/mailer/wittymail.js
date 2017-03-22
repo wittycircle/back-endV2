@@ -48,5 +48,17 @@ wm.substitutions = subst;
 wm.send = send;
 
 
-module.exports = wm
+module.exports.wm = wm
 
+module.exports.TEMPLATES =  {
+	welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',
+
+}
+
+/*
+WITTY ACCOUNT 
+module.exports.TEMPLATES =  {
+	welcome : 'f98676a1-51f8-4164-91fe-9e4178d46553',
+}
+
+*/
