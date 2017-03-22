@@ -4,18 +4,26 @@
 
 'use strict';
 
-const events = [
-        'user_register',
-        'user_follow',
-        'opening_creation',
-        'project_up',
-        'project_creation',
-        'ranking',
-        'discussion_reply',
-        'discussion_like',
+const NAMESPACE = 'rest:update',
+    events = [
         'article_creation',
-        'article_like'
-    ], Redis = require('ioredis'),
+        'article_like',
+        'discussion_like',
+        'discussion_reply',
+        'discussion_reply_like',
+        'discussion_reply_update',
+        'opening_creation',
+        'profile_update',
+        'project_creation',
+        'project_up',
+        'project_update',
+        'ranking',
+        'user_follow',
+        'user_offline',
+        'user_online',
+        'user_register'
+    ].map(event => `${NAMESPACE}:${event}`),
+    Redis = require('ioredis'),
     config = require('../private').redis,
     redis = Redis(config),
     pub = Redis(config);
@@ -29,7 +37,7 @@ exports.watch = () => {
 
 const send = (channel, payload) => {
     console.log(`Published ${channel} ${payload}`);
-    pub.publish(channel, JSON.stringify(payload));
+    pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload));
 };
 
 exports.mount = (req, res, next) => {

@@ -48,6 +48,11 @@ exports.replyDiscussion = (req, res, next) => {
 				return next([r, 'Could not reply'])
 			}
 			else{
+                req.broadcastEvent('discussion_reply', {
+                    id: req.params.discussion_id,
+                    from: req.user.id,
+                    message: req.body.message
+                });
 				res.send({success: true})
 			}
 		})
@@ -61,7 +66,12 @@ exports.likeDiscussion = (req, res, next) => {
 			if (typeof r === 'string') {
 				return next([r, 'could not like'])
 			}
-			else{
+            else {
+                req.broadcastEvent('discussion_like', {
+                    from: req.user.id,
+                    id: req.params.discussion_id,
+                    value: 1
+                });
 				res.send({id: r[0]})
 			}
 		})
@@ -75,6 +85,11 @@ exports.unlikeDiscussion = (req, res, next) => {
 				return next([r, 'Could not unlike'])
 			}
 			else{
+                req.broadcastEvent('discussion_like', {
+                    from: req.user.id,
+                    id: req.params.discussion_id,
+                    value: -1
+                });
 				res.send({success: true})
 			}
 		})

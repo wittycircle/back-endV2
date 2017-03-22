@@ -62,7 +62,11 @@ module.exports = function (passport) {
                         return account.socialRegister(profile, origin)
                     }
                 })
-                .then(console.log)
+                .then(data => {
+                    console.log('Social register', data);
+                    if (data !== null)
+                        done(null, {});
+                })
                 .catch(err => done(err))
         }
     };
@@ -76,7 +80,6 @@ module.exports = function (passport) {
         }, (req, accessToken, refreshToken, profile, done) => {
         users.getUserBySocialId(profile.id, 'facebook')
             .then(user => oauth_helper.logon(req, user, done, profile, 'facebook'))
-            .then(console.log)
             .catch(err => done(err))
         }
     ));

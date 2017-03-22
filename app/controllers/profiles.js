@@ -29,70 +29,73 @@ exports.getProfile = (req, res, next) => {
 
 exports.updateProfile = (req, res, next) => {
     profiles.updateProfile(req.body.profile, {id: req.params.id})
-    .then(r => {
-        if (r)
-            res.send({success: true});
-        else
-            res.status(400).send({success: false})
-    })
-    .catch(err => next(err))
+        .then(r => {
+            if (r) {
+                req.broadcastEvent('profile_update', {id: req.params.id});
+                res.send({success: true});
+            }
+            else
+                res.status(400).send({success: false})
+        })
+        .catch(err => next(err))
 };
 // ------------------ Follow ------------------
 
 exports.getProfileFollowers = (req, res, next) => {
     Promise.all([
-    profiles.getProfileFollowers( 'l.user_id','l.follow_user_id', req.params.id),
-    profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
-        ])
-    .then(([r, r1]) => {
-        if (typeof r === 'string')
-            return next([r, "Invalid id"])
-        else
-            res.send({following: r, followers: r1})
-    }).catch(err => next(err))
+        profiles.getProfileFollowers('l.user_id', 'l.follow_user_id', req.params.id),
+        profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
+    ])
+        .then(([r, r1]) => {
+            if (typeof r === 'string')
+                return next([r, "Invalid id"])
+            else
+                res.send({following: r, followers: r1})
+        }).catch(err => next(err))
 };
 
 exports.followProfile = (req, res, next) => {
     profiles.followProfile(req.params.id, req.user.id)
-    .then((r) => {
-        if (_.isEmpty(r))
-            res.send({success: false});
-        else {
-            req.broadcastEvent('user_follow', [req.params.id, req.user.id]);
-            res.send({success: true})
-        }
-    })
-    .catch(error => next(error))
+        .then((r) => {
+            if (_.isEmpty(r))
+                res.send({success: false});
+            else {
+                req.broadcastEvent('user_follow', {to: req.params.id, from: req.user.id, value: 1});
+                res.send({success: true})
+            }
+        })
+        .catch(error => next(error))
 };
 
 exports.unfollowProfile = (req, res, next) => {
     profiles.unfollowProfile(req.params.id, 3719)
         .then((r) => {
-        if (!r)
-            res.send({success: false});
-        else {
-            res.send({success: true})
-        }
-    })
-    .catch(err => next(err))
+            if (!r)
+                res.send({success: false});
+            else {
+                req.broadcastEvent('user_follow', {to: req.params.id, from: req.user.id, value: -1});
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
 };
 
 // ------------------ Location ------------------
 exports.getLocation = (req, res, next) => {
     profiles.getLocation(req.params.id)
-    .then(([r]) => res.send({location: r}))
-    .catch(err => next(err))
+        .then(([r]) => res.send({location: r}))
+        .catch(err => next(err))
 };
 
 exports.updateLocation = function (req, res, next) {
     profiles.updateProfile(req.body.location, {id: req.params.id})
-    .then(r => {
-        if (r)
-            res.send({success: true});
-        else
-            res.send({success: false})
-    })
-    .catch(err => next(err))
+        .then(r => {
+            if (r)
+                res.send({success: true});
+            else
+                res.send({success: false})
+        })
+        .catch(err => next(err))
 };
 
 // exports.updateProfilePicture = function (req, res) { redo this, 
