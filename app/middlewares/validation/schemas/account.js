@@ -1,16 +1,17 @@
+
 'use strict';
 
 const Joi = require('joi'),
-    p_empty = ['', null];
+	p_empty = ['', null]
 
 const account = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(4).max(26).required(),
-    first_name: Joi.string().trim().allow(p_empty).required(),
-    last_name: Joi.string().trim().allow(p_empty).required(),
+	email: Joi.string().email().required(),
+	password: Joi.string().min(4).max(26).required(),
+	first_name: Joi.string().trim().allow(p_empty).required(),
+	last_name: Joi.string().trim().allow(p_empty).required(),
 });
 
 module.exports.register = Joi.object().keys({
-    account: account
+	account: account
 });
 

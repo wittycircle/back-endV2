@@ -11,9 +11,12 @@ const http = require('http'),
     passport = require('passport'),
     debug = require('./app/middlewares/debug'),
     cache = require('./socket-server/lib/cache'),
-    path = require('path');
+    path = require('path'),
+    cors = require('cors');
 
 let app = express();
+
+app.use(cors());
 
 /**
  * Todo replace public by release which will contains built js files
@@ -46,9 +49,6 @@ router.use(require('./app/routes/index'));
 app.use(router);
 
 let server = http.createServer(app);
-
-// bootstraps socket.io with express app
-require('./app/services/socket')(server);
 
 server.listen(app.get('port'), () => {
     console.log('Server listening on port ' + app.get('port'));

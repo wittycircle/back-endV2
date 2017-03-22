@@ -3,8 +3,7 @@ const express = require('express'),
     projects = require('../controllers/projects'),
     search = require('../controllers/search'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
-    passport = require('passport'),
-    auth = (x) => passport.authenticate(x);
+    {auth, AUTH } = require('../services/auth');
 
 router.param('id', validateParam(schemas.params.id));
 router.param('opening_id', validateParam(schemas.params.id));
@@ -12,28 +11,28 @@ router.param('discussion_id', validateParam(schemas.params.id));
 
 router.route('/projects')
     .get(projects.getProjects)
-    .post(auth('bearer'), validate(schemas.project.creation), projects.createProject);
+    .post(auth(AUTH.PRIVATE), validate(schemas.project.creation), projects.createProject);
 
 router.route('/projects/search')
-    .post(validate(schemas.search.project), search.searchProject)
-
+    .post(auth(AUTH.PUBLIC), validate(schemas.search.project), search.searchProject)
+    
 router.route('/projects/:id')
     .get(projects.getProject)
-    .post(auth('bearer'), validate(schemas.project.update), projects.updateProject)
-    .delete(auth('bearer'), projects.removeProject);
+    .post(auth(AUTH.PRIVATE), validate(schemas.project.update), projects.updateProject)
+    .delete(auth(AUTH.PRIVATE), projects.removeProject);
 
 router.route('/projects/:id/openings')
     .get(projects.getProjectOpenings)
-    .post(auth('bearer'), validate(schemas.project.opening), projects.createOpening);
+    .post(auth(AUTH.PRIVATE), validate(schemas.project.opening), projects.createOpening);
 
 router.route('/projects/:id/discussions')
     .get(projects.getProjectDiscussion)
-    .post(auth('bearer'), validate(schemas.project.discussion), projects.createProjectDiscussion);
+    .post(auth(AUTH.PRIVATE), validate(schemas.project.discussion), projects.createProjectDiscussion);
 
 router.route('/projects/:id/up')
     .get(projects.getProjectLikes)
-    .post(auth('bearer'), projects.likeProject)
-    .delete(auth('bearer'), projects.unlikeProject);
+    .post(auth(AUTH.PRIVATE), projects.likeProject)
+    .delete(auth(AUTH.PRIVATE), projects.unlikeProject);
     
 
 

@@ -3,8 +3,7 @@
  */
 
 const profiles = require('../models/profiles'),
-    _ = require('lodash'),
-    cache = require('../../socket-server/lib/cache');
+    _ = require('lodash');
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
@@ -30,70 +29,73 @@ exports.getProfile = (req, res, next) => {
 
 exports.updateProfile = (req, res, next) => {
     profiles.updateProfile(req.body.profile, {id: req.params.id})
-        .then(r => {
-            if (r)
-                res.send({success: true});
-            else
-                res.status(400).send({success: false})
-        })
-        .catch(err => next(err))
+    .then(r => {
+        if (r)
+            res.send({success: true});
+        else
+            res.status(400).send({success: false})
+    })
+    .catch(err => next(err))
 };
 // ------------------ Follow ------------------
 
 exports.getProfileFollowers = (req, res, next) => {
+    Promise.all([
+    profiles.getProfileFollowers( 'l.user_id','l.follow_user_id', req.params.id),
     profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
-        .then((r) => {
-            if (!r.length)
-                next({code: 400});
-            else
-                res.send({like: {count: r.length, who: r}})
-        }).catch(err => next(err))
+        ])
+    .then(([r, r1]) => {
+        if (typeof r === 'string')
+            return next([r, "Invalid id"])
+        else
+            res.send({following: r, followers: r1})
+    }).catch(err => next(err))
 };
 
 exports.followProfile = (req, res, next) => {
     profiles.followProfile(req.params.id, req.user.id)
-        .then((r) => {
-            if (_.isEmpty(r))
-                res.send({success: false});
-            else {
-                // cache.pub.publish('')
-                res.send({success: true})
-            }
-        })
-        .catch(error => next(error))
+    .then((r) => {
+        if (_.isEmpty(r))
+            res.send({success: false});
+        else {
+            // cache.pub.publish('')
+            res.send({success: true})
+        }
+    })
+    .catch(error => next(error))
 };
 
 exports.unfollowProfile = (req, res, next) => {
     profiles.unfollowProfile(req.params.id, 3719)
         .then((r) => {
-            if (!r)
-                res.send({success: false});
-            else {
-                res.send({success: true})
-            }
-        })
-        .catch(err => next(err))
+        if (!r)
+            res.send({success: false});
+        else {
+            res.send({success: true})
+        }
+    })
+    .catch(err => next(err))
 };
 
 // ------------------ Location ------------------
 exports.getLocation = (req, res, next) => {
     profiles.getLocation(req.params.id)
-        .then(([r]) => res.send({location: r}))
-        .catch(err => next(err))
+    .then(([r]) => res.send({location: r}))
+    .catch(err => next(err))
 };
 
 exports.updateLocation = function (req, res, next) {
     profiles.updateProfile(req.body.location, {id: req.params.id})
-        .then(r => {
-            if (r)
-                res.send({success: true});
-            else
-                res.send({success: false})
-        })
-        .catch(err => next(err))
+    .then(r => {
+        if (r)
+            res.send({success: true});
+        else
+            res.send({success: false})
+    })
+    .catch(err => next(err))
 };
 
-// exports.updateProfilePicture = function (req, res) { redo this,
+// exports.updateProfilePicture = function (req, res) { redo this, 
 //         if (req.user.moderator) {
 //             profiles.updateProfile(req.body.picture, {id: 2})//req.body.profile_id)
 //                 .then(res.send({success: true}))

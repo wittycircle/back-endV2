@@ -1,7 +1,7 @@
 const users = require('../controllers/users'),
     express = require('express'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
-    passport = require('passport');
+    {auth, AUTH} = require('../services/auth');
 
 
 let router = express.Router();
@@ -14,7 +14,7 @@ router.route('/users')
 
 router.route('/users/:id/skills')
     .get(users.getUserSkills)
-    .post(passport.authenticate('bearer'), users.addUserSkill)
-    .delete(passport.authenticate('bearer'), users.removeUserSkill);
+    .post(auth(AUTH.PRIVATE), users.addUserSkill)
+    .delete(auth(AUTH.PRIVATE), users.removeUserSkill);
 
 module.exports = router;

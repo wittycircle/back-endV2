@@ -4,13 +4,13 @@ const chakram = require('chakram'),
 chakram.addMethod('joi', require('chakram-joi'));
 
 module.exports.generic = (method, route, schema, data) => {
-    describe('[' + route + ']', function () {
+    describe('[' + route + ']', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram[method](route, data);
         });
-
-        it('should match schema', function () {
+    
+        it('should match schema', function() {
             return expect(r).to.joi(schema);
         });
     });

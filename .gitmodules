@@ -4,3 +4,6 @@
 [submodule "socket-server"]
 	path = socket-server
 	url = https://github.com/wittycircle/socket-server.git
+[submodule "public"]
+	path = public
+	url = https://github.com/wittycircle/front-endV2.git

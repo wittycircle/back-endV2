@@ -5,10 +5,10 @@ const express = require('express'),
     passport = require('passport'),
     auth = (x) => passport.authenticate(x);
 
-router.route('/main/projects')
-    .get(search.mainProjects)
+// router.route('/main/projects')
+// 	.get(search.mainProjects)
 
-router.route('/main/profiles')
-    .get(search.mainProfiles)
-
+// router.route('/main/profiles')
+// 	.get(search.mainProfiles)
+	
 module.exports = router

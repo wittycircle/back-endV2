@@ -51,7 +51,7 @@ exports.error = (err, req, res, next) => {
     else if (typeof err.code !== 'undefined') {
         if (typeof err.sqlState !== 'undefined') {
             res.status(500).send({success: false});
-            console.error(err);
+            console.error(err)
             // console.error(pretty.render(JSON.parse(err)));
         }
         else if (typeof err.error !== 'undefined' || typeof err.error_description !== 'undefined')

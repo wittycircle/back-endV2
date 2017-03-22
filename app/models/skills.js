@@ -1,5 +1,5 @@
-const {db, TABLES} = require('./index');
+const { db, TABLES } = require('./index');
 
 exports.getList = () => {
-    return db.select('*').from(TABLES.SKILLS)
+	return db.select('*').from(TABLES.SKILLS)
 };

@@ -38,7 +38,7 @@ module.exports = (storage, chakram) => {
                 email: test.email,
                 password: test.password,
             }
-        }
+        };
         before('request', function () {
             r = chakram.post(route + 'register', data);
         });
@@ -72,7 +72,7 @@ module.exports = (storage, chakram) => {
             let max_id = db(TABLES.USERS).select(db.raw('MAX(id)'));
             return db(TABLES.USERS).select('valid').where('id', max_id)
                 .then(r => {
-                    return expect(r[0].valid).to.equal(1) 
+                    return expect(r[0].valid).to.equal(1)
                 });
         });
     });

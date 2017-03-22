@@ -10,16 +10,21 @@ const AUTH_MODE = exports.AUTH = {
     PUBLIC: 2
 };
 
-const passport = require('passport');
+const session = require('../middlewares/session').session,
+    match = new RegExp(/^Bearer\s?([a-zA-Z0-9]{64})/);
 
-exports.auth = (privilege) => (req, res, next) => passport.authenticate('bearer', function (err, user, info) {
-    if (err && privilege !== AUTH_MODE.PUBLIC)
-        next(err);
-    else if (!user && privilege)
+exports.auth = (privilege) => (req, res, next) => {
+    console.log(req.get('Authorization'));
+    let authorization = match.exec(req.get('Authorization'));
+    console.log(authorization);
+    if (authorization.length !== 2 && privilege === AUTH_MODE.PRIVATE)
         next({code: 400});
     else
-        req.logIn(user, err => {
-            if (err) next(err);
-            else next();
+        session.getUser(authorization[1], (err, user) => {
+            if (err) next({code: 400});
+            else {
+                req.user = user;
+                next();
+            }
         })
-})(req, res, next);
+};

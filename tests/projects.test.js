@@ -1,7 +1,7 @@
 'use strict';
 
-const {db, TABLES} = require('../app/models/index'),
-    p_empty = ['', null];
+const { db, TABLES } = require('../app/models/index'),
+     p_empty = ['', null];
 
 module.exports = (storage, chakram) => {
     const expect = chakram.expect,
@@ -18,22 +18,22 @@ module.exports = (storage, chakram) => {
         };
 
 // ------------------ Projects [main methods] ------------------
-    describe('', function () {
-        it('should print something big', function () {
-            console.log("\x1b[35m" + " ------------------ Projects ------------------\n");
-        })
-    });
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Projects ------------------\n");
+    })
+});
 
-    describe('Create project [POST /projects]', function () {
+    describe('Create project [POST /projects]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             let data = {
                 title: "Chakram",
                 category: 1,
                 description: "Creating a project",
                 about: "Lost of stuff with <p> tags <div> urls </div> </p> and stuff",
                 location: {
-                    country: "France"
+                country: "France"
                 },
                 picture: "",
                 video: "",
@@ -51,18 +51,18 @@ module.exports = (storage, chakram) => {
                 }],
             };
             r = chakram.post(route, data);
-            v = chakram.post(route, {video: "to"})
+            v = chakram.post(route, {video:"to"})
         });
-
-        it('Should send back the id', function () {
+    
+        it('Should send back the id', function() {
             return expect(r).to.joi(schemas.common.id);
         });
-        it('Should fail', function () {
+        it('Should fail', function() {
             return expect(v).to.joi(schemas.error.validation_error_schema)
         });
     });
 
-    describe('Update project [POST /projects/:id]', function () {
+    describe('Update project [POST /projects/:id]', function() {
         let data = {
             title: "Chakram 2.0",
             category: 1,
@@ -70,40 +70,40 @@ module.exports = (storage, chakram) => {
             about: "UPDATED about"
         };
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.post(route + test_project.id, data);
         });
-
-        it('Should send success', function () {
+    
+        it('Should send success', function() {
             return expect(r).to.joi(schemas.common.success);
         });
 
         it('Should have updated the data', function () {
-            return db.select(['title', 'description', 'about']).from(TABLES.PROJECTS).where({id: test_project.id})
-                .then(r => {
-                    return expect(r[0].about).to.equal('UPDATED about')
-                })
+         return   db.select(['title', 'description', 'about']).from(TABLES.PROJECTS).where({id: test_project.id})
+            .then(r => {
+                return expect(r[0].about).to.equal('UPDATED about')
+            })
         })
     });
 
-    describe('Get project detail [/projects/:id]', function () {
+    describe('Get project detail [/projects/:id]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.get(route + test_project.id);
         });
-
-        it('Should match schema', function () {
+    
+        it('Should match schema', function() {
             return expect(r).to.joi(schemas.projects.details);
         });
     });
 
-    describe('Get project list [/projects]', function () {
+    describe('Get project list [/projects]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.get(route);
         });
-
-        it('Should match schema', function () {
+    
+        it('Should match schema', function() {
             return expect(r).to.joi(schemas.search.projects);
         });
     });
@@ -179,29 +179,29 @@ module.exports = (storage, chakram) => {
 //            ***    require    ***
     require('./discussions.test')(storage, chakram);
 // ------------------ OPENINGS ------------------
-    describe('Get project openings [GET /projects/:id/openings]', function () {
+    describe('Get project openings [GET /projects/:id/openings]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.get(route + 7 + '/openings');
         });
-
-        it('should get openings list', function () {
+    
+        it('should get openings list', function() {
             return expect(r).to.joi(schemas.projects.openings);
         });
     });
 
-    describe('Create project openings [POST /projects/:id/openings]', function () {
+    describe('Create project openings [POST /projects/:id/openings]', function() {
         let r, v;
         const data = {
             status: 'any',
             description: 'very test so chakram',
             tags: `['mocha', 'chai', 'chakram']`
-        };
-        before('request', function () {
+    }; 
+        before('request', function() {
             r = chakram.post(route + 7 + '/openings', data);
         });
-
-        it('Should create a project opening', function () {
+    
+        it('Should create a project opening', function() {
             return expect(r).to.joi(schemas.common.id);
         });
     });
@@ -209,20 +209,20 @@ module.exports = (storage, chakram) => {
     require('./openings.test')(storage, chakram)
 
 // ------------------ PROJECTS [main methods: remove project] ------------------
-    describe('Remove project [DELETE /projects/:id]', function () {
+    describe('Remove project [DELETE /projects/:id]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.delete(route + 502);
         });
-
-        it('Should remove a project', function () {
+    
+        it('Should remove a project', function() {
             return expect(r).to.joi(schemas.common.success);
         });
 
-        after('cleanup id', function () {
+        after('cleanup id', function() {
             db.raw('DELETE from projects where id > 501').return();
             db.raw('alter table projects AUTO_INCREMENT = 502').return();
         });
-    });
+});
 
 };// ------------------ end module ------------------

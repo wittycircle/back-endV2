@@ -1,7 +1,7 @@
 'use strict';
 
-const {db, TABLES} = require('../app/models/index'),
-    p_empty = ['', null];
+const { db, TABLES } = require('../app/models/index'),
+     p_empty = ['', null];
 
 const opening_id = 280;
 
@@ -14,19 +14,19 @@ module.exports = (storage, chakram) => {
             projects: require('./schemas/project.schema'),
             error: require('./schemas/error.schema')
         };
-    describe('', function () {
-        it('should print something big', function () {
-            console.log("\x1b[35m" + " ------------------ Openings ------------------\n");
-        })
-    });
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Openings ------------------\n");
+    })
+});
 
-    describe('Update opening [/openings/:opening_id]', function () {
+    describe('Update opening [/openings/:opening_id]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.post(route + opening_id, {description: "Updated description"});
         });
-
-        it('Should send success', function () {
+    
+        it('Should send success', function() {
             return expect(r).to.joi(schemas.common.success);
         });
 
@@ -39,17 +39,17 @@ module.exports = (storage, chakram) => {
         });
     });
 
-    describe('Delete opening [/openings/:opening_id]', function () {
+    describe('Delete opening [/openings/:opening_id]', function() {
         let r, v;
-        before('request', function () {
+        before('request', function() {
             r = chakram.delete(route + opening_id);
         });
-
-        it('Should send success', function () {
+    
+        it('Should send success', function() {
             return expect(r).to.joi(schemas.common.success);
         });
 
-        after('Cleanup', function () {
+        after('Cleanup', function(){
             db.raw('DELETE from project_openings where id > 279').return()
             db.raw('alter table project_openings AUTO_INCREMENT = 280').return();
         });

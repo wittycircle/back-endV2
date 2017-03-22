@@ -17,19 +17,19 @@ router.route('/local')
     .post(auth.localLogin);
 
 router.route('/google')
-    .post((req, res, next) => {
-        res.status(404).send({
-            error: 'unimplemented',
-            error_description: 'This authentification strategy is not implemented yet!'
-        })
+    .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.route('/google/callback')
+    .get(passport.authenticate('google'), (req, res) => {
+        res.send({success: req.user})
     });
 
 router.route('/facebook')
-    .post((req, res, next) => {
-        res.status(404).send({
-            error: 'unimplemented',
-            error_description: 'This authentification strategy is not implemented yet!'
-        })
+    .get(passport.authenticate('facebook', { scope: ['email'] }));
+
+router.route('/facebook/callback')
+    .get(passport.authenticate('facebook'), (req, res) => {
+        res.send({success: req.user})
     });
 
 router.route('/logout')

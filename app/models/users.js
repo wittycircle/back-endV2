@@ -1,4 +1,4 @@
-const {db, TABLES} = require('./index'),
+const { db, TABLES } = require('./index'),
     h = require('./helper')
 
 // ------------------ Main methods ------------------
@@ -8,6 +8,15 @@ exports.getUserSkills = (id) => {
         .join(TABLES.USER_SKILLS + ' as us', 'us.skill_id', 's.id')
         .where({user_id: id})
         .groupBy('us.skill_id')
+};
+
+// SELECT * FROM profiles p INNER JOIN users u ON p.id = u.profile_id WHERE ${auth}_id = ${id}
+exports.getUserBySocialId = (id, auth) => {
+    let key = `${auth}_id`;
+    return db.select('*')
+        .from(`${TABLES.USER_PROFILES} as p`)
+        .innerJoin(`${TABLES.USERS} as u`, 'p.id', 'u.profile_id')
+        .where(key, id)
 };
 
 exports.getUserBy = (by) => {
@@ -43,23 +52,23 @@ exports.createUser = (profile_id, email, username, password) => {
 
 exports.addUserSkill = (id, uid) => {
     return Promise.all([h.exist(TABLES.SKILLS, id), h.exist(TABLES.USERS, uid)])
-        .then(([r1, r2]) => {
-            if (!r1.length || !r2.length) {
-                return (!r1.length ? "Invalid skill id" : "Invalid user id")
-            } else {
-                return db(TABLES.USER_SKILLS).select('id')
-                    .where({user_id: uid, skill_id: id})
-                    .then(r => {
-                        if (!r.length) {
-                            return db(TABLES.USER_SKILLS)
-                                .insert({user_id: uid, skill_id: id})
-                                .then(() => exports.getUserSkills(uid))
-                        } else {
-                            return exports.getUserSkills(uid)
-                        }
-                    });
-            }
-        });
+    .then(([r1, r2]) => {
+        if (!r1.length || !r2.length){
+            return (!r1.length ? "Invalid skill id" : "Invalid user id")
+        } else {
+            return db(TABLES.USER_SKILLS).select('id')
+                .where({user_id: uid, skill_id: id})
+                .then(r => {
+                    if (!r.length) {
+                        return db(TABLES.USER_SKILLS)
+                        .insert({user_id: uid, skill_id: id}) 
+                        .then(() => exports.getUserSkills(uid))
+                    } else {
+                        return exports.getUserSkills(uid)
+                    }
+                });
+        }
+    });
 };
 
 exports.removeUserSkill = (id, uid) => {

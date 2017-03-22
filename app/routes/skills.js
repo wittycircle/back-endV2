@@ -3,6 +3,6 @@ const express = require('express'),
     skills = require('../controllers/skills');
 
 router.route('/skills')
-    .get(skills.getSkillList)
+	.get(skills.getSkillList)
 
 module.exports = router

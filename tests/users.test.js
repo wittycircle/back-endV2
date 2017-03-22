@@ -7,11 +7,11 @@ module.exports = (storage, chakram) => {
             users: require('./schemas/user.schema'),
             error: require('./schemas/error.schema')
         };
-    describe('', function () {
-        it('should print something big', function () {
-            console.log("\x1b[35m" + " ------------------ Users ------------------\n");
-        })
-    });
+describe('', function() {
+    it ('should print something big', function() {
+        console.log( "\x1b[35m" + " ------------------ Users ------------------\n");
+    })
+});
 // ------------------ Main methods ------------------
 // ------------------ Skills ------------------
     describe('Get user skills lists [GET /users/:id/skills]', function () {
