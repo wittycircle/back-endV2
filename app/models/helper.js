@@ -21,7 +21,7 @@ const {db, TABLES} = require('./index');
 	h.exist = (table, value, name) => db(table).select('id').where(name || 'id', value)
 	h.owner = (table, id, uid) => db(table).select('id').where({'id': id, 'user_id': uid})
 	h.admin = admin
-	h.username = db.raw('CONCAT (p.first_name, " ", p.last_name) as username')
+	h.username = db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')
 
 
 module.exports = h;

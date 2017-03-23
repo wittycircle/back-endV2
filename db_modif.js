@@ -27,8 +27,8 @@ const add_admin = () =>
 const profile_description_text = () =>
     db.schema.raw('alter table profiles change column description description TEXT(10000)');
 
-// const alter_articles = () => {/
-// };
+const messageToOldMessage = () => 
+    db.schema.renameTable('messages', 'old_messages')
 
 const all_utf8 = () => {
     let x = [];
@@ -40,9 +40,11 @@ const all_utf8 = () => {
     return Promise.all(x).then(r => r)
 };
 
-const drop_tables = () => db.schema.dropTableIfExists('tag_articles')
+const drop_tables = () => db.schema
+    .dropTableIfExists('tag_articles')
     .dropTableIfExists('article_tags')
-    .dropTableIfExists(TABLES.MESSAGES);
+    .dropTableIfExists('old_messages')
+
 
 
 // ------------------ Alter tables ------------------
@@ -217,7 +219,8 @@ const table_insert = [
 
 const modify_db = () => {
     return drop_tables()
-        .then(() => add_admin())
+        // .then(() => add_admin())
+        .then(() => messageToOldMessage())
         //			*** Create ***
         .then(() => Promise.all(table_creation_no_foreign))
         .then(() => Promise.all(table_creation_foreign))

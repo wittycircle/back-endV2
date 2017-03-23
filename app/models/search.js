@@ -40,11 +40,12 @@ exports.cardProfile = (selector) => {
 
     const profile_array = ['p.id', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network',
      db.raw('CONCAT (p.city, ", ",  p.country) as location'),
-    db.raw('CONCAT (p.first_name, " ", p.last_name) as username')
+     h.username, 'u.username',
     ];
 
     const profileStuff = (location) => {
         let _query = db(TABLES.USER_PROFILES + ' as p')
+            .join(TABLES.USERS + ' as u', 'p.id', 'u.profile_id')
             .select(profile_array)
             .where('p.description', '!=', 'NULL')
             .andWhere('p.profile_picture', '!=', 'NULL')
@@ -52,7 +53,7 @@ exports.cardProfile = (selector) => {
         addLocation('p', location, _query)
         return _query.as('p')
     };
-    const ret_array = ['username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture',
+    const ret_array = ['fullname', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture',
       'cover_picture', 'about', 'description', 'network' , 'location', 'follower', 'following', 'skills']
 
     let q =  db.select(ret_array)
