@@ -1,12 +1,13 @@
 /**
  * Created by rdantzer on 19/01/17.
  */
+'use strict';
+
 const passport = require('passport'),
     user = require('../models/users'),
     project = require('../models/projects'),
-    _ = require('lodash');
-
-'use strict';
+    _ = require('lodash'),
+    session = require('../middlewares/session').session;
 
 exports.checkLog = (req, res) => {
     res.send({success: req.isAuthenticated()})
@@ -19,6 +20,25 @@ exports.logout = (req, res) => {
             else
                 res.send({success: true});
         });
+};
+
+exports.generateToken = (req, res, next) => {
+    session.killAllFromUser(req.user.id, (err, success) => {
+        if (err) next({code: 400});
+        else
+            session.createUserSession(req.user, (err, token) => {
+                if (err) next({code: 400});
+                else
+                    res.send({
+                        auth: token,
+                        user: {
+                            id: req.user.id,
+                            profile_id: req.user.profile_id,
+                            email: req.user.email
+                        }
+                    })
+            })
+    })
 };
 
 const generic_login = (req, res, next) => (err, user) => {
@@ -40,11 +60,10 @@ const generic_login = (req, res, next) => (err, user) => {
                 error: 'internal_error',
                 error_description: 'Please try later'
             });
-            else
-                res.json({
-                    auth: _.pick(req.session.passport.user, ['token']),
-                    user: _.pick(req.user, ['id', 'profile_id', 'email'])
-                });
+            else {
+                req.broadcastEvent('user_online', {id: req.user.id});
+                next();
+            }
         });
 };
 
@@ -68,18 +87,16 @@ exports.localLogin = (req, res, next) => {
                     error: 'internal_error',
                     error_description: 'Please try later'
                 });
-                else
+                else {
                     req.broadcastEvent('user_online', {id: req.user.id});
-                res.json({
-                    auth: _.pick(req.session.passport.user, ['token']),
-                    user: _.pick(req.user, ['id', 'profile_id', 'email'])
-                });
+                    next();
+                }
             });
     })(req, res, next);
 };
 
 exports.socialLogin = (auth, opts) => (req, res, next) => {
-    passport.authenticate(auth, opts, (err, user) => {
+    passport.authenticate(auth, opts || {}, (err, user) => {
         if (err) next({
             code: 401,
             error: 'unauthorized',
@@ -98,12 +115,10 @@ exports.socialLogin = (auth, opts) => (req, res, next) => {
                     error: 'internal_error',
                     error_description: 'Please try later'
                 });
-                else
+                else {
                     req.broadcastEvent('user_online', {id: req.user.id});
-                    res.json({
-                        auth: _.pick(req.session.passport.user, ['token']),
-                        user: _.pick(req.user, ['id', 'profile_id', 'email'])
-                    });
+                    next()
+                }
             });
     })(req, res, next);
 };

@@ -3,7 +3,8 @@
  */
 
 const profiles = require('../models/profiles'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    cache = require('../services/cache');
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
@@ -30,10 +31,8 @@ exports.getProfile = (req, res, next) => {
 exports.updateProfile = (req, res, next) => {
     profiles.updateProfile(req.body.profile, {id: req.params.id})
         .then(r => {
-            if (r) {
-                req.broadcastEvent('profile_update', {id: req.params.id});
+            if (r)
                 res.send({success: true});
-            }
             else
                 res.status(400).send({success: false})
         })
@@ -60,7 +59,7 @@ exports.followProfile = (req, res, next) => {
             if (_.isEmpty(r))
                 res.send({success: false});
             else {
-                req.broadcastEvent('user_follow', {to: req.params.id, from: req.user.id, value: 1});
+                // cache.pub.publish('')
                 res.send({success: true})
             }
         })
@@ -73,7 +72,6 @@ exports.unfollowProfile = (req, res, next) => {
             if (!r)
                 res.send({success: false});
             else {
-                req.broadcastEvent('user_follow', {to: req.params.id, from: req.user.id, value: -1});
                 res.send({success: true})
             }
         })

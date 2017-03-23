@@ -54,17 +54,27 @@ exports.createArticle = (data) => {
 		}); 
 };
 
-exports.getArticles = () => {
-	const a_articles = ['a.id', 'author_id', 'a.creation_date',
-			'picture', 'title', 'text',
+exports.getArticles = (uid) => {
+    const a_articles = ['a.id', 'author_id', h.username, 'p.profile_picture',
+        'a.creation_date', 'picture', 'title', 'text',
 			db.raw('IFNULL (views, 0) as views'),
 			db.raw('IFNULL (read_time, 0) as read_time'),
-			db.raw('GROUP_CONCAT(t.name) as tags')
+        db.raw('GROUP_CONCAT(DISTINCT t.name) as tags'),
 			]
+    if (uid) {
+        a_articles.push(db.raw('GROUP_CONCAT(DISTINCT IF(l.user_id = ' + uid + ', true, null))  as follow'))
+    }
+
+
 	return db.select(a_articles)
+        .countDistinct('l.id as likes')
+        .countDistinct('msg.id as messages')
 			.from(TABLES.ARTICLES + ' as a')
 			.leftJoin(TABLES.TAG_ARTICLES + ' as ta', 'a.id', 'ta.article_id')
 			.leftJoin(TABLES.ARTICLE_TAGS + ' as t', 't.id', 'ta.tag_id')
+        .leftJoin(TABLES.ARTICLE_LIKES + ' as l', 'l.article_id', 'a.id')
+        .leftJoin(TABLES.ARTICLE_MSG + ' as msg', 'msg.article_id', 'a.id')
+        .leftJoin(h.u_profile, 'p.uid', 'a.author_id')
 			.groupBy('a.id')
 };
 

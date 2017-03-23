@@ -9,7 +9,7 @@ const express = require('express'),
     
 router.route('/articles')
 	.post(auth(AUTH.PRIVATE), article.createArticle)//AA
-	.get(article.getArticles)
+    .get(auth(AUTH.PUBLIC), article.getArticles)
 
 //			***	PARAMS	***
 router.param('article_id', validateParam(schemas.params.id))

@@ -46,10 +46,6 @@ exports.updateProject = (req, res, next) => {
                 return next([r, 'Invalid id'])
             }
             else {
-                req.broadcastEvent('project_update', {
-
-                    id: req.params.id
-                });
                 res.send({success: true})//make model base on create, look at the docs
             }
         })
@@ -140,7 +136,6 @@ exports.createOpening = (req, res, next) => {
             if (typeof r === 'string') {
                 return next([r, 'Invalid project id'])
             } else {
-                req.broadcastEvent('opening_creation', {tags: data.tags, description: req.body.description});
                 res.send({id: r[0]})
             }
         })
@@ -182,14 +177,8 @@ exports.likeProject = (req, res, next) => {
         .then(r => {
             if (!_.isEmpty(r))
                 res.send({success: true})
-            else {
-                req.broadcastEvent('project_up', {
-                    from: req.user.id,
-                    id: req.params.id,
-                    value: -1
-                });
+            else
                 res.send({success: false})
-            }
         }).catch(err => next(err))
 }
 
@@ -198,13 +187,7 @@ exports.unlikeProject = (req, res, next) => {
         .then(r => {
             if (r)
                 res.send({success: true})
-            else {
-                req.broadcastEvent('project_up', {
-                    from: req.user.id,
-                    id: req.params.id,
-                    value: -1
-                });
+            else
                 res.send({success: false})
-            }
         }).catch(err => next(err))
 }

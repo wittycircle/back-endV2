@@ -64,8 +64,6 @@ exports.searchProject = (req, res, next) => {
      selector = _.fromPairs(query.members.map(member => [project_lookup[member.field], member.value]));
      if (req.user && req.user.id)
         selector.uid = req.user.id;
-    // else
-    //     selector.uid = 9;
     let order_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : project_lookup["magic"]
     let group_by = project_lookup[query.sort.field] && query.sort.field == 'last_upvoted' ? project_lookup[query.sort.field] : 'pr.id'
     search.cardProject(selector)
@@ -75,7 +73,6 @@ exports.searchProject = (req, res, next) => {
         .limit(paginate.limit)
         .then(results => {
             if (!_.isEmpty(results)){
-                // results.followers_id = results.followers_id.split('')
                 res.send({projects: results})
             }
             else

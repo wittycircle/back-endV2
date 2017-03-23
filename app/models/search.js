@@ -129,34 +129,6 @@ And if a user plays with loop (like, unlike),
 As the table never clears, and keep record of thing 
 [TO DO way later, first finish v2]
 */
-// ------------------ Project ------------------
-// exports.mainProjects = (exact) => {
-//     const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
-//      'c.id as category_id', 'c.name as category_name', 'p.network',
-//      'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-//      db.raw('CONCAT (city, ", ", country) as location')
-//      ];
-
-//      const sub_members = db(TABLES.PROJECT_MEMBERS).select('project_id', 'user_id').where('n_accept', 1).as('m')
-//      const sub_likes = db(TABLES.PROJECT_LIKES).select().as('pl')
-//      if (exact)
-//         sub_likes.whereRaw('creation_date > (NOW() - INTERVAL 48 HOUR)').as('pl')
-
-//      return db.distinct(p_array)
-//             .countDistinct('pl.id as followers')
-//             .countDistinct('m.user_id as members')
-//             .from(TABLES.PROJECTS + ' as pr')
-//             .join(h.u_profile, 'p.uid', 'pr.user_id')
-//             .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
-//             .join(sub_likes, 'pl.project_id', 'pr.id')
-//             .leftJoin(sub_members, 'm.project_id', 'pr.id')
-//             .whereRaw('pr.picture_card <> ""')
-//             .orderByRaw('pl.creation_date DESC')
-//             .groupBy('pl.creation_date', 'pr.id' )
-// };
-
-
-
 
 
 

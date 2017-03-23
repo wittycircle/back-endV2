@@ -17,7 +17,8 @@ exports.createArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-	articles.getArticles()
+    let param = req.user ? req.user.id : null;
+    articles.getArticles(param)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Could not find any article'])

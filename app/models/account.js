@@ -24,7 +24,7 @@ exports.activate = (token) => {
             }
         });
 };
-
+// ------------------ Social [google/facebook] ------------------
 const social_helper = {
     'facebook': (data) => {
         return {
@@ -59,25 +59,58 @@ const social_helper = {
     }
 };
 
-exports.socialRegister = (data, origin) => {
-    console.log(data);
-    const helper = social_helper[origin](data);
-    return db(TABLES.USER_PROFILES)
-        .insert(helper.profile)
-        .then((profileId) => {
+const newUser = (helper) => {
+    return db(TABLES.USER_PROFILES).insert(helper.profile)
+        .then(profileId => {
             helper.user.profile_id = profileId;
             helper.user.password = '';
             return db(TABLES.USERS).insert(helper.user)
-        })
-        .then((userId) => {
+                .then((r) => {
+                    return {
+                        id: r[0],
+                        profile_id: helper.user.profile_id[0],
+                        email: helper.user.email,
+                    };
+                });
+        }).catch(console.error("ET NON"))
+};
+
+const modifyUser = (helper, origin, ids) => {
+    let u_obj = {};
+
+    if (origin == 'facebook') {
+        u_obj.facebook_id = helper.profile.facebook_id
+        u_obj.facebook_url = helper.profile.facebook_url
+    }
+    else if (origin == 'google') {
+        u_obj.google_id = helper.profile.google_id
+        u_obj.google_url = helper.profile.google_url
+    }
+
+    return db(TABLES.USER_PROFILES).update(u_obj).where({id: ids.profile_id})
+        .then(r => {
             return {
-                user_id: userId,
-                profile_id: helper.user.profile_id,
+                id: ids.id,
+                profile_id: ids.profile_id,
                 email: helper.user.email
             }
         })
 };
 
+exports.socialRegister = (data, origin) => {
+    const helper = social_helper[origin](data);
+    return db(TABLES.USERS).first(['profile_id', 'id']).where({email: helper.user.email})
+        .then(r => {
+            if (r) {
+                return modifyUser(helper, origin, r)
+            }
+            else {
+                return newUser(helper)
+            }
+        });
+};
+
+// ------------------ Main methods ------------------
 exports.register = (data, token) => {
     let profile_data = {
             first_name: data.first_name,
@@ -90,7 +123,7 @@ exports.register = (data, token) => {
             username: data.username,
         };
 
-    return h.exist(TABLES.USERS, "data.email", 'email').then(r => {
+    return h.exist(TABLES.USERS, data.email, 'email').then(r => {
         if (r.length)
             return "Email already taken"
         else {

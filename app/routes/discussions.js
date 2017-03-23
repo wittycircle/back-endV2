@@ -15,10 +15,10 @@ router.route('/discussions/:discussion_id')
 
 router.route('/discussions/:discussion_id/like')
 	.post(auth(AUTH.PRIVATE), discussions.likeDiscussion)
-	.delete(auth(AUTH.PRIVATE), discussions.unlikeDiscussion);
+    .delete(auth(AUTH.PRIVATE), discussions.unlikeDiscussion)
 
 router.route('/discussions/:discussion_id/replies')
     .get(discussions.getDiscussionReplies)
-	.post(auth(AUTH.PRIVATE), validate(sd.reply), discussions.replyDiscussion);
+    .post(auth(AUTH.PRIVATE), validate(sd.reply), discussions.replyDiscussion)
 
-module.exports = router;
+module.exports = router    
