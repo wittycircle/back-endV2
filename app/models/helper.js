@@ -3,6 +3,9 @@ const {db, TABLES} = require('./index');
 	const h = {
     p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture',
     		 'p.about', 'p.cover_picture', 'p.description', 'p.network'],
+	p_uarray : ['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture',
+    		 'p.about', 'p.cover_picture', 'p.description', 'p.network',
+    		 'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')],
     },
 	admin = (table, id, uid) => {
 		let x = []
@@ -15,7 +18,8 @@ const {db, TABLES} = require('./index');
 //prototype
 	h.up_array = h.p_array.concat('u.id as uid');
 	h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u');
-	h.sub_profile = db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').as('p');
+	h.sub_profile = db.select(h.p_uarray).from(TABLES.USER_PROFILES + ' as p')
+					.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('p');
 	h.u_profile = db.select(h.up_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id').groupBy('p.id').as('p');
 	h.ws_profile = (cond) => db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
 	h.exist = (table, value, name) => db(table).select('id').where(name || 'id', value)
