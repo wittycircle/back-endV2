@@ -29,7 +29,7 @@ exports.getProfileFollowers = (cond, cond2, p_id) => {
         else {
             return db.distinct(h.p_array) 
                 .from(TABLES.USER_LIKES + ' as l') 
-                .join(h.u_profile, 'p.uid', cond2) 
+                .join(h.sub_profile, 'p.uid', cond2) 
                 .where(cond, p_id)
         }
     });
