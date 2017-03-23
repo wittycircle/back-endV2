@@ -94,20 +94,21 @@ module.exports = function (passport) {
         // session: true,
         passReqToCallback: true
     }, (req, email, password, done) => {
-        users.getUserBy({email: email}).then(user => {
-            if (!user.length) return done(null, false);
-            else
-                user = user[0];
-            if (bcrypt.compareSync(password, user.password)) {
-                return done(null, {
-                    id: user.id,
-                    profile_id: user.profile_id,
-                    email: email,
-                    ip: req.ip
-                });
-            }
-            done(null, false);
-        }).catch(err => done(err));
+        users.getUserBy({email: email})
+            .then(user => {
+                if (!user.length) return done(null, false);
+                else
+                    user = user[0];
+                if (bcrypt.compareSync(password, user.password)) {
+                    return done(null, {
+                        id: user.id,
+                        profile_id: user.profile_id,
+                        email: email,
+                        ip: req.ip
+                    });
+                }
+                else return done(null, false);
+            }).catch(err => done(err));
     }))
 }
 ;
