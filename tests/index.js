@@ -10,14 +10,19 @@ const chakram = require('chakram'),
 chakram.addMethod('joi', require('chakram-joi'));
 
 const login = {
-        email: 'raphael@wittycircle.com',
-        password: 'helloworld'
+        // email: 'raphael@wittycircle.com',
+        // password: 'helloworld'
+
+        email: 'test@test.com',
+        password: 'test'
+
     },
     storage = {
         token: null,
         resource: (route) => `http://localhost:3000/api/${route}`,
         user: null
     };
+    storage.login = login;
 
 describe('Authentication of the test client', function () {
     before('Login with valid credentials', function () {
@@ -43,13 +48,13 @@ describe('Authentication of the test client', function () {
 
     it('Should run all the tests', function () {
         require('./auth.test')(storage, chakram);
-        require('./profiles.test')(storage, chakram);
-        require('./users.test')(storage, chakram);
+        // require('./profiles.test')(storage, chakram);
+        // require('./users.test')(storage, chakram);
         require('./projects.test')(storage, chakram);
-        require('./search.test')(storage, chakram);
-        require('./skills.test')(storage, chakram);
-        require('./articles.test')(storage, chakram);
-        require('./account.test')(storage, chakram);
+        // require('./search.test')(storage, chakram);
+        // require('./skills.test')(storage, chakram);
+        // require('./articles.test')(storage, chakram);
+        // require('./account.test')(storage, chakram);
         // ------------------ discussions.test required in project ------------------
        // ------------------ replies.test required in discussions.test ------------------
     });

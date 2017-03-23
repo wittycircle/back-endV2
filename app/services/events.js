@@ -36,11 +36,15 @@ exports.watch = () => {
 };
 
 const send = (channel, payload) => {
-    pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload));
+    pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload))
+    .then(() => {
+        console.log("TOTOTOTOTOTOOTOTOTOTO")
+        return null});
 };
 
 exports.mount = (req, res, next) => {
     req.broadcastEvent = send;
+    // req.broadcastEvent = console.log
     next();
 };
 

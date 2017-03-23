@@ -20,7 +20,7 @@ module.exports = (storage, chakram) => {
             uid: null,
             email: rnd_string +"@divine.com",
             password: "angel",
-            update_password: "helloworld",
+            update_password: storage.login.password,
             new_password: "Archangel",
         };
 // ------------------ main Tests ------------------
@@ -134,7 +134,7 @@ describe('', function() {
             });
 
             it('Should have modify db', function() {
-                return db(TABLES.USERS).select('password').where('id', 3719)
+                return db(TABLES.USERS).select('password').where('email', 'test@test.com')
                 .then(r => {
                     return expect(bcrypt.compareSync(test.update_password, r[0].password)).to.equal(true);
                 });

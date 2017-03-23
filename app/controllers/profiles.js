@@ -67,7 +67,7 @@ exports.followProfile = (req, res, next) => {
 };
 
 exports.unfollowProfile = (req, res, next) => {
-    profiles.unfollowProfile(req.params.id, 3719)
+    profiles.unfollowProfile(req.params.id, req.user.id)
         .then((r) => {
         if (!r)
             res.send({success: false});
