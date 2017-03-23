@@ -36,10 +36,7 @@ exports.watch = () => {
 };
 
 const send = (channel, payload) => {
-    pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload))
-    .then(() => {
-        console.log("TOTOTOTOTOTOOTOTOTOTO")
-        return null});
+    process.nextTick(() => pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload)))
 };
 
 exports.mount = (req, res, next) => {
