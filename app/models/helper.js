@@ -3,9 +3,9 @@ const {db, TABLES} = require('./index');
 	const h = {
     p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture',
     		 'p.about', 'p.cover_picture', 'p.description', 'p.network'],
-	p_uarray : ['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture',
-    		 'p.about', 'p.cover_picture', 'p.description', 'p.network',
-    		 'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')],
+	p_uarray : ['p.id', 'u.id as uid', 'p.first_name', 'p.last_name',
+			'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
+			 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network'],
     },
 	admin = (table, id, uid) => {
 		let x = []
