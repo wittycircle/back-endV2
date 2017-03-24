@@ -10,14 +10,16 @@ const chakram = require('chakram'),
 chakram.addMethod('joi', require('chakram-joi'));
 
 const login = {
-        email: 'raphael@wittycircle.com',
-        password: 'helloworld'
+        email: 'test@test.com',
+        password: 'test'
+
     },
     storage = {
         token: null,
         resource: (route) => `http://localhost:3000/api/${route}`,
         user: null
     };
+storage.login = login;
 
 describe('Authentication of the test client', function () {
     before('Login with valid credentials', function () {

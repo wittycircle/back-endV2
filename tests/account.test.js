@@ -20,7 +20,7 @@ module.exports = (storage, chakram) => {
             uid: null,
             email: rnd_string + "@divine.com",
             password: "angel",
-            update_password: "helloworld",
+            update_password: storage.login.password,
             new_password: "Archangel",
         };
 // ------------------ main Tests ------------------
@@ -38,7 +38,7 @@ module.exports = (storage, chakram) => {
                 email: test.email,
                 password: test.password,
             }
-        };
+            }
         before('request', function () {
             r = chakram.post(route + 'register', data);
         });
@@ -72,7 +72,7 @@ module.exports = (storage, chakram) => {
             let max_id = db(TABLES.USERS).select(db.raw('MAX(id)'));
             return db(TABLES.USERS).select('valid').where('id', max_id)
                 .then(r => {
-                    return expect(r[0].valid).to.equal(1)
+                    return expect(r[0].valid).to.equal(1) 
                 });
         });
     });
@@ -134,7 +134,7 @@ module.exports = (storage, chakram) => {
         });
 
         it('Should have modify db', function () {
-            return db(TABLES.USERS).select('password').where('id', 3719)
+            return db(TABLES.USERS).select('password').where('email', 'test@test.com')
                 .then(r => {
                     return expect(bcrypt.compareSync(test.update_password, r[0].password)).to.equal(true);
                 });

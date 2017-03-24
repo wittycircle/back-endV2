@@ -26,8 +26,8 @@ describe('', function() {
 
         before('authenticate user', function () {
             user.ok = chakram.post('http://localhost:3000/api/auth/local', {
-                email: "raphael@wittycircle.com",
-                password: "helloworld"
+                email: 'raphael@wittycircle.com',
+                password: 'helloworld'
             })
         });
 
