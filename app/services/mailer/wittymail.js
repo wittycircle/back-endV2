@@ -1,12 +1,12 @@
 const helper = require('sendgrid').mail;
 
-
+//array always
 const subst = (pers, obj) => {
-	let i = 0;
 	for (let key in obj){
 		let mod = obj[key].length;
-		pers.addSubstitution(new helper.Substitution(key, obj[key][i % mod]))
-		i++;
+		for(let i = 0; i < mod; i++){
+			pers.addSubstitution(new helper.Substitution(key, obj[key][i % mod]))
+		}
 	};
 }
 
@@ -41,7 +41,7 @@ wm.from = (mail, email, name) => mail.setFrom(new helper.Email(email, name));
 wm.to = (pers, email, name) => pers.addTo(new helper.Email(email, name));
 wm.reply = (mail, email, name) => mail.setReplyTo(new helper.Email(email, name));
 wm.subject = (mail, pers, subject) => {
-	mail.setSubject(subject),
+	// mail.setSubject(subject),
 	pers.setSubject(subject)
 };
 wm.substitutions = subst;

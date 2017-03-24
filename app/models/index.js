@@ -43,6 +43,7 @@ exports.TABLES = {
     ARTICLE_MSG: 'article_message',
 //            ***    CHAT    ***
     MESSAGES: 'messages',
+    OMESSAGES: 'old_messages',
 //            ***    MISC    ***
     CATEGORIES: 'categories',
     RANK: 'rank_of_the_day',

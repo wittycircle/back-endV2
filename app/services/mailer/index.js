@@ -1,4 +1,6 @@
-
+/*
+welcome : controllers/account [59]
+*/
 
 module.exports = {
 	welcome: (args) => require('./welcome')(args),
