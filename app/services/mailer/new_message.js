@@ -19,8 +19,7 @@ fields : {
 */
 const new_message = (args) => {
 
-	let	mail = new helper.Mail(),
-	pers = new helper.Personalization();
+	let	mail = new helper.Mail();
 
 const	p_uarray = ['p.id', 'u.id as uid', 'p.first_name', 'p.last_name', 'u.email',
 		'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
@@ -42,6 +41,34 @@ const selection = [
 			's.profile_picture'
 		];
 
+const send_mail = (data) => {
+	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
+	wm.content(mail)
+	wm.reply(mail, "noreply@wittycircle.com");
+	mail.setTemplateId(TEMPLATES.new_message)
+	
+	data.forEach((e, i) => {
+		let pers = new helper.Personalization();
+		let subject = '-FFNAME-  -FLNAME- sent you a message';
+		let sub = {
+			"-FNAME-" : e.receiver,
+			"-FFNAME-" : e.first_name,
+			"-FLNAME-": e.last_name,
+			"-FIMG-": e.profile_picture,
+			"-FDESC-": e.message.length > 76 ? e.message.substring(0, 76) + "...": e.message.substring(0, 76),
+			"-FLOC-": e.country ? e.city + ', ' + e.country : e.state ? e.city + ', ' + e.state: e.city,
+			email: e.email
+		};
+		console.log("\n-------------------------------------------------\n")
+		console.log(sub)
+		wm.subject(pers, subject);
+		wm.to(pers, e.email);
+		wm.substitutions(pers, sub)
+	    mail.addPersonalization(pers)
+	});
+  wm.send(mail);
+  return null;
+};
 
 return db.select(selection)
 		.from(TABLES.OMESSAGES + ' as m')
@@ -49,37 +76,7 @@ return db.select(selection)
 		.join(receiver, 'r.uid', 'm.to_user_id')
 		.where('m.m_read', 0)
 		.andWhere('m.m_send', 0)
-		.then(data => {
-			let subject = data.first_name + ' ' + data.last_name + 'sent you a message';
-			let mailto = data.map(e => e.email)
-			let receivers = data.map(e => e.receiver)
-			let messages = data.map(e => e.message.length > 76 ? e.message.substring(0, 76) + "...": e.message.substring(0, 76))
-			let locations = data.map(e => e.country ? e.city + ', ' + e.country : e.state ? e.city + ', ' + e.state: e.city);
-			let images = data.map(e => e.profile_picture)
-
-			let sub = {
-				"-FNAME-" : receivers,
-				"-FFNAME-" : [data.first_name],
-				"-FLNAME-": [data.last_name],
-				"-FIMG-": images,
-				"-FDESC-": messages,
-				"-FLOC-": locations,
-			}
-
-			wm.subject(mail, pers, subject);
-			wm.to(pers,'sequoya@wittycircle.com');
-			wm.bcc(mailto);
-		  	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
-			wm.substitutions(pers, sub)
-			wm.content(mail)
-			wm.reply(mail, "noreply@wittycircle.com");
-		    mail.addPersonalization(pers)
-			mail.setTemplateId(TEMPLATES.welcome)
-
-		  wm.send(mail);
-		  return null;
-
-		});
+		.then(send_mail)
 };//exports
 
 module.exports = new_message

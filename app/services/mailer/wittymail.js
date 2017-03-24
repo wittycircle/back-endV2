@@ -5,7 +5,7 @@ const subst = (pers, obj) => {
 	for (let key in obj){
 		let mod = obj[key].length;
 		for(let i = 0; i < mod; i++){
-			pers.addSubstitution(new helper.Substitution(key, obj[key][i % mod]))
+			pers.addSubstitution(new helper.Substitution(key, obj[key]))
 		}
 	};
 }
@@ -40,8 +40,7 @@ wm.bcc = (pers, arr) => arr.map(r => pers.addBcc(new helper.Email(r)));
 wm.from = (mail, email, name) => mail.setFrom(new helper.Email(email, name));
 wm.to = (pers, email, name) => pers.addTo(new helper.Email(email, name));
 wm.reply = (mail, email, name) => mail.setReplyTo(new helper.Email(email, name));
-wm.subject = (mail, pers, subject) => {
-	// mail.setSubject(subject),
+wm.subject = (pers, subject) => {
 	pers.setSubject(subject)
 };
 wm.substitutions = subst;
