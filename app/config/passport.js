@@ -10,6 +10,7 @@ const Strategy = {
         google: require('passport-google-oauth').OAuth2Strategy,
         bearer: require('passport-http-bearer').Strategy
     },
+    _ = require('lodash'),
     bcrypt = require('bcrypt-nodejs'),
     session = require('../middlewares/session').session,
     account = require('../models/account'),
@@ -32,7 +33,7 @@ module.exports = function (passport) {
             session.getUser(token, function (err, resp) {
                     if (err)
                         return done(err);
-                    if (!resp)
+                if (_.isEmpty(resp))
                         return done(null, false);
                     else
                         return done(null, resp);

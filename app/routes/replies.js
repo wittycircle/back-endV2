@@ -13,5 +13,5 @@ router.route('/replies/:reply_id')
 router.route('/replies/:reply_id/like')
 	.post(auth(AUTH.PRIVATE), replies.likeReply)
     .delete(auth(AUTH.PRIVATE), replies.unlikeReply)
-
+	
 module.exports = router

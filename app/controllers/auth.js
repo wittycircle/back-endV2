@@ -24,10 +24,14 @@ exports.logout = (req, res) => {
 
 exports.generateToken = (req, res, next) => {
     session.killAllFromUser(req.user.id, (err, success) => {
-        if (err) next({code: 400});
+        if (err) next({code: 500, error: 'token_generation', error_description: 'unable to generate token'});
         else {
             session.createUserSession(req.user, (err, token) => {
-                if (err) next({code: 400});
+                if (err) next({
+                    code: 500,
+                    error: 'session_generation',
+                    error_description: 'unable to generate session'
+                });
                 else
                     res.send({
                         auth: token,

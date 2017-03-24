@@ -18,6 +18,7 @@ exports.activate = (token) => {
                 return "Bad token"
             } else {
                 return Promise.all([
+                    db(TABLES.USERS).first('email').where('email', r[0].user_email),
                     db(TABLES.USERS).update({valid: 1}).where('email', r[0].user_email),
                     db(TABLES.ACCOUNT_VALIDATION).del().where('token', token)
                 ]);

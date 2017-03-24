@@ -55,6 +55,7 @@ exports.activate = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
+                // mailer.welcome(r[0])
 				res.send({success: true})
 			}
 		})
