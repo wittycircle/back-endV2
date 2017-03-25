@@ -26,7 +26,7 @@ const {db, TABLES} = require('./index');
 	h.owner = (table, id, uid) => db(table).select('id').where({'id': id, 'user_id': uid})
 	h.admin = admin
 	h.username = db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')
-		h.spe_profile = (cond) => db.select(h.p_uarray).from(TABLES.USER_PROFILES + ' as p')
+	h.spe_profile = (cond) => db.select(h.p_uarray).from(TABLES.USER_PROFILES + ' as p')
 					.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').where(cond).as('p');
 
 

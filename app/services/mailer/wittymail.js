@@ -1,4 +1,5 @@
 const helper = require('sendgrid').mail;
+const {db, TABLES} = require('../../models/index');
 
 const subst = (pers, obj) => {
 	for (let key in obj){
@@ -44,17 +45,26 @@ wm.subject = (pers, subject) => {
 };
 wm.substitutions = subst;
 wm.send = send;
-// wm.url = (spec) => 'http://localhost:3000/' + spec;
-
 
 wm.url = (spec) => 'https://www.wittycircle.com/' + spec;
-
-
+wm.notif = (type) => db.select('user_id').from(TABLES.NOTIF_PERM + ' as n')
+					.where('notif_type', type)
+					.andWhere('permission', 1)
+					.as('n')
+/*
+| profile_view   |
+| user_follow    |
+| follow_project |
+| feedback       |
+| ask_project    |
+| reply_project  |
+| new_message	 |
+*/
 module.exports.wm = wm
 
 module.exports.TEMPLATES =  {
 	ask_project: 'b2482793-bfe8-4b3a-afc8-1ef959694a0e',
-	// upvote_project: ,
+	upvote_project: '7ea33ecc-88b5-4385-a864-2d63b2dadfb2',
 	// invite_user:, 
 	// invite_team: ,
 	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
@@ -95,3 +105,16 @@ module.exports.TEMPLATES =  {
 	welcome : 'f98676a1-51f8-4164-91fe-9e4178d46553',
 }
 */
+
+/*
+quand quelqu’un met un feedback, on envoie
+1. au createur
+2. au membres du projet
+3.aux gens qui ont follow ce projet
+
+si quelqu’un met un reply de feedback, on envoie
+1. au createur
+2.au membres du projet
+3.a celui qui a poste le feedback + ceux qui ont reply au meme feedback
+*/
+

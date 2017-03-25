@@ -48,5 +48,18 @@ exports.TABLES = {
     CATEGORIES: 'categories',
     RANK: 'rank_of_the_day',
     INVITATION: 'invitation',
-    SKILLS: 'skills'
+    SKILLS: 'skills',
+//            ***   Notifications    ***
+    NOTIF_PERM: 'notification_permission',
+    NOTIF_LIST: 'notification_list'
 };
+
+
+
+
+
+
+
+
+
+

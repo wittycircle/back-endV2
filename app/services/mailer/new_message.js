@@ -17,10 +17,9 @@ const		sender = db.select(p_uarray).from(TABLES.USER_PROFILES + ' as p')
 const		receiver = db.select(p_uarray).from(TABLES.USER_PROFILES + ' as p')
 					.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('r');
 
-
 const selection = [
 			'm.to_user_id', 'm.from_user_id', 'm.message', 'm.id',
-			's.email', 'r.first_name as receiver',
+			'r.email', 'r.first_name as receiver',
 			's.first_name', 's.last_name',
 			's.city', 's.country', 's.state',
 			's.profile_picture'
@@ -61,6 +60,7 @@ return db.select(selection)
 		.from(TABLES.OMESSAGES + ' as m')
 		.join(sender, 's.uid', 'm.from_user_id')
 		.join(receiver, 'r.uid', 'm.to_user_id')
+		.join(wm.notif('new_message'), 'n.user_id', 'm.to_user_id')
 		.where('m.m_read', 0)
 		.andWhere('m.m_send', 0)
 		.then(send_mail)

@@ -5,54 +5,73 @@ const _ = require('lodash');
 
 /*
 args: {
-	email: string
+	project_id: number,
+	user_id: number,
+	message: text,
+	title: text
 }
 */
 
-const welcome = (args) => {
-let	mail = new helper.Mail(),
-	pers = new helper.Personalization();
-
-// return db.first('p.first_name as username')
-// 		.from(TABLES.USERS + ' as u')
-// 		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
-// 		.where('u.email', args.email)
+const ask_project = (args) => {
+let	mail = new helper.Mail();
 
 const fromUser = h.spe_profile({'u.id': args.user_id})
+ 
+ common_array = ['u.id', 'u.email', 'pr.title', 'pr.public_id']
 
-const fromProject = db.select(['title'])
-		.from(TABLES.PROJECTS)
-		.where(id, args.project_id)
+ const fromProject = db(TABLES.USERS + ' as u')
+ 				.distinct(common_array)
+				.join(TABLES.PROJECT_LIKES + ' as l', 'l.user_id', 'u.id')
+				.join(TABLES.PROJECTS + ' as pr', function() {
+					this.on('l.project_id', 'pr.id')
+					this.orOn('pr.user_id', 'u.id')
+				})
+				.join(wm.notif('ask_project'), 'n.user_id', 'u.id')
+				.where('pr.id', args.project_id)
+				.union(function() {
+					this.select(common_array)
+					.from(TABLES.USERS + ' as u')
+					.join(TABLES.PROJECT_MEMBERS + ' as m', 'm.user_id', 'u.id')
+					.join(TABLES.PROJECTS + ' as pr', 'pr.id', 'm.project_id')
+					.join(wm.notif('ask_project'), 'n.user_id', 'u.id')
+					.where('m.project_id', args.project_id)
+				})
 
 return Promise.all([fromUser, fromProject])
-	.then(([u, p]) => {
-		let subject = '-FNAME- asked a question about -FPROJECT-'
-			sub = {
+	.then(([users, projects]) => {
+		u = users[0]
+		let subject = 'About that last email'
+	  	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
+		wm.content(mail)
+		wm.reply(mail, "noreply@wittycircle.com");
+		mail.setTemplateId(TEMPLATES.ask_project)
+	  	if (!projects.length){
+	  		return;
+	  	}
+		projects.forEach(p => {
+		let	pers = new helper.Personalization();
+		let sub = {
 			 "-FNAME-" : u.fullName,
 			 "-FPROJECT-" : p.title,
 			 "-FMTITLE-": args.title,
 			 "-FDESC-": args.message,
-			 "-FIMG-": u.img,
-			 "-FURL-": wm.url(`projects/${p.public}/${p.title}/feedback`)
-			 // "-FURL-": wm.url('projects/' + p.public + '/' + p.title + '/feedback');
+			 "-FIMG-": u.profile_picture,
+			 "-FURL-": wm.url(`project/${p.public_id}/${p.title}/feedback`),
+			 '-EMAIL-':  p.email
 			};
 			console.log(sub)
-			// wm.subject(pers, "Welcome to Witty !");
-			// wm.to(pers, /*args.email*/ 'sequoya@wittycircle.com');
-		 //  	wm.from(mail, 'noreply@wittycircle.com', "wittycircle");
-			// wm.substitutions(pers, sub)
-			// wm.content(mail)
-			// wm.reply(mail, "noreply@wittycircle.com");
-		 //    mail.addPersonalization(pers)
-			// mail.setTemplateId(TEMPLATES.ask_project)
-
-		 //  wm.send(mail);
-		 //  return null;
+			console.log("\n")
+			wm.to(pers, /*p.email*/'sequoya@wittycircle.com');
+			wm.substitutions(pers, sub)
+			wm.subject(pers, subject);
+		    mail.addPersonalization(pers)
+		});//foreach
+		console.log("done")
+	  wm.send(mail);
+	  return null;
 
 	}).catch(console.error);//then
 
-
-
 };//exports
 
-module.exports = welcome
+module.exports = ask_project

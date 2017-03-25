@@ -13,7 +13,8 @@ const data = (req) => {
 	picture: req.body.picture,
 	video: req.body.video,
 	network: req.body.network,
-	project_visibility: req.body.public || 'undefined'
+	project_visibility: req.body.public || 'undefined',
+	public_id: Math.floor((Math.random() * 90000) + 10000)
 	};
 	if (req.body.location) {
 	r.country = req.body.location.country
