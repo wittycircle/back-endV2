@@ -3,23 +3,8 @@ const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
-/*
-args: {
+const new_message = () => {
 
-}
-
-fields : {
-	"-FNAME-" : receivers,
-	"-FFNAME-" : [data.first_name],
-	"-FLNAME-": [data.last_name],
-	"-FIMG-": images,
-	"-FDESC-": messages,
-	"-FLOC-": locations,
-}
-*/
-const new_message = (args) => {
-
-	let	mail = new helper.Mail();
 
 const	p_uarray = ['p.id', 'u.id as uid', 'p.first_name', 'p.last_name', 'u.email',
 		'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
@@ -40,6 +25,8 @@ const selection = [
 			's.city', 's.country', 's.state',
 			's.profile_picture'
 		];
+
+	let	mail = new helper.Mail();
 
 const send_mail = (data) => {
 	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");

@@ -8,6 +8,7 @@ args: {
 	email: string
 }
 */
+
 const welcome = (args) => {
 let	mail = new helper.Mail(),
 	pers = new helper.Personalization();

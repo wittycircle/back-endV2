@@ -1,6 +1,5 @@
 const helper = require('sendgrid').mail;
 
-//array always
 const subst = (pers, obj) => {
 	for (let key in obj){
 		let mod = obj[key].length;
@@ -45,12 +44,14 @@ wm.subject = (pers, subject) => {
 };
 wm.substitutions = subst;
 wm.send = send;
+wm.url = (spec) => 'http://localhost:3000/' + spec;
+// wm.url = (spec) => 'https://wittycircle.com/' + spec;
 
 
 module.exports.wm = wm
 
 module.exports.TEMPLATES =  {
-	// ask_project: ,
+	ask_project: 'b2482793-bfe8-4b3a-afc8-1ef959694a0e',
 	// upvote_project: ,
 	// invite_user:, 
 	// invite_team: ,

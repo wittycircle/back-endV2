@@ -77,9 +77,10 @@ exports.cardProfile = (selector) => {
 // ------------------ Project ------------------
 exports.cardProject = (selector) => {
     const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
-     'c.id as category_id', 'c.name as category_name',  /*db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'),*/ /*<- Debug to see if order correctly*/
+     'c.id as category_id', 'c.name as category_name',  
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-     db.raw('CONCAT (city, ", ", country) as location')
+     db.raw('CONCAT (city, ", ", country) as location'),
+     /*db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'),*/ /*<- Debug to see if order correctly*/
      ];
 
      const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
@@ -96,7 +97,7 @@ exports.cardProject = (selector) => {
             .leftJoin(sub_members, 'm.project_id', 'pr.id')
             .where('pr.project_visibility', 1)
             .whereRaw('pr.picture_card <> ""')
-            // .groupBy( 'pl.creation_date','pr.id')
+            .groupBy('pr.id')
 
      if (selector.uid){
         pr_array.push(db.raw('GROUP_CONCAT(DISTINCT IF(pl.user_id = ' + selector.uid + ', true, null))  as follow'))
