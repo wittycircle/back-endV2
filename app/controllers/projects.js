@@ -103,7 +103,7 @@ exports.createProjectDiscussion = (req, res, next) => {
 			if (typeof r === 'string')
 				return next([r, 'Invalid project id'])
 			else{
-				mailer.ask_project(data)
+				// mailer.ask_project	(data)
 				res.send({id: r[0]})
 			}
 		}) 

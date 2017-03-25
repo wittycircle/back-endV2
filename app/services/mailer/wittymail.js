@@ -44,8 +44,10 @@ wm.subject = (pers, subject) => {
 };
 wm.substitutions = subst;
 wm.send = send;
-wm.url = (spec) => 'http://localhost:3000/' + spec;
-// wm.url = (spec) => 'https://wittycircle.com/' + spec;
+// wm.url = (spec) => 'http://localhost:3000/' + spec;
+
+
+wm.url = (spec) => 'https://www.wittycircle.com/' + spec;
 
 
 module.exports.wm = wm

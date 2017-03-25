@@ -18,9 +18,9 @@ let	mail = new helper.Mail(),
 // 		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
 // 		.where('u.email', args.email)
 
-const fromUser = 
+const fromUser = h.spe_profile({'u.id': args.user_id})
 
-const fromProject = db.select(['title', im])
+const fromProject = db.select(['title'])
 		.from(TABLES.PROJECTS)
 		.where(id, args.project_id)
 
@@ -28,24 +28,26 @@ return Promise.all([fromUser, fromProject])
 	.then(([u, p]) => {
 		let subject = '-FNAME- asked a question about -FPROJECT-'
 			sub = {
-			 "-FNAME-" : u.first_name + ' ' + u.last_name,
+			 "-FNAME-" : u.fullName,
 			 "-FPROJECT-" : p.title,
 			 "-FMTITLE-": args.title,
 			 "-FDESC-": args.message,
-			 "-FIMG-": p.img,
-			 "-FURL-": wm.url('projects/' + p.public + '/' + p.title + '/feedback');
+			 "-FIMG-": u.img,
+			 "-FURL-": wm.url(`projects/${p.public}/${p.title}/feedback`)
+			 // "-FURL-": wm.url('projects/' + p.public + '/' + p.title + '/feedback');
 			};
-			wm.subject(pers, "Welcome to Witty !");
-			wm.to(pers, /*args.email*/ 'sequoya@wittycircle.com');
-		  	wm.from(mail, 'noreply@wittycircle.com', "wittycircle");
-			wm.substitutions(pers, sub)
-			wm.content(mail)
-			wm.reply(mail, "noreply@wittycircle.com");
-		    mail.addPersonalization(pers)
-			mail.setTemplateId(TEMPLATES.ask_project)
+			console.log(sub)
+			// wm.subject(pers, "Welcome to Witty !");
+			// wm.to(pers, /*args.email*/ 'sequoya@wittycircle.com');
+		 //  	wm.from(mail, 'noreply@wittycircle.com', "wittycircle");
+			// wm.substitutions(pers, sub)
+			// wm.content(mail)
+			// wm.reply(mail, "noreply@wittycircle.com");
+		 //    mail.addPersonalization(pers)
+			// mail.setTemplateId(TEMPLATES.ask_project)
 
-		  wm.send(mail);
-		  return null;
+		 //  wm.send(mail);
+		 //  return null;
 
 	}).catch(console.error);//then
 
