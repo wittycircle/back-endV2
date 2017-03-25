@@ -23,7 +23,6 @@ app.use(cors());
  * mount() provides req.event(event, message)
  */
 const events = require('./app/services/events');
-events.watch();
 app.use(events.mount);
 
 /**
