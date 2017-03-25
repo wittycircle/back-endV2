@@ -133,10 +133,8 @@ exports.register = (data, token) => {
                     user_data.profile_id = profileId[0];
                     return db(TABLES.USERS).insert(user_data)
                         .then((user) => {
-                            return [user.id, db(TABLES.ACCOUNT_VALIDATION).insert({
-                                user_email: data.email,
-                                token: token
-                            })]
+                            return db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token})
+                                .then(() => user)
                         })
                 });
         }

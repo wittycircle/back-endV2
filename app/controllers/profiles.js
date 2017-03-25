@@ -58,7 +58,11 @@ exports.followProfile = (req, res, next) => {
             if (_.isEmpty(r))
                 res.send({success: false});
             else {
-                // cache.pub.publish('')
+                req.broadcastEvent('user_follow', {
+                    from: req.user.id,
+                    to: req.params.id,
+                    value: 1
+                });
                 res.send({success: true})
             }
         })
@@ -71,6 +75,11 @@ exports.unfollowProfile = (req, res, next) => {
             if (!r)
                 res.send({success: false});
             else {
+                req.broadcastEvent('user_follow', {
+                    from: req.user.id,
+                    to: req.params.id,
+                    value: -1
+                });
                 res.send({success: true})
             }
         })
@@ -94,21 +103,3 @@ exports.updateLocation = function (req, res, next) {
         })
         .catch(err => next(err))
 };
-
-// exports.updateProfilePicture = function (req, res) { redo this, 
-//         if (req.user.moderator) {
-//             profiles.updateProfile(req.body.picture, {id: 2})//req.body.profile_id)
-//                 .then(res.send({success: true}))
-//                 .catch(err => {
-//                     console.error("Error updating profile picture")
-//                 })
-//         } else {
-//             let object = req.body.picture || req.body;
-//             console.log("else");
-//             profiles.updateProfileFromUser(object, 2)//req.user.id)
-//                 .then(res.send({success: true}))
-//                 .catch(err => {
-//                     console.error("Error updating profile")
-//                 })
-//         }
-// };

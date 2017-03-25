@@ -16,11 +16,10 @@ const data = (req) => {
         project_visibility: req.body.public || 'undefined'
     };
     if (req.body.location) {
-        r.country = req.body.location.country
-        r.city = req.body.location.city
+        r.country = req.body.location.country;
+        r.city = req.body.location.city;
         r.state = req.body.location.state
     }
-    ;
     return r;
 };
 
@@ -48,6 +47,7 @@ exports.updateProject = (req, res, next) => {
             else {
                 res.send({success: true})//make model base on create, look at the docs
             }
+            ;
         })
         .catch(err => next(err))
 };
@@ -102,7 +102,7 @@ exports.createProjectDiscussion = (req, res, next) => {
     project.createProjectDiscussion(data)
         .then(r => {
             if (typeof r === 'string')
-                return next([r, 'Invalid project id'])
+                return next([r, 'Invalid project id']);
             else {
                 res.send({id: r[0]})
             }
@@ -114,7 +114,7 @@ exports.getProjectDiscussion = (req, res, next) => {
     project.getProjectDiscussion(req.params.id)
         .then(r => {
             if (_.isEmpty(r))
-                next(['Empty discussion', 'Wrong project id'])
+                next(['Empty discussion', 'Wrong project id']);
             else
             // res.send({discussions: format.discussion(r)})
                 res.send({discussions: r})
@@ -151,7 +151,7 @@ exports.getProjectOpenings = (req, res, next) => {
             else {
                 r.forEach(el => {
                     el.tags = _.split(el.tags, ',')
-                })
+                });
                 res.send({openings: r})
             }
         })
@@ -170,24 +170,24 @@ exports.getProjectLikes = (req, res, next) => {
             })
         })
         .catch(err => next(err))
-}
+};
 
 exports.likeProject = (req, res, next) => {
     project.likeProject(req.params.id, req.user.id)
         .then(r => {
             if (!_.isEmpty(r))
-                res.send({success: true})
+                res.send({success: true});
             else
                 res.send({success: false})
         }).catch(err => next(err))
-}
+};
 
 exports.unlikeProject = (req, res, next) => {
     project.unlikeProject(req.params.id, req.user.id)
         .then(r => {
             if (r)
-                res.send({success: true})
+                res.send({success: true});
             else
                 res.send({success: false})
         }).catch(err => next(err))
-}
+};

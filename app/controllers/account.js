@@ -38,9 +38,11 @@ exports.register = (req, res, next) => {
 		account.register(data, token) 
 		.then(r => {
 			if (typeof r === 'string') {
-				return next([r, 'Bad info [email or password]']) 
-			} 
-			else{
+				return next([r, 'Bad info [email or password]'])
+            } else {
+                req.broadcastEvent('user_register', {
+                    id: r[0]
+                });
 				res.send({success: true}) 
 			} 
 		}).catch(err => next(err))
