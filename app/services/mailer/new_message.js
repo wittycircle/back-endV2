@@ -35,14 +35,14 @@ const send_mail = (data) => {
 	
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = '-FFNAME-  -FLNAME- sent you a message';
+		let subject = '*|FFNAME|*  *|FLNAME|* sent you a message';
 		let sub = {
-			"-FNAME-" : e.receiver,
-			"-FFNAME-" : e.first_name,
-			"-FLNAME-": e.last_name,
-			"-FIMG-": e.profile_picture,
-			"-FDESC-": wm.truncate(e.message)
-			"-FLOC-": wm.location(e)
+			"*|FNAME|*" : e.receiver,
+			"*|FFNAME|*" : e.first_name,
+			"*|FLNAME|*": e.last_name,
+			"*|FIMG|*": e.profile_picture,
+			"*|FDESC|*": wm.truncate(e.message),
+			"*|FLOC|*": wm.location(e),
 			email: e.email
 		};
 		console.log("\n-------------------------------------------------\n")
