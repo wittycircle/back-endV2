@@ -41,8 +41,8 @@ const send_mail = (data) => {
 			"-FFNAME-" : e.first_name,
 			"-FLNAME-": e.last_name,
 			"-FIMG-": e.profile_picture,
-			"-FDESC-": e.message.length > 76 ? e.message.substring(0, 76) + "...": e.message.substring(0, 76),
-			"-FLOC-": e.country ? e.city + ', ' + e.country : e.state ? e.city + ', ' + e.state: e.city,
+			"-FDESC-": wm.truncate(e.message)
+			"-FLOC-": wm.location(e)
 			email: e.email
 		};
 		console.log("\n-------------------------------------------------\n")

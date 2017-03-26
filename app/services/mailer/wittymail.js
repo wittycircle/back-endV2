@@ -1,5 +1,6 @@
 const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
+const _ = require('lodash');
 
 const subst = (pers, obj) => {
 	for (let key in obj){
@@ -45,8 +46,11 @@ wm.subject = (pers, subject) => {
 };
 wm.substitutions = subst;
 wm.send = send;
-
+wm.truncate = (x) =>  _.truncate(x, {length: 76, separator: ' '});
+wm.location = (e) => e.city + ', ' + (e.country ? e.country : e.state ? e.state : '');
 wm.url = (spec) => 'https://www.wittycircle.com/' + spec;
+
+// ------------------ db stuff ------------------
 wm.notif = (type) => db.select('user_id').from(TABLES.NOTIF_PERM + ' as n')
 					.where('notif_type', type)
 					.andWhere('permission', 1)
