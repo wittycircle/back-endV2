@@ -2,10 +2,10 @@
 [line number]
 	ask_project: controllers/projects  [106]
 	upvote_project: ,
-	invite_user:, 
-	invite_team: ,
-	new_message: undefined_for_Now
-	new_project: ,
+	invite_user: UNDEFINED, 
+	invite_team: UNDEFINED,
+	new_message: UNDEFINED,
+	new_project: controllers/projects [35],
 	reply_project: ,
 	reset_password: ,
 	suggestion_profile: ,

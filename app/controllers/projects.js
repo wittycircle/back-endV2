@@ -1,5 +1,6 @@
 const project = require('../models/projects'), 
 	// format = require('./format'),
+	mailer = require('../services/mailer');
     _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
@@ -25,12 +26,14 @@ const data = (req) => {
 };
 
 exports.createProject = (req, res, next) => {
-	project.createProject(data(req), req.body.members, req.body.openings, req.body.discussions)
+	let d = d(req)
+	project.createProject(d, req.body.members, req.body.openings, req.body.discussions)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Invalid informations'])
 			}
 			else{
+				// mailer.new_project({uid: req.user.id, public_id: d.public_id})
 				res.send({id: r})
 			}
 		})

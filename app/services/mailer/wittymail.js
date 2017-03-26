@@ -69,10 +69,10 @@ module.exports.wm = wm
 module.exports.TEMPLATES =  {
 	ask_project: 'b2482793-bfe8-4b3a-afc8-1ef959694a0e',
 	upvote_project: '7ea33ecc-88b5-4385-a864-2d63b2dadfb2',
-	// invite_user:, 
-	// invite_team: ,
+	invite_user: '1e2364c3-e76f-41ef-b323-0cd46cacac51', 
+	invite_team: '7e5e775c-e82b-47b6-b0a9-0e694f29febe',
 	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
-	// new_project: ,
+	new_project: '54151d8f-5dec-48a2-9f03-bde04fba72c3',
 	// reply_project: ,
 	// reset_password: ,
 	// suggestion_profile: ,
