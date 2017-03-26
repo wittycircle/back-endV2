@@ -40,7 +40,7 @@ const fromUser = h.spe_profile({'u.id': args.user_id})
 return Promise.all([fromUser, fromProject])
 	.then(([users, projects]) => {
 		u = users[0]
-		let subject = 'About that last email'
+		let subject = '*|FNAME|* asked a question about *|FPROJECT|*'
 	  	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
 		wm.content(mail)
 		wm.reply(mail, "noreply@wittycircle.com");
@@ -51,13 +51,13 @@ return Promise.all([fromUser, fromProject])
 		projects.forEach(p => {
 		let	pers = new helper.Personalization();
 		let sub = {
-			 "-FNAME-" : u.fullName,
-			 "-FPROJECT-" : p.title,
-			 "-FMTITLE-": args.title,
-			 "-FDESC-": args.message,
-			 "-FIMG-": u.profile_picture,
-			 "-FURL-": wm.url(`project/${p.public_id}/${p.title}/feedback`),
-			 '-EMAIL-':  p.email
+			'*|FNAME|*': u.fullName,
+			'*|FPROJECT|*' : p.title,
+			'*|FMTITLE|*': args.title,
+			'*|FDESC|*': args.message,
+			'*|FIMG|*': u.profile_picture,
+			'*|FURL|*': wm.url(`project/${p.public_id}/${p.title}/feedback`),
+			'*|EMAIL|*':  p.email
 			};
 			console.log(sub)
 			console.log("\n")

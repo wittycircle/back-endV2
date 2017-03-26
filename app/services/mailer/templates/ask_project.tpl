@@ -13,7 +13,7 @@
 		<meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>-SUBJECT-</title>
+		<title>*|SUBJECT|*</title>
         
     <style type="text/css">
 		p{
@@ -576,7 +576,7 @@
                                         <span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><span style="font-size:16px">Hi there,<br>
 <br>
 
--FNAME- asked a question about -FPROJECT- &nbsp;</span></span></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
+*|FNAME|* asked a question about *|FPROJECT|* &nbsp;</span></span></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
     <tbody class="mcnImageBlockOuter">
             <tr>
                 <td valign="top" style="padding:0px" class="mcnImageBlockInner">
@@ -585,7 +585,7 @@
                             <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align:center;">
                                 
                                     
-                                        <img align="center" alt="" src="-FIMG-" width="66" style="max-width: 66px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;height: auto;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic; border-radius: 50%" class="mcnImage">
+                                        <img align="center" alt="" src="*|FIMG|*" width="66" style="max-width: 66px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;height: auto;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic; border-radius: 50%" class="mcnImage">
                                     
                                 
                             </td>
@@ -611,8 +611,8 @@
                         
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif;">
                         
-                            <div style="text-align: center;"><span style="font-size:16px"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><strong>-FMTITLE-</strong></span><br>
-<span style="color:#222222"><em>-FDESC-</em></span></span></div>
+                            <div style="text-align: center;"><span style="font-size:16px"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><strong>*|FMTITLE|*</strong></span><br>
+<span style="color:#222222"><em>*|FDESC|*</em></span></span></div>
 
                         </td>
                     </tr>
@@ -636,7 +636,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 16px; padding: 16px;">
-                                <a class="mcnButton " title="View -FFNAME-'s profile" href="-FURL-" target="_blank" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Answer -FNAME-</a>
+                                <a class="mcnButton " title="View *|FFNAME|*'s profile" href="*|FURL|*" target="_blank" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Answer *|FNAME|*</a>
                             </td>
                         </tr>
                     </tbody>
