@@ -80,15 +80,15 @@ exports.cardProject = (selector) => {
     const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
      'c.id as category_id', 'c.name as category_name',  
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-     db.raw('CONCAT (city, ", ", country) as location'), 'o.skill', 
+     db.raw('CONCAT (city, ", ", country) as location'), 'o.skill',  'o.tags',
       // db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'), /*<- Debug to see if order correctly*/
      ];
 
      const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
             sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
-            .select([
-                'o.tags', 'o.status', 'o.project_id', 'o.skill'
-                ])
+            .select([db.raw('GROUP_CONCAT(ot.tag) as tags'), 'o.status', 'o.project_id', 'o.skill'])
+            .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
+            .groupBy('o.id')
             .as('o'),
             sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
 
@@ -113,7 +113,7 @@ exports.cardProject = (selector) => {
     if (selector.opening || selector.skills)
         query.leftJoin(sub_openings, 'o.project_id', 'pr.id')
     if (selector.skills){
-        let selected =  _.words(selector.skills).map((el, i) => 'WHEN o.skill LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        let selected =  _.words(selector.skills).map((el, i) => 'WHEN o.skill LIKE "%' + el + '%" OR o.tags LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
         query.orderByRaw('CASE ' + selected + ' ELSE 100 END')
     };
     addLocation('pr', selector.location, query);
