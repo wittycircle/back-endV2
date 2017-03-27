@@ -80,7 +80,8 @@ exports.cardProject = (selector) => {
     const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
      'c.id as category_id', 'c.name as category_name',  
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-     db.raw('CONCAT (city, ", ", country) as location'), 'o.skill',  'o.tags',
+     db.raw('CONCAT (city, ", ", country) as location'),
+      // 'o.skill',  'o.tags',
       // db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'), /*<- Debug to see if order correctly*/
      ];
 
