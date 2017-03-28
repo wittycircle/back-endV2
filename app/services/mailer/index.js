@@ -1,13 +1,13 @@
 /*
 [line number]
 	ask_project: controllers/projects  [106]
-	upvote_project: ,
+	upvote_project: UNDEFINED,
 	invite_user: UNDEFINED, 
 	invite_team: UNDEFINED,
 	new_message: UNDEFINED,
 	new_project: controllers/projects [35],
-	reply_project: ,
-	reset_password: ,
+	reply_project: controllers/discussion [56],
+	reset_password: controllers/account [74],
 	suggestion_profile: ,
 	suggestion_project: ,
 	uc_invitation: ,

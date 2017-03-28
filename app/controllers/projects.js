@@ -13,7 +13,6 @@ const data = (req) => {
 	about: req.body.about,
 	picture: req.body.picture,
 	video: req.body.video,
-	network: req.body.network,
 	project_visibility: req.body.public || 'undefined',
 	public_id: Math.floor((Math.random() * 90000) + 10000)
 	};
@@ -46,7 +45,6 @@ exports.updateProject = (req, res, next) => {
 	project.updateProject(req.params.id, req.body)
 		.then(r => {
 			if (typeof r === 'string') {
-				return next([r, 'Invalid id'])
 			}
 			else{
 				res.send({success: true})//make model base on create, look at the docs
@@ -120,7 +118,6 @@ exports.getProjectDiscussion = (req, res, next) => {
 			if (_.isEmpty(r))
 				next(['Empty discussion', 'Wrong project id'])
 			else
-				// res.send({discussions: format.discussion(r)})
 				res.send({discussions: r})
 		})
 		.catch(err => next(err))

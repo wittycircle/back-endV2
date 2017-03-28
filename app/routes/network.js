@@ -7,11 +7,11 @@ const express = require('express'),
     {auth, AUTH} = require('../services/auth');
 
 router.route('/networks/:from')
-    .get(network.getNetwork)
-    .post(network.createNetwork);
+    .get(auth(AUTH.PRIVATE), network.getNetwork)
+    .post(auth(AUTH.PRIVATE), network.createNetwork);
 
 router.route('/networks/:from/:flag')
-    .get(network.getNetworkInfo)
+    .get(auth(AUTH.PRIVATE), network.getNetworkInfo)
 
 
 // ------------------ Params ------------------
@@ -19,8 +19,8 @@ router.param('network_id', validateParam(schemas.params.id));
 // ------------------ Params ------------------
 
 router.route('/networks/:from/:id')
-    .put(network.updateNetwork)
-    .delete(network.removeNetwork);
+    .put(auth(AUTH.PRIVATE), network.updateNetwork)
+    .delete(auth(AUTH.PRIVATE), network.removeNetwork);
 
 
 module.exports = router;

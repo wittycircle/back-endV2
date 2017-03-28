@@ -74,7 +74,7 @@ module.exports.TEMPLATES =  {
 	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
 	new_project: '54151d8f-5dec-48a2-9f03-bde04fba72c3',
 	reply_project: '8abd1eb3-5e4e-4b99-85d4-2d5c858dd716',
-	// reset_password: ,
+	reset_password: 'a3d60d87-f258-4271-b9df-0ebe56aedea9',
 	// suggestion_profile: ,
 	// suggestion_project: ,
 	// uc_invitation: ,

@@ -4,7 +4,7 @@ const network = require('../models/network'),
 const allowed = 'Allowed: [networks, profile, profile_network, project, unviersity]'
 
 exports.getNetwork = (req, res, next) => {
-	network.getNetwork(req.params.from)
+	network.getNetwork(req.user.id, req.params.from)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, allowed])
@@ -21,7 +21,7 @@ exports.getNetwork = (req, res, next) => {
 exports.getNetworkInfo = (req, res, next) => {
 	if (req.params.flag != 'complete')
 		return next(['Bad flag', 'allowed: [complete]'])
-	network.getNetworkInfo(req.params.from)
+	network.getNetworkInfo(req.user.id, req.params.from)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, allowed])
@@ -36,7 +36,7 @@ exports.getNetworkInfo = (req, res, next) => {
 };
 
 exports.createNetwork = (req, res, next) => {
-	network.createNetwork(req.params.from, req.body)
+	network.createNetwork(req.user.id, req.params.from, req.body)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, allowed])
@@ -49,7 +49,7 @@ exports.createNetwork = (req, res, next) => {
 };
 
 exports.updateNetwork = (req, res, next) => {
-	network.updateNetwork(req.params.from, req.params.id, req.body)
+	network.updateNetwork(req.user.id, req.params.from, req.params.id, req.body)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'allowed'])
@@ -63,7 +63,7 @@ exports.updateNetwork = (req, res, next) => {
 
 
 exports.removeNetwork = (req, res, next) => {
-	network.removeNetwork(req.params.from, req.params.id)
+	network.removeNetwork(req.user.id, req.params.from, req.params.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'allowed'])

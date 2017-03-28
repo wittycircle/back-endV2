@@ -71,6 +71,7 @@ exports.resetPassword = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
+				// mailer.reset_password({token: req.params.token, email: req.body.email})
 				res.send({success: true})
 			}
 		})
