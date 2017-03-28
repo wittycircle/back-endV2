@@ -27,7 +27,6 @@ exports.TABLES = {
 //            ***    PROJECTS    ***
     PROJECTS: 'projects',
     PROJECT_LIKES: 'project_followers',
-    PROJECT_NETWORK: 'project_network',
     PROJECT_REPLY_LIKES: 'project_reply_likes',
     PROJECT_DISCUSSION: 'project_discussion',
     PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',
@@ -38,6 +37,7 @@ exports.TABLES = {
     PROJECT_OPENINGS: 'project_openings',
     OPENING_TAGS: 'opening_tags',
 //            ***    NETWORK    ***
+    'NETWORKS': 'networks',
     'PROJECT_NETWORK': 'project_network',
     'UNIV_NETWORK': 'university_list',
     'PROFILE_NETWORK': 'profile_network',
