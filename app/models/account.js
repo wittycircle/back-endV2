@@ -176,3 +176,13 @@ exports.updatePassword = (password, uid) => {
     });
 };
 
+exports.updateInformations = (data, uid) => {
+    return h.exist(TABLES.USERS, uid).then(r => {
+        if (!r.length)
+            return "bad user id"
+        else {
+            return db(TABLES.USERS).update(data)
+                .where({id: uid})
+        }
+    });
+};

@@ -105,3 +105,16 @@ exports.updatePassword = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
+
+exports.updateInformations = (req, res, next) => {
+	account.updateInformations(req.body, req.user.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Bad fields'])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
