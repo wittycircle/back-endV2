@@ -9,8 +9,10 @@ const config = require('./app/private'),
 - history
 - portfolios_likes
 - project_polls
--undefined
+- project_networks  
 
+// ------------------ ROW to remove ------------------
+projects -> network
 */
 
 //articles

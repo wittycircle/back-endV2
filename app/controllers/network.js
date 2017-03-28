@@ -1,7 +1,7 @@
 const network = require('../models/network'),
     _ = require('lodash');
 
-const allowed = 'Allowed: [networks, profile, project, unviersity]'
+const allowed = 'Allowed: [networks, profile, profile_network, project, unviersity]'
 
 exports.getNetwork = (req, res, next) => {
 	network.getNetwork(req.params.from)

@@ -9,6 +9,8 @@ exports.getNetwork = (from) => {
         return db(TABLES.UNIV_NETWORK).distinct('name as network')
     } else if (from == 'profile'){
         return db(TABLES.PROFILE_NETWORK).distinct('network')
+    } else if (from == 'profile_incubator'){
+        return db(TABLES.PROFILE_INCUBATOR).distinct('network')
     } else if (from == 'project'){
         return db(TABLES.PROJECTS).distinct('network')
     } else if (from == 'networks'){
@@ -23,6 +25,8 @@ exports.getNetworkInfo = (from) => {
         return db(TABLES.UNIV_NETWORK).select()
     } else if (from == 'profile'){
         return db(TABLES.PROFILE_NETWORK).select()
+    } else if (from == 'profile_incubator'){
+        return db(TABLES.PROFILE_INCUBATOR).select()
     } else if (from == 'project'){
         return db(TABLES.PROJECTS).select()
     } else if (from == 'networks'){
@@ -37,6 +41,8 @@ exports.createNetwork = (from, data) => {
         return db(TABLES.UNIV_NETWORK).insert(data)
     } else if (from == 'profile'){
         return db(TABLES.PROFILE_NETWORK).insert(data)
+    } else if (from == 'profile_incubator'){
+        return db(TABLES.PROFILE_INCUBATOR).insert(data)
     } else if (from == 'project'){
         return db(TABLES.PROJECTS).insert(data)
     }else if (from == 'networks'){
@@ -51,6 +57,8 @@ exports.updateNetwork = (from, id, data) => {
         return db(TABLES.UNIV_NETWORK).update(data).where({'id': id})
     } else if (from == 'profile'){
         return db(TABLES.PROFILE_NETWORK).update(data).where({'id': id})
+    } else if (from == 'profile_incubator'){
+        return db(TABLES.PROFILE_INCUBATOR).update(data).where({'id': id})
     } else if (from == 'project'){
         return db(TABLES.PROJECTS).update(data).where({'id': id})
     }else if (from == 'networks'){
@@ -67,6 +75,8 @@ exports.removeNetwork = (from, id) => {
         return db(TABLES.UNIV_NETWORK).del().where({'id': id})
     } else if (from == 'profile'){
         return db(TABLES.PROFILE_NETWORK).del().where({'id': id})
+    } else if (from == 'profile_incubator'){
+        return db(TABLES.PROFILE_INCUBATOR).del().where({'id': id})
     } else if (from == 'project'){
         return db(TABLES.PROJECTS).del().where({'id': id})
     }else if (from == 'networks'){
@@ -74,5 +84,4 @@ exports.removeNetwork = (from, id) => {
     } else {
         return new Promise(resolve => resolve(`bad network :${from}`))
     }
-
 };
