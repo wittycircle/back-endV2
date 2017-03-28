@@ -8,15 +8,19 @@ const express = require('express'),
 
 router.route('/networks/:from')
     .get(network.getNetwork)
-    // .post(network.createNetwork);
+    .post(network.createNetwork);
+
+router.route('/networks/:from/:flag')
+    .get(network.getNetworkInfo)
+
 
 // ------------------ Params ------------------
 router.param('network_id', validateParam(schemas.params.id));
 // ------------------ Params ------------------
 
-// router.route('/networks/:network_id')
-//     .put(network.updateNetwork)
-//     .delete(network.removeNetwork);
+router.route('/networks/:from/:id')
+    .put(network.updateNetwork)
+    .delete(network.removeNetwork);
 
 
 module.exports = router;
