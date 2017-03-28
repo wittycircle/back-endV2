@@ -7,7 +7,7 @@ const express = require('express'),
     {auth, AUTH} = require('../services/auth');
 
 router.route('/networks/:from')
-    .get(auth(AUTH.PRIVATE), network.getNetwork)
+    .get(network.getNetwork)
     .post(auth(AUTH.PRIVATE), network.createNetwork);
 
 router.route('/networks/:from/:flag')
