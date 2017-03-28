@@ -4,24 +4,19 @@ const {db, TABLES} = require('./index'),
         _ = require('lodash'),
         h = require('./helper');
 
-exports.getNetwork = (uid, from) => {
-    return h.admin(TABLES.USERS, uid, uid)
-    .then(r => {
-        if (!r.length)
-            return `Bad network : ${from}`
-        else {
-            if (from == 'university') 
-                return db(TABLES.UNIV_NETWORK).distinct('name as network', 'launched').orderByRaw('popular DESC')
-            else if (from == 'profile') 
-                return db(TABLES.PROFILE_NETWORK).distinct('network') 
-            else if (from == 'profile_incubator') 
-                return db(TABLES.PROFILE_INCUBATOR).distinct('network') 
-            else if (from == 'project') 
-                return db(TABLES.PROJECTS).distinct('network') 
-            else if (from == 'networks') 
-                return db(TABLES.NETWORKS).distinct('name as network')
-        }
-    });
+exports.getNetwork = (from) => {
+    if (from == 'university') 
+        return db(TABLES.UNIV_NETWORK).distinct('name as network', 'launched').orderByRaw('popular DESC')
+    else if (from == 'profile') 
+        return db(TABLES.PROFILE_NETWORK).distinct('network') 
+    else if (from == 'profile_incubator') 
+        return db(TABLES.PROFILE_INCUBATOR).distinct('network') 
+    else if (from == 'project') 
+        return db(TABLES.PROJECTS).distinct('network') 
+    else if (from == 'networks') 
+        return db(TABLES.NETWORKS).distinct('name as network')
+    else
+        return new Promise(resolve => resolve(`Bad network : ${from}`))
 };
 
 exports.getNetworkInfo = (uid, from) => {

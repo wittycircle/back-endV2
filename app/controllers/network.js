@@ -4,14 +4,20 @@ const network = require('../models/network'),
 const allowed = 'Allowed: [networks, profile, profile_network, project, unviersity]'
 
 exports.getNetwork = (req, res, next) => {
-	network.getNetwork(req.user.id, req.params.from)
+	network.getNetwork(req.params.from)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, allowed])
 			}
 			else{
 				let o = {}
-				o[req.params.from] = r.map(e => e.network)
+				if (req.params.from == 'university'){
+					o[req.params.from] = r.map(e =>  {
+						return {'network': e.network, 'launched': e.launched}
+					});
+				} 
+				else 
+					o[req.params.from] = r.map(e => e.network);
 				res.send(o)
 			}
 		})
