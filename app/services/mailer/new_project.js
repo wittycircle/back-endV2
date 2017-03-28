@@ -39,4 +39,4 @@ const new_project = (args) => {
 	return sender.then((e) => send_mail(e, args.public_id))
 };//exports
 
-module.exports = new_mail
+module.exports = new_project

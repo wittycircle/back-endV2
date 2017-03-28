@@ -73,7 +73,7 @@ module.exports.TEMPLATES =  {
 	invite_team: '7e5e775c-e82b-47b6-b0a9-0e694f29febe',
 	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
 	new_project: '54151d8f-5dec-48a2-9f03-bde04fba72c3',
-	// reply_project: ,
+	reply_project: '8abd1eb3-5e4e-4b99-85d4-2d5c858dd716',
 	// reset_password: ,
 	// suggestion_profile: ,
 	// suggestion_project: ,
