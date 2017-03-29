@@ -1,0 +1,45 @@
+const {wm, TEMPLATES} = require('./wittymail');
+const helper = require('sendgrid').mail;
+const h = require('./app/models/helper');
+const {db, TABLES} = require('../../models/index');
+const _ = require('lodash');
+
+
+// const args = {
+// 	token: 'blalblabla',
+// 	email: 'sequoya@wittycircle.com'
+// };
+
+const send_mail = (data, token) => {
+	let	mail = new helper.Mail();
+	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
+	wm.content(mail)
+	wm.reply(mail, "noreply@wittycircle.com");
+	mail.setTemplateId(TEMPLATES.reset_password)
+	
+	data.forEach((e, i) => {
+		let pers = new helper.Personalization();
+		let subject = 'Reset password'
+		let sub = {
+			"*|ffname|*": e.first_name || '',
+			"*|EMAIL|*": e.email || '',
+			"*|FURL|*": wm.url(`password/reset/${token}`),
+		};
+		console.log(sub)
+		console.log("\n-------------------------------------------------\n")
+		wm.subject(pers, subject);
+		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
+		wm.substitutions(pers, sub)
+	    mail.addPersonalization(pers)
+	}); //foreach
+	wm.send(mail); 
+	return null;
+};
+	
+const reset_password = (args) => {
+	const request = h.spe_profile({'u.email': args.email}).select('u.email')
+
+	return request.then((data) => send_mail(data, args.token))
+};//exports
+
+module.exports = reset_password
