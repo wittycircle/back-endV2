@@ -18,7 +18,7 @@ exports.getProfiles = (req, res, next) => {
 };
 
 exports.getProfile = (req, res, next) => {
-    profiles.getProfileBy({'id': req.params.id})
+    profiles.getProfileBy({'p.id': req.params.id})
         .then(profile => {
             if (_.isEmpty(profile) || !profile.length)
                 next({code: 404});

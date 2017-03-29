@@ -13,7 +13,7 @@ exports.getProfiles = () => {
 };
 
 exports.getProfileBy = (by) => {
-    return h.ws_profile(by)
+    return h.spe_profile(by)
 };
 
 exports.updateProfile = (stuff, cnd) => {
