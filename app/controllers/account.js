@@ -107,6 +107,7 @@ exports.updatePassword = (req, res, next) => {
 };
 
 exports.updateInformations = (req, res, next) => {
+	delete req.body.password;
 	account.updateInformations(req.body, req.user.id)
 		.then(r => {
 			if (typeof r === 'string') {
