@@ -117,5 +117,5 @@ exports.updateInformations = (req, res, next) => {
 				res.send({success: true})
 			}
 		})
-		.catch(err => next(err))
+		.catch(err => next(['Username already taken']))
 };

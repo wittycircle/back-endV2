@@ -15,3 +15,8 @@ module.exports.register = Joi.object().keys({
 	account: account
 });
 
+module.exports.informations = Joi.object().keys({
+	username: Joi.string().trim(),
+	email: Joi.string().email(),
+	social_share: Joi.number().integer(),
+});
