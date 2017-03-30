@@ -157,6 +157,7 @@ exports.getExperiences = (uid) => {
             .from(TABLES.USER_EXPERIENCES + ' as e')
             .join(TABLES.USERS + ' as u', 'u.id', 'e.user_id')
             .where('u.id', uid)
+            .orderByRaw('date_from DESC')
 
 };
 
