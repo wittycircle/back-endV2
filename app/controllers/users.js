@@ -151,6 +151,8 @@ exports.getExperiences = (req, res, next) => {
 };
 
 exports.addExperience = (req, res, next) => {
+    if (!req.user || req.params.id != req.user.id)
+    return next(['Bad id', 'Ressource does not belong to you!'])
   user.addExperience(req.params.id, req.body)
     .then(r => {
       if (typeof r === 'string') {
@@ -164,6 +166,8 @@ exports.addExperience = (req, res, next) => {
 };
 
 exports.removeExperience = (req, res, next) => {
+    if (!req.user || req.params.id != req.user.id)
+    return next(['Bad id', 'Ressource does not belong to you!'])
   user.removeExperience(req.params.id, req.body.id)
     .then(r => {
       if (typeof r === 'string') {

@@ -33,8 +33,8 @@ router.route('/users/:id/interests')
 // ------------------ EXPERIENCES ------------------
 router.route('/users/:id/experiences')
 	.get(users.getExperiences)
-	.post(users.addExperience)
-	.delete(users.removeExperience)
+	.post(auth(AUTH.PRIVATE), users.addExperience)
+	.delete(auth(AUTH.PRIVATE), users.removeExperience)
 // -> get interest from user
 //  -> post interest user
 
