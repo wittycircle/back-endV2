@@ -53,11 +53,11 @@ exports.getProfileFollowers = (req, res, next) => {
         else
         {
             let o = {
-                project_upvoted: r2[0].count,
+                project_upvoted: r2.length,
                 following_count: r.length,
                 followers_count: r1.length
             }
-            res.send({Count: o, following: r, followers: r1})
+            res.send({Count: o, upvoted: r2, following: r, followers: r1})
         }
     }).catch(err => next(err))
 };

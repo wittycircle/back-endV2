@@ -104,8 +104,12 @@ exports.getProjectsInvolved = (uid) => {
 };
 
 exports.getProjectFollow = (uid) => {
-    return db.count('pl.id as count')
-            .from(TABLES.PROJECT_LIKES + ' as pl', 'pl.user_id', 'u.id')
+    return db
+    // .count('pl.id as count')
+            .distinct(['pr.title', 'pr.public_id',
+                db.raw('CONCAT(pr.city, " ", pr.state)')])
+            .from(TABLES.PROJECT_LIKES + ' as pl')
+            .join(TABLES.PROJECTS + ' as pr', 'pl.project_id', 'pr.id')
             .where('pl.user_id', uid)
 };
 
@@ -153,11 +157,12 @@ exports.removeInterest = (uid, data) => {
 
 // ------------------ EXPERIENCES ------------------
 exports.getExperiences = (uid) => {
+    let sort = `CASE WHEN date_to like "Present" THEN 1 ELSE 2 END`;
     return db.select('e.*')
             .from(TABLES.USER_EXPERIENCES + ' as e')
             .join(TABLES.USERS + ' as u', 'u.id', 'e.user_id')
             .where('u.id', uid)
-            .orderByRaw('date_from DESC')
+            .orderByRaw(sort + ' , date_to, date_from ASC')
 
 };
 
