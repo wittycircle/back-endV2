@@ -3,6 +3,7 @@
  */
 
 const profiles = require('../models/profiles'),
+    user = require('../models/users'),
     _ = require('lodash'),
     cache = require('../services/cache');
 
@@ -43,13 +44,21 @@ exports.updateProfile = (req, res, next) => {
 exports.getProfileFollowers = (req, res, next) => {
     Promise.all([
     profiles.getProfileFollowers( 'l.user_id','l.follow_user_id', req.params.id),
-    profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id)
+    profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id),
+    user.getProjectFollow(req.params.id)
         ])
-    .then(([r, r1]) => {
+    .then(([r, r1, r2]) => {
         if (typeof r === 'string')
             return next([r, "Invalid id"])
         else
-            res.send({following: r, followers: r1})
+        {
+            let o = {
+                project_upvoted: r2[0].count,
+                following_count: r.length,
+                followers_count: r1.length
+            }
+            res.send({Count: o, following: r, followers: r1})
+        }
     }).catch(err => next(err))
 };
 

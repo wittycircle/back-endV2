@@ -2,13 +2,6 @@ const { db, TABLES } = require('./index'),
     h = require('./helper')
 
 // ------------------ Main methods ------------------
-exports.getUserSkills = (id) => {
-    return db.select(['skill_id as id', 'name', 'category'])
-        .from(TABLES.SKILLS + ' as s')
-        .join(TABLES.USER_SKILLS + ' as us', 'us.skill_id', 's.id')
-        .where({user_id: id})
-        .groupBy('us.skill_id')
-};
 
 // SELECT * FROM profiles p INNER JOIN users u ON p.id = u.profile_id WHERE ${auth}_id = ${id}
 exports.getUserBySocialId = (id, auth) => {
@@ -24,31 +17,39 @@ exports.getUserBy = (by) => {
 };
 
 exports.getUserByEmail = (email) => {
-	return db.select('id').from(TABLES.USERS)
-		.where('email', email)
+    return db.select('id').from(TABLES.USERS)
+        .where('email', email)
 };
 
 exports.createProfile = (first, last) => {
-	return db(TABLES.USER_PROFILES)
-			.insert({'first_name' : first, 'last_name': last})
+    return db(TABLES.USER_PROFILES)
+            .insert({'first_name' : first, 'last_name': last})
 };
 
 exports.checkUsername = (username) => {
-	return db(TABLES.USERS)
-			.select('username')
-			.whereIn('username', username)
+    return db(TABLES.USERS)
+            .select('username')
+            .whereIn('username', username)
 };
 
 exports.createUser = (profile_id, email, username, password) => {
-	return db(TABLES.USERS)
-		.insert({
-		'profile_id': profile_id,
-		'email': email,
-		'username': username,
-		'password': password
-	})
+    return db(TABLES.USERS)
+        .insert({
+        'profile_id': profile_id,
+        'email': email,
+        'username': username,
+        'password': password
+    })
 };
+
 // ------------------ Skills ------------------
+exports.getUserSkills = (id) => {
+    return db.select(['skill_id as id', 'name', 'category'])
+        .from(TABLES.SKILLS + ' as s')
+        .join(TABLES.USER_SKILLS + ' as us', 'us.skill_id', 's.id')
+        .where({user_id: id})
+        .groupBy('us.skill_id')
+};
 
 exports.addUserSkill = (id, uid) => {
     return Promise.all([h.exist(TABLES.SKILLS, id), h.exist(TABLES.USERS, uid)])
@@ -87,4 +88,23 @@ exports.removeUserSkill = (id, uid) => {
             return "Invalid user id"
         }
     })
+};
+
+// ------------------ Projects ------------------
+
+exports.getProjectsInvolved = (uid) => {
+    return db.distinct(['pr.id', 'pr.title'])
+        .from(TABLES.PROJECTS + ' as pr')
+        .join(TABLES.PROJECT_MEMBERS + ' as m', 'm.project_id', 'pr.id')
+        .join(TABLES.USERS + ' as u', function() {
+            this.on('u.id', 'pr.user_id')
+                .orOn('u.id', 'm.user_id')
+        })
+        .where('u.id', uid)
+};
+
+exports.getProjectFollow = (uid) => {
+    return db.count('pl.id as count')
+            .from(TABLES.PROJECT_LIKES + ' as pl', 'pl.user_id', 'u.id')
+            .where('pl.user_id', uid)
 };
