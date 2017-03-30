@@ -42,6 +42,8 @@ exports.TABLES = {
     'UNIV_NETWORK': 'university_list',
     'PROFILE_NETWORK': 'profile_network',
     'PROFILE_INCUBATOR': 'profile_network_2',
+    //            *** HISTORY ***
+    'HISTORY': 'project_history',
 //            ***    ARTICLES    ***
     ARTICLES: 'articles',
     TAG_ARTICLES: 'tag_articles',
