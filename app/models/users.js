@@ -107,7 +107,7 @@ exports.getProjectFollow = (uid) => {
     return db
     // .count('pl.id as count')
             .distinct(['pr.title', 'pr.public_id',
-                db.raw('CONCAT(pr.city, " ", pr.state)')])
+                db.raw('CONCAT(pr.city, ", ", pr.country) as location') ])
             .from(TABLES.PROJECT_LIKES + ' as pl')
             .join(TABLES.PROJECTS + ' as pr', 'pl.project_id', 'pr.id')
             .where('pl.user_id', uid)
