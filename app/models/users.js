@@ -152,3 +152,22 @@ exports.removeInterest = (uid, data) => {
 
 
 // ------------------ EXPERIENCES ------------------
+exports.getExperiences = (uid) => {
+    return db.select('e.*')
+            .from(TABLES.USER_EXPERIENCES + ' as e')
+            .join(TABLES.USERS + ' as u', 'u.id', 'e.user_id')
+            .where('u.id', uid)
+
+};
+
+exports.addExperience = (uid, data) => {
+    data.user_id = uid;
+    return db(TABLES.USER_EXPERIENCES)
+        .insert(data)
+};
+
+exports.removeExperience = (uid, data) => {
+    return db(TABLES.USER_EXPERIENCES)    
+        .del()
+        .where({user_id: uid, id: data})
+};

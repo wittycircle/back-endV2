@@ -29,19 +29,16 @@ router.route('/users/:id/interests')
 	.get(users.getInterests)
 	.post(auth(AUTH.PRIVATE), users.addInterest)
 	.delete(auth(AUTH.PRIVATE), users.removeInterest)
-// -> get interest from user
-//  -> post interest user
-
-router.route('/users/:id/interests/:interest_id')
-// -> delete interest from user
-
 
 // ------------------ EXPERIENCES ------------------
-router.route('/users/:id/interests')
+router.route('/users/:id/experiences')
+	.get(users.getExperiences)
+	.post(users.addExperience)
+	.delete(users.removeExperience)
 // -> get interest from user
 //  -> post interest user
 
-router.route('/users/:id/interests/:interest_id')
+router.route('/users/:id/experiences/:interest_id')
 // -> delete interest from user
 
 module.exports = router;

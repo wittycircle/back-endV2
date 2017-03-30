@@ -136,3 +136,42 @@ exports.removeInterest = (req, res, next) => {
 };
 
 // ------------------ EXPERIENCES ------------------
+
+exports.getExperiences = (req, res, next) => {
+  user.getExperiences(req.params.id)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id'])
+      }
+      else{
+        res.send({experiences: r})
+      }
+    })
+    .catch(err => next(err))
+};
+
+exports.addExperience = (req, res, next) => {
+  user.addExperience(req.params.id, req.body)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id'])
+      }
+      else{
+        res.send({success: true})
+      }
+    })
+    .catch(err => next(err))
+};
+
+exports.removeExperience = (req, res, next) => {
+  user.removeExperience(req.params.id, req.body.id)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id'])
+      }
+      else{
+        res.send({success: true})
+      }
+    })
+    .catch(err => next(err))
+};
