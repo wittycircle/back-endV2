@@ -15,7 +15,7 @@ exports.getProfiles = () => {
 exports.getProfileBy = (by) => {
     let profile = h.spe_profile(by)
     return db(profile)
-        .join(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
+        .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
         .select('rank', 'p.*')
 };
 
