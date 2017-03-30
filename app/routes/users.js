@@ -10,11 +10,38 @@ let router = express.Router();
 
 router.route('/users')
     .post(users.createUser);
-// 	.get(users.getUsers)
 
 router.route('/users/:id/skills')
     .get(users.getUserSkills)
     .post(auth(AUTH.PRIVATE), users.addUserSkill)
     .delete(auth(AUTH.PRIVATE), users.removeUserSkill);
+
+// ------------------ PROJECTS ------------------
+router.route('/users/:id/projects')
+	.get(users.getProjectsInvolved)
+// -> get project where user involved in
+
+router.route('/users/:id/projects/follow')
+//  -> get all projects that user follow
+
+// ------------------ INTEREST ------------------
+router.route('/users/:id/interests')
+	.get(users.getInterests)
+	.post(auth(AUTH.PRIVATE), users.addInterest)
+	.delete(auth(AUTH.PRIVATE), users.removeInterest)
+// -> get interest from user
+//  -> post interest user
+
+router.route('/users/:id/interests/:interest_id')
+// -> delete interest from user
+
+
+// ------------------ EXPERIENCES ------------------
+router.route('/users/:id/interests')
+// -> get interest from user
+//  -> post interest user
+
+router.route('/users/:id/interests/:interest_id')
+// -> delete interest from user
 
 module.exports = router;

@@ -108,3 +108,47 @@ exports.getProjectFollow = (uid) => {
             .from(TABLES.PROJECT_LIKES + ' as pl', 'pl.user_id', 'u.id')
             .where('pl.user_id', uid)
 };
+
+// ------------------ INTERESTS ------------------
+
+getInterest = exports.getInterests = (uid) => {
+    return db.distinct('i.name', 'i.priority')
+            .from(TABLES.USER_INTERESTS + ' as ui')
+            .join(TABLES.INTERESTS + ' as i', 'i.id', 'ui.interest_id')
+            .join(TABLES.USERS + ' as u', 'u.id', 'ui.user_id')
+            .where('u.id', uid)
+};
+
+exports.addInterest = (uid, data) => {
+    return db.select('id').from(TABLES.INTERESTS).where('name', data) 
+    .then(iid => {
+        if (!iid.length)
+            return "Interest does not exist"
+        return db(TABLES.USER_INTERESTS).insert({
+            user_id: uid, 
+            interest_id: iid[0].id, 
+            interest_name: data 
+        })
+    }).then((a) => {
+        if (typeof a == 'string')
+            return a;
+        return getInterest(uid)
+    })
+};
+
+exports.removeInterest = (uid, data) => {
+    return db.select('id').from(TABLES.INTERESTS).where('name', data)
+    .then(iid => {
+        if (!iid.length)
+            return "Interest does not exist"
+        return db(TABLES.USER_INTERESTS).del()
+                .where({user_id: uid, interest_id: iid[0].id})
+    }).then(a => {
+        if (typeof a == 'string')
+            return a;
+        return getInterest(uid)
+    })
+};
+
+
+// ------------------ EXPERIENCES ------------------

@@ -25,7 +25,7 @@ const data = (req) => {
 };
 
 exports.createProject = (req, res, next) => {
-	let d = d(req)
+	let d = data(req)
 	project.createProject(d, req.body.members, req.body.openings, req.body.discussions)
 		.then(r => {
 			if (typeof r === 'string') {

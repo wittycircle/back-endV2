@@ -24,6 +24,10 @@ exports.TABLES = {
     USER_FOLLOWERS: 'user_followers',
     RESET: 'reset_passwords',
     FIRST_LOG: 'first_log',
+//            *** INTERESTS  ***
+    INTERESTS: 'interests',
+    USER_INTERESTS: 'user_interests',
+
 //            ***    PROJECTS    ***
     PROJECTS: 'projects',
     PROJECT_LIKES: 'project_followers',
