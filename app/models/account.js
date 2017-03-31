@@ -125,9 +125,11 @@ exports.register = (data, token) => {
             username: data.username,
         };
 
-    return h.exist(TABLES.USERS, data.email, 'email').then(r => {
-        if (r.length)
-            return "Email already taken"
+    return Promise.all([h.exist(TABLES.USERS, data.email, 'email'),
+        h.exist(TABLES.USERS, data.username, 'username')])
+        .then(([r, r2]) => {
+        if (r.length || r2.length)
+            return !r.length ? "Email already taken" : 'Username already taken'
         else {
             return db(TABLES.USER_PROFILES).insert(profile_data)
                 .then((profileId) => {
