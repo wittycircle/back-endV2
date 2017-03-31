@@ -20,7 +20,7 @@ router.route('/users/:username')
 router.route('/users/:id/skills')
     .get(users.getUserSkills)
     .post(auth(AUTH.PRIVATE), users.addUserSkill)
-    .delete(/*auth(AUTH.PRIVATE),*/ users.removeUserSkill);
+    .delete(auth(AUTH.PRIVATE), users.removeUserSkill);
 
 // ------------------ PROJECTS ------------------
 router.route('/users/:id/projects')
@@ -29,8 +29,8 @@ router.route('/users/:id/projects')
 // ------------------ INTEREST ------------------
 router.route('/users/:id/interests')
 	.get(users.getInterests)
-	.post(/*auth(AUTH.PRIVATE),*/ users.addInterest)
-	.delete(/*auth(AUTH.PRIVATE),*/ users.removeInterest)
+	.post(auth(AUTH.PRIVATE), users.addInterest)
+	.delete(auth(AUTH.PRIVATE), users.removeInterest)
 
 // ------------------ EXPERIENCES ------------------
 router.route('/users/:id/experiences')
