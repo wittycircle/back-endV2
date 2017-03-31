@@ -10,14 +10,24 @@
 	reset_password: controllers/account [74],
 	suggestion_profile: ,
 	suggestion_project: ,
-	uc_invitation: ,
-	user_follow:,
+	uc_invitation: UNDEFINED,
+	user_follow: controllers/profiles [71],
 	validate_account: ,
 	validation-network: ,
 	verification_network: ,
 	profile_views:,
 	welcome : controllers/account [59]
 */
+// const files = require('fs').readdirSync('./app/services/mailer')
+// 				.filter(e => e !== 'index.js');
+
+
+// let o = {};
+
+// 	files.forEach(e => {
+// 		let n = e.split('.')[0]
+// 		o[n]  = (args) => require(`./${n}`)(args)
+// 	});
 
 module.exports = {
 	ask_project: (args) => require('./ask_project')(args),

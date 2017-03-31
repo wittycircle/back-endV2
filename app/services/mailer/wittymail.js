@@ -78,7 +78,7 @@ module.exports.TEMPLATES =  {
 	// suggestion_profile: 'f1adc8ff-96e3-4de7-8c61-ec4ea94da4e2', -> unfinished
 	// suggestion_project: , -> later
 	uc_invitation: '4089bb11-39a1-4453-b2c2-50a321ca1e8e',
-	// user_follow:,
+	user_follow: '492959f6-cbf3-40f7-a13c-bec03e7c6bc7',
 	// validate_account: ,
 	// validation-network: ,
 	// verification_network: ,

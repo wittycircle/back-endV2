@@ -1,5 +1,18 @@
 const {db, TABLES} = require('./index');
 
+const format_location = db.raw(` 
+				CASE WHEN p.city IS NOT NULL
+					THEN
+						CASE WHEN p.state IS NOT NULL
+							THEN CONCAT(p.city, ', ', p.state)
+						WHEN p.country IS NOT NULL
+							THEN CONCAT(p.city, ', ', p.country)
+							ELSE ' '
+						END
+					ELSE ' '
+				END as location 
+`);
+
 const location = ['p.city', 'p.country', 'p.state']
 	const h = {
     p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture',
@@ -26,6 +39,7 @@ const location = ['p.city', 'p.country', 'p.state']
 	h.exist = (table, value, name) => db(table).select('id').where(name || 'id', value)
 	h.owner = (table, id, uid) => db(table).select('id').where({'id': id, 'user_id': uid})
 	h.admin = admin
+	h.format_location = format_location
 	h.username = db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')
 	h.spe_profile = (cond) => db.select(h.p_uarray.concat(location)).from(TABLES.USER_PROFILES + ' as p')
 					.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').where(cond).as('p');

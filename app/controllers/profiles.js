@@ -68,7 +68,7 @@ exports.followProfile = (req, res, next) => {
         if (_.isEmpty(r))
             res.send({success: false});
         else {
-            // cache.pub.publish('')
+            //mailer.user_follow({follower: req.user.id, following: req.params.id})
             res.send({success: true})
         }
     })
