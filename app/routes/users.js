@@ -6,10 +6,14 @@ const users = require('../controllers/users'),
 
 let router = express.Router();
 
-// router.param('id', validateParam(schemas.params.id));
 
 router.route('/users')
     .post(users.createUser);
+
+// ------------------ Params ------------------
+router.param('id', validateParam(schemas.params.id));
+// ------------------ Params ------------------
+
 
 router.route('/users/:id/skills')
     .get(users.getUserSkills)
@@ -19,10 +23,6 @@ router.route('/users/:id/skills')
 // ------------------ PROJECTS ------------------
 router.route('/users/:id/projects')
 	.get(users.getProjectsInvolved)
-// -> get project where user involved in
-
-// router.route('/users/:id/projects/follow')
-// //  -> get all projects that user follow
 
 // ------------------ INTEREST ------------------
 router.route('/users/:id/interests')
@@ -35,10 +35,8 @@ router.route('/users/:id/experiences')
 	.get(users.getExperiences)
 	.post(auth(AUTH.PRIVATE), users.addExperience)
 	.delete(auth(AUTH.PRIVATE), users.removeExperience)
-// -> get interest from user
-//  -> post interest user
 
-router.route('/users/:id/experiences/:interest_id')
-// -> delete interest from user
+// router.route('/users/:id/experiences/:interest_id')
+
 
 module.exports = router;

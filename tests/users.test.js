@@ -18,7 +18,7 @@ describe('', function() {
         let r, v;
         before('request', function () {
             r = chakram.get(route + 1 + '/skills');
-            v = chakram.get(route + storage.fake + '/skills');
+            v = chakram.get(route + storage.fakeId + '/skills');
         });
 
         it('Should get a list of skills', function () {
@@ -35,9 +35,9 @@ describe('', function() {
         let r, v, v2, v3;
         before('request', function () {
             r = chakram.post(route + storage.user.id + '/skills', {skill_id: 81});
-            v = chakram.post(route + storage.user_id + '/skills', {skill_id: 81929292});
+            v = chakram.post(route + 'notanum' + '/skills', {skill_id: 81929292});
             v2 = chakram.post(route + storage.fakeId + '/skills', {skill_id: 81});
-            v3 = chakram.post(route + storage.user_id + '/skills');
+            v3 = chakram.post(route + storage.user.id + '/skills');
         });
 
         it('Should send the list of updated skills', function () {
@@ -45,7 +45,7 @@ describe('', function() {
         });
 
         it('Should send an error 1', function () {
-            return expect(v).to.joi(schemas.error.description).status(404);
+            return expect(v).to.joi(schemas.error.validation_error_schema).status(404);
         });
         it('Should send an error 2', function () {
             return expect(v2).to.joi(schemas.error.description).status(404);
@@ -61,7 +61,7 @@ describe('', function() {
         before('request', function () {
             r = chakram.delete(route + storage.user.id + '/skills', {skill_id: 81});
             v = chakram.delete(route + storage.user.id + '/skills', {skill_id: 1234029302});
-            v2 = chakram.delete(route + storage.fake + '/skills', {skill_id: 81});
+            v2 = chakram.delete(route + storage.fakeId + '/skills', {skill_id: 81});
             v3 = chakram.delete(route + storage.user.id + '/skills');
         });
 
@@ -71,6 +71,7 @@ describe('', function() {
 
         it('Should send an error', function () {
             expect(v).to.joi(schemas.error.description).status(404);
+            v2.then(rr=> console.log(rr.body))
             expect(v2).to.joi(schemas.error.description).status(404);
             expect(v3).to.joi(schemas.error.description).status(404);
             return chakram.wait()
