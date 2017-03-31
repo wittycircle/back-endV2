@@ -44,6 +44,7 @@ const getMembers = (id) => {//Not sure about this, if project contributor or pro
 					.from(TABLES.PROJECT_MEMBERS + ' as pcr')
 					.join(TABLES.PROJECTS + ' as p', 'p.id', 'pcr.project_id')
 					.where('project_id', id).as('pcr')
+					.where('pcr.n_accept', 1)
 
 	return db.distinct(['p.uid as id', 'p.first_name', 'p.last_name',
 	 db.raw('CONCAT (p.first_name, " ", p.last_name) as username')]) 

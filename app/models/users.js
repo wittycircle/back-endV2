@@ -115,6 +115,10 @@ exports.getProjectsInvolved = (uid) => {
     'p.fullName as creator_name', 'p.profile_picture as creator_picture'
     ];
 
+let real_members = db.select('*').from(TABLES.PROJECT_MEMBERS)
+                    .where('n_accept', 1)
+                    .as('m');
+
 return db.distinct('pr.id')
         .from(TABLES.PROJECTS + ' as pr')
         .where('pr.user_id', uid)
@@ -129,7 +133,7 @@ return db.distinct('pr.id')
                 .count('m.id as members')
                 .from(TABLES.PROJECTS + ' as pr')
                 .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
-                .leftJoin(TABLES.PROJECT_MEMBERS + ' as m', 'm.project_id', 'pr.id')
+                .leftJoin(real_members, 'm.project_id', 'pr.id')
                 .join(h.sub_profile, 'pr.user_id', 'p.uid')
                 .whereIn('pr.id', table_id)
                 .groupBy('pr.id')
