@@ -1,6 +1,6 @@
 const {wm, TEMPLATES} = require('./wittymail');
 const helper = require('sendgrid').mail;
-const h = require('./app/models/helper');
+const h = require('../../models/helper'); //NIK
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
@@ -51,5 +51,4 @@ const uc_invitation = (args) => {
 	.then(([sender, university]) => send_mail(sender[0], university, args.emails))
 };//exports
 
-uc_invitation(args)
-//module.exports = uc_invitation
+module.exports = uc_invitation

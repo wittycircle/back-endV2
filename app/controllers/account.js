@@ -32,6 +32,7 @@ const checkRegisterData = (data) => {
     })
 };
 // ------------------ Main methods ------------------
+
 exports.register = (req, res, next) => {
 	const token = crypto.randomBytes(20).toString('hex')
 	checkRegisterData(req.body.account)
@@ -42,7 +43,12 @@ exports.register = (req, res, next) => {
 				return next([r, 'Bad info [email or password]']) 
 			} 
 			else{
-				res.send({success: true}) 
+				mailer.validate_account({
+					token: token,
+					email: req.body.account.email
+				});
+				res.send({success: true}).status(200)
+				console.log("AFTER")
 			} 
 		}).catch(err => next(err))
 //			***	Send confirmation mail and stuff [account_alidation]	*** 

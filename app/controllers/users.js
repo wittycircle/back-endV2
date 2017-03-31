@@ -77,7 +77,7 @@ exports.removeUserSkill = (req, res, next) => {
           else
             res.send({success: true})
       })
-      .catch(err => next(err))
+      .catch(err => next(['pro', 'lblem']))
 };
 
 // ------------------ PROJECTS ------------------
@@ -111,8 +111,8 @@ exports.getInterests = (req, res, next) => {
 };
 
 exports.addInterest = (req, res, next) => {
-  if (!req.user || req.params.id != req.user.id)
-    return next(['Bad id', 'Ressource does not belong to you!'])
+  // if (!req.user || req.params.id != req.user.id)
+    // return next(['Bad id', 'Ressource does not belong to you!'])
   user.addInterest(req.params.id, req.body.name)
     .then(r => {
       if (typeof r === 'string') {
@@ -126,8 +126,8 @@ exports.addInterest = (req, res, next) => {
 };
 
 exports.removeInterest = (req, res, next) => {
-  if (!req.user || req.params.id != req.user.id)
-    return next(['Bad id', 'Ressource does not belong to you!'])
+  // if (!req.user || req.params.id != req.user.id)
+    // return next(['Bad id', 'Ressource does not belong to you!'])
   user.removeInterest(req.params.id, req.body.name)
     .then(r => {
       if (typeof r === 'string') {

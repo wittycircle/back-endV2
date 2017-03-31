@@ -12,27 +12,24 @@
 	suggestion_project: ,
 	uc_invitation: UNDEFINED,
 	user_follow: controllers/profiles [71],
-	validate_account: ,
+	validate_account: controllers/accounts [45],
 	validation-network: ,
 	verification_network: ,
 	profile_views:,
 	welcome : controllers/account [59]
 */
-// const files = require('fs').readdirSync('./app/services/mailer')
-// 				.filter(e => e !== 'index.js');
 
+const filt = e => e !== 'templates' && e !== 'index.js'
+					&& e != 'wittymail.js' && e != 'example_kitchen.js';
 
-// let o = {};
+const files = require('fs').readdirSync('./app/services/mailer')
+				.filter(filt);
 
-// 	files.forEach(e => {
-// 		let n = e.split('.')[0]
-// 		o[n]  = (args) => require(`./${n}`)(args)
-// 	});
+let mails = {};
 
-module.exports = {
-	ask_project: (args) => require('./ask_project')(args),
-	// upvote_project: (args) => require('./upvote_project')(args),
-	welcome: (args) => require('./welcome')(args),
-	new_message: (args) => require('./new_message')(args),
+files.forEach(e => {
+	let n = e.split('.')[0]
+	mails[n]  = (args) => require(`./${n}`)(args)
+});
 
-};
+module.exports = mails

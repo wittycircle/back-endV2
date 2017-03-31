@@ -1,6 +1,6 @@
 const {wm, TEMPLATES} = require('./wittymail');
 const helper = require('sendgrid').mail;
-const h = require('./app/models/helper');
+const h = require('../../models/helper');
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
@@ -19,7 +19,6 @@ const send_mail = (message, discussion, sender) => {
 	discussion.forEach((e, i) => {
 		let pers = new helper.Personalization();
 		let subject =`${sender.fullName} commented on ${e.title} discussion !`;
-		// let subject = sender.fullName + '  commented on ' +  e.title + ' discussion !';
 		let sub = {
 			"*|FNAME|*": sender.first_name,
 			"*|FDESC|*": wm.truncate(message),
