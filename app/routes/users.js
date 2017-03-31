@@ -38,7 +38,6 @@ router.route('/users/:id/experiences')
 	.post(auth(AUTH.PRIVATE), users.addExperience)
 	.delete(auth(AUTH.PRIVATE), users.removeExperience)
 
-// router.route('/users/:id/experiences/:interest_id')
 
 
 module.exports = router;

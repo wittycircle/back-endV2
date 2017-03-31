@@ -80,7 +80,7 @@ module.exports.TEMPLATES =  {
 	uc_invitation: '4089bb11-39a1-4453-b2c2-50a321ca1e8e',
 	user_follow: '492959f6-cbf3-40f7-a13c-bec03e7c6bc7',
 	validate_account: '4eab028c-844b-457e-b65d-81a2865d018d',
-	// validation-network: ,
+	// validation-network: /*Not to be done for now*/,
 	// verification_network: ,
 	// profile_views:,
 		welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',

@@ -1,8 +1,8 @@
 const account = require('../models/account'),
 	bcrypt = require('bcrypt-nodejs'),
-	mailer = require('../services/mailer'),
-	crypto = require('crypto'),
-    _ = require('lodash');	
+	mailer = require('../services/mailer');
+	// crypto = require('crypto'),
+ //    _ = require('lodash');	
 
 // ------------------ Little helpers ------------------
 const checkRegisterData = (data) => {
@@ -43,12 +43,11 @@ exports.register = (req, res, next) => {
 				return next([r, 'Bad info [email or password]']) 
 			} 
 			else{
-				mailer.validate_account({
-					token: token,
-					email: req.body.account.email
-				});
+				// mailer.validate_account({
+				// 	token: token,
+				// 	email: req.body.account.email
+				// });
 				res.send({success: true}).status(200)
-				console.log("AFTER")
 			} 
 		}).catch(err => next(err))
 //			***	Send confirmation mail and stuff [account_alidation]	*** 
