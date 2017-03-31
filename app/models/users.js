@@ -91,17 +91,59 @@ exports.removeUserSkill = (id, uid) => {
 };
 
 // ------------------ Projects ------------------
-
+/*
+{
+    project {
+        public_id
+        project_picture
+        category
+        title
+        status
+        location
+        description
+        creator {
+            full_name
+            profile_picture
+        }
+        member : (nombre de members)
+    }
+}*/
 exports.getProjectsInvolved = (uid) => {
-    return db.distinct(['pr.id', 'pr.title'])
+    let selection = ['pr.id', 'pr.public_id', 'pr.picture_card', 'c.name as category',
+    'pr.title', 'pr.status', 'pr.description',
+    db.raw('CONCAT(pr.city, ", ", pr.country) as location'),
+    'p.fullName as creator_name', 'p.profile_picture as creator_picture'
+    ];
+
+return db.distinct('pr.id')
         .from(TABLES.PROJECTS + ' as pr')
-        .join(TABLES.PROJECT_MEMBERS + ' as m', 'm.project_id', 'pr.id')
-        .join(TABLES.USERS + ' as u', function() {
-            this.on('u.id', 'pr.user_id')
-                .orOn('u.id', 'm.user_id')
+        .where('pr.user_id', uid)
+        .union(function() {
+            this.distinct('m.project_id as id')
+                .from(TABLES.PROJECT_MEMBERS + ' as m')
+                .where('m.user_id', uid)
+                // .where('m.n_accept', 1)
+        }).then(ids => {
+            table_id = ids.map(e => e.id)
+            return db.distinct(selection)
+                .count('m.id as members')
+                .from(TABLES.PROJECTS + ' as pr')
+                .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+                .leftJoin(TABLES.PROJECT_MEMBERS + ' as m', 'm.project_id', 'pr.id')
+                .join(h.sub_profile, 'pr.user_id', 'p.uid')
+                .whereIn('pr.id', table_id)
+                .groupBy('pr.id')
         })
-        .where('u.id', uid)
-};
+
+/*   return db.distinct(selection)
+        .count('m.id as members')
+        .from(TABLES.PROJECTS + ' as pr')
+        .join(h.sub_profile, 'pr.user_id', 'p.uid')
+        .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+        .leftJoin(TABLES.PROJECT_MEMBERS + ' as m', 'm.project_id', 'pr.id')
+        .leftJoin(TABLES.PROJECT_MEMBERS + ' as m2', 'm.user_id', uid)
+        .where('pr.user_id', uid)
+*/};
 
 exports.getProjectFollow = (uid) => {
     return db

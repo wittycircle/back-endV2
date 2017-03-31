@@ -21,8 +21,8 @@ router.route('/users/:id/projects')
 	.get(users.getProjectsInvolved)
 // -> get project where user involved in
 
-router.route('/users/:id/projects/follow')
-//  -> get all projects that user follow
+// router.route('/users/:id/projects/follow')
+// //  -> get all projects that user follow
 
 // ------------------ INTEREST ------------------
 router.route('/users/:id/interests')

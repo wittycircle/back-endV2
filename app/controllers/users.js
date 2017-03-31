@@ -80,11 +80,12 @@ exports.removeUserSkill = (req, res, next) => {
 
 exports.getProjectsInvolved = (req, res, next) => {
   user.getProjectsInvolved(req.params.id)
-    .then(r => {
+    .then(r /*([r, r1])*/ => {
       if (typeof r === 'string') {
         return next([r, 'No projects found'])
       }
       else{
+        // r.creator = r1;
         res.send({projects: r})
       }
     })
