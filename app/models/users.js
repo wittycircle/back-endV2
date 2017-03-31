@@ -122,7 +122,7 @@ return db.distinct('pr.id')
             this.distinct('m.project_id as id')
                 .from(TABLES.PROJECT_MEMBERS + ' as m')
                 .where('m.user_id', uid)
-                // .where('m.n_accept', 1)
+                .where('m.n_accept', 1)
         }).then(ids => {
             table_id = ids.map(e => e.id)
             return db.distinct(selection)
@@ -133,17 +133,8 @@ return db.distinct('pr.id')
                 .join(h.sub_profile, 'pr.user_id', 'p.uid')
                 .whereIn('pr.id', table_id)
                 .groupBy('pr.id')
-        })
-
-/*   return db.distinct(selection)
-        .count('m.id as members')
-        .from(TABLES.PROJECTS + ' as pr')
-        .join(h.sub_profile, 'pr.user_id', 'p.uid')
-        .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
-        .leftJoin(TABLES.PROJECT_MEMBERS + ' as m', 'm.project_id', 'pr.id')
-        .leftJoin(TABLES.PROJECT_MEMBERS + ' as m2', 'm.user_id', uid)
-        .where('pr.user_id', uid)
-*/};
+        });
+};
 
 exports.getProjectFollow = (uid) => {
     return db
