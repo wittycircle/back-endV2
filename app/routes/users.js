@@ -13,6 +13,8 @@ router.route('/users')
 // ------------------ Params ------------------
 router.param('id', validateParam(schemas.params.id));
 // ------------------ Params ------------------
+router.route('/users/:username')
+	.get(users.fromUsername)
 
 
 router.route('/users/:id/skills')

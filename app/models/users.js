@@ -3,6 +3,16 @@ const { db, TABLES } = require('./index'),
 
 // ------------------ Main methods ------------------
 
+exports.fromUsername = (username) => {
+    return h.exist(TABLES.USERS, username, 'username').then(r =>{
+        if (!r.length)
+            return "Unknown username"
+    return db(TABLES.USERS)    
+        .first('id', 'profile_id')
+        .where('username', username)
+    });
+};
+
 //used by passport
 exports.getUserBySocialId = (id, auth) => {
     let key = `${auth}_id`;

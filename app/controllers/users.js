@@ -5,6 +5,20 @@ const   user = require('../models/users'),
         home = 'http://localhost:3000';
 
 // ------------------ Main methods ------------------
+
+exports.fromUsername = (req, res, next) => {
+  user.fromUsername(req.params.username)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Not found'])
+      }
+      else{
+        res.send(r)
+      }
+    })
+    .catch(err => next(err))
+};
+
 exports.createUser = (req, res, next) => {
     user.getUserByEmail(req.body.email).then((exist) => {
     if (exist.length) {
