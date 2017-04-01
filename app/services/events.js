@@ -11,8 +11,10 @@ const NAMESPACE = 'rest:update',
     pub = Redis(config);
 
 const send = (channel, payload) => {
-    payload.when = Date.now();
-    process.nextTick(() => pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload)))
+    process.nextTick(() => {
+        payload.when = Date.now();
+        pub.publish(`${NAMESPACE}:${channel}`, JSON.stringify(payload))
+    })
 };
 
 exports.mount = (req, res, next) => {

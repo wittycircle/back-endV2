@@ -17,8 +17,10 @@ exports.logout = (req, res) => {
     if (typeof req.user !== 'undefined')
         session.killAllFromUser(req.user.id, (err, result) => {
             if (err) throw (err);
-            else
+            else {
+                req.broadcastEvent('user_logout', {id: req.user.id})
                 res.send({success: true});
+            }
         });
 };
 
@@ -66,7 +68,7 @@ const generic_login = (req, res, next) => (err, user) => {
                 error_description: 'Please try later'
             });
             else {
-                req.broadcastEvent('user_online', {id: req.user.id});
+                req.broadcastEvent('user_login', {id: req.user.id});
                 next();
             }
         });
@@ -93,7 +95,7 @@ exports.localLogin = (req, res, next) => {
                     error_description: 'Please try later'
                 });
                 else {
-                    req.broadcastEvent('user_online', {id: req.user.id});
+                    req.broadcastEvent('user_login', {id: req.user.id});
                     next();
                 }
             });
@@ -121,7 +123,7 @@ exports.socialLogin = (auth, opts) => (req, res, next) => {
                     error_description: 'Please try later'
                 });
                 else {
-                    req.broadcastEvent('user_online', {id: req.user.id});
+                    req.broadcastEvent('user_login', {id: req.user.id});
                     next()
                 }
             });

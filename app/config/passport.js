@@ -30,6 +30,7 @@ module.exports = function (passport) {
     passport.use(new Strategy.bearer({
         session: true
         }, (token, done) => {
+        console.log(token);
             session.getUser(token, function (err, resp) {
                     if (err)
                         return done(err);

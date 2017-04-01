@@ -43,9 +43,9 @@ exports.searchProfile = (req, res, next) => {
     }
 
     let q = search.cardProfile(selector)
-        .orderByRaw(`${order_by} ${ query && query.sort && query.sort.reverse ? 'desc' : 'asc'}`);
+        .orderByRaw(`${order_by} ${ query && query.sort && query.sort.reverse ? 'desc' : 'asc'}`)
     if (paginate)
-        q.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit);
+        q.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit)
     q.then(results => {
         if (!_.isEmpty(results))
             res.send({
@@ -66,8 +66,8 @@ exports.searchProject = (req, res, next) => {
         selector = _.fromPairs(query.members.map(member => [project_lookup[member.field], member.value]));
     if (req.user && req.user.id)
         selector.uid = req.user.id;
-    let order_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : project_lookup["magic"];
-    let group_by = project_lookup[query.sort.field] && query.sort.field == 'last_upvoted' ? project_lookup[query.sort.field] : 'pr.id';
+    let order_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : project_lookup["magic"]
+    let group_by = project_lookup[query.sort.field] && query.sort.field == 'last_upvoted' ? project_lookup[query.sort.field] : 'pr.id'
     search.cardProject(selector)
         .orderByRaw(`${order_by} ${ query.sort.reverse ? 'desc' : 'asc'}`)
         .groupBy(`${group_by}`, 'pr.id')

@@ -9,9 +9,9 @@ const _ = require('lodash'),
     sqlColorize = require('./colors'),
     {db} = require('../../models');
 
-db.on('query', (query) => {
-    console.log(sqlColorize(query))
-});
+// db.on('query', (query) => {
+//     console.log(sqlColorize(query))
+// });
 
 exports.resDebugger = (req, res, next) => {
     let oldWrite = res.write,
@@ -28,14 +28,19 @@ exports.resDebugger = (req, res, next) => {
         if (chunk)
             chunks.push(new Buffer(chunk));
         const body = Buffer.concat(chunks).toString('utf8');
-        console.log(pretty.render({
-            method: req.method,
-            path: req.url,
-            body: JSON.parse(body)
-        }, {
-            maxArraySize: 2
-        }));
-        oldEnd.apply(res, arguments);
+        try {
+            console.log(pretty.render({
+                method: req.method,
+                path: req.url,
+                body: JSON.parse(body)
+            }, {
+                maxArraySize: 2
+            }));
+            oldEnd.apply(res, arguments);
+        } catch (tg) {
+            console.log(body);
+            oldEnd.apply(res, arguments);
+        }
     };
     next();
 };
