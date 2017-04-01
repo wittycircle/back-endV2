@@ -184,3 +184,19 @@ exports.removeExperience = (req, res, next) => {
     })
     .catch(err => next(err))
 };
+
+exports.updateExperience = (req, res, next) => {
+      if (!req.user || req.params.id != req.user.id)
+    return next(['Bad id', 'Ressource does not belong to you!'])
+  user.updateExperience(req.params.id, req.body)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id'])
+      }
+      else{
+        if (r) res.send({success: true});
+        else res.send({success: false});
+      }
+    })
+    .catch(err => next(err))
+};

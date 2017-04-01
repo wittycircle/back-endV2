@@ -194,3 +194,11 @@ exports.removeExperience = (uid, data) => {
         .del()
         .where({user_id: uid, id: data})
 };
+
+exports.updateExperience = (uid, data) => {
+    eid = data.id;
+    delete data.id;
+    return db(TABLES.USER_EXPERIENCES)
+    .update(data)
+    .where('id', eid)
+};

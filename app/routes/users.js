@@ -37,7 +37,8 @@ router.route('/users/:id/experiences')
 	.get(users.getExperiences)
 	.post(auth(AUTH.PRIVATE), users.addExperience)
 	.delete(auth(AUTH.PRIVATE), users.removeExperience)
+	.put(auth(AUTH.PRIVATE), users.updateExperience)
 
 
-
+//todo : change and
 module.exports = router;

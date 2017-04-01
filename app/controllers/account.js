@@ -1,8 +1,8 @@
 const account = require('../models/account'),
 	bcrypt = require('bcrypt-nodejs'),
-	mailer = require('../services/mailer');
-	// crypto = require('crypto'),
- //    _ = require('lodash');	
+	mailer = require('../services/mailer'),
+	crypto = require('crypto'),
+    _ = require('lodash');	
 
 // ------------------ Little helpers ------------------
 const checkRegisterData = (data) => {
