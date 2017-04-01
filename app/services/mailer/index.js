@@ -13,8 +13,8 @@
 	uc_invitation: UNDEFINED,
 	user_follow: controllers/profiles [71],
 	validate_account: controllers/accounts [45],
-	validation-network: ,
-	verification_network: ,
+	validation-network: FOR LATER,
+	verification_network: controllers/network [52] (Way unsure about this one),
 	profile_views:,
 	welcome : controllers/account [59]
 */

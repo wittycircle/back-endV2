@@ -1,7 +1,7 @@
 const network = require('../models/network'),
     _ = require('lodash');
 
-const allowed = 'Allowed: [networks, profile, profile_network, project, unviersity]'
+const allowed = 'Allowed: [networks, profile, profile_network, project, university]'
 
 exports.getNetwork = (req, res, next) => {
 	network.getNetwork(req.params.from)
@@ -48,6 +48,11 @@ exports.createNetwork = (req, res, next) => {
 				return next([r, allowed])
 			}
 			else{
+				if (req.params.from === 'profile_network'){
+					// let data = req.body
+					// data.user_id = req.user.id
+					// mailer.verification_network(data)
+				}
 				res.send({success: true})
 			}
 		})

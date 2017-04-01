@@ -81,8 +81,8 @@ module.exports.TEMPLATES =  {
 	user_follow: '492959f6-cbf3-40f7-a13c-bec03e7c6bc7',
 	validate_account: '4eab028c-844b-457e-b65d-81a2865d018d',
 	// validation-network: /*Not to be done for now*/,
-	// verification_network: ,
-	// profile_views:,
+	verification_network: '830e6295-2772-472f-bb49-a6503da5b565',
+	profile_views:'2ef5f37c-e10e-48a4-b5ac-de02b23efab9',
 		welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',
 }
 
