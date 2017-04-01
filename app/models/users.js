@@ -180,7 +180,6 @@ exports.getExperiences = (uid) => {
             .join(TABLES.USERS + ' as u', 'u.id', 'e.user_id')
             .where('u.id', uid)
             .orderByRaw(sort + ' , date_to, date_from ASC')
-
 };
 
 exports.addExperience = (uid, data) => {
@@ -198,7 +197,15 @@ exports.removeExperience = (uid, data) => {
 exports.updateExperience = (uid, data) => {
     eid = data.id;
     delete data.id;
-    return db(TABLES.USER_EXPERIENCES)
-    .update(data)
-    .where('id', eid)
+    return Promise.all([h.exist(TABLES.USERS, uid),
+        h.exist(TABLES.USER_EXPERIENCES, eid)])
+    .then(([r, r2]) => {
+        if (!r.length || !r2.length){
+            return "Ressource does not exist";
+        }
+        return db(TABLES.USER_EXPERIENCES) 
+        .update(data) 
+        .where('id', eid)
+        
+    })
 };
