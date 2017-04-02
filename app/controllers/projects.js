@@ -112,6 +112,22 @@ exports.createProjectDiscussion = (req, res, next) => {
 		.catch(err => next(err))
 };
 
+let hackLiked = (r, req) => {
+	if (req.user){
+		r.forEach(rep => {
+			let liked = false;
+			rep.likes.forEach(l => liked =  (l.user_id === req.user.id) ? true : liked)
+			rep.liked = liked;
+			rep.replies.forEach(rl =>{
+			liked = false;
+				rl.likes.forEach(l => liked = (l.user_id === req.user.id) ? true: liked)
+			rl.liked = liked; 
+			}); 
+		}); 
+	}
+	return r;
+};
+
 exports.getProjectDiscussion = (req, res, next) => {
 	project.getProjectDiscussion(req.params.id)
 		.then(r => {
@@ -121,15 +137,7 @@ exports.getProjectDiscussion = (req, res, next) => {
 				req.user = {
 					id: 8
 				}
-				if (req.user){
-					r.forEach(rep => {
-						rep.likes.forEach(l => l.hasLiked = (l.user_id === req.user.id)); 
-						rep.replies.forEach(rl =>{
-							rl.likes.forEach(l => l.hasLiked = (l.user_id === req.user.id)); 
-						}); 
-					}); 
-				}
-				res.send({discussions: r})
+				res.send({discussions: hackLiked(r, req)})
 			}
 		})
 		.catch(err => next(err))

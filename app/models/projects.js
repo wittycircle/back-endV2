@@ -121,17 +121,19 @@ exports.getProjectDiscussion = (id) => {
 			.join(h.sub_profile, 'p.uid', 'rep.user_id')
 			.where('project_discussion_id', id)
 
-	let like = (id) => db.select('user_id', 'creation_date')
+	let like = (id) => db.distinct('user_id', 'creation_date')
 			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id}).as('likes')
 
-	let rep_like = (id) => db.select('user_id', 'creation_date')
+	let rep_like = (id) => db.distinct('user_id', 'creation_date')
 			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
+			.orderByRaw('creation_date DESC')
 
 	return db.select(['pr.id', 'pr.user_id', 'p.fullName', 'p.username', 'p.profile_picture', 
 						'pr.title', 'pr.message', 'pr.creation_date'])
 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
 		.join(h.sub_profile, 'p.uid', 'pr.user_id')
 		.where('pr.project_id', id)
+		.orderByRaw('pr.creation_date DESC')
 		.groupBy('pr.id')
 		.then(r => {
 			let x = []
