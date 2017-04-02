@@ -36,6 +36,11 @@ exports.getDiscussionReplies = (req, res, next) => {
 			if (typeof r === 'string'){
 				return next([r, "Bad id"])
 			}else {
+				if (req.user){
+					r.forEach(rep => {
+						rep.likes.forEach(l => l.hasLiked = (l.user_id === req.user.id));
+					});
+				}
 				res.send({replies: r})
 			}
 		});

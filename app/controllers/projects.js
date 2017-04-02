@@ -117,8 +117,20 @@ exports.getProjectDiscussion = (req, res, next) => {
 		.then(r => {
 			if (_.isEmpty(r))
 				next(['Empty discussion', 'Wrong project id'])
-			else
+			else{
+				req.user = {
+					id: 8
+				}
+				if (req.user){
+					r.forEach(rep => {
+						rep.likes.forEach(l => l.hasLiked = (l.user_id === req.user.id)); 
+						rep.replies.forEach(rl =>{
+							rl.likes.forEach(l => l.hasLiked = (l.user_id === req.user.id)); 
+						}); 
+					}); 
+				}
 				res.send({discussions: r})
+			}
 		})
 		.catch(err => next(err))
 };
