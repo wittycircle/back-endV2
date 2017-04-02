@@ -115,8 +115,11 @@ exports.createProjectDiscussion = (data) => {
 };
 
 exports.getProjectDiscussion = (id) => {
-	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
-			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
+	let replies =(id) =>  db.select([ 'rep.id', 'user_id', 'p.fullName', 'p.username', 'p.profile_picture',
+							 'creation_date', 'message'])
+			.from(TABLES.PROJECT_DISCUSSION_REPLIES + ' as rep')
+			.join(h.sub_profile, 'p.uid', 'rep.user_id')
+			.where('project_discussion_id', id)
 
 	let like = (id) => db.select('user_id', 'creation_date')
 			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id}).as('likes')
@@ -124,8 +127,10 @@ exports.getProjectDiscussion = (id) => {
 	let rep_like = (id) => db.select('user_id', 'creation_date')
 			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
 
-	return db.select(_.concat(['pr.id', 'pr.user_id', 'pr.title', 'pr.message', 'pr.creation_date']))
+	return db.select(['pr.id', 'pr.user_id', 'p.fullName', 'p.username', 'p.profile_picture', 
+						'pr.title', 'pr.message', 'pr.creation_date'])
 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
+		.join(h.sub_profile, 'p.uid', 'pr.user_id')
 		.where('pr.project_id', id)
 		.groupBy('pr.id')
 		.then(r => {
