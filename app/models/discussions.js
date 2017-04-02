@@ -3,8 +3,8 @@ const { db, TABLES } = require('./index'),
 
 // ------------------ Project Discussions ------------------
 
-exports.updateProjectDiscussion = (discussion_id, message, title) => {
-	return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
+exports.updateProjectDiscussion = (discussion_id, message, title, uid) => {
+	return h.owner(TABLES.PROJECT_DISCUSSION, discussion_id, uid).then(r => {
 		if (!r.length){
 			return "could not create project dicussion"
 		} else{

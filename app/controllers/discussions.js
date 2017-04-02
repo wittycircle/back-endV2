@@ -4,7 +4,7 @@ const discussion = require('../models/discussions'),
 // ------------------ Project Discussions ------------------
 
 exports.updateProjectDiscussion = (req, res, next) => {
-	discussion.updateProjectDiscussion(req.params.discussion_id, req.body.message, req.body.title)
+	discussion.updateProjectDiscussion(req.params.discussion_id, req.body.message, req.body.title, req.user.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, "bad id"])
