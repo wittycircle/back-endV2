@@ -1,16 +1,16 @@
 const {db, TABLES} = require('./index');
 
 const format_location = db.raw(` 
-				CASE WHEN p.city IS NOT NULL
-					THEN
-						CASE WHEN p.state IS NOT NULL
-							THEN CONCAT(p.city, ', ', p.state)
-						WHEN p.country IS NOT NULL
-							THEN CONCAT(p.city, ', ', p.country)
-							ELSE ' '
-						END
-					ELSE ' '
-				END as location 
+	CASE WHEN (p.city IS NOT NULL)
+		THEN
+			CASE WHEN (p.state != NULL)
+				THEN CONCAT(p.city, ', ', p.state)
+			WHEN (p.country IS NOT NULL)
+				THEN CONCAT(p.city, ', ', p.country)
+				ELSE ' '
+			END
+		ELSE ' '
+	END as location 
 `);
 
 const location = ['p.city', 'p.country', 'p.state']
