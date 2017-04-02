@@ -63,8 +63,17 @@ exports.likeDiscussion = (discussion_id, uid) => {
 		if (!r.length) 
 			return "Invalid discussion id"
 		else {
-			return db(TABLES.PROJECT_DISCUSSION_LIKES)
+			return db(TABLES.PROJECT_DISCUSSION_LIKES).first('id')
+				.where({project_discussion_id: discussion_id, user_id: uid})
+			.then(r => {
+				if (!r)
+				return db(TABLES.PROJECT_DISCUSSION_LIKES)
 					.insert({project_discussion_id: discussion_id, user_id: uid})
+				else 
+				return db(TABLES.PROJECT_DISCUSSION_LIKES)
+					.del()
+					.where({project_discussion_id: discussion_id, user_id: uid})
+			})
 		}
 	});
 };
