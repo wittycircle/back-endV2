@@ -82,7 +82,7 @@ exports.getProject = (id) => {
 			.from(TABLES.PROJECTS + ' as pr')
 			.join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
 			.join(h.sub_profile, 'p.uid', 'pr.user_id')
-			req.where('pr.id', id)
+			req.where('pr.public_id', id)
 
 	return req.then( (r) => {
 		r.forEach(el => {
