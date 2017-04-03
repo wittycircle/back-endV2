@@ -90,7 +90,7 @@ exports.removeUserSkill = (id, uid) => {
 
 exports.getProjectsInvolved = (uid) => {
     let selection = ['pr.id', 'pr.public_id', 'pr.picture_card', 'c.name as category',
-    'pr.title', 'pr.status', 'pr.description',
+    'pr.title', 'pr.status', 'pr.description', 'pr.public_id',
     db.raw('CONCAT(pr.city, ", ", pr.country) as location'),
     'p.fullName as creator_name', 'p.profile_picture as creator_picture'
     ];

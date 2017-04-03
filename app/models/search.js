@@ -78,7 +78,7 @@ exports.cardProfile = (selector) => {
 
 // ------------------ Project ------------------
 exports.cardProject = (selector) => {
-    const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+    const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status', 'pr.public_id',
      'c.id as category_id', 'c.name as category_name',  'pr.network as project_network',
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
      db.raw('CONCAT (city, ", ", country) as location'),
