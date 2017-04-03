@@ -4,10 +4,13 @@ const _ = require('lodash');
 
 const subst = (pers, obj) => {
 	for (let key in obj){
-		let mod = obj[key].length;
-		for(let i = 0; i < mod; i++){
 			pers.addSubstitution(new helper.Substitution(key, obj[key]))
-		}
+	};
+}
+
+const sect = (section, obj) => {
+	for (let key in obj){
+			section.addSubstitution(new helper.Substitution(key, obj[key]))
 	};
 }
 
@@ -45,6 +48,7 @@ wm.subject = (pers, subject) => {
 	pers.setSubject(subject)
 };
 wm.substitutions = subst;
+wm.section = sect;
 wm.send = send;
 wm.truncate = (x) =>  _.truncate(x, {length: 76, separator: ' '});
 wm.location = (e) => e.city + ', ' + (e.country ? e.country : e.state ? e.state : '');
