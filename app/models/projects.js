@@ -2,6 +2,19 @@ const { db, TABLES } = require('./index'),
 		_ = require('lodash'),
 		h = require('./helper');
 
+//will disapear in v3
+const project_location = db.raw(` 
+	CASE WHEN (pr.city IS NOT NULL)
+		THEN
+			CASE WHEN (pr.state != NULL)
+				THEN CONCAT(pr.city, ', ', pr.state)
+			WHEN (pr.country IS NOT NULL)
+				THEN CONCAT(pr.city, ', ', pr.country)
+				ELSE ' '
+			END
+		ELSE ' '
+	END as location 
+`);
 // ------------------ Projects [main methods] ------------------
 
 exports.createProject = (project_data, members, openings, discussions) => {
@@ -61,12 +74,14 @@ const getFollowerCount = (id) => {
 
 exports.getProject = (id) => {
 	const pr_array = [
-		'pr.id', 'pr.title', 'pr.picture', 'pr.description',
-		'pr.about', 'pr.video'
+		'pr.id', 'pr.title', 'pr.picture', 'pr.description', project_location,
+		'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id' 
 	],
 	x = [];
 	const req = db.distinct(pr_array)
 			.from(TABLES.PROJECTS + ' as pr')
+			.join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+			.join(h.sub_profile, 'p.uid', 'pr.user_id')
 			req.where('pr.id', id)
 
 	return req.then( (r) => {
