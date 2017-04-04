@@ -10,6 +10,7 @@ const http = require('http'),
     logger = require('morgan'),
     passport = require('passport'),
     debug = require('./app/middlewares/debug'),
+    cache = require('./socket-server/lib/cache'),
     path = require('path'),
     cors = require('cors');
 
@@ -22,7 +23,6 @@ app.use(cors());
  * mount() provides req.event(event, message)
  */
 const events = require('./app/services/events');
-events.watch();
 app.use(events.mount);
 
 /**

@@ -7,3 +7,6 @@
 [submodule "socket-server"]
 	path = socket-server
 	url = https://github.com/wittycircle/socket-server.git
+[submodule "front-endV2"]
+	path = front-endV2
+	url = https://github.com/wittycircle/front-endV2.git

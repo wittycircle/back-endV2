@@ -4,8 +4,7 @@
 
 const profiles = require('../models/profiles'),
     user = require('../models/users'),
-    _ = require('lodash'),
-    cache = require('../services/cache');
+    _ = require('lodash');
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
