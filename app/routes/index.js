@@ -3,16 +3,30 @@
  */
 'use strict';
 
-module.exports = app => {
-    const express = require('express');
+const express = require('express');
 
-    fs
-        .readdirSync(__dirname)
-        .filter(file => {
-            return (file.indexOf('.') !== 0) && (file !== 'index.js')
-        })
-        .forEach(file => {
-            app.use(require(file)(app.Router()));
-        });
+let router = express.Router();
 
-};
+router.use('/api', require('./users'));
+router.use('/api', require('./profiles'));
+router.use('/api/auth', require('./auth'));
+router.use('/api', require('./projects'));
+router.use('/api', require('./discussions'));
+router.use('/api', require('./replies'));
+router.use('/api', require('./openings'));
+router.use('/api', require('./skills'));
+router.use('/api', require('./account'));
+router.use('/api', require('./article'));
+router.use('/api', require('./network'));
+router.use('/api', require('./interests'));
+
+router.use(require('../middlewares/error').error);
+
+router.use('*', (req, res, next) => {
+    res.status(404).send({
+        error: 'not_found',
+        error_description: 'resource doesn\'t exist'
+    });
+});
+
+module.exports = router;

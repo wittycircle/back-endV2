@@ -2,10 +2,10 @@
 .idea
 node_modules
 app/private
-public/node_modules
-public/dist
-public/.sass-cache
-public/bower_components
-public/.tmp
-public/docs
-public/.DS_Store
+[Pp]ublic/dist
+[Pp]ublic/.sass-cache
+[Pp]ublic/bower_components
+mochawesome-reports
+api-build
+*.rdb
+playground

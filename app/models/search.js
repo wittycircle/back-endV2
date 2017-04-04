@@ -1,0 +1,150 @@
+/**
+ * Created by rdantzer on 16/02/17.
+ */
+
+'use strict';
+
+const {db, TABLES} = require('./index'),
+    h = require('./helper'),
+    _ = require('lodash');
+
+const addLocation = (table, location, query) => {
+    if (!_.isEmpty(location)) {
+        const _location = _.words(location);
+        let selected = ''
+        selected += (`WHEN city LIKE "%${_location[0]}%" THEN 1 `);
+        selected += (`WHEN state LIKE "%${_location[0]}%" THEN 2 `);
+        selected += (`WHEN country LIKE "%${_location[0]}%" THEN 3 `);
+        query.orderByRaw('CASE ' + selected + ' else 100 END')
+    }
+};
+// ------------------ Profile ------------------
+exports.cardProfile = (selector) => {
+    let exp = db.select('user_id').from(TABLES.USER_EXPERIENCES).as('e'),
+        skills = db.select('user_id', 'name')
+        .from(TABLES.USER_SKILLS + ' as us')
+        .join(TABLES.SKILLS + ' as s', 'us.skill_id', 's.id')
+        .as('s');
+
+    const follower = db.select('user_id').count('user_id as total').from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu'),
+        following = db.select('follow_user_id').count('follow_user_id as MA').from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su');
+
+    const sortCardProfile = db.select(['u.id', 'u.profile_id', 'r.rank as rank',
+        db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
+        db.raw('GROUP_CONCAT(DISTINCT name) as skills')])
+        .from(TABLES.USERS + ' as u')
+        .leftJoin(skills, 'u.id', 's.user_id')
+        .leftJoin(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank [All users will have a rank?]
+        .leftJoin(follower, 'ssu.user_id', 'u.id')
+        .leftJoin(following, 'su.follow_user_id', 'u.id')
+        .groupBy('u.id').as('sort');
+
+    const profile_array = ['p.id', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network',
+     db.raw('CONCAT (p.city, ", ",  p.country) as location'),
+        h.username, 'u.username',
+    ];
+
+    const profileStuff = (location) => {
+        let _query = db(TABLES.USER_PROFILES + ' as p')
+            .join(TABLES.USERS + ' as u', 'p.id', 'u.profile_id')
+            .select(profile_array)
+            .where('p.description', '!=', 'NULL')
+            .andWhere('p.profile_picture', '!=', 'NULL')
+            .andWhere('p.fake', '=', '0')
+        addLocation('p', location, _query)
+        return _query.as('p')
+    };
+    const ret_array = ['fullname', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture',
+      'cover_picture', 'about', 'description', 'network' , 'location', 'follower', 'following', 'skills']
+
+    let q =  db.select(ret_array)
+        .from(sortCardProfile)
+        .join(profileStuff(selector.location), 'sort.profile_id', 'p.id')
+        .leftJoin(exp, 'e.user_id', 'sort.id')
+        .groupBy('sort.id') 
+        .where('sort.rank', '>', '0') //todo remove
+
+    if (selector.skills){
+    let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skills LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        q.orderByRaw('CASE ' + selected + ' else 100  END');
+    }
+    if (selector.network) {
+        q.orderByRaw(`CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`)
+    }
+    if (selector.about)
+        q.orderByRaw('CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about')
+    return q;
+};
+
+// ------------------ Project ------------------
+exports.cardProject = (selector) => {
+    const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status', 'pr.public_id',
+        'c.id as category_id', 'c.name as category_name', 'pr.network as project_network',
+     'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+        db.raw('CONCAT (city, ", ", country) as location'),
+        // 'o.skill',  'o.tags',
+        // db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'), /*<- Debug to see if order correctly*/
+     ];
+
+     const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
+         sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
+             .select([db.raw('GROUP_CONCAT(ot.tag) as tags'), 'o.status', 'o.project_id', 'o.skill'])
+             .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
+             .groupBy('o.id')
+             .as('o'),
+            sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
+
+     const query = db.distinct(pr_array)
+            .countDistinct('pl.id as followers')
+            .countDistinct('m.user_id as members')
+            .from(TABLES.PROJECTS + ' as pr')
+            .join(h.u_profile, 'p.uid', 'pr.user_id')
+            .join(sub_category, 'c.id', 'pr.category_id')
+            .leftJoin(TABLES.PROJECT_LIKES + ' as pl', 'pl.project_id', 'pr.id')
+            .leftJoin(sub_members, 'm.project_id', 'pr.id')
+            .where('pr.project_visibility', 1)
+            .whereRaw('pr.picture_card <> ""')
+         .groupBy('pr.id')
+
+     if (selector.uid){
+        pr_array.push(db.raw('GROUP_CONCAT(DISTINCT IF(pl.user_id = ' + selector.uid + ', true, null))  as follow'))
+     }
+
+    if (selector.network) {
+        query.orderByRaw(`CASE WHEN p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%" THEN 1 else 2 END`)
+        // query.whereRaw(`p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%"`)
+    }
+    if (selector.opening || selector.skills)
+        query.leftJoin(sub_openings, 'o.project_id', 'pr.id')
+    if (selector.skills){
+        let selected = _.words(selector.skills).map((el, i) => 'WHEN o.skill LIKE "%' + el + '%" OR o.tags LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        query.orderByRaw('CASE ' + selected + ' ELSE 100 END')
+    };
+    addLocation('pr', selector.location, query);
+     if (selector.opening)
+        query.orderByRaw('CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END')
+    if (selector.category)
+        query.orderByRaw('(c.name = "' + selector.category + '") DESC')
+    if (selector.status)
+            query.orderByRaw('CASE WHEN pr.status = "' + selector.status + '" THEN 1 else 2 END')
+    return query;
+};
+
+// ------------------ Main page ------------------
+/*
+Instead of followers, create a table to get a project ranking
+example: How many users did stuff (wether like, comment or anything)
+So count all user actions on a project.
+And if a user plays with loop (like, unlike),
+ it won't put the project to the top
+As the table never clears, and keep record of thing 
+[TO DO way later, first finish v2]
+*/
+
+
+
+
+
+
+
+
