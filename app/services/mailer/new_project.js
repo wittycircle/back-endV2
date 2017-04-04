@@ -1,25 +1,25 @@
 const {wm, TEMPLATES} = require('./wittymail');
 const helper = require('sendgrid').mail;
+const h = require('../../models/helper');
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
-/*
-args: {
-	email: string
-}
-*/
-
-const send_mail = (data) => {
+const send_mail = (sender, public_id) => {
 	let	mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
 	wm.content(mail)
 	wm.reply(mail, "noreply@wittycircle.com");
-	mail.setTemplateId(TEMPLATES.welcome)
+	mail.setTemplateId(TEMPLATES.new_project)
 	
+	sender.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = '*|FFNAME|*  *|FLNAME|* sent you a message';
+		let subject = 'Your project on Wittycircle';
 		let sub = {
-			"*|FNAME|*": data,
+			"*|FNAME|*": e.first_name,
+			"*|BASICS|*": wm.url(`project/${public_id}/update/basics`),
+			"*|STORY|*": wm.url(`project/${public_id}/update/story`),
+			"*|NEEDS|*": wm.url('meet'),
+			"MAIL": e.email,
 		};
 		console.log(sub)
 		console.log("\n-------------------------------------------------\n")
@@ -27,18 +27,16 @@ const send_mail = (data) => {
 		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
-	wm.send(mail); 
-	return null;
+	});
+  wm.send(mail);
+  return null;
 };
-	
-const welcome = (args) => {
-	const request = db.first('p.first_name as username')
-		.from(TABLES.USERS + ' as u')
-		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
-		.where('u.email', args.email)
 
+const new_project = (args) => {
+	let sender = h.spe_profile({'u.id': args.uid})
+				.select('u.email')
 
-	return request.then((username) => send_mail(username.username))
+	return sender.then((e) => send_mail(e, args.public_id))
 };//exports
 
-module.exports = welcome
+module.exports = new_project
