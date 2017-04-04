@@ -573,10 +573,9 @@
                             <table border="0" cellpadding="18" cellspacing="0" class="mcnTextContentContainer" width="100%" style="min-width:100% !important;">
                                 <tbody><tr>
                                     <td valign="top" class="mcnTextContent" style="color: #2C2C2C;font-family: Helvetica;font-size: 14px;font-weight: normal;text-align: center;">
-                                        <span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><span style="font-size:16px">Hi there,<br>
+                                        <span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><span style="font-size:16px">Hi *|FNAME|*,<br>
 <br>
-
-*|FNAME|* asked a question about *|FPROJECT|* &nbsp;</span></span></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
+Kudos 🙌🏻 *|FFNAME|* *|FLNAME|* just upvoted *|FTITLE|* &nbsp;</span></span></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
     <tbody class="mcnImageBlockOuter">
             <tr>
                 <td valign="top" style="padding:0px" class="mcnImageBlockInner">
@@ -611,7 +610,8 @@
                         
                         <td valign="top" class="mcnTextContent" style="padding: 0px 18px 9px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif;">
                         
-                            <div style="text-align: center;"><span style="font-size:16px"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><strong>*|FMTITLE|*</strong></span><br>
+                            <div style="text-align: center;"><span style="font-size:16px"><span style="font-family:helvetica neue,helvetica,arial,verdana,sans-serif"><strong>*|FFNAME|* *|FLNAME|*</strong></span><br>
+*|FLOC|*<br>
 <span style="color:#222222"><em>*|FDESC|*</em></span></span></div>
 
                         </td>
@@ -636,7 +636,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 16px; padding: 16px;">
-                                <a class="mcnButton " title="View *|FFNAME|*'s profile" href="*|FURL|*" target="_blank" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Answer *|FNAME|*</a>
+                                <a class="mcnButton " title="View *|FFNAME|*'s profile" href="*|FURL|*" target="_blank" style="font-weight: normal;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">View *|FFNAME|*'s activity</a>
                             </td>
                         </tr>
                     </tbody>

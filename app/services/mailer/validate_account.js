@@ -3,42 +3,33 @@ const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
-/*
-args: {
-	email: string
-}
-*/
 
 const send_mail = (data) => {
 	let	mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
 	wm.content(mail)
 	wm.reply(mail, "noreply@wittycircle.com");
-	mail.setTemplateId(TEMPLATES.welcome)
+	mail.setTemplateId(TEMPLATES.validate_account)
 	
 		let pers = new helper.Personalization();
-		let subject = '*|FFNAME|*  *|FLNAME|* sent you a message';
+		let subject = 'Validate your Wittycircle account';
 		let sub = {
-			"*|FNAME|*": data,
+			"*|LINK|*": wm.url(data.token),
+			"*|EMAIL|*": data.email,
 		};
 		console.log(sub)
 		console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
+		wm.to(pers, /*data.email*/ 'sequoya@wittycircle.com');
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	wm.send(mail); 
 	return null;
 };
 	
-const welcome = (args) => {
-	const request = db.first('p.first_name as username')
-		.from(TABLES.USERS + ' as u')
-		.join(TABLES.USER_PROFILES + ' as p', 'u.profile_id', 'p.id')
-		.where('u.email', args.email)
+const validate_account = (args) => {
+	return send_mail(args)
+}; //exports
 
+module.exports = validate_account
 
-	return request.then((username) => send_mail(username.username))
-};//exports
-
-module.exports = welcome
