@@ -14,7 +14,6 @@ module.exports = (storage, chakram) => {
         };
     describe('', function () {
         it('should print something big', function () {
-            console.log("\x1b[35m" + " ------------------ Search ------------------\n");
         })
     });
 
@@ -49,7 +48,6 @@ module.exports = (storage, chakram) => {
         });
 
         it('Should match schema', function () {
-            return r.then(rr => console.log(rr.body.projects))
             return expect(r).to.joi(schemas.search.projects);
         });
         it('Should match validation error', function () {

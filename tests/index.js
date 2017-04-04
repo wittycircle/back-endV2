@@ -12,8 +12,8 @@ chakram.addMethod('joi', require('chakram-joi'));
 const login = {
         email: 'test@test.com',
         password: 'test'
-
     },
+
     storage = {
         token: null,
         resource: (route) => `http://localhost:3000/api/${route}`,

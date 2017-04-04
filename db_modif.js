@@ -2,6 +2,19 @@ const config = require('./app/private'),
     {db, TABLES} = require('./app/models/index'),
     _ = require('lodash');
 
+
+/*
+ // ------------------ TABLES THAT SEEMS UNUSED ------------------
+ - notification_view
+ - history
+ - portfolios_likes
+ - project_polls
+ - project_networks
+
+ // ------------------ ROW to remove ------------------
+ projects -> network
+ */
+
 //articles
 //article_tags => List of tags for article
 // tag_articles => relation table
@@ -16,6 +29,8 @@ const add_admin = () =>
 const profile_description_text = () =>
     db.schema.raw('alter table profiles change column description description TEXT(10000)');
 
+const messageToOldMessage = () =>
+    db.schema.renameTable('messages', 'old_messages')
 
 const all_utf8 = () => {
     let x = [];
@@ -27,16 +42,20 @@ const all_utf8 = () => {
     return Promise.all(x).then(r => r)
 };
 
-const drop_tables = () => db.schema.dropTableIfExists('tag_articles')
+const drop_tables = () => db.schema
+    .dropTableIfExists('tag_articles')
     .dropTableIfExists('article_tags')
-    .dropTableIfExists(TABLES.MESSAGES);
+    .dropTableIfExists('old_messages')
+
 
 
 // ------------------ Alter tables ------------------
 
-//			***	Articles ***
+//          *** Articles ***
 const alter_articles = () => {
     return Promise.all([
+        db.schema.raw('alter table articles CHANGE COLUMN picture picture varchar(512) NULL DEFAULT NULL'),
+        db.schema.raw('alter table articles CHANGE COLUMN article_id article_id int(11) NULL DEFAULT NULL'),
         db.schema.hasColumn('articles', 'creator_user_id')
             .then(exists => {
                 if (exists)
@@ -62,6 +81,21 @@ const alter_articles = () => {
 
 };
 
+
+//            *** Profiles ***
+const alter_profiles = () => {
+    return Promise.all([
+        db.schema.raw('alter table profiles change COLUMN facebook_id facebook_id bigint(20) unsigned NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN twitter_id twitter_id bigint(20) unsigned NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN google_id google_id varchar(255) NULL DEFAULT NULL'),
+
+        db.schema.raw('alter table profiles change COLUMN facebook_token facebook_token varchar(255) NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN twitter_token twitter_token varchar(255) NULL DEFAULT NULL'),
+        db.schema.raw('alter table profiles change COLUMN google_token google_token varchar(255) NULL DEFAULT NULL')
+
+    ])
+
+}
 //			***	Location ***
 const alter_location = (table) => {
     return Promise.all([
@@ -167,7 +201,7 @@ const table_creation_foreign = [
 // ------------------ Insert tables ------------------
 const table_insert = [
     db.batchInsert(TABLES.ARTICLE_TAGS,
-        ['mentoring', 'entrepreneurship', 'community', 'event', 'startupgeneration', 'popcorn']
+        ['mentoring', 'entrepreneurship', 'community', 'event', 'startup generation', 'popcorn']
             .map(tag => {
                 return {name: tag}
             })
@@ -176,18 +210,25 @@ const table_insert = [
         {room_id: 1, user_id: 1, data: 'Hello world'},
         {room_id: 1, user_id: 2, data: 'This is a test'},
         {room_id: 2, user_id: 3, data: 'This is another test'}
+    ]),
+    db.batchInsert(TABLES.TAG_ARTICLES, [
+        {article_id: 4, tag_id: 2},
+        {article_id: 4, tag_id: 5},
+        {article_id: 4, tag_id: 3}
     ])
 ];
 
 
 const modify_db = () => {
     return drop_tables()
-        .then(() => add_admin())
+    // .then(() => add_admin())
+        .then(() => messageToOldMessage())
         //			*** Create ***
         .then(() => Promise.all(table_creation_no_foreign))
         .then(() => Promise.all(table_creation_foreign))
         //			*** Alter ***
         .then(() => alter_articles())
+        .then(() => alter_profiles())
         .then(() => alter_location('profiles'))
         .then(() => alter_location('projects'))
         .then(() => alter_project_followers())

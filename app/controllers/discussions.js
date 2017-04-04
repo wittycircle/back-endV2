@@ -4,7 +4,7 @@ const discussion = require('../models/discussions'),
 // ------------------ Project Discussions ------------------
 
 exports.updateProjectDiscussion = (req, res, next) => {
-	discussion.updateProjectDiscussion(req.params.discussion_id, req.body.message, req.body.title)
+    discussion.updateProjectDiscussion(req.params.discussion_id, req.body.message, req.body.title, req.user.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, "bad id"])
@@ -36,6 +36,11 @@ exports.getDiscussionReplies = (req, res, next) => {
 			if (typeof r === 'string'){
 				return next([r, "Bad id"])
 			}else {
+                if (req.user) {
+                    r.forEach(rep => {
+                        rep.likes.forEach(l => l.hasLiked = (l.user_id === req.user.id));
+                    });
+                }
 				res.send({replies: r})
 			}
 		});
@@ -53,6 +58,7 @@ exports.replyDiscussion = (req, res, next) => {
                     from: req.user.id,
                     message: req.body.message
                 });
+                // mailer.reply_project()
 				res.send({success: true})
 			}
 		})

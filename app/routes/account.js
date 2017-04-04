@@ -10,6 +10,9 @@ const express = require('express'),
 router.route('/accounts/password')
     .put(auth(AUTH.PRIVATE), validate(schemas.common.password), account.updatePassword)
 
+router.route('/accounts/informations')
+    .put(auth(AUTH.PRIVATE), validate(schemas.account.informations), account.updateInformations)
+
 router.route('/accounts/register')
     .post(validate(schemas.account.register), account.register);
 

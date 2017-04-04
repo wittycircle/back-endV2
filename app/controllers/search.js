@@ -66,11 +66,10 @@ exports.searchProject = (req, res, next) => {
         selector = _.fromPairs(query.members.map(member => [project_lookup[member.field], member.value]));
     if (req.user && req.user.id)
         selector.uid = req.user.id;
-    let order_by = project_lookup[query.sort.field] ? project_lookup[query.sort.field] : project_lookup["magic"]
-    let group_by = project_lookup[query.sort.field] && query.sort.field == 'last_upvoted' ? project_lookup[query.sort.field] : 'pr.id'
+    let order_by = !project_lookup[query.sort.field] ? project_lookup["magic"] :
+        query.sort.field == 'last_upvoted' ? 'MAX(pl.creation_date)' : project_lookup[query.sort.field];
     search.cardProject(selector)
         .orderByRaw(`${order_by} ${ query.sort.reverse ? 'desc' : 'asc'}`)
-        .groupBy(`${group_by}`, 'pr.id')
         .where(project_lookup['id'], '>', paginate.offset)
         .limit(paginate.limit)
         .then(results => {
@@ -82,34 +81,3 @@ exports.searchProject = (req, res, next) => {
         })
         .catch(err => next(err));
 };
-// ------------------ Main page ------------------
-
-// exports.mainProjects = (req, res, next) => {
-//     search.mainProjects()
-//         .then(r => {
-//             if (typeof r === 'string') {
-//                 return next([r, 'Error ! [oups]'])
-//             }
-//             else{
-//                 res.send({projects: r})
-//             }
-//         })
-//         .catch(err => next(err))
-// };
-
-// exports.mainProfiles = (req, res, next) => {
-//     const get_ip = "Berlin"
-//     const selector = {
-//         location: get_ip
-//     }
-//     search.cardProfile(selector)
-//         .then(r => {
-//             if (typeof r === 'string') {
-//                 return next([r, 'Something went wrong'])
-//             }
-//             else{
-//                 res.send({profiles: r})
-//             }
-//         })
-//         .catch(err => next(err))
-// };

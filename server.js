@@ -44,7 +44,7 @@ app.use(logger('dev'));
 /**
  * Debug middleware
  */
-// app.use(debug.resDebugger);
+app.use(debug.resDebugger);
 
 require('./app/config/passport')(passport);
 app.use(passport.initialize());

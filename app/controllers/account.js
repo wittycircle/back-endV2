@@ -1,5 +1,6 @@
 const account = require('../models/account'),
 	bcrypt = require('bcrypt-nodejs'),
+    mailer = require('../services/mailer'),
 	crypto = require('crypto'),
     _ = require('lodash');	
 
@@ -31,6 +32,7 @@ const checkRegisterData = (data) => {
     })
 };
 // ------------------ Main methods ------------------
+
 exports.register = (req, res, next) => {
 	const token = crypto.randomBytes(20).toString('hex')
 	checkRegisterData(req.body.account)
@@ -38,12 +40,14 @@ exports.register = (req, res, next) => {
 		account.register(data, token) 
 		.then(r => {
 			if (typeof r === 'string') {
-				return next([r, 'Bad info [email or password]'])
-            } else {
-                req.broadcastEvent('user_register', {
-                    id: r[0]
-                });
-				res.send({success: true}) 
+                return next([r, 'Bad info [email or password]'])
+            }
+            else {
+                // mailer.validate_account({
+                // 	token: token,
+                // 	email: req.body.account.email
+                // });
+                res.send({success: true}).status(200)
 			} 
 		}).catch(err => next(err))
 //			***	Send confirmation mail and stuff [account_alidation]	*** 
@@ -72,6 +76,7 @@ exports.resetPassword = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
+                // mailer.reset_password({token: req.params.token, email: req.body.email})
 				res.send({success: true})
 			}
 		})
@@ -104,4 +109,18 @@ exports.updatePassword = (req, res, next) => {
 			}
 		})
 		.catch(err => next(err))
+};
+
+exports.updateInformations = (req, res, next) => {
+    delete req.body.password;
+    account.updateInformations(req.body, req.user.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Bad fields'])
+            }
+            else {
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(['Username already taken']))
 };

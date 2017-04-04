@@ -30,8 +30,16 @@ exports.likeReply = (reply_id, uid) => {
 		if (!r.length)
 			return "Invalid id"
 		else{
-			return db(TABLES.PROJECT_REPLY_LIKES)
-				.insert({project_reply_id: reply_id, user_id: uid})
+            return db(TABLES.PROJECT_REPLY_LIKES).first('id')
+                .where({project_reply_id: reply_id, user_id: uid})
+                .then(r => {
+                    if (!r)
+                        return db(TABLES.PROJECT_REPLY_LIKES)
+                            .insert({project_reply_id: reply_id, user_id: uid})
+                    else
+                        return db(TABLES.PROJECT_REPLY_LIKES).del()
+                            .where({project_reply_id: reply_id, user_id: uid})
+                })
 		}
 	});
 };

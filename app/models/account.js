@@ -124,18 +124,17 @@ exports.register = (data, token) => {
             username: data.username,
         };
 
-    return h.exist(TABLES.USERS, data.email, 'email').then(r => {
-        if (r.length)
-            return "Email already taken"
+    return Promise.all([h.exist(TABLES.USERS, data.email, 'email'),
+        h.exist(TABLES.USERS, data.username, 'username')])
+        .then(([r, r2]) => {
+            if (r.length || r2.length)
+                return !r.length ? "Email already taken" : 'Username already taken'
         else {
             return db(TABLES.USER_PROFILES).insert(profile_data)
                 .then((profileId) => {
                     user_data.profile_id = profileId[0];
                     return db(TABLES.USERS).insert(user_data)
-                        .then((user) => {
-                            return db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token})
-                                .then(() => user)
-                        })
+                        .then(() => db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token}))
                 });
         }
     })
@@ -178,3 +177,13 @@ exports.updatePassword = (password, uid) => {
     });
 };
 
+exports.updateInformations = (data, uid) => {
+    return h.exist(TABLES.USERS, uid).then(r => {
+        if (!r.length)
+            return "bad user id"
+        else {
+            return db(TABLES.USERS).update(data)
+                .where({id: uid})
+        }
+    });
+};

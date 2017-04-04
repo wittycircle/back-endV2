@@ -3,7 +3,7 @@
 const Joi = require('joi'),
 	common = require('./common'),
  	p_empty = ['', null],
- 	p_field = ['status', 'skills', 'network', 'category', 'location', 'about'];
+    p_field = ['status', 'category', 'skills', 'network', 'location', 'opening'];
 
 const sort = Joi.object().keys({
 	field: Joi.string().trim().allow(p_empty).required(),

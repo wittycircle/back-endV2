@@ -11,10 +11,11 @@ const {db, TABLES} = require('./index'),
 const addLocation = (table, location, query) => {
     if (!_.isEmpty(location)) {
         const _location = _.words(location);
-        query.where(table + '.city', 'like', '%' + _location[0] + '%')
-            .orWhere(table + '.state', 'like', '%' + _location[1] + '%')
-            .orWhere(table + '.country', 'like', '%' + _location[1] + '%')
-            .orderBy(table + '.city')
+        let selected = ''
+        selected += (`WHEN city LIKE "%${_location[0]}%" THEN 1 `);
+        selected += (`WHEN state LIKE "%${_location[0]}%" THEN 2 `);
+        selected += (`WHEN country LIKE "%${_location[0]}%" THEN 3 `);
+        query.orderByRaw('CASE ' + selected + ' else 100 END')
     }
 };
 // ------------------ Profile ------------------
@@ -67,8 +68,9 @@ exports.cardProfile = (selector) => {
     let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skills LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
         q.orderByRaw('CASE ' + selected + ' else 100  END');
     }
-    if (selector.network)
-        q.orderByRaw('CASE WHEN network = "' + selector.network + '" THEN 1 else 2 END, network')
+    if (selector.network) {
+        q.orderByRaw(`CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`)
+    }
     if (selector.about)
         q.orderByRaw('CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about')
     return q;
@@ -76,14 +78,20 @@ exports.cardProfile = (selector) => {
 
 // ------------------ Project ------------------
 exports.cardProject = (selector) => {
-    const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
-     'c.id as category_id', 'c.name as category_name',  /*db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'),*/ /*<- Debug to see if order correctly*/
+    const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status', 'pr.public_id',
+        'c.id as category_id', 'c.name as category_name', 'pr.network as project_network',
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-     db.raw('CONCAT (city, ", ", country) as location')
+        db.raw('CONCAT (city, ", ", country) as location'),
+        // 'o.skill',  'o.tags',
+        // db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'), /*<- Debug to see if order correctly*/
      ];
 
      const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
-            sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o').select('o.tags', 'o.status', 'o.project_id').as('o'),
+         sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
+             .select([db.raw('GROUP_CONCAT(ot.tag) as tags'), 'o.status', 'o.project_id', 'o.skill'])
+             .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
+             .groupBy('o.id')
+             .as('o'),
             sub_category = db(TABLES.CATEGORIES + ' as c').select('c.id', 'c.name').as('c');
 
      const query = db.distinct(pr_array)
@@ -96,21 +104,23 @@ exports.cardProject = (selector) => {
             .leftJoin(sub_members, 'm.project_id', 'pr.id')
             .where('pr.project_visibility', 1)
             .whereRaw('pr.picture_card <> ""')
-            // .groupBy( 'pl.creation_date','pr.id')
+         .groupBy('pr.id')
 
      if (selector.uid){
         pr_array.push(db.raw('GROUP_CONCAT(DISTINCT IF(pl.user_id = ' + selector.uid + ', true, null))  as follow'))
      }
 
-    if (selector.network)
-        query.orderByRaw('CASE WHEN p.network like "' + selector.network + '" THEN 1 else 2 END')
-    addLocation('pr', selector.location, query);
+    if (selector.network) {
+        query.orderByRaw(`CASE WHEN p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%" THEN 1 else 2 END`)
+        // query.whereRaw(`p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%"`)
+    }
     if (selector.opening || selector.skills)
         query.leftJoin(sub_openings, 'o.project_id', 'pr.id')
     if (selector.skills){
-        let selected =  _.words(selector.skills).map((el, i) => 'WHEN GROUP_CONCAT(o.tags) LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
+        let selected = _.words(selector.skills).map((el, i) => 'WHEN o.skill LIKE "%' + el + '%" OR o.tags LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
         query.orderByRaw('CASE ' + selected + ' ELSE 100 END')
     };
+    addLocation('pr', selector.location, query);
      if (selector.opening)
         query.orderByRaw('CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END')
     if (selector.category)

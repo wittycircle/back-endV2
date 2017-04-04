@@ -1,5 +1,6 @@
 const project = require('../models/projects'),
     // format = require('./format'),
+    mailer = require('../services/mailer');
     _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
@@ -12,24 +13,27 @@ const data = (req) => {
         about: req.body.about,
         picture: req.body.picture,
         video: req.body.video,
-        network: req.body.network,
-        project_visibility: req.body.public || 'undefined'
+        project_visibility: req.body.public || 'undefined',
+        public_id: Math.floor((Math.random() * 90000) + 10000)
     };
     if (req.body.location) {
-        r.country = req.body.location.country;
-        r.city = req.body.location.city;
+        r.country = req.body.location.country
+        r.city = req.body.location.city
         r.state = req.body.location.state
     }
+    ;
     return r;
 };
 
 exports.createProject = (req, res, next) => {
-    project.createProject(data(req), req.body.members, req.body.openings, req.body.discussions)
+    let d = data(req)
+    project.createProject(d, req.body.members, req.body.openings, req.body.discussions)
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'Invalid informations'])
             }
             else {
+                // mailer.new_project({uid: req.user.id, public_id: d.public_id})
                 res.send({id: r})
             }
         })
@@ -42,12 +46,11 @@ exports.updateProject = (req, res, next) => {
     project.updateProject(req.params.id, req.body)
         .then(r => {
             if (typeof r === 'string') {
-                return next([r, 'Invalid id'])
             }
             else {
+                req.broadcastEvent('project_update', {id: req.params.id, from: req.user.id});
                 res.send({success: true})//make model base on create, look at the docs
             }
-            ;
         })
         .catch(err => next(err))
 };
@@ -102,22 +105,42 @@ exports.createProjectDiscussion = (req, res, next) => {
     project.createProjectDiscussion(data)
         .then(r => {
             if (typeof r === 'string')
-                return next([r, 'Invalid project id']);
+                return next([r, 'Invalid project id'])
             else {
+                // mailer.ask_project	(data)
                 res.send({id: r[0]})
             }
         })
         .catch(err => next(err))
 };
 
+let hackLiked = (r, req) => {
+    if (req.user) {
+        r.forEach(rep => {
+            let liked = false;
+            rep.likes.forEach(l => liked = (l.user_id === req.user.id) ? true : liked)
+            rep.liked = liked;
+            rep.replies.forEach(rl => {
+                liked = false;
+                rl.likes.forEach(l => liked = (l.user_id === req.user.id) ? true : liked)
+                rl.liked = liked;
+            });
+        });
+    }
+    return r;
+};
+
 exports.getProjectDiscussion = (req, res, next) => {
     project.getProjectDiscussion(req.params.id)
         .then(r => {
             if (_.isEmpty(r))
-                next(['Empty discussion', 'Wrong project id']);
-            else
-            // res.send({discussions: format.discussion(r)})
-                res.send({discussions: r})
+                next(['Empty discussion', 'Wrong project id'])
+            else {
+                req.user = {
+                    id: 8
+                }
+                res.send({discussions: hackLiked(r, req)})
+            }
         })
         .catch(err => next(err))
 };
@@ -151,7 +174,7 @@ exports.getProjectOpenings = (req, res, next) => {
             else {
                 r.forEach(el => {
                     el.tags = _.split(el.tags, ',')
-                });
+                })
                 res.send({openings: r})
             }
         })
@@ -170,24 +193,24 @@ exports.getProjectLikes = (req, res, next) => {
             })
         })
         .catch(err => next(err))
-};
+}
 
 exports.likeProject = (req, res, next) => {
     project.likeProject(req.params.id, req.user.id)
         .then(r => {
             if (!_.isEmpty(r))
-                res.send({success: true});
+                res.send({success: true})
             else
                 res.send({success: false})
         }).catch(err => next(err))
-};
+}
 
 exports.unlikeProject = (req, res, next) => {
     project.unlikeProject(req.params.id, req.user.id)
         .then(r => {
             if (r)
-                res.send({success: true});
+                res.send({success: true})
             else
                 res.send({success: false})
         }).catch(err => next(err))
-};
+}

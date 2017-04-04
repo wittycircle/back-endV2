@@ -2,6 +2,19 @@ const { db, TABLES } = require('./index'),
 		_ = require('lodash'),
 		h = require('./helper');
 
+//will disapear in v3
+const project_location = db.raw(` 
+	CASE WHEN (pr.city IS NOT NULL)
+		THEN
+			CASE WHEN (pr.state != NULL)
+				THEN CONCAT(pr.city, ', ', pr.state)
+			WHEN (pr.country IS NOT NULL)
+				THEN CONCAT(pr.city, ', ', pr.country)
+				ELSE ' '
+			END
+		ELSE ' '
+	END as location 
+`);
 // ------------------ Projects [main methods] ------------------
 
 exports.createProject = (project_data, members, openings, discussions) => {
@@ -44,6 +57,7 @@ const getMembers = (id) => {//Not sure about this, if project contributor or pro
 					.from(TABLES.PROJECT_MEMBERS + ' as pcr')
 					.join(TABLES.PROJECTS + ' as p', 'p.id', 'pcr.project_id')
 					.where('project_id', id).as('pcr')
+        .where('pcr.n_accept', 1)
 
 	return db.distinct(['p.uid as id', 'p.first_name', 'p.last_name',
 	 db.raw('CONCAT (p.first_name, " ", p.last_name) as username')]) 
@@ -60,13 +74,15 @@ const getFollowerCount = (id) => {
 
 exports.getProject = (id) => {
 	const pr_array = [
-		'pr.id', 'pr.title', 'pr.picture', 'pr.description',
-		'pr.about', 'pr.video'
+            'pr.id', 'pr.title', 'pr.picture', 'pr.description', project_location,
+            'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id'
 	],
 	x = [];
 	const req = db.distinct(pr_array)
 			.from(TABLES.PROJECTS + ' as pr')
-			req.where('pr.id', id)
+        .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
+        .join(h.sub_profile, 'p.uid', 'pr.user_id')
+    req.where('pr.public_id', id)
 
 	return req.then( (r) => {
 		r.forEach(el => {
@@ -81,7 +97,7 @@ exports.getProject = (id) => {
 };
 
 exports.getProjectList = () => {
-	const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status',
+    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status', 'pr.public_id',
 	 'c.id as category_id', 'c.name as category_name', 'p.network',
 	 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
 	 db.raw('CONCAT (city, ", ", country) as location')
@@ -114,18 +130,25 @@ exports.createProjectDiscussion = (data) => {
 };
 
 exports.getProjectDiscussion = (id) => {
-	let replies =(id) =>  db.select( 'id', 'user_id', 'creation_date', 'message')
-			.from(TABLES.PROJECT_DISCUSSION_REPLIES).where('project_discussion_id', id)
+    let replies = (id) => db.select(['rep.id', 'user_id', 'p.fullName', 'p.username', 'p.profile_picture',
+        'creation_date', 'message'])
+        .from(TABLES.PROJECT_DISCUSSION_REPLIES + ' as rep')
+        .join(h.sub_profile, 'p.uid', 'rep.user_id')
+        .where('project_discussion_id', id)
 
-	let like = (id) => db.select('user_id', 'creation_date')
+    let like = (id) => db.distinct('user_id', 'creation_date')
 			.from(TABLES.PROJECT_DISCUSSION_LIKES).where({'project_discussion_id': id}).as('likes')
 
-	let rep_like = (id) => db.select('user_id', 'creation_date')
+    let rep_like = (id) => db.distinct('user_id', 'creation_date')
 			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
+        .orderByRaw('creation_date DESC')
 
-	return db.select(_.concat(['pr.id', 'pr.user_id', 'pr.title', 'pr.message', 'pr.creation_date']))
+    return db.select(['pr.id', 'pr.user_id', 'p.fullName', 'p.username', 'p.profile_picture',
+        'pr.title', 'pr.message', 'pr.creation_date'])
 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
+        .join(h.sub_profile, 'p.uid', 'pr.user_id')
 		.where('pr.project_id', id)
+        .orderByRaw('pr.creation_date DESC')
 		.groupBy('pr.id')
 		.then(r => {
 			let x = []

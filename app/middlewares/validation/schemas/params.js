@@ -6,6 +6,6 @@
 
 const Joi = require('joi');
 
-exports.id = Joi.number().integer().greater(0).required().label('resource_id');
+exports.id = Joi.number().integer().greater(0).required().label('ressource_id');
 
 exports.token = Joi.string().trim().required();
