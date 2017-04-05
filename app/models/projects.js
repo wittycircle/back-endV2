@@ -20,22 +20,22 @@ const project_location = db.raw(`
 exports.createProject = (project_data, members, openings, discussions) => {
 	let x = []
 	return db(TABLES.PROJECTS).insert(project_data)
-			.then(([id]) => {
-				openings.forEach(el => {
-					el.project_id = id;
-					x.push(exports.createOpening(el).return())
-				});
-				discussions.forEach(el => {
-					el.project_id = id;
-					el.user_id = project_data.user_id;
-					x.push(exports.createProjectDiscussion(el).return())
-				});
-				members.forEach(el => {
-					x.push(db(TABLES.PROJECT_MEMBERS).insert({project_id: id, user_id: el}).return())
-				});
-				return Promise.all(x)
-				.then(() => {return id})
-			})
+			// .then(([id]) => {
+			// 	openings.forEach(el => {
+			// 		el.project_id = id;
+			// 		x.push(exports.createOpening(el).return())
+			// 	});
+			// 	discussions.forEach(el => {
+			// 		el.project_id = id;
+			// 		el.user_id = project_data.user_id;
+			// 		x.push(exports.createProjectDiscussion(el).return())
+			// 	});
+			// 	members.forEach(el => {
+			// 		x.push(db(TABLES.PROJECT_MEMBERS).insert({project_id: id, user_id: el}).return())
+			// 	});
+			// 	return Promise.all(x)
+			// 	.then(() => {return id})
+			// })
 };
 
 exports.updateProject = (id, project_data) => {

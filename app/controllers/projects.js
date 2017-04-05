@@ -11,17 +11,17 @@ const data = (req) => {
         category_id: req.body.category, //id and not a string (there is a table categories)
         description: req.body.description,
         about: req.body.about,
+        status: req.body.status,
         picture: req.body.picture,
         video: req.body.video,
-        project_visibility: req.body.public || 'undefined',
+        project_visibility: req.body.public || 1,
         public_id: Math.floor((Math.random() * 90000) + 10000)
     };
     if (req.body.location) {
         r.country = req.body.location.country
         r.city = req.body.location.city
         r.state = req.body.location.state
-    }
-    ;
+    };
     return r;
 };
 
