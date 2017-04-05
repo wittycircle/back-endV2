@@ -9,9 +9,9 @@ const _ = require('lodash'),
     sqlColorize = require('./colors'),
     {db} = require('../../models');
 
-// db.on('query', (query) => {
-//     console.log(sqlColorize(query))
-// });
+db.on('query', (query) => {
+    console.log(sqlColorize(query))
+});
 
 exports.resDebugger = (req, res, next) => {
     let oldWrite = res.write,

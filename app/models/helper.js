@@ -17,7 +17,7 @@ const location = ['p.city', 'p.country', 'p.state']
 	const h = {
     p_array :['p.id', 'p.first_name', 'p.last_name', 'p.profile_picture',
     		 'p.about', 'p.cover_picture', 'p.description', 'p.network'],
-            p_uarray: ['p.id', 'u.id as uid', 'p.first_name', 'p.last_name',
+    p_uarray: ['p.id', 'u.id as uid', 'p.first_name', 'p.last_name',
                 'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
                 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network'],
     },
@@ -36,7 +36,8 @@ h.sub_profile = db.select(h.p_uarray).from(TABLES.USER_PROFILES + ' as p')
     .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('p');
 	h.u_profile = db.select(h.up_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id').groupBy('p.id').as('p');
 	h.ws_profile = (cond) => db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
-	h.exist = (table, value, name) => db(table).select('id').where(name || 'id', value)
+	// h.exist = (table, value, name) => db(table).select('id').where(name || 'id', value)
+	h.exist = (table, value, name) => db(table).select('id').whereRaw(`${name || 'id'} LIKE "%${value}%"`)
 	h.owner = (table, id, uid) => db(table).select('id').where({'id': id, 'user_id': uid})
 	h.admin = admin
 h.format_location = format_location
