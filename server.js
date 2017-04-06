@@ -12,11 +12,16 @@ const http = require('http'),
     debug = require('./app/middlewares/debug'),
     cache = require('./socket-server/lib/cache'),
     path = require('path'),
-    cors = require('cors');
+    cors = require('cors'),
+    cloudinary = require('cloudinary');
 
 let app = express();
 
 app.use(cors());
+
+const config = require('./app/private');
+
+cloudinary.config(config.cloudinary);
 
 /**
  * watch() initialize event system
