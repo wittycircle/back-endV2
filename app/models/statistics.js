@@ -97,14 +97,22 @@ ni = exports.networkInterests = (name) => {
 
 //			*** Projects ***
 npr = exports.networkProjects = (name) => {
+	let test = db(TABLES.NETWORKS_GROUP).select('*')
+				.where('title', name)
+
 	return h.exist(TABLES.USER_PROFILES, name, 'network').then(r => {
 		if (!r.length)
 			return "error"
 		return db(TABLES.PROJECTS + ' as pr')
-				.select('pr.id')
 				.count('pr.id as count')
 				.join(h.sub_profile, 'p.uid', 'pr.user_id')
 				.whereRaw(`p.network LIKE "%${name}%"`)
+				.then(r => {
+					return test.then(rr => {
+						r['data'] = rr
+						return r
+					})
+				})
 	})
 };
 

@@ -42,6 +42,7 @@ exports.TABLES = {
     OPENING_TAGS: 'opening_tags',
 //            ***    NETWORK    ***
     'NETWORKS': 'networks',
+    'NETWORKS_GROUP': 'networks_group',
     'PROJECT_NETWORK': 'project_network',
     'UNIV_NETWORK': 'university_list',
     'PROFILE_NETWORK': 'profile_network',

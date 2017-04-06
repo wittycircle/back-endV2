@@ -2,6 +2,7 @@
 
 const Joi = require('joi');
 const 	p_empty = ['', null],
+		// p_deny = ['<', '>', ';', ':', '!', '"', '(', ')', '&', '=', '+', '-']
 		p_status = ['any', 'tips', 'teammate', 'mentor'];
 
 module.exports.location = Joi.object().keys({
