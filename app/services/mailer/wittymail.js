@@ -69,7 +69,7 @@ wm.notif = (type) => db.select('user_id').from(TABLES.NOTIF_PERM + ' as n')
 | new_message	 |
 */
 module.exports.wm = wm
-
+//sequoya account for testing purposes
 module.exports.TEMPLATES =  {
 	ask_project: 'b2482793-bfe8-4b3a-afc8-1ef959694a0e',
 	upvote_project: '7ea33ecc-88b5-4385-a864-2d63b2dadfb2',
@@ -94,23 +94,23 @@ module.exports.TEMPLATES =  {
 /* WITTY ACCOUNT 
 
 module.exports.TEMPLATES =  {
-	ask_project: ,
-	upvote_project: ,
-	invite_user:, 
-	invite_team: ,
-	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
-	new_project: ,
-	reply_project: ,
-	reset_password: ,
+	ask_project: '7eaa5daa-b30a-42a1-9e60-7b2b8082db2c',
+	upvote_project: 'fa4a9f30-0e19-4cbb-beb1-1f2609712da7',
+	invite_user:'f77ff311-9f03-4283-8d1f-774c35d9b091', 
+	invite_team: '49ba0c57-40e0-4cd5-89aa-f097b045fcd2',
+	new_message: '95f7509c-280e-42d0-8049-3959deed6261',
+	new_project: 'f6dad873-a71e-4051-9cce-fdfc4f49affc',
+	reply_project: '74de27df-bd29-43cf-9ff0-71a7384cb1cf',
+	reset_password: '4b0e4c39-1227-4c28-8536-b09b8f19e07b',
 	suggestion_profile: ,
 	suggestion_project: ,
-	uc_invitation: ,
-	user_follow:,
-	validate_account: ,
+	uc_invitation: '7f8e9ed4-7b0a-412d-837e-6f88ad9cce5c',
+	user_follow:'082dea23-81c0-454a-9e60-ceff09d1bcdf',
+	validate_account: '61e506e0-18b4-4bae-825c-33c2aa3bf450',
 	validation-network: ,
-	verification_network: ,
-	profile_views:,
-	welcome : 'f98676a1-51f8-4164-91fe-9e4178d46553',
+	verification_network:'9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
+	profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
+	welcome :'f98676a1-51f8-4164-91fe-9e4178d46553',
 }
 */
 
