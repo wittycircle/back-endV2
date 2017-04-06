@@ -5,7 +5,7 @@ const express = require('express'),
     {auth, AUTH} = require('../services/auth');
 
 // ------------------ Params ------------------
-router.param('id', validateParam(schemas.params.id));
+router.param('user_id', validateParam(schemas.params.id));
 router.param('name', validateParam(schemas.params.name));
 // ------------------ Params ------------------
 
@@ -47,6 +47,11 @@ router.param('name', validateParam(schemas.params.name));
    // recent activity: socket
 
 
+
+// ------------------ PROFILES STATS ------------------
+
+    router.route('/statistics/profiles/:user_id')
+        .get(statistics.infoProfiles)
 
 
 module.exports = router;

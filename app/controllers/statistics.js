@@ -136,3 +136,18 @@ exports.networkProjectFollow = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
+
+// ------------------ Profiles Stats ------------------
+
+exports.infoProfiles = (req, res, next) => {
+	statistics.infoProfiles(req.params.profile_id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Unknown id'])
+			}
+			else{
+				res.send({profile: r})
+			}
+		})
+		.catch(err => next(err))
+};
