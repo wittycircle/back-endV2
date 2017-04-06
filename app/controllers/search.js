@@ -30,6 +30,15 @@ const profile_lookup = {
     };
 //Main page: les projects upvoted less than 48h ago
 //main page: profiles around you [got ip (string) ]
+const has_liked = (foli, id) => {
+    let hasLiked = false; 
+    let infollo = _.split(foli, ','); 
+    infollo.forEach(e => {
+        if (e == id) 
+            hasLiked = true; 
+    }); 
+    return hasLiked;
+}
 
 exports.searchProfile = (req, res, next) => {
     const {paginate, query} = req.body;
@@ -51,6 +60,9 @@ exports.searchProfile = (req, res, next) => {
             res.send({
                 profiles: _.map(results, result => {
                     result.skills = _.split(result.skills, ',');
+                    if (req.user && req.user.id)
+                        result.hasLiked = has_liked(result.foli, req.user.id)
+                    delete result.foli;
                     return result;
                 })
             });

@@ -26,17 +26,23 @@ exports.cardProfile = (selector) => {
         .join(TABLES.SKILLS + ' as s', 'us.skill_id', 's.id')
         .as('s');
 
-    const follower = db.select('user_id').count('user_id as total').from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu'),
-        following = db.select('follow_user_id').count('follow_user_id as MA').from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su');
+    const following = db.select('user_id').count('user_id as total')
+            .from(TABLES.USER_FOLLOWERS).groupBy('user_id').as('ssu');
+    const follower = db.select('follow_user_id').count('follow_user_id as MA')
+            .from(TABLES.USER_FOLLOWERS).groupBy('follow_user_id').as('su');
+    const ifo = db.distinct('follow_user_id', 'user_id').from(TABLES.USER_FOLLOWERS).as('ifo');
+    //redo following follower, ifo, seems stupid this way
 
     const sortCardProfile = db.select(['u.id', 'u.profile_id', 'r.rank as rank',
-        db.raw('IFNULL(total, 0) as follower'), db.raw('IFNULL (MA, 0) as following'),
+        db.raw('GROUP_CONCAT(ifo.user_id) as foli'),
+        db.raw('IFNULL(total, 0) as following'), db.raw('IFNULL (MA, 0) as follower'),
         db.raw('GROUP_CONCAT(DISTINCT name) as skills')])
         .from(TABLES.USERS + ' as u')
         .leftJoin(skills, 'u.id', 's.user_id')
         .leftJoin(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank [All users will have a rank?]
-        .leftJoin(follower, 'ssu.user_id', 'u.id')
-        .leftJoin(following, 'su.follow_user_id', 'u.id')
+        .leftJoin(following, 'ssu.user_id', 'u.id')
+        .leftJoin(follower, 'su.follow_user_id', 'u.id')
+        .leftJoin(ifo, 'ifo.follow_user_id', 'u.id')
         .groupBy('u.id').as('sort');
 
     const profile_array = ['p.id', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network',
@@ -54,7 +60,7 @@ exports.cardProfile = (selector) => {
         addLocation('p', location, _query)
         return _query.as('p')
     };
-    const ret_array = ['fullname', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture',
+    const ret_array = ['fullname', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture', 'foli',
       'cover_picture', 'about', 'description', 'network' , 'location', 'follower', 'following', 'skills']
 
     let q =  db.select(ret_array)
