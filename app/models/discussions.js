@@ -59,25 +59,20 @@ exports.replyDiscussion = (discussion_id, uid, message) => {
 
 // ------------------ Like ------------------
 exports.likeDiscussion = (discussion_id, uid) => {
+	let obj = {project_discussion_id: discussion_id, user_id: uid}
 	return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
 		if (!r.length) 
 			return "Invalid discussion id"
-		else {
-            return db(TABLES.PROJECT_DISCUSSION_LIKES).first('id')
-                .where({project_discussion_id: discussion_id, user_id: uid})
-                .then(r => {
-                    if (!r)
-                        return db(TABLES.PROJECT_DISCUSSION_LIKES)
-					.insert({project_discussion_id: discussion_id, user_id: uid})
-                    else
-                        return db(TABLES.PROJECT_DISCUSSION_LIKES)
-                            .del()
-                            .where({project_discussion_id: discussion_id, user_id: uid})
-                })
-		}
+        return db(TABLES.PROJECT_DISCUSSION_LIKES).first('id').where(obj)
+            .then(r => {
+                if (!r)
+                    return db(TABLES.PROJECT_DISCUSSION_LIKES).insert(obj)
+                else
+                    return db(TABLES.PROJECT_DISCUSSION_LIKES).del().where(obj)
+            });
 	});
 };
-
+//unsued, likeDiscussion does the unlike too
 exports.unlikeDiscussion = (discussion_id, uid) => {
 	return h.exist(TABLES.PROJECT_DISCUSSION, discussion_id).then(r => {
 		if (!r.length) 

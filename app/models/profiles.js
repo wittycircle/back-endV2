@@ -39,16 +39,19 @@ exports.getProfileFollowers = (cond, cond2, p_id) => {
 };
 
 exports.followProfile = (id, uid) => {
+    let obj = {user_id: id, follow_user_id: uid}
+
     return h.exist(TABLES.USERS, id).then(r => {
-        if (r.length)
-         {
-            return db(TABLES.USER_LIKES) 
-            .insert({
-                user_id: id, 
-                follow_user_id: uid, 
-            })
-        }
-    })
+        if (!r.length)
+            return "Bad id"
+        return db(TABLES.USER_LIKES).first('id').where(obj)
+            .then(r => {
+                if (!r) 
+                    return db(TABLES.USER_LIKES).insert(obj) 
+                else 
+                    return db(TABLES.USER_LIKES).del().where(obj)
+            });
+    });
 };
 
 exports.unfollowProfile = (id, uid) => {

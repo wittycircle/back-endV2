@@ -20,22 +20,6 @@ const project_location = db.raw(`
 exports.createProject = (project_data, members, openings, discussions) => {
 	let x = []
 	return db(TABLES.PROJECTS).insert(project_data)
-			// .then(([id]) => {
-			// 	openings.forEach(el => {
-			// 		el.project_id = id;
-			// 		x.push(exports.createOpening(el).return())
-			// 	});
-			// 	discussions.forEach(el => {
-			// 		el.project_id = id;
-			// 		el.user_id = project_data.user_id;
-			// 		x.push(exports.createProjectDiscussion(el).return())
-			// 	});
-			// 	members.forEach(el => {
-			// 		x.push(db(TABLES.PROJECT_MEMBERS).insert({project_id: id, user_id: el}).return())
-			// 	});
-			// 	return Promise.all(x)
-			// 	.then(() => {return id})
-			// })
 };
 
 exports.updateProject = (id, project_data) => {
@@ -196,14 +180,17 @@ exports.getProjectLikes = (project_id) => {
 };
 
 exports.likeProject = (project_id, uid) => {
+	let obj = {user_id: uid, project_id: project_id}
 	return h.exist(TABLES.PROJECTS, project_id).then(r => {
-		if (r.length){
-			return db(TABLES.PROJECT_LIKES) 
-				.insert({
-                    user_id: uid,
-                    project_id: project_id
-				}); 
-			}
+		if (!r.length)
+				return "Project not found"
+		return db(TABLES.PROJECT_LIKES).first('id').where(obj)
+			.then(r => {
+				if (!r)
+					return db(TABLES.PROJECT_LIKES).insert(obj)
+				else
+					return db(TABLES.PROJECT_LIKES).del().where(obj)
+			});
 		}); 
 };
 
