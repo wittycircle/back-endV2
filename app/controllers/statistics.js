@@ -146,7 +146,9 @@ exports.infoProfiles = (req, res, next) => {
 				return next([r, 'Unknown id'])
 			}
 			else{
-				res.send({profile: r})
+				let o = {}
+				r.forEach(e=> o[e.field] = e.value)
+				res.send({profile: o})
 			}
 		})
 		.catch(err => next(err))

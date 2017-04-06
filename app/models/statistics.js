@@ -207,8 +207,8 @@ project_contrib, following, follower, upvoted_project, views, messages]
 };
 
 exports.infoProfiles = (id) => {
-	db(TABLES.USERS).first('id')
+return	db(TABLES.USERS).first('id')
 		.where('profile_id', id)
-	.then(r => subInfoProfiles(r.id))
+	.then(r =>subInfoProfiles(1))
 };
 
