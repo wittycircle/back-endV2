@@ -104,12 +104,12 @@ npr = exports.networkProjects = (name) => {
 		if (!r.length)
 			return "error"
 		return db(TABLES.PROJECTS + ' as pr')
-				.count('pr.id as count')
+				.count('pr.id as projects_count')
 				.join(h.sub_profile, 'p.uid', 'pr.user_id')
 				.whereRaw(`p.network LIKE "%${name}%"`)
 				.then(r => {
 					return test.then(rr => {
-						r['data'] = rr
+						r[0].network_data = rr
 						return r
 					})
 				})

@@ -92,7 +92,7 @@ exports.networkProjects = (req, res, next) => {
 				return next([r, 'Unknown network'])
 			}
 			else{
-				res.send({projects: r, data: r.data})
+				res.send({project: r})
 			}
 		})
 		.catch(err => next(err))
