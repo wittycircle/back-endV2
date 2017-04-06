@@ -50,7 +50,7 @@ router.param('name', validateParam(schemas.params.name));
 
 // ------------------ PROFILES STATS ------------------
 
-    router.route('/statistics/profiles/:user_id')
+    router.route('/statistics/profiles/:profile_id')
         .get(statistics.infoProfiles)
 
 

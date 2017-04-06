@@ -140,7 +140,7 @@ exports.networkProjectFollow = (req, res, next) => {
 // ------------------ Profiles Stats ------------------
 
 exports.infoProfiles = (req, res, next) => {
-	statistics.infoProfiles(req.params.user_id)
+	statistics.infoProfiles(req.params.profile_id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Unknown id'])
