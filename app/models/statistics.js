@@ -165,46 +165,50 @@ nprf = exports.networkProjectFollow = (name) => {
 
 // ------------------ Profiles statistics ------------------
 
-exports.infoProfiles = (id) => {//user_id
+const subInfoProfiles = (id) => {
 let name = (n) => db.raw(`CONCAT("${n}") as field`)
 
-	let rank = db(h.sub_profile).distinct('rank as value', name('rank'))
+	let rank = db.distinct('rank as value', name('rank'))
 					.where('user_id', id).from(TABLES.RANK),
 
-	 started_projects = db(h.sub_profile).countDistinct('id').distinct(name('started_projects'))
+	 started_projects = db.countDistinct('id').distinct(name('started_projects'))
 					.where('user_id', id).from(TABLES.PROJECTS),
 
-	 invitation = db(h.sub_profile).countDistinct('id').distinct(name('invitation'))
-					.where('user_id', id).from(TABLES.INVITATION),
+	 invitation = db.countDistinct('id').distinct(name('invitation'))
+					.where('user_id', id).where('status', 'registed').from(TABLES.INVITATION),
 
-	 project_feedback = db(h.sub_profile).countDistinct('id').distinct(name('project_feedback'))
+	 project_feedback = db.countDistinct('id').distinct(name('project_feedback'))
 					.where('user_id', id).from(TABLES.PROJECT_MEMBERS),
 
-	 project_contrib = db(h.sub_profile).countDistinct('id').distinct(name('project_contribution'))
+	 project_contrib = db.countDistinct('id').distinct(name('project_contribution'))
 					.where('user_id', id).from(TABLES.PROJECT_MEMBERS),
 
-	 following = db(h.sub_profile).countDistinct('id').distinct(name('following'))
+	 following = db.countDistinct('id').distinct(name('following'))
 					.where('user_id', id).from(TABLES.USER_FOLLOWERS),
 
-	 follower = db(h.sub_profile).countDistinct('id').distinct(name('followers'))
+	 follower = db.countDistinct('id').distinct(name('followers'))
 					.where('follow_user_id', id).from(TABLES.USER_FOLLOWERS),
 
-	 upvoted_project = db(h.sub_profile).countDistinct('id').distinct(name('upvoted_project'))
+	 upvoted_project = db.countDistinct('id').distinct(name('upvoted_project'))
 					.where('user_id', id).from(TABLES.PROJECT_MEMBERS),
 
-	 views = db(h.sub_profile).countDistinct('id').distinct(name('views'))
-					.where('user_notif_id', id)
+	 views = db.countDistinct('id').distinct(name('views'))
+					.where('user_notif_id', id).where('type_notif', 'view')
 					.from(TABLES.NOTIF_LIST),
 
-	 messages = db(h.sub_profile).countDistinct('id').distinct(name('messages'))
+	 messages = db.countDistinct('id').distinct(name('messages'))
 					.where('to_user_id', id)
 					.from(TABLES.OMESSAGES);
 
 let test = [started_projects, invitation, project_feedback,
 project_contrib, following, follower, upvoted_project, views, messages]
 
-	select('p.uid').from(h.sub_profile).where('p.id', id).then(uid => {
-		return rank.union(test)
-		
-	})
+	return rank.union(test)
 };
+
+exports.infoProfiles = (id) => {
+	db(TABLES.USERS).first('id')
+		.where('profile_id', id)
+	.then(r => subInfoProfiles(r.id))
+};
+
