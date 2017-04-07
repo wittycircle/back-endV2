@@ -37,6 +37,7 @@ exports.getProfile = (req, res, next) => {
                 if (req.user && req.user.id){
                     profile.hasLiked = has_liked(profile.foli, req.user.id)
                 }
+                    delete profile.foli
                 res.send({profile: profile});
             }
         })
