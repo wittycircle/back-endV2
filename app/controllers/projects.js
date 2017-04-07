@@ -34,7 +34,7 @@ exports.createProject = (req, res, next) => {
             }
             else {
                 // mailer.new_project({uid: req.user.id, public_id: d.public_id})
-                res.send({id: r})
+                res.send({id: d.public_id})
             }
         })
         .catch(err => next(err))
