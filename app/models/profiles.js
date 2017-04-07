@@ -9,7 +9,7 @@ const {db, TABLES} = require('./index'),
         h = require('./helper');
 
 exports.getProfiles = () => {
-    return h.sub_profile
+    return h.sub_profile.select(h.format_location)
 };
 
 exports.getProfileBy = (by) => {
