@@ -13,10 +13,14 @@ exports.getProfiles = () => {
 };
 
 exports.getProfileBy = (by) => {
+    const ifo = db.distinct('follow_user_id', 'user_id')
+        .from(TABLES.USER_FOLLOWERS).as('ifo');
+
     let profile = h.spe_profile(by)
     return db(profile)
         .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
-        .select('rank', 'p.*')
+        .leftJoin(ifo, 'ifo.follow_user_id', 'p.uid')
+        .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'))
 };
 
 exports.updateProfile = (stuff, cnd) => {
