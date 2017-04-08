@@ -1,7 +1,29 @@
-const config = require('./app/private'),
-    {db, TABLES} = require('./app/models/index'),
-    _ = require('lodash');
+const    special_config = {
+        client: 'mysql',
+        connection: process.env.DATABASE_URL || {
+            host: '127.0.0.1',
+            user: 'root',
+            password: 'dbwitty',
+            database: 'test_prod', //The one for test
+        },
+        pool: {
+            min: 0,
+            max: 1
+        }
+    };
 
+if (!process.argv[2]){
+    console.log("Please enter the database name as argument")
+    process.exit()
+}
+else {
+    special_config.connection.database = process.argv[2]    
+}
+
+
+const db = require('knex')(special_config),
+    {notthedbused, TABLES} = require('../app/models/index'),
+    _ = require('lodash');
 
 /*
  // ------------------ TABLES THAT SEEMS UNUSED ------------------
@@ -23,14 +45,22 @@ const config = require('./app/private'),
 
 //Put drop Table in right order, to allow foreign key constraints
 
-const add_admin = () =>
-    db(TABLES.USERS).update('moderator', 1).where('id', 3719);
+// const add_admin = () =>
+//     db(TABLES.USERS).update('moderator', 1).where('id', 3719);
 
 const profile_description_text = () =>
     db.schema.raw('alter table profiles change column description description TEXT(10000)');
 
 const messageToOldMessage = () =>
-    db.schema.renameTable('messages', 'old_messages')
+    db.schema.hasTable('old_messages').then(function(exists) {
+        if (!exists){
+            console.log("DOES NOT EXIST")
+            return db.schema.renameTable('messages', 'old_messages')
+        } else {
+            return db.schema.dropTableIfExists('messages')
+            console.log("Already exist")
+        }
+    })
 
 const all_utf8 = () => {
     let x = [];
@@ -42,13 +72,12 @@ const all_utf8 = () => {
     return Promise.all(x).then(r => r)
 };
 
+// ------------------ DROP ------------------
 const drop_tables = () => db.schema
     .dropTableIfExists('tag_articles')
     .dropTableIfExists('article_tags')
-    .dropTableIfExists('old_messages')
-
-
-
+    .dropTableIfExists('networks_group')
+    .dropTableIfExists('opening_tags');
 // ------------------ Alter tables ------------------
 
 //          *** Articles ***
@@ -167,27 +196,38 @@ const alter_project_openings = () => {
         });
 };
 
+
 // ------------------ Create tables ------------------
 const table_creation_no_foreign = [
-    db.schema.createTable('article_tags', function (t) {
+    db.schema.createTableIfNotExists('article_tags', function (t) {
         t.increments();
         t.string('name').notNullable();
         t.unique('name');
         t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
         t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
     }),
-    db.schema.createTable(TABLES.MESSAGES, function (t) {
+    db.schema.createTableIfNotExists(TABLES.MESSAGES, function (t) {
         t.increments();
         t.integer('room_id').unsigned().notNullable();
         t.integer('user_id').unsigned().notNullable();
         t.string('data').defaultTo(null);
         t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
         t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-    })
+    }),
+    db.schema.createTableIfNotExists('networks_group', function (t) {
+        t.increments();
+        t.string('title');
+        t.string('logo');
+        t.string('city');
+        t.string('state');
+        t.string('country');
+        t.text('story');
+        t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+    }),
 ];
 
 const table_creation_foreign = [
-    db.schema.createTable('tag_articles', function (t) {
+    db.schema.createTableIfNotExists('tag_articles', function (t) {
         t.increments();
         t.integer('article_id').notNullable();
         t.integer('tag_id').unsigned().notNullable();
@@ -196,16 +236,23 @@ const table_creation_foreign = [
 //			***	Relations	***
         t.foreign('article_id').references('articles.id').onDelete('cascade');
         t.foreign('tag_id').references('article_tags.id').onDelete('cascade');
+    }),
+        db.schema.createTableIfNotExists('opening_tags', function (t) {
+        t.increments();
+        t.integer('opening_id').notNullable();
+        t.string('tag').notNullable();
+        t.foreign('opening_id').references('project_openings.id').onDelete('cascade');
+        t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
     })
-    ];
+];
 // ------------------ Insert tables ------------------
-const table_insert = [
+const table_insert = () =>  [
     db.batchInsert(TABLES.ARTICLE_TAGS,
         ['mentoring', 'entrepreneurship', 'community', 'event', 'startup generation', 'popcorn']
             .map(tag => {
                 return {name: tag}
             })
-        , 6),
+        ),
     db.batchInsert(TABLES.MESSAGES, [
         {room_id: 1, user_id: 1, data: 'Hello world'},
         {room_id: 1, user_id: 2, data: 'This is a test'},
@@ -215,7 +262,10 @@ const table_insert = [
         {article_id: 4, tag_id: 2},
         {article_id: 4, tag_id: 5},
         {article_id: 4, tag_id: 3}
-    ])
+    ]),
+    db.batchInsert('networks_group', require('./data_insert/data_networks_group')),
+    db.batchInsert('opening_tags', require('./data_insert/data_opening_tags'))
+
 ];
 
 
@@ -235,7 +285,7 @@ const modify_db = () => {
         .then(() => alter_projects())
         .then(() => alter_project_openings())
         //			*** Insert ***
-        .then(() => Promise.all(table_insert))
+        .then(() => Promise.all(table_insert())) //regler ca
         //			*** Modify ***
         .then(() => profile_description_text())
         .then(() => all_utf8())
