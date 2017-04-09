@@ -9,7 +9,8 @@ const {db, TABLES} = require('./index'),
         h = require('./helper');
 
 exports.getProfiles = () => {
-    return h.sub_profile.select(h.format_location)
+return    db.select(h.p_uarray).select(h.format_location).from(TABLES.USER_PROFILES + ' as p')
+    .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('p');
 };
 
 exports.getProfileBy = (by) => {
