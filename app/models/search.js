@@ -13,8 +13,8 @@ const addLocation = (table, location, query) => {
         const _location = location.split(',');
         let selected = ''
         selected += (`WHEN ${table}.city LIKE "%${_location[0]}%" THEN 1 `);
-        selected += (`WHEN ${table}.state LIKE "%${_location[0]}%" THEN 2 `);
-        selected += (`WHEN ${table}.country LIKE "%${_location[0]}%" THEN 3 `);
+        selected += (`WHEN ${table}.state LIKE "%${_location[1]}%" THEN 2 `);
+        selected += (`WHEN ${table}.country LIKE "%${_location[1]}%" THEN 3 `);
         query.orderByRaw('CASE ' + selected + ' else 100 END')
 
         // query.whereRaw(`{table}.city like "%${_location[0]}%" 
