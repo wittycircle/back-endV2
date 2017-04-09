@@ -10,12 +10,16 @@ const {db, TABLES} = require('./index'),
 
 const addLocation = (table, location, query) => {
     if (!_.isEmpty(location)) {
-        const _location = _.words(location);
+        const _location = location.split(',');
         let selected = ''
-        selected += (`WHEN city LIKE "%${_location[0]}%" THEN 1 `);
-        selected += (`WHEN state LIKE "%${_location[0]}%" THEN 2 `);
-        selected += (`WHEN country LIKE "%${_location[0]}%" THEN 3 `);
+        selected += (`WHEN ${table}.city LIKE "%${_location[0]}%" THEN 1 `);
+        selected += (`WHEN ${table}.state LIKE "%${_location[0]}%" THEN 2 `);
+        selected += (`WHEN ${table}.country LIKE "%${_location[0]}%" THEN 3 `);
         query.orderByRaw('CASE ' + selected + ' else 100 END')
+
+        // query.whereRaw(`{table}.city like "%${_location[0]}%" 
+        //     or {table}.state like "%${_location[1]}%" 
+        //     or {table}.country like "%${_location[1]}%"`)
     }
 };
 // ------------------ Profile ------------------
@@ -45,8 +49,9 @@ exports.cardProfile = (selector) => {
         .leftJoin(ifo, 'ifo.follow_user_id', 'u.id')
         .groupBy('u.id').as('sort');
 
-    const profile_array = ['p.id', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network',
-     db.raw('CONCAT (p.city, ", ",  p.country) as location'),
+    const profile_array = ['p.id', 'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 
+        'p.network', 'p.city', 'p.state', 'p.country',
+     h.format_location,
         h.username, 'u.username',
     ];
 
@@ -57,7 +62,6 @@ exports.cardProfile = (selector) => {
             .where('p.description', '!=', 'NULL')
             .andWhere('p.profile_picture', '!=', 'NULL')
             .andWhere('p.fake', '=', '0')
-        addLocation('p', location, _query)
         return _query.as('p')
     };
     const ret_array = ['fullname', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture', 'foli',
@@ -70,6 +74,7 @@ exports.cardProfile = (selector) => {
         .groupBy('sort.id') 
         .where('sort.rank', '>', '0') //todo remove
 
+    addLocation('p', selector.location, q)
     if (selector.skills){
     let selected =  _.words(selector.skills).map((el, i) => 'WHEN sort.skills LIKE "%' + el + '%" THEN ' + (i + 1)).join(' ');
         q.orderByRaw('CASE ' + selected + ' else 100  END');
@@ -84,12 +89,28 @@ exports.cardProfile = (selector) => {
 
 // ------------------ Project ------------------
 exports.cardProject = (selector) => {
+    const project_location = db.raw(` 
+    CASE WHEN (pr.city IS NOT NULL)
+        THEN
+            CASE WHEN (pr.state != NULL)
+                THEN CONCAT(pr.city, ', ', pr.state)
+            WHEN (pr.country IS NOT NULL)
+                THEN CONCAT(pr.city, ', ', pr.country)
+                ELSE ' '
+            END
+        ELSE ' '
+    END as location 
+`);
+
     const pr_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status', 'pr.public_id',
         'c.id as category_id', 'c.name as category_name', 'pr.network as project_network',
      'p.network', 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-        db.raw('CONCAT (city, ", ", country) as location'),
-        // 'o.skill',  'o.tags',
-        // db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'), /*<- Debug to see if order correctly*/
+     project_location,
+/*
+'o.skill',  'o.tags',
+db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'), 
+ Debug to see if order correctly
+*/
      ];
 
      const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m').select('m.project_id', 'm.user_id').where('n_accept', 1).as('m'),
