@@ -9,8 +9,13 @@ const {db, TABLES} = require('./index'),
         h = require('./helper');
 
 exports.getProfiles = () => {
-return    db.select(h.p_uarray).select(h.format_location).from(TABLES.USER_PROFILES + ' as p')
-    .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('p');
+    return h.spe_profile({}).select(h.format_location)
+/* 
+ And not sub_profile, because select 
+ And query builder, so would be added to sub_profile query directly
+and h.format_location would be added once more every time the query is run
+h.sub_profile(location) -> h.sub_profile(location, location) etc
+*/
 };
 
 exports.getProfileBy = (by) => {
