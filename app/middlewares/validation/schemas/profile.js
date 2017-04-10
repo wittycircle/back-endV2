@@ -13,7 +13,11 @@ const profile_update = Joi.object().keys({
     about: Joi.string().max(10000).optional(),
     description: Joi.string().optional(),
     profile_picture: Joi.string().optional(),
-    cover_picture: Joi.string().optional()
+    cover_picture: Joi.string().optional(),
+    genre: Joi.string().optional(),
+    city: Joi.string().optional(),
+    state: Joi.string().optional(),
+    country: Joi.string().optional(),
 });
 
 exports.update = Joi.object().keys({
