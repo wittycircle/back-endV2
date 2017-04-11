@@ -46,6 +46,7 @@ exports.updateProject = (req, res, next) => {
     project.updateProject(req.params.id, req.body)
         .then(r => {
             if (typeof r === 'string') {
+                return next([r, "Bad project id"])
             }
             else {
                 req.broadcastEvent('project_update', {id: req.params.id, from: req.user.id});

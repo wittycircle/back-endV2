@@ -23,7 +23,12 @@ exports.createProject = (project_data, members, openings, discussions) => {
 };
 
 exports.updateProject = (id, project_data) => {
-	return db(TABLES.PROJECTS).update(project_data).where('id', id)
+	return h.exist(TABLES.PROJECTS, id).then(r => {
+		if (!r.length){
+			return "Could not update project"
+		}
+		return db(TABLES.PROJECTS).update(project_data).where('id', id)
+	})
 };
 
 exports.removeProject = (id) => {
@@ -81,7 +86,7 @@ exports.getProject = (id) => {
 };
 
 exports.getProjectList = () => {
-    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card as picture', 'pr.status', 'pr.public_id',
+    const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card', 'pr.status', 'pr.public_id',
 	 'c.id as category_id', 'c.name as category_name', 'p.network',
 	 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
 	 db.raw('CONCAT (city, ", ", country) as location')

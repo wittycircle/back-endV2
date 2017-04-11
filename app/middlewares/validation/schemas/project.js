@@ -45,9 +45,11 @@ module.exports.update = Joi.object().keys({
 	category: Joi.number().integer(),
 	location: common.location,
 	picture: Joi.string().trim().allow(p_empty),
+	picture_card: Joi.string().trim().allow(p_empty),
 	video: Joi.string().trim().allow(p_empty),
 	description: Joi.string().trim().allow(p_empty),
 	about: Joi.string().trim().allow(p_empty),
 	network: Joi.string().trim().allow(p_empty),
 	public: Joi.boolean(),
+	project_visibility: Joi.boolean(),
 });
