@@ -6,6 +6,15 @@ const profiles = require('../models/profiles'),
     user = require('../models/users'),
     _ = require('lodash');
 
+const has_liked = (foli, id) => {
+    let hasLiked = false;
+    let infollo = _.split(foli, ',');
+    infollo.forEach(e => {
+        if (e == id)
+            hasLiked = true;
+    });
+    return hasLiked;
+};
 
 exports.getProfiles = (req, res, next) => {
     profiles.getProfiles()
@@ -21,10 +30,15 @@ exports.getProfiles = (req, res, next) => {
 exports.getProfile = (req, res, next) => {
     profiles.getProfileBy({'p.id': req.params.id})
         .then(profile => {
-            if (_.isEmpty(profile) || !profile.length)
+            if (!profile)
                 next({code: 404});
-            else
-                res.send({profile: profile[0]});
+            else {
+                if (req.user && req.user.id) {
+                    profile.hasLiked = has_liked(profile.foli, req.user.id)
+                }
+                delete profile.foli
+                res.send({profile: profile});
+            }
         })
         .catch(err => next(err));
 };

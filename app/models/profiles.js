@@ -9,14 +9,24 @@ const {db, TABLES} = require('./index'),
         h = require('./helper');
 
 exports.getProfiles = () => {
-    return h.sub_profile
+    return h.spe_profile({}).select(h.format_location)
+    /*
+     And not sub_profile, because select
+     And query builder, so would be added to sub_profile query directly
+     and h.format_location would be added once more every time the query is run
+     h.sub_profile(location) -> h.sub_profile(location, location) etc
+     */
 };
 
 exports.getProfileBy = (by) => {
+    const ifo = db.distinct('follow_user_id', 'user_id')
+        .from(TABLES.USER_FOLLOWERS).as('ifo');
+
     let profile = h.spe_profile(by)
     return db(profile)
         .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
-        .select('rank', 'p.*')
+        .leftJoin(ifo, 'ifo.follow_user_id', 'p.uid')
+        .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'))
 };
 
 exports.updateProfile = (stuff, cnd) => {
@@ -39,16 +49,19 @@ exports.getProfileFollowers = (cond, cond2, p_id) => {
 };
 
 exports.followProfile = (id, uid) => {
+    let obj = {user_id: id, follow_user_id: uid}
+
     return h.exist(TABLES.USERS, id).then(r => {
-        if (r.length)
-         {
-            return db(TABLES.USER_LIKES) 
-            .insert({
-                user_id: id, 
-                follow_user_id: uid, 
-            })
-        }
-    })
+        if (!r.length)
+            return "Bad id"
+        return db(TABLES.USER_LIKES).first('id').where(obj)
+            .then(r => {
+                if (!r)
+                    return db(TABLES.USER_LIKES).insert(obj)
+                else
+                    return db(TABLES.USER_LIKES).del().where(obj)
+            });
+    });
 };
 
 exports.unfollowProfile = (id, uid) => {

@@ -18,7 +18,7 @@ router.route('/projects/search')
     
 router.route('/projects/:id')
     .get(projects.getProject)
-    .post(auth(AUTH.PRIVATE), validate(schemas.project.update), projects.updateProject)
+    .put(auth(AUTH.PRIVATE), validate(schemas.project.update), projects.updateProject)
     .delete(auth(AUTH.PRIVATE), projects.removeProject);
 
 router.route('/projects/:id/openings')

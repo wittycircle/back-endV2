@@ -10,7 +10,14 @@ const Joi = require('joi'),
 const profile_update = Joi.object().keys({
     first_name: Joi.string().alphanum().trim().min(1).max(64).optional(),
     last_name: Joi.string().alphanum().trim().min(1).max(64).optional(),
-    about: Joi.string().max(10000).optional()
+    about: Joi.string().max(10000).optional(),
+    description: Joi.string().optional(),
+    profile_picture: Joi.string().optional(),
+    cover_picture: Joi.string().optional(),
+    genre: Joi.string().optional(),
+    city: Joi.string().optional(),
+    state: Joi.string().optional(),
+    country: Joi.string().optional(),
 });
 
 exports.update = Joi.object().keys({

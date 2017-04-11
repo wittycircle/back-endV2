@@ -17,7 +17,7 @@ if (!process.argv[2]) {
     process.exit()
 }
 else {
-    special_config.connection.database = process.argv[2]
+    special_config.connection.database = process.argv[2]    
 }
 
 

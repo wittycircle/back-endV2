@@ -20,13 +20,13 @@ router.route('/google')
     .get(auth.socialLogin('google', {scope: ['profile', 'email']}));
 
 router.route('/google/callback')
-    .get(auth.socialLogin('google'), auth.generateToken, (req, res) => res.redirect('/'));
+    .get(auth.socialLogin('google'), auth.generateToken);
 
 router.route('/facebook')
     .get(auth.socialLogin('facebook', {scope: ['email']}));
 
 router.route('/facebook/callback')
-    .get(auth.socialLogin('facebook', {successRedirect: '/'}), auth.generateToken);
+    .get(auth.socialLogin('facebook'), auth.generateToken);
 
 router.route('/logout')
     .post(passport.authenticate('bearer'), auth.logout);

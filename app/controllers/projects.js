@@ -1,7 +1,7 @@
 const project = require('../models/projects'),
     // format = require('./format'),
-    mailer = require('../services/mailer');
-_ = require('lodash');
+    mailer = require('../services/mailer'),
+    _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
 const data = (req) => {
@@ -13,7 +13,7 @@ const data = (req) => {
         about: req.body.about,
         picture: req.body.picture,
         video: req.body.video,
-        project_visibility: req.body.public || 'undefined',
+        project_visibility: req.body.public || 1,
         public_id: Math.floor((Math.random() * 90000) + 10000)
     };
     if (req.body.location) {
