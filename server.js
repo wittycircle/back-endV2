@@ -9,15 +9,15 @@ const http = require('http'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     passport = require('passport'),
-    debug = require('./app/middlewares/debug'),
-    cache = require('./socket-server/lib/cache'),
     path = require('path'),
-    cors = require('cors'),
-    cloudinary = require('cloudinary');
+    compression = require('compression'),
+    // cors = require('cors'),
+    cloudinary = require('cloudinary'),
+    cookieParser = require('cookie-parser');
 
 let app = express();
 
-app.use(cors());
+// app.use(cors());
 
 const config = require('./app/private');
 
@@ -33,6 +33,13 @@ app.use(events.mount);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(cookieParser());
+
+app.use(compression());
+
+// Point static path to dist
+app.use(express.static(path.join(__dirname, 'dist')));
+
 /**
  * TODO remove
  */
@@ -41,16 +48,11 @@ if (process.env.NODE_ENV === 'development')
 
 app.use(logger('dev'));
 
-/**
- * Debug middleware
- */
-app.use(debug.resDebugger);
-
 require('./app/config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 80);
 
 router.use(require('./app/routes/index'));
 app.use(router);
