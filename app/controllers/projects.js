@@ -1,6 +1,6 @@
 const project = require('../models/projects'),
     // format = require('./format'),
-    mailer = require('../services/mailer'),
+    mailer = require('../services/mailer');
     _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
@@ -11,6 +11,7 @@ const data = (req) => {
         category_id: req.body.category, //id and not a string (there is a table categories)
         description: req.body.description,
         about: req.body.about,
+        status: req.body.status,
         picture: req.body.picture,
         video: req.body.video,
         project_visibility: req.body.public || 1,
@@ -33,7 +34,8 @@ exports.createProject = (req, res, next) => {
             }
             else {
                 // mailer.new_project({uid: req.user.id, public_id: d.public_id})
-                res.send({id: r})
+                req.broadcastEvent('project_creation', {id: r, from: req.user.id});
+                res.send({id: d.public_id})
             }
         })
         .catch(err => next(err))
@@ -45,6 +47,7 @@ exports.updateProject = (req, res, next) => {
     project.updateProject(req.params.id, req.body)
         .then(r => {
             if (typeof r === 'string') {
+                return next([r, "Bad project id"])
             }
             else {
                 req.broadcastEvent('project_update', {id: req.params.id, from: req.user.id});
@@ -208,8 +211,10 @@ exports.likeProject = (req, res, next) => {
         .then(r => {
             if (!_.isEmpty(r))
                 res.send({success: true});
-            else
+            else {
+                req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
                 res.send({success: false})
+            }
         }).catch(err => next(err))
 };
 
@@ -218,7 +223,9 @@ exports.unlikeProject = (req, res, next) => {
         .then(r => {
             if (r)
                 res.send({success: true});
-            else
+            else {
+                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
                 res.send({success: false})
+            }
         }).catch(err => next(err))
 };

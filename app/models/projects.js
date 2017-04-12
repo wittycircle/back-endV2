@@ -59,7 +59,7 @@ const getFollowerCount = (id) => {
 exports.getProject = (id) => {
 	const pr_array = [
             'pr.id', 'pr.title', 'pr.picture', 'pr.description', project_location,
-            'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id'
+            'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id', 'pr.public_id'
 	],
 	x = [];
 	const req = db.distinct(pr_array)

@@ -81,7 +81,7 @@ exports.followProfile = (req, res, next) => {
             if (_.isEmpty(r))
                 res.send({success: false});
             else {
-                //mailer.user_follow({follower: req.user.id, following: req.params.id})
+                req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1});
                 res.send({success: true})
             }
         })
@@ -94,12 +94,12 @@ exports.unfollowProfile = (req, res, next) => {
             if (!r)
                 res.send({success: false});
             else {
+                req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: -1});
                 res.send({success: true})
             }
         })
         .catch(err => next(err))
 };
-
 // ------------------ Location ------------------
 exports.getLocation = (req, res, next) => {
     profiles.getLocation(req.params.id)
