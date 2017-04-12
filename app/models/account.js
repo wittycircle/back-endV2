@@ -38,7 +38,7 @@ const social_helper = {
             },
             user: {
                 email: data.emails[0].value,
-                username: _.escape(data.displayName)
+                username: _.replace(data.displayName, ' ', '.')
             }
         }
     },
@@ -54,7 +54,7 @@ const social_helper = {
             },
             user: {
                 email: data.emails[0].value,
-                username: _.escape(data.displayName)
+                username: _.replace(data.displayName, ' ', '.')
             }
         }
     }

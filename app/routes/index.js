@@ -3,7 +3,8 @@
  */
 'use strict';
 
-const express = require('express');
+const express = require('express'),
+    path = require('path');
 
 let router = express.Router();
 
@@ -19,14 +20,12 @@ router.use('/api', require('./account'));
 router.use('/api', require('./article'));
 router.use('/api', require('./network'));
 router.use('/api', require('./interests'));
+router.use('/api', require('./statistics'));
 
 router.use(require('../middlewares/error').error);
 
-router.use('*', (req, res, next) => {
-    res.status(404).send({
-        error: 'not_found',
-        error_description: 'resource doesn\'t exist'
-    });
+router.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../dist', 'index.html'));
 });
 
 module.exports = router;

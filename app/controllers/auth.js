@@ -1,6 +1,3 @@
-/**
- * Created by rdantzer on 19/01/17.
- */
 'use strict';
 
 const passport = require('passport'),
@@ -34,15 +31,17 @@ exports.generateToken = (req, res, next) => {
                     error: 'session_generation',
                     error_description: 'unable to generate session'
                 });
-                else
-                    res.send({
+                else {
+                    req.token = {
                         auth: token,
                         user: {
                             id: req.user.id,
                             profile_id: req.user.profile_id,
                             email: req.user.email
                         }
-                    })
+                    };
+                    next();
+                }
             })
         }
     })
@@ -129,3 +128,4 @@ exports.socialLogin = (auth, opts) => (req, res, next) => {
             });
     })(req, res, next);
 };
+
