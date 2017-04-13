@@ -229,3 +229,22 @@ exports.unlikeProject = (req, res, next) => {
             }
         }).catch(err => next(err))
 };
+
+// ------------------ INVITATION ------------------
+
+exports.inviteTeam = (req, res, next) => {
+    projects.inviteTeam(req.user.id, req.params.id, req.body.user_id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'bad id'])
+            }
+            else{
+                // mailer.invite_user //toset
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
+
+
+
