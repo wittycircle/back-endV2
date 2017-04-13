@@ -248,6 +248,7 @@ exports.getInvite = (project_id) => {
 			.select(['m.id', 'project_id', 'user_id', 'invited_by', 'n_read', 'n_accept',
 				'p.profile_picture', 'p.fullName'])
 			.join(h.sub_profile, 'p.uid', 'm.user_id')
+			.where('project_id', project_id)
 	})
 };
 
