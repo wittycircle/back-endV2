@@ -35,6 +35,8 @@ router.route('/projects/:id/up')
     .delete(auth(AUTH.PRIVATE), projects.unlikeProject);
     
 router.route('/projects/:id/invite')
-    .post(auth(AUTH.PRIVATE), projects.inviteTeam)
+    .post(/*auth(AUTH.PRIVATE),*/ projects.inviteTeam)
+    .delete(auth(AUTH.PRIVATE), projects.deleteInvite)//id will be project_members id and not project_id
+    .get(projects.getInvite)
 
 module.exports = router;

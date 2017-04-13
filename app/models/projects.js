@@ -214,11 +214,7 @@ exports.updateProjectNetwork = (info, cond) => {
 		.update(info)
 		.where(cond)
 };
-
-// ------------------ Invitation ------------------
-/*
-mysql> describe project_users;
-+---------------+------------+------+-----+-------------------+----------------+
+/*+---------------+------------+------+-----+-------------------+----------------+
 | Field         | Type       | Null | Key | Default           | Extra          |
 +---------------+------------+------+-----+-------------------+----------------+
 | id            | int(11)    | NO   | PRI | NULL              | auto_increment |
@@ -228,18 +224,37 @@ mysql> describe project_users;
 | n_accept      | tinyint(1) | YES  |     | 0                 |                |
 | invited_by    | int(11)    | YES  |     | NULL              |                |
 | creation_date | timestamp  | NO   |     | CURRENT_TIMESTAMP |                |
-+---------------+------------+------+-----+-------------------+----------------+
-7 rows in set (0.00 sec)*/
-
++---------------+------------+------+-----+-------------------+----------------+*/
 exports.inviteTeam = (uid, project_id, user_id) => {
-	return h.exist(TABLES.PROJECTS, project_id).then(r => {
-	if (!r.length)
-		return "Could not match project"		
-	return db(TABLES.PROJECT_MEMBERS)
-		.insert({
+	let o = {
 			project_id: project_id,
 			user_id: user_id,
 			invited_by: uid
-		})
+		}
+	return h.exist(TABLES.PROJECTS, project_id).then(r => {
+	if (!r.length)
+		return ("Could not match project")
+	return db.select('id').from(TABLES.PROJECT_MEMBERS).where(o)
+	return db(TABLES.PROJECT_MEMBERS)
+		.insert(o)
+	})
+};
+
+exports.getInvite = (project_id) => {
+	return h.exist(TABLES.PROJECTS, project_id).then(r => {
+		if (!r.length)
+			return "Could not match project"
+		return db(TABLES.PROJECT_MEMBERS + ' as m')
+			.select(['m.id', 'project_id', 'user_id', 'invited_by', 'n_read', 'n_accept',
+				'p.profile_picture', 'p.fullName'])
+			.join(h.sub_profile, 'p.uid', 'm.user_id')
+	})
+};
+
+exports.deleteInvite = (uid, invite_id) => {
+	db(table).select('id').where({'id': invite_id, 'invited_by': uid}).then(r => {
+		if (!r.length)
+			return "Not your ressource !"
+		return db(TABLES.PROJECT_MEMBERS).del().where({id: invite_id})
 	})
 };
