@@ -17,8 +17,8 @@ const discussion = Joi.object().keys({
 const opening = Joi.object().keys({
 	skill: Joi.string().trim().allow(p_empty),
 	status: Joi.string().trim().allow(p_status).required(),
-	description:Joi.string().trim().allow(p_empty).required(),
-	tags: Joi.string().trim().allow(p_empty).required(),
+	description:Joi.string().trim().allow(p_empty),
+	tags: Joi.string().trim().allow(p_empty),
 });
 
 module.exports.opening = opening;
