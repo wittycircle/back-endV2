@@ -58,8 +58,8 @@ app.set('port', process.env.PORT || 80);
 router.use(require('./app/routes/index'));
 app.use(router);
 
-// let server = http.createServer(app);
-let server = https.createServer(config.httpsOptions, app);
+let server = http.createServer(app);
+// let server = https.createServer(config.httpsOptions, app);
 
 server.listen(app.get('port'), () => {
     console.log('Server listening on port ' + app.get('port'));

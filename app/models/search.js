@@ -64,7 +64,7 @@ exports.cardProfile = (selector) => {
             .andWhere('p.fake', '=', '0')
         return _query.as('p')
     };
-    const ret_array = ['fullname', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture', 'foli',
+    const ret_array = ['fullName', 'username', 'rank', 'sort.id as user_id', 'p.id', 'profile_picture as picture', 'foli',
       'cover_picture', 'about', 'description', 'network' , 'location', 'follower', 'following', 'skills']
 
     let q =  db.select(ret_array)
