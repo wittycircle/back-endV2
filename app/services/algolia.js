@@ -7,6 +7,7 @@
 const config = require('../private').algolia,
     algoliasearch = require('algoliasearch'),
     {db, TABLES} = require('../models/index');
+h = require('../models/helper');
 
 module.exports = () => {
     const client = algoliasearch(config.app, config.key);
@@ -14,9 +15,9 @@ module.exports = () => {
     let people = client.initIndex('Users'),
         project = client.initIndex('Projects');
 
-    db(TABLES.PROFILES)
+    db(h.spe_profile({}).select('p.fake'))
         .select('*')
-        .where('fake', 0)
+        .where('p.fake', 0)
         .then(profiles => {
             client.deleteIndex('Users', (err) => {
                 people.addObjects(profiles)
