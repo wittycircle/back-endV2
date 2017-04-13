@@ -233,7 +233,7 @@ exports.unlikeProject = (req, res, next) => {
 // ------------------ INVITATION ------------------
 
 exports.inviteTeam = (req, res, next) => {
-    projects.inviteTeam(req.user.id, req.params.id, req.body.user_id)
+    project.inviteTeam(req.user.id, req.params.id, req.body.user_id)
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'bad id'])
@@ -246,5 +246,29 @@ exports.inviteTeam = (req, res, next) => {
         .catch(err => next(err))
 };
 
+exports.getInvite = (req, res, next) => {
+    project.getInvite(req.params.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'bad id'])
+            }
+            else{
+                res.send({invitations: r})
+            }
+        })
+        .catch(err => next(err))
+};
 
+exports.deleteInvite = (req, res, next) => {
+    project.deleteInvite(req.user.id, req.params.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Bad id'])
+            }
+            else{
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
 
