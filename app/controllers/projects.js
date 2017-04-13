@@ -209,10 +209,10 @@ exports.getProjectLikes = (req, res, next) => {
 exports.likeProject = (req, res, next) => {
     project.likeProject(req.params.id, req.user.id)
         .then(r => {
-            if (!_.isEmpty(r))
-                res.send({success: true});
-            else {
+            if (!_.isEmpty(r)) { 
                 req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
+                res.send({success: true});
+            } else {
                 res.send({success: false})
             }
         }).catch(err => next(err))
@@ -221,10 +221,10 @@ exports.likeProject = (req, res, next) => {
 exports.unlikeProject = (req, res, next) => {
     project.unlikeProject(req.params.id, req.user.id)
         .then(r => {
-            if (r)
-                res.send({success: true});
-            else {
+            if (r) {
                 req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
+                res.send({success: true});
+            } else {
                 res.send({success: false})
             }
         }).catch(err => next(err))
