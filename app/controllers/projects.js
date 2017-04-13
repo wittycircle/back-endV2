@@ -233,7 +233,7 @@ exports.unlikeProject = (req, res, next) => {
 // ------------------ INVITATION ------------------
 
 exports.inviteTeam = (req, res, next) => {
-    project.inviteTeam(req.user.id, req.params.id, req.body.user_id)
+    project.inviteTeam(req.user.id, req.params.id, req.body.id)
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'bad id'])
