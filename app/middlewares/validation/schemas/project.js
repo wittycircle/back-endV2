@@ -43,7 +43,9 @@ module.exports.creation = Joi.object().keys({
 module.exports.update = Joi.object().keys({
 	title: Joi.string().trim().allow(p_empty),
 	category: Joi.number().integer(),
-    location: common.location,
+    city: Joi.string(),
+    country: Joi.string(),
+    state: Joi.string(),
 	picture: Joi.string().trim().allow(p_empty),
     picture_card: Joi.string().trim().allow(p_empty),
 	video: Joi.string().trim().allow(p_empty),
