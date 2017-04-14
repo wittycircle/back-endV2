@@ -253,7 +253,7 @@ exports.getInvite = (project_id) => {
 };
 
 exports.deleteInvite = (uid, invite_id) => {
-	db(table).select('id').where({'id': invite_id, 'invited_by': uid}).then(r => {
+	db(TABLES.PROJECT_MEMBERS).select('id').where({'id': invite_id, 'invited_by': uid}).then(r => {
 		if (!r.length)
 			return "Not your ressource !"
 		return db(TABLES.PROJECT_MEMBERS).del().where({id: invite_id})
