@@ -10,7 +10,7 @@ const Joi = require('joi'),
 	p_status = ['any', 'tips', 'teammate', 'mentor'];
 
 const discussion = Joi.object().keys({
-	title: Joi.string().trim().allow(p_empty).required(),
+	title: Joi.string().trim().allow(p_empty),
 	message: Joi.string().trim().allow(p_empty).required()
 });
 
