@@ -235,9 +235,14 @@ exports.inviteTeam = (uid, project_id, user_id) => {
 	if (!r.length)
 		return ("Could not match project")
 	return db.select('id').from(TABLES.PROJECT_MEMBERS).where(o)
-	return db(TABLES.PROJECT_MEMBERS)
-		.insert(o)
-	})
+		.then(r => {
+			if (!r.length)
+				return "Already exist"
+			else {
+				return db(TABLES.PROJECT_MEMBERS).insert(o)
+			}
+		});
+	});
 };
 
 exports.getInvite = (project_id) => {
