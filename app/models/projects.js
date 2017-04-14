@@ -214,17 +214,8 @@ exports.updateProjectNetwork = (info, cond) => {
 		.update(info)
 		.where(cond)
 };
-/*+---------------+------------+------+-----+-------------------+----------------+
-| Field         | Type       | Null | Key | Default           | Extra          |
-+---------------+------------+------+-----+-------------------+----------------+
-| id            | int(11)    | NO   | PRI | NULL              | auto_increment |
-| project_id    | int(11)    | NO   | MUL | NULL              |                |
-| user_id       | int(11)    | NO   | MUL | NULL              |                |
-| n_read        | tinyint(1) | YES  |     | 0                 |                |
-| n_accept      | tinyint(1) | YES  |     | 0                 |                |
-| invited_by    | int(11)    | YES  |     | NULL              |                |
-| creation_date | timestamp  | NO   |     | CURRENT_TIMESTAMP |                |
-+---------------+------------+------+-----+-------------------+----------------+*/
+
+// ------------------ INVITE ------------------
 exports.inviteTeam = (uid, project_id, user_id) => {
 	let o = {
 			project_id: project_id,
@@ -236,7 +227,7 @@ exports.inviteTeam = (uid, project_id, user_id) => {
 		return ("Could not match project")
 	return db.select('id').from(TABLES.PROJECT_MEMBERS).where(o)
 		.then(r => {
-			if (!r.length)
+			if (r.length)
 				return "Already exist"
 			else {
 				return db(TABLES.PROJECT_MEMBERS).insert(o)
@@ -258,9 +249,10 @@ exports.getInvite = (project_id) => {
 };
 
 exports.deleteInvite = (uid, invite_id) => {
-	db(TABLES.PROJECT_MEMBERS).select('id').where({'id': invite_id, 'invited_by': uid}).then(r => {
+	return db(TABLES.PROJECT_MEMBERS).select('id')
+		.where({'id': invite_id, 'invited_by': uid}).then(r => {
 		if (!r.length)
-			return "Not your ressource !"
+			return "Ressource does not exist, or you didn't invite that person"
 		return db(TABLES.PROJECT_MEMBERS).del().where({id: invite_id})
 	})
 };
