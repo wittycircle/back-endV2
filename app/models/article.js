@@ -77,7 +77,7 @@ exports.getArticles = (uid, id) => {
 			.groupBy('a.id')
 
 	if (id)
-		query.when('a.id', id)
+		query.when('a.article_id', id)
 	return query
 };
 
@@ -248,18 +248,6 @@ exports.updateTags = (id, name, uid) => {
 		}
 	});
 };
-
-// ------------------ Comment ------------------
-/*+---------------+-----------+------+-----+-------------------+----------------+
-| Field         | Type      | Null | Key | Default           | Extra          |
-+---------------+-----------+------+-----+-------------------+----------------+
-| id            | int(11)   | NO   | PRI | NULL              | auto_increment |
-| article_id    | int(11)   | NO   | MUL | NULL              |                |
-| user_id       | int(11)   | NO   | MUL | NULL              |                |
-| creation_date | timestamp | NO   |     | CURRENT_TIMESTAMP |                |
-| message       | longtext  | NO   |     | NULL              |                |
-+---------------+-----------+------+-----+-------------------+----------------+
-*/
 
 exports.getComments = (id) => {
 	return db(TABLES.ARTICLE_MSG).distinct().where('article_id', id)

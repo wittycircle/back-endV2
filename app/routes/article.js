@@ -41,7 +41,6 @@ router.route('/articles/comment/:id')
     .post(auth(AUTH.PRIVATE), article.postComment)
     .delete(auth(AUTH.PRIVATE), article.removeComment)
 
-router.route('/articles/')
 // // ------------------ ARTICLES TAGS ------------------
 
 router.route('/article_tags')
