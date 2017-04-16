@@ -38,8 +38,8 @@ router.route('/articles/:article_id/article_tags/:tags_id')
 
 router.route('/articles/comment/:id')
     .get(article.getComments)
-    .post(article.postComment)
-    .delete(article.removeComment)
+    .post(auth(AUTH.PRIVATE), article.postComment)
+    .delete(auth(AUTH.PRIVATE), article.removeComment)
 
 router.route('/articles/')
 // // ------------------ ARTICLES TAGS ------------------
