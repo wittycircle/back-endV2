@@ -209,6 +209,6 @@ const subInfoProfiles = (id) => {
 exports.infoProfiles = (id) => {
     return db(TABLES.USERS).first('id')
         .where('profile_id', id)
-        .then(r => subInfoProfiles(1))
+        .then(r => subInfoProfiles(id))
 };
 
