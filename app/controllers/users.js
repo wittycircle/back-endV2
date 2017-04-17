@@ -202,3 +202,19 @@ exports.updateExperience = (req, res, next) => {
         })
         .catch(err => next(err))
 };
+
+// ------------------ SHARE INVITE LINK ------------------
+
+exports.getUserInvite = (req, res, next) => {
+    user.getUserInvite(req.params.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Bad id'])
+            }
+            else{
+                console.log(r)
+                res.send({invites: r})
+            }
+        })
+        .catch(err => next(err))
+};

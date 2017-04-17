@@ -210,3 +210,13 @@ exports.updateExperience = (uid, data) => {
         
     })
 };
+
+// ------------------ SHARE INVITE LINK ------------------
+
+exports.getUserInvite = (id) => {
+    return h.exist(TABLES.USERS, id).then(r => {
+        if (!r.length)
+            return "Unknown user"
+        return db(TABLES.SHARE_INVITE).select().where('user_id', id)
+    })
+};

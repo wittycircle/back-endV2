@@ -22,6 +22,9 @@ router.route('/users/:id/skills')
     .post(auth(AUTH.PRIVATE), users.addUserSkill)
     .delete(auth(AUTH.PRIVATE), users.removeUserSkill);
 
+router.route('/users/:id/invite_link')
+    .get(users.getUserInvite)
+
 // ------------------ PROJECTS ------------------
 router.route('/users/:id/projects')
     .get(users.getProjectsInvolved)
@@ -39,6 +42,8 @@ router.route('/users/:id/experiences')
     .delete(auth(AUTH.PRIVATE), users.removeExperience)
     .put(auth(AUTH.PRIVATE), users.updateExperience)
 
+// ------------------ SHARE INVITE LINK ------------------
 
-//todo : change and
+
 module.exports = router;
+

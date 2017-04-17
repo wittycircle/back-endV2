@@ -24,6 +24,7 @@ exports.TABLES = {
     USER_FOLLOWERS: 'user_followers',
     RESET: 'reset_passwords',
     FIRST_LOG: 'first_log',
+    'SHARE_INVITE': 'share_invite_link',
 //            *** INTERESTS  ***
     INTERESTS: 'interests',
     USER_INTERESTS: 'user_interests',
