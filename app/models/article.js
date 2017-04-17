@@ -54,7 +54,7 @@ exports.createArticle = (data) => {
 		}); 
 };
 
-exports.getArticles = (uid) => {
+exports.getArticles = (uid, id) => {
     const a_articles = ['a.id', 'author_id', h.username, 'p.profile_picture',
         'a.creation_date', 'picture', 'title', 'text',
 			db.raw('IFNULL (views, 0) as views'),
@@ -65,8 +65,7 @@ exports.getArticles = (uid) => {
         a_articles.push(db.raw('GROUP_CONCAT(DISTINCT IF(l.user_id = ' + uid + ', true, null))  as follow'))
     }
 
-
-	return db.select(a_articles)
+	let query =  db.select(a_articles)
         .countDistinct('l.id as likes')
         .countDistinct('msg.id as messages')
 			.from(TABLES.ARTICLES + ' as a')
@@ -76,6 +75,10 @@ exports.getArticles = (uid) => {
         .leftJoin(TABLES.ARTICLE_MSG + ' as msg', 'msg.article_id', 'a.id')
         .leftJoin(h.u_profile, 'p.uid', 'a.author_id')
 			.groupBy('a.id')
+
+	if (id)
+		query.when('a.article_id', id)
+	return query
 };
 
 exports.removeArticle = (id, uid) => {
@@ -161,17 +164,17 @@ exports.upvoteArticle = (article_id, user_id) => {
 		else {
 			return db(TABLES.ARTICLE_LIKES).first('id').where({article_id, user_id})
 				.then(r => {
-					if (r)
-						return "Already upvoted"
+					if (r) 
+						return db(TABLES.ARTICLE_LIKES).del().where({article_id, user_id}) 
 					else {
-					return db(TABLES.ARTICLE_LIKES)
+						return db(TABLES.ARTICLE_LIKES) 
 						.insert({article_id, user_id})
 					}
 				})
 		}
 	})
 };
-
+//unsued since post does everything -_-
 exports.unUpvoteArticle = (article_id, user_id) => {
 	return db(TABLES.ARTICLE_LIKES).first('id').where({article_id, user_id})
 	.then(r=> {
@@ -244,4 +247,24 @@ exports.updateTags = (id, name, uid) => {
 		});
 		}
 	});
+};
+
+exports.getComments = (id) => {
+	return db(TABLES.ARTICLE_MSG).distinct().where('article_id', id)
+};
+
+exports.postComment = (data) => {
+	return h.exist(TABLES.ARTICLES, data.id).then(r => {
+		if (!r.length)
+			return "Article not found"
+		return db(TABLES.ARTICLE_MSG).insert(data)
+	})
+};
+
+exports.removeComment = (id) => {
+	return h.exist(TABLES.ARTICLE_MSG, id).then(r => {
+		if (!r.length)
+			return "Comment not found"
+	})
+	return db(TABLES.ARTICLE_MSG).del().where('id', id)
 };

@@ -3,6 +3,11 @@ const articles = require('../models/article'),
 
 // ------------------ Main methods ------------------
 
+// GET Article (il faut un hasLiked pour les gens connecte)
+// POST like/dislike (article)
+// GET POST DELETE Comment (article)
+// Add Comment
+
 
 exports.createArticle = (req, res, next) => {
 	req.body.uid = req.user.id ;
@@ -17,14 +22,28 @@ exports.createArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-    let param = req.user ? req.user.id : null;
-    articles.getArticles(param)
+    let uid = req.user ? req.user.id : null;
+    articles.getArticles(uid)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Could not find any article'])
 			}
 			else{
 				res.send({articles: r})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.getArticle = (req, res, next) => {
+    let uid = req.user ? req.user.id : null;
+    articles.getArticles(uid, req.params.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Could not find any article'])
+			}
+			else{
+				res.send({article: r})
 			}
 		})
 		.catch(err => next(err))
@@ -126,6 +145,53 @@ exports.getArticleUpvotes = (req, res, next) => {
 		})
 		.catch(err => next(err))
 };
+
+// ------------------ Comment ------------------
+exports.getComments = (req, res, next) => {
+	article.getComments(req.params.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Bad id'])
+			}
+			else{
+				res.send({comments: r})
+			}
+		})
+		.catch(err => next(err))
+};
+
+exports.postComment = (req, res, next) => {
+	let data = {
+		message: req.body.message,
+		user_id: req.user.id,
+		aricle_id: req.params.id
+	}
+	article.postComment(data)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'Bad id'])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
+
+exports.removeComment = (req, res, next) => {
+	article.removeComment(req.params.id)
+		.then(r => {
+			if (typeof r === 'string') {
+				return next([r, 'bad id'])
+			}
+			else{
+				res.send({success: true})
+			}
+		})
+		.catch(err => next(err))
+};
+
 // ------------------ Articles tags ------------------
 
 exports.createArticleTag = (req, res, next) => {

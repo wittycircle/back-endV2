@@ -59,7 +59,8 @@ const getFollowerCount = (id) => {
 exports.getProject = (id) => {
 	const pr_array = [
             'pr.id', 'pr.title', 'pr.picture', 'pr.description', project_location,
-            'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id', 'pr.public_id'
+            'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id', 'pr.public_id',
+            'pr.project_visibility'
 	],
 	x = [];
 	const req = db.distinct(pr_array)
@@ -215,3 +216,44 @@ exports.updateProjectNetwork = (info, cond) => {
 		.where(cond)
 };
 
+// ------------------ INVITE ------------------
+exports.inviteTeam = (uid, project_id, user_id) => {
+	let o = {
+			project_id: project_id,
+			user_id: user_id,
+			invited_by: uid
+		}
+	return h.exist(TABLES.PROJECTS, project_id).then(r => {
+	if (!r.length)
+		return ("Could not match project")
+	return db.select('id').from(TABLES.PROJECT_MEMBERS).where(o)
+		.then(r => {
+			if (r.length)
+				return "Already exist"
+			else {
+				return db(TABLES.PROJECT_MEMBERS).insert(o)
+			}
+		});
+	});
+};
+
+exports.getInvite = (project_id) => {
+	return h.exist(TABLES.PROJECTS, project_id).then(r => {
+		if (!r.length)
+			return "Could not match project"
+		return db(TABLES.PROJECT_MEMBERS + ' as m')
+			.select(['m.id', 'project_id', 'user_id', 'invited_by', 'n_read', 'n_accept',
+				'p.profile_picture', 'p.fullName'])
+			.join(h.sub_profile, 'p.uid', 'm.user_id')
+			.where('project_id', project_id)
+	})
+};
+
+exports.deleteInvite = (uid, invite_id) => {
+	return db(TABLES.PROJECT_MEMBERS).select('id')
+		.where({'id': invite_id, 'invited_by': uid}).then(r => {
+		if (!r.length)
+			return "Ressource does not exist, or you didn't invite that person"
+		return db(TABLES.PROJECT_MEMBERS).del().where({id: invite_id})
+	})
+};

@@ -13,7 +13,7 @@ exports.getNetwork = (req, res, next) => {
                 let o = {}
                 if (req.params.from == 'university') {
                     o[req.params.from] = r.map(e => {
-                        return {'network': e.network, 'launched': e.launched}
+                        return {'network': e.network, 'launched': e.launched, 'website': e.website}
                     });
                 }
                 else

@@ -209,10 +209,10 @@ exports.getProjectLikes = (req, res, next) => {
 exports.likeProject = (req, res, next) => {
     project.likeProject(req.params.id, req.user.id)
         .then(r => {
-            if (!_.isEmpty(r)) { 
-                req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
+            if (!_.isEmpty(r))
                 res.send({success: true});
-            } else {
+            else {
+                req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
                 res.send({success: false})
             }
         }).catch(err => next(err))
@@ -221,11 +221,54 @@ exports.likeProject = (req, res, next) => {
 exports.unlikeProject = (req, res, next) => {
     project.unlikeProject(req.params.id, req.user.id)
         .then(r => {
-            if (r) {
-                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
+            if (r)
                 res.send({success: true});
-            } else {
+            else {
+                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
                 res.send({success: false})
             }
         }).catch(err => next(err))
 };
+
+// ------------------ INVITATION ------------------
+
+exports.inviteTeam = (req, res, next) => {
+    project.inviteTeam(req.user.id, req.params.id, req.body.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'bad id'])
+            }
+            else{
+                // mailer.invite_user //toset
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.getInvite = (req, res, next) => {
+    project.getInvite(req.params.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'bad id'])
+            }
+            else{
+                res.send({invitations: r})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.deleteInvite = (req, res, next) => {
+    project.deleteInvite(req.user.id, req.params.id)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Bad id'])
+            }
+            else{
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
+

@@ -10,15 +10,15 @@ const Joi = require('joi'),
 	p_status = ['any', 'tips', 'teammate', 'mentor'];
 
 const discussion = Joi.object().keys({
-	title: Joi.string().trim().allow(p_empty).required(),
+	title: Joi.string().trim().allow(p_empty),
 	message: Joi.string().trim().allow(p_empty).required()
 });
 
 const opening = Joi.object().keys({
 	skill: Joi.string().trim().allow(p_empty),
 	status: Joi.string().trim().allow(p_status).required(),
-	description:Joi.string().trim().allow(p_empty).required(),
-	tags: Joi.string().trim().allow(p_empty).required(),
+	description:Joi.string().trim().allow(p_empty),
+	tags: Joi.string().trim().allow(p_empty),
 });
 
 module.exports.opening = opening;
@@ -43,7 +43,9 @@ module.exports.creation = Joi.object().keys({
 module.exports.update = Joi.object().keys({
 	title: Joi.string().trim().allow(p_empty),
 	category: Joi.number().integer(),
-    location: common.location,
+    city: Joi.string(),
+    country: Joi.string(),
+    state: Joi.string(),
 	picture: Joi.string().trim().allow(p_empty),
     picture_card: Joi.string().trim().allow(p_empty),
 	video: Joi.string().trim().allow(p_empty),

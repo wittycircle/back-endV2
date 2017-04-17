@@ -78,8 +78,8 @@ exports.getProfileFollowers = (req, res, next) => {
 exports.followProfile = (req, res, next) => {
     profiles.followProfile(req.params.id, req.user.id)
         .then((r) => {
-            if (_.isEmpty(r))
-                res.send({success: false});
+            if (typeof r === 'string')
+                return next([r, "bad id"])
             else {
                 req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1});
                 res.send({success: true})

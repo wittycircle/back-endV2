@@ -6,7 +6,7 @@ const {db, TABLES} = require('./index'),
 
 exports.getNetwork = (from) => {
     if (from == 'university')
-        return db(TABLES.UNIV_NETWORK).distinct('name as network', 'launched').orderByRaw('popular DESC')
+        return db(TABLES.UNIV_NETWORK).distinct('name as network', 'launched', 'website').orderByRaw('popular DESC')
     else if (from == 'profile')
         return db(TABLES.PROFILE_NETWORK).distinct('network')
     else if (from == 'profile_incubator')

@@ -7,7 +7,7 @@ const express = require('express'),
 router.param('opening_id', validateParam(schemas.params.id));
 
 router.route('/openings/:opening_id')
-	.post(auth(AUTH.PRIVATE), openings.updateOpening)
+	.put(auth(AUTH.PRIVATE), openings.updateOpening)
 	.delete(auth(AUTH.PRIVATE), openings.deleteOpening)
 	
 module.exports = router;

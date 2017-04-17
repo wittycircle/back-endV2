@@ -33,6 +33,14 @@ router.route('/articles/:article_id/up')
 
 router.route('/articles/:article_id/article_tags/:tags_id')
     .delete(auth(AUTH.PRIVATE), article.removeTagArticle);
+
+// ------------------ COMMENTS ------------------
+
+router.route('/articles/comment/:id')
+    .get(article.getComments)
+    .post(auth(AUTH.PRIVATE), article.postComment)
+    .delete(auth(AUTH.PRIVATE), article.removeComment)
+
 // // ------------------ ARTICLES TAGS ------------------
 
 router.route('/article_tags')
