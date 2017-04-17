@@ -26,7 +26,7 @@ exports.getProfileBy = (by) => {
     return db(profile)
         .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
         .leftJoin(ifo, 'ifo.follow_user_id', 'p.uid')
-        .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.follow_user_id) as foli'))
+        .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'))
 };
 
 exports.updateProfile = (stuff, cnd) => {
