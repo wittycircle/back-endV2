@@ -15,14 +15,14 @@ router.route('/profiles')
     .get(profiles.getProfiles);
 
 router.route('/profiles/search')
-    .post(validate(schemas.search.profile), search.searchProfile);
+    .post(auth(AUTH.PUBLIC), validate(schemas.search.profile), search.searchProfile);
 
 // ------------------ Params ------------------
 router.param('id', validateParam(schemas.params.id));
 // ------------------ Params ------------------
 
 router.route('/profiles/:id')
-    .get(profiles.getProfile)
+    .get(auth(AUTH.PUBLIC), profiles.getProfile)
     .put(auth(AUTH.PRIVATE), validate(schemas.profile.update), profiles.updateProfile);
 
 router.route('/profiles/:id/location')
@@ -33,5 +33,6 @@ router.route('/profiles/:id/follow')
     .get(profiles.getProfileFollowers)
     .post(auth(AUTH.PRIVATE), profiles.followProfile)
     .delete(auth(AUTH.PRIVATE), profiles.unfollowProfile);
+
 
 module.exports = router;
