@@ -49,7 +49,7 @@ exports.getProfileFollowers = (cond, cond2, p_id) => {
 };
 
 exports.followProfile = (id, uid) => {
-    let obj = {user_id: id, follow_user_id: uid}
+    let obj = {user_id: uid, follow_user_id: id}
 
     return h.exist(TABLES.USERS, id).then(r => {
         if (!r.length)
