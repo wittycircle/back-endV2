@@ -55,6 +55,7 @@ app.use(passport.session());
 
 app.set('port', process.env.PORT || 3000);
 
+require('./app/services/algolia')();
 router.use(require('./app/routes/index'));
 app.use(router);
 
