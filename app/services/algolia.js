@@ -6,8 +6,8 @@
 
 const config = require('../private').algolia,
     algoliasearch = require('algoliasearch'),
-    {db, TABLES} = require('../models/index');
-h = require('../models/helper');
+    {db, TABLES} = require('../models/index'),
+    h = require('../models/helper');
 
 module.exports = () => {
     const client = algoliasearch(config.app, config.key);
@@ -26,6 +26,7 @@ module.exports = () => {
 
     db(TABLES.PROJECTS)
         .select('*')
+        .innerJoin('categories', 'categories.id', 'projects.category_id')
         .then(projects => {
             client.deleteIndex('Projects', (err) => {
                 project.addObjects(projects)

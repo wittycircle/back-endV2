@@ -13,36 +13,32 @@ exports.checkLog = (req, res) => {
 exports.logout = (req, res) => {
     if (typeof req.user !== 'undefined')
         session.killAllFromUser(req.user.id, (err, result) => {
-            if (err) throw (err);
+            if (err) res.send({success: true});
             else {
-                req.broadcastEvent('user_logout', {id: req.user.id})
+                req.broadcastEvent('user_logout', {id: req.user.id});
                 res.send({success: true});
             }
         });
 };
 
 exports.generateToken = (req, res, next) => {
-    session.killAllFromUser(req.user.id, (err, success) => {
-        if (err) next({code: 500, error: 'token_generation', error_description: 'unable to generate token'});
+    session.createUserSession(req.user, (err, token) => {
+        if (err) next({
+            code: 500,
+            error: 'session_generation',
+            error_description: 'unable to generate session'
+        });
         else {
-            session.createUserSession(req.user, (err, token) => {
-                if (err) next({
-                    code: 500,
-                    error: 'session_generation',
-                    error_description: 'unable to generate session'
-                });
-                else {
-                    req.token = {
-                        auth: token,
-                        user: {
-                            id: req.user.id,
-                            profile_id: req.user.profile_id,
-                            email: req.user.email
-                        }
-                    };
-                    next();
+            req.token = {
+                auth: token,
+                ttl: 3600 * 24 * 365,
+                user: {
+                    id: req.user.id,
+                    profile_id: req.user.profile_id,
+                    email: req.user.email
                 }
-            })
+            };
+            next();
         }
     })
 };

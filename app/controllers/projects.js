@@ -112,7 +112,8 @@ exports.createProjectDiscussion = (req, res, next) => {
                 // mailer.ask_project	(data)
                 req.broadcastEvent('discussion_creation', {
                     from: req.user.id,
-                    id: req.params.id
+                    id: req.params.id,
+                    discussion: r[0]
                 });
                 res.send({id: r[0]})
             }
@@ -167,7 +168,7 @@ exports.createOpening = (req, res, next) => {
             } else {
                 req.broadcastEvent('opening_creation', {
                     from: req.params.id,
-                    id: data.project_id,
+                    id: r[0],
                     tag: data.tags[0]
                 });
                 res.send({id: r[0]})

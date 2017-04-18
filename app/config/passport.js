@@ -28,13 +28,13 @@ module.exports = function (passport) {
     });
 
     passport.use(new Strategy.bearer({
-        session: true
+            session: true
         }, (token, done) => {
-        console.log(token);
+            console.log(token);
             session.getUser(token, function (err, resp) {
                     if (err)
                         return done(err);
-                if (_.isEmpty(resp))
+                    if (_.isEmpty(resp))
                         return done(null, false);
                     else
                         return done(null, resp);
@@ -62,16 +62,16 @@ module.exports = function (passport) {
             passReqToCallback: true,
             clientID: config.facebook.clientID,
             clientSecret: config.facebook.clientSecret,
-        callbackURL: config.facebook.callbackURL,
-        profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
+            callbackURL: config.facebook.callbackURL,
+            profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
         }, (req, accessToken, refreshToken, profile, done) => {
-        users.getUserBySocialId(profile.id, 'facebook')
-            .then(user => oauth_helper.logon(req, user, profile, 'facebook'))
-            .then(data => {
-                data.ip = req.ip;
-                done(null, data);
-            })
-            .catch(err => done(err))
+            users.getUserBySocialId(profile.id, 'facebook')
+                .then(user => oauth_helper.logon(req, user, profile, 'facebook'))
+                .then(data => {
+                    data.ip = req.ip;
+                    done(null, data);
+                })
+                .catch(err => done(err))
         }
     ));
 
@@ -81,13 +81,13 @@ module.exports = function (passport) {
             clientSecret: config.google.clientSecret,
             callbackURL: config.google.callbackURL
         }, (req, accessToken, refreshToken, profile, done) => {
-        users.getUserBySocialId(profile.id, 'google')
-            .then(user => oauth_helper.logon(req, user, profile, 'google'))
-            .then(data => {
-                data.ip = req.ip;
-                done(null, data);
-            })
-            .catch(err => done(err))
+            users.getUserBySocialId(profile.id, 'google')
+                .then(user => oauth_helper.logon(req, user, profile, 'google'))
+                .then(data => {
+                    data.ip = req.ip;
+                    done(null, data);
+                })
+                .catch(err => done(err))
         }
     ));
 
