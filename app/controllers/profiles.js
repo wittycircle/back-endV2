@@ -37,6 +37,7 @@ exports.getProfile = (req, res, next) => {
                     profile.hasLiked = has_liked(profile.foli, req.user.id)
                 }
                 delete profile.foli
+                req.broadcastEvent('profile_view', {from: req.user.id, id: req.params.id})
                 res.send({profile: profile});
             }
         })
@@ -46,8 +47,10 @@ exports.getProfile = (req, res, next) => {
 exports.updateProfile = (req, res, next) => {
     profiles.updateProfile(req.body.profile, {id: req.params.id})
         .then(r => {
-            if (r)
+            if (r){
+                req.broadcastEvent('profile_update', {id: req.params.id})
                 res.send({success: true});
+            }
             else
                 res.status(400).send({success: false})
         })

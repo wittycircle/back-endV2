@@ -28,16 +28,6 @@ exports.getUserBy = (by) => {
 };
 
 
-exports.createUser = (profile_id, email, username, password) => {
-    return db(TABLES.USERS)
-        .insert({
-            'profile_id': profile_id,
-            'email': email,
-            'username': username,
-            'password': password
-        })
-};
-
 // ------------------ Skills ------------------
 exports.getUserSkills = (id) => {
     return h.exist(TABLES.USERS, id).then(r => {

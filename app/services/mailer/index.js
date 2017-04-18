@@ -2,7 +2,7 @@
 [line number]
 	ask_project: controllers/projects  [106]
 	upvote_project: UNDEFINED,
-	invite_user: UNDEFINED, 
+	invite_user: controllers/project [242], 
 	invite_team: UNDEFINED,
 	new_message: UNDEFINED,
 	new_project: controllers/projects [35],
