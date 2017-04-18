@@ -37,7 +37,7 @@ exports.getProfile = (req, res, next) => {
                     profile.hasLiked = has_liked(profile.foli, req.user.id)
                 }
                 delete profile.foli;
-                if (typeof req.user !== 'undefined' && typeof req.user.id !== 'undefined')
+                if (req.user && req.user.id)
                     req.broadcastEvent('profile_view', {from: req.user.id, id: req.params.id});
                 res.send({profile: profile});
             }
