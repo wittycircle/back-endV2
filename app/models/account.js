@@ -124,15 +124,16 @@ exports.register = (data, token) => {
             username: data.username,
         };
 
-let share_invite = (r) => {
+let share_invite = (id) => {
     let inviteId = data.first_name.replace(/ /g,'') + data.last_name.replace('/ /g, ') + '_W';
     return db(TABLES.SHARE_INVITE).select('id').whereRaw(`invite_id like "%${inviteId}%"`)
         .then(r => {
-            db(TABLES.SHARE_INVITE).insert({
-                user_id: r,
-                invite_id: inviteId + (r.length + 1)
+            inviteId += (r.length + 1)
+            return db(TABLES.SHARE_INVITE).insert({
+                "user_id": id,
+                "invite_id": inviteId
             })
-        })
+        });
 }
 
     return Promise.all([h.exist(TABLES.USERS, data.email, 'email'),
