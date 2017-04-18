@@ -124,6 +124,17 @@ exports.register = (data, token) => {
             username: data.username,
         };
 
+let share_invite = (r) => {
+    let inviteId = data.first_name.replace(/ /g,'') + data.last_name.replace('/ /g, ') + '_W';
+    return db(TABLES.SHARE_INVITE).select('id').whereRaw(`invite_id like "%${inviteId}%"`)
+        .then(r => {
+            db(TABLES.SHARE_INVITE).insert({
+                user_id: r,
+                invite_id: inviteId + (r.length + 1)
+            })
+        })
+}
+
     return Promise.all([h.exist(TABLES.USERS, data.email, 'email'),
         h.exist(TABLES.USERS, data.username, 'username')])
         .then(([r, r2]) => {
@@ -134,6 +145,7 @@ exports.register = (data, token) => {
                 .then((profileId) => {
                     user_data.profile_id = profileId[0];
                     return db(TABLES.USERS).insert(user_data)
+                        .then(r => share_invite(r[0]))
                         .then(() => db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token}))
                 });
         }
