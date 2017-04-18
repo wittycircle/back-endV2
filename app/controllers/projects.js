@@ -169,7 +169,7 @@ exports.createOpening = (req, res, next) => {
                 req.broadcastEvent('opening_creation', {
                     from: req.params.id,
                     id: r[0],
-                    tag: data.tags[0],
+                    tag: data.tags.split(',')[0],
                     what: data.status
                 });
                 res.send({id: r[0]})
