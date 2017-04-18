@@ -24,10 +24,12 @@ module.exports = () => {
             })
         });
 
-    db(TABLES.PROJECTS)
+    db(TABLES.PROJECTS + ' as p')
         .select('*')
         .innerJoin('categories', 'categories.id', 'projects.category_id')
         .then(projects => {
+            console.log("ALGOLIA")
+            console.log(projects)
             client.deleteIndex('Projects', (err) => {
                 project.addObjects(projects)
             })

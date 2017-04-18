@@ -3,12 +3,7 @@ const users = require('../controllers/users'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
     {auth, AUTH} = require('../services/auth');
 
-
 let router = express.Router();
-
-
-router.route('/users')
-    .post(users.createUser);
 
 // ------------------ Params ------------------
 router.param('id', validateParam(schemas.params.id));
@@ -22,6 +17,7 @@ router.route('/users/:id/skills')
     .post(auth(AUTH.PRIVATE), users.addUserSkill)
     .delete(auth(AUTH.PRIVATE), users.removeUserSkill);
 
+// ------------------ SHARE INVITE LINK ------------------
 router.route('/users/:id/invite_link')
     .get(users.getUserInvite)
 
@@ -42,7 +38,6 @@ router.route('/users/:id/experiences')
     .delete(auth(AUTH.PRIVATE), users.removeExperience)
     .put(auth(AUTH.PRIVATE), users.updateExperience)
 
-// ------------------ SHARE INVITE LINK ------------------
 
 
 module.exports = router;

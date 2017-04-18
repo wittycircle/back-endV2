@@ -8,4 +8,4 @@ app/private
 mochawesome-reports
 api-build
 *.rdb
-playground
+playgroundsendgrid.env
