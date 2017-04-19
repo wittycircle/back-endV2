@@ -70,28 +70,28 @@ wm.notif = (type) => db.select('user_id').from(TABLES.NOTIF_PERM + ' as n')
 */
 module.exports.wm = wm
 //sequoya account for testing purposes
-module.exports.TEMPLATES =  {
-	ask_project: 'b2482793-bfe8-4b3a-afc8-1ef959694a0e',
-	upvote_project: '7ea33ecc-88b5-4385-a864-2d63b2dadfb2',
-	invite_user: '1e2364c3-e76f-41ef-b323-0cd46cacac51', 
-	invite_team: '7e5e775c-e82b-47b6-b0a9-0e694f29febe',
-	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
-	new_project: '54151d8f-5dec-48a2-9f03-bde04fba72c3',
-	reply_project: '8abd1eb3-5e4e-4b99-85d4-2d5c858dd716',
-	reset_password: 'a3d60d87-f258-4271-b9df-0ebe56aedea9',
-	// suggestion_profile: 'f1adc8ff-96e3-4de7-8c61-ec4ea94da4e2', -> unfinished
-	// suggestion_project: , -> later
-	uc_invitation: '4089bb11-39a1-4453-b2c2-50a321ca1e8e',
-	user_follow: '492959f6-cbf3-40f7-a13c-bec03e7c6bc7',
-	validate_account: '4eab028c-844b-457e-b65d-81a2865d018d',
-	// validation-network: /*Not to be done for now*/,
-	verification_network: '830e6295-2772-472f-bb49-a6503da5b565',
-	profile_views:'2ef5f37c-e10e-48a4-b5ac-de02b23efab9',
-		welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',
-}
+// module.exports.TEMPLATES =  {
+// 	ask_project: 'b2482793-bfe8-4b3a-afc8-1ef959694a0e',
+// 	upvote_project: '7ea33ecc-88b5-4385-a864-2d63b2dadfb2',
+// 	invite_user: '1e2364c3-e76f-41ef-b323-0cd46cacac51', 
+// 	invite_team: '7e5e775c-e82b-47b6-b0a9-0e694f29febe',
+// 	new_message: 'ac643d11-9669-489f-9f5f-19516b281ac3',
+// 	new_project: '54151d8f-5dec-48a2-9f03-bde04fba72c3',
+// 	reply_project: '8abd1eb3-5e4e-4b99-85d4-2d5c858dd716',
+// 	reset_password: 'a3d60d87-f258-4271-b9df-0ebe56aedea9',
+// 	// suggestion_profile: 'f1adc8ff-96e3-4de7-8c61-ec4ea94da4e2', -> unfinished
+// 	// suggestion_project: , -> later
+// 	uc_invitation: '4089bb11-39a1-4453-b2c2-50a321ca1e8e',
+// 	user_follow: '492959f6-cbf3-40f7-a13c-bec03e7c6bc7',
+// 	validate_account: '4eab028c-844b-457e-b65d-81a2865d018d',
+// 	// validation-network: /*Not to be done for now*/,
+// 	verification_network: '830e6295-2772-472f-bb49-a6503da5b565',
+// 	profile_views:'2ef5f37c-e10e-48a4-b5ac-de02b23efab9',
+// 		welcome : 'db2fc916-37b5-42dd-b7b7-99d6163fd6ff',
+// }
 
 
-/* WITTY ACCOUNT 
+ WITTY ACCOUNT 
 
 module.exports.TEMPLATES =  {
  ask_project: '7eaa5daa-b30a-42a1-9e60-7b2b8082db2c',
@@ -112,7 +112,7 @@ module.exports.TEMPLATES =  {
  profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
  welcome :'f98676a1-51f8-4164-91fe-9e4178d46553',
 }
-*/
+
 
 /*
 quand quelqu’un met un feedback, on envoie

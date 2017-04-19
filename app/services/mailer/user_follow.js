@@ -32,7 +32,7 @@ const send_mail = (follower, followed) => {
 		console.log(sub)
 		console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*followed.email*/ 'sequoya@wittycircle.com');
+		wm.to(pers, followed.email);
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	wm.send(mail); 
@@ -43,9 +43,9 @@ const user_follow = (args) => {
 	const follower = h.spe_profile({'u.id': args.follower})
 			.select(h.format_location)
 
-console.log(h.format_location)
-console.log(follower.toString())
-	const following = h.spe_profile({'p.id': args.following}).select('u.email')
+// console.log(h.format_location)
+// console.log(follower.toString())
+	const following = h.spe_profile({'u.id': args.following}).select('u.email')
 						.join(wm.notif('user_follow'), 'n.user_id', 'u.id')
 
 	return Promise.all([follower, following])
