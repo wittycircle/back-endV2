@@ -1,5 +1,6 @@
 const project = require('../models/projects'),
     // format = require('./format'),
+    redis = require('ioredis')(require('../private').redis),//<= sale
     mailer = require('../services/mailer');
     _ = require('lodash');
 
@@ -14,19 +15,29 @@ const data = (req) => {
         status: req.body.status,
         picture: req.body.picture,
         video: req.body.video,
-        project_visibility: req.body.public || 1,
+        project_visibility: req.bodyody.public || 1,
         public_id: Math.floor((Math.random() * 90000) + 10000)
     };
-    if (req.body.location) {
-        r.country = req.body.location.country;
-        r.city = req.body.location.city;
-        r.state = req.body.location.state
-    }
-    return r;
+return redis.smembers('project_public_id').then(public => {
+        while (1){
+            let x = public.filter(e => e == r.public_id)
+            if (x.length){
+                r.public_id = Math.floor((Math.random() * 90000) + 10000)
+            }
+            else
+                break;
+        }
+        if (req.body.location) {
+            r.country = req.body.location.country;
+            r.city = req.body.location.city;
+            r.state = req.body.location.state
+        }
+        return r;
+    })
 };
 
 exports.createProject = (req, res, next) => {
-    let d = data(req);
+data(req).then(d => {
     project.createProject(d, req.body.members, req.body.openings, req.body.discussions)
         .then(r => {
             if (typeof r === 'string') {
@@ -37,8 +48,8 @@ exports.createProject = (req, res, next) => {
                 req.broadcastEvent('project_creation', {id: r, from: req.user.id});
                 res.send({id: d.public_id})
             }
-        })
-        .catch(err => next(err))
+        }).catch(err => next(err))
+    });
 };
 
 exports.updateProject = (req, res, next) => {
