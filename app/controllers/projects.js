@@ -33,7 +33,7 @@ exports.createProject = (req, res, next) => {
                 return next([r, 'Invalid informations'])
             }
             else {
-                // mailer.new_project({uid: req.user.id, public_id: d.public_id})
+                mailer.new_project({uid: req.user.id, public_id: d.public_id})
                 req.broadcastEvent('project_creation', {id: r, from: req.user.id});
                 res.send({id: d.public_id})
             }
@@ -109,7 +109,7 @@ exports.createProjectDiscussion = (req, res, next) => {
             if (typeof r === 'string')
                 return next([r, 'Invalid project id']);
             else {
-                // mailer.ask_project	(data)
+                mailer.ask_project(data)
                 req.broadcastEvent('discussion_creation', {
                     from: req.user.id,
                     id: req.params.id,

@@ -9,7 +9,7 @@ args: {
 }
 */
 
-const send_mail = (data) => {
+const send_mail = (email, data) => {
 	let	mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
 	wm.content(mail)
@@ -24,7 +24,7 @@ const send_mail = (data) => {
 		console.log(sub)
 		console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
+		wm.to(pers, email);
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	wm.send(mail); 
@@ -38,7 +38,7 @@ const welcome = (args) => {
 		.where('u.email', args.email)
 
 
-	return request.then((username) => send_mail(username.username))
+	return request.then((username) => send_mail(args.email, username.username))
 };//exports
 
 module.exports = welcome

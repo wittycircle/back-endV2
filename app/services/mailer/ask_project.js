@@ -59,14 +59,14 @@ return Promise.all([fromUser, fromProject])
 			'*|FURL|*': wm.url(`project/${p.public_id}/${p.title}/feedback`),
 			'*|EMAIL|*':  p.email
 			};
-			console.log(sub)
-			console.log("\n")
-			wm.to(pers, /*p.email*/'sequoya@wittycircle.com');
+			// console.log(sub)
+			// console.log("\n")
+			wm.to(pers, p.email);
 			wm.substitutions(pers, sub)
 			wm.subject(pers, subject);
 		    mail.addPersonalization(pers)
 		});//foreach
-		console.log("done")
+		// console.log("done")
 	  wm.send(mail);
 	  return null;
 
