@@ -1,7 +1,7 @@
 /*
-[line number]
+[line number [approximate due to change]]
 -	ask_project: controllers/projects  [106]
-	upvote_project: UNDEFINED,
+-	upvote_project: controllers/projects [217]
 	invite_user: controllers/project [242],  -> UNDEFINED
 	invite_team: UNDEFINED,
 	new_message: UNDEFINED,

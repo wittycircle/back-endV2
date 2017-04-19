@@ -6,9 +6,7 @@ const _ = require('lodash');
 /*
 args: {
 	project_id: number,
-	user_id: number,
-	message: text,
-	title: text
+	user_id: number
 }
 */
 
@@ -69,12 +67,12 @@ return Promise.all([fromUser, fromProject, toUsers])
 				 "FEMAIL": t.email,
 				 "FID": t.id
 				};
-				console.log(sub)
-				console.log("\n*|-------------------------------\n")
-				console.log(f)
-				console.log(++i)
+				// console.log(sub)
+				// console.log("\n*|-------------------------------\n")
+				// console.log(f)
+				// console.log(++i)
 
-				wm.to(pers, /*t.email*/'sequoya@wittycircle.com');
+				wm.to(pers, t.email);
 				wm.substitutions(pers, sub)
 				wm.subject(pers, subject);
 			    mail.addPersonalization(pers)

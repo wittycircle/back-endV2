@@ -214,6 +214,7 @@ exports.likeProject = (req, res, next) => {
             if (!_.isEmpty(r))
                 res.send({success: true});
             else {
+                mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
                 req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
                 res.send({success: false})
             }
