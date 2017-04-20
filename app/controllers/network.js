@@ -103,6 +103,7 @@ exports.getFromToken = (req, res, next) => {
 
 exports.createNewNetwork = (req, res, next) => {
     const token = crypto.randomBytes(20).toString('hex')
+    req.body.token = token;
     network.createNewNetwork(req.user.id, req.body)    
         .then(r => {
             if (typeof r === 'string') {
