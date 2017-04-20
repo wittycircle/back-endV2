@@ -17,8 +17,8 @@ const send_mail = (data) => {
 			"*|LINK|*": wm.url(data.token),
 			"*|EMAIL|*": data.email,
 		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
+		// console.log(sub)
+		// console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
 		wm.to(pers, data.email);
 		wm.substitutions(pers, sub)

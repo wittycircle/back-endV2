@@ -9,3 +9,4 @@ mochawesome-reports
 api-build
 *.rdb
 playgroundsendgrid.env
+sendgrid.env
