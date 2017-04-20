@@ -15,7 +15,7 @@ const data = (req) => {
         status: req.body.status,
         picture: req.body.picture,
         video: req.body.video,
-        project_visibility: req.bodyody.public || 1,
+        project_visibility: req.body.public || 1,
         public_id: Math.floor((Math.random() * 90000) + 10000)
     };
 return redis.smembers('project_public_id').then(public => {
@@ -37,18 +37,19 @@ return redis.smembers('project_public_id').then(public => {
 };
 
 exports.createProject = (req, res, next) => {
-data(req).then(d => {
+ data(req).then(d => {
     project.createProject(d, req.body.members, req.body.openings, req.body.discussions)
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'Invalid informations'])
             }
             else {
-                mailer.new_project({uid: req.user.id, public_id: d.public_id})
+                // mailer.new_project({uid: req.user.id, public_id: d.public_id})
                 req.broadcastEvent('project_creation', {id: r, from: req.user.id});
                 res.send({id: d.public_id})
             }
-        }).catch(err => next(err))
+        })
+        .catch(err => next(err))
     });
 };
 
@@ -120,7 +121,7 @@ exports.createProjectDiscussion = (req, res, next) => {
             if (typeof r === 'string')
                 return next([r, 'Invalid project id']);
             else {
-                mailer.ask_project(data)
+                // mailer.ask_project(data)
                 req.broadcastEvent('discussion_creation', {
                     from: req.user.id,
                     id: req.params.id,
@@ -225,7 +226,7 @@ exports.likeProject = (req, res, next) => {
             if (!_.isEmpty(r))
                 res.send({success: true});
             else {
-                mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
+                // mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
                 req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
                 res.send({success: false})
             }

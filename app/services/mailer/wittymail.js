@@ -91,7 +91,7 @@ module.exports.wm = wm
 // }
 
 
- WITTY ACCOUNT 
+// WITTY ACCOUNT 
 
 module.exports.TEMPLATES =  {
  ask_project: '7eaa5daa-b30a-42a1-9e60-7b2b8082db2c',
@@ -102,12 +102,12 @@ module.exports.TEMPLATES =  {
  new_project: 'f6dad873-a71e-4051-9cce-fdfc4f49affc',
  reply_project: '74de27df-bd29-43cf-9ff0-71a7384cb1cf',
  reset_password: '4b0e4c39-1227-4c28-8536-b09b8f19e07b',
-	suggestion_profile: ,
-	suggestion_project: ,
+	// suggestion_profile: ,
+	// suggestion_project: ,
  uc_invitation: '7f8e9ed4-7b0a-412d-837e-6f88ad9cce5c',
  user_follow:'082dea23-81c0-454a-9e60-ceff09d1bcdf',
  validate_account: '61e506e0-18b4-4bae-825c-33c2aa3bf450',
-	validation-network: ,
+	// validation-network: ,
  verification_network:'9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
  profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
  welcome :'f98676a1-51f8-4164-91fe-9e4178d46553',

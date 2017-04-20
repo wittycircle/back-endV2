@@ -85,9 +85,8 @@ exports.followProfile = (req, res, next) => {
             if (typeof r === 'string')
                 return next([r, "bad id"])
             else {
-                mailer.user_follow({follower: req.user.id, following: req.params.id})
+                // mailer.user_follow({follower: req.user.id, following: req.params.id})
                 req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1});
-                mailer.user_follow()
                 res.send({success: true})
             }
         })

@@ -61,7 +61,7 @@ return Promise.all([fromUser, fromProject])
 			};
 			// console.log(sub)
 			// console.log("\n")
-			wm.to(pers, p.email);
+			wm.to(pers, /*p.email*/ 'sequoya@wittycircle.com');
 			wm.substitutions(pers, sub)
 			wm.subject(pers, subject);
 		    mail.addPersonalization(pers)

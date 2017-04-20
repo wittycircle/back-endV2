@@ -35,3 +35,4 @@ files.forEach(e => {
 });
 
 module.exports = mails
+// module.exports = {}
