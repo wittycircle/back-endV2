@@ -11,7 +11,7 @@ exports.addInvitation = (uid, mail) => {
 		if (!r.length){
 			return "Unknown user"
 		} 
-		let x = mail.map(e => {user_id: uid, invite_email: e}) 
+		let x = mail.map(e => {return {user_id: uid, invite_email: e} }) 
 		return db.batchInsert(TABLES.SHARE_INVITE, x)
 	})
 };

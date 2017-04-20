@@ -21,6 +21,7 @@ router.use('/api', require('./article'));
 router.use('/api', require('./network'));
 router.use('/api', require('./interests'));
 router.use('/api', require('./statistics'));
+router.use('/api', require('./invitation'));
 
 router.use(require('../middlewares/error').error);
 
