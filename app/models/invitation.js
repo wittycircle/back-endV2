@@ -3,7 +3,8 @@ const { db, TABLES } = require('./index'),
 		h = require('./helper');
 
 exports.getInvitation = (id) => {
-	return db(TABLES.SHARE_INVITE).select('*').where('invite_id', id)
+	return db(TABLES.SHARE_INVITE + ' as i').select('*').where('invite_id', id)
+		.join(h.sub_profile, 'p.uid', 'i.user_id')
 };
 
 exports.addInvitation = (uid, mail) => {
