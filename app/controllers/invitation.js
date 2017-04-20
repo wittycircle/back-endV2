@@ -3,7 +3,7 @@ const invitation = require('../models/invitation'),
     _ = require('lodash');
 
 exports.getInvitation = (req, res, next) => {
-	invitation.getInvitation(req.params.id)
+	invitation.getInvitation(req.params.invite_id)
 		.then(r => {
 			if (!r || !r.length || typeof r === 'string') {
 				return next([r, 'Bad id'])

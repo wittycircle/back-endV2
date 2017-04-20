@@ -23,4 +23,8 @@ router.route('/networks/:from/:id')
     .delete(auth(AUTH.PRIVATE), network.removeNetwork);
 
 
+router.route('/networks/admin/:token')
+	// .get(auth(AUTH.PRIVATE), network.getfromToken)
+	// .post(auth(AUTH.PRIVATE), network.createFromToken)
+
 module.exports = router;

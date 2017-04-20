@@ -7,7 +7,7 @@ const express = require('express'),
 router.route('/invite')
 	.post(auth(AUTH.PRIVATE), invitation.addInvitation)
 
-router.param('invite_id', validateParam(schemas.params.id));
+router.param('invite_id', validateParam(schemas.params.name));
 
 router.route('/invite/:invite_id')
 	.get(invitation.getInvitation)

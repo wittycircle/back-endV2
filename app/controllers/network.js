@@ -85,3 +85,32 @@ exports.removeNetwork = (req, res, next) => {
         })
         .catch(err => next(err))
 };
+
+// ------------------ TOKEN / invite ------------------
+
+exports.getFromToken = (req, res, next) => {
+    network.getFromToken(req.user.id, req.params.token)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'bad token'])
+            }
+            else{
+                res.send({informations: r})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.createNewNetwork = (req, res, next) => {
+    const token = crypto.randomBytes(20).toString('hex')
+    network.createNewNetwork(req.user.id, req.body)    
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Need to be an admin'])
+            }
+            else{
+                res.send({token: token})
+            }
+        })
+        .catch(err => next(err))
+};
