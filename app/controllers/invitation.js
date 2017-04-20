@@ -22,6 +22,7 @@ exports.addInvitation = (req, res, next) => {
 				return next([r, 'Bad id'])
 			}
 			else{
+				mailer.invite_user({uid: req.user.id, mailList: req.body.mail})
 				res.send({success: true})
 			}
 		})
