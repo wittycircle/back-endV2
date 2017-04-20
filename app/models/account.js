@@ -60,6 +60,15 @@ const social_helper = {
         }
     }
 };
+// ------------------ VERIFY INVITE ------------------
+
+const verifyUser = (email) => {
+    return db(TABLES.INVITATION).select('invite_email').where('invite_email', email)
+    .then(r => {
+        if (r.length)
+            db(TABLES.INVITATION).update('status', 'registed').where('invite_email', email)
+    })
+}
 
 const newUser = (helper) => {
     return db(TABLES.USER_PROFILES).insert(helper.profile)
@@ -74,7 +83,8 @@ const newUser = (helper) => {
                         email: helper.user.email,
                     };
                 });
-        }).catch(console.error("ET NON"))
+        }).then(() => verifyUser(helper.user.email))
+        .catch(console.error("ET NON"))
 };
 
 const modifyUser = (helper, origin, ids) => {
@@ -163,6 +173,7 @@ let permission = (id) => {
                     return db(TABLES.USERS).insert(user_data)
                         .then(r => Promise.all([permission(r[0]), share_invite(r[0])]))
                         .then(() => db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token}))
+                        .then(() => verifyUser(data.email))
                 });
         }
     })
