@@ -28,3 +28,4 @@ exports.fromUser = (id, email) => {
 			})
 		})
 };
+

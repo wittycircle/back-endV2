@@ -49,9 +49,6 @@ exports.createNetwork = (req, res, next) => {
             }
             else {
                 if (req.params.from === 'profile_network') {
-                    // let data = req.body
-                    // data.user_id = req.user.id
-                    // mailer.verification_network(data)
                 }
                 res.send({success: true})
             }
@@ -111,6 +108,39 @@ exports.createNewNetwork = (req, res, next) => {
             }
             else{
                 res.send({token: token})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.sendVerifyNetwork = (req, res, next) => {
+    let data = {
+        token : crypto.randomBytes(20).toString('hex'),
+        email: req.body.email,
+        network: req.body.network,
+        user_id: req.user.id
+    }
+    network.sendVerifyNetwork(data)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Bad email'])
+            }
+            else{
+                mailer.verification_network(data)
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.validateNetwork = (req, res, next) => {
+    network.validateNetwork(req.params.token)   
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Invalid token'])
+            }
+            else{
+                res.send({success: true})
             }
         })
         .catch(err => next(err))

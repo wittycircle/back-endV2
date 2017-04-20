@@ -16,16 +16,25 @@ router.route('/networks/:from/:flag')
 
 // ------------------ Params ------------------
 router.param('network_id', validateParam(schemas.params.id));
+router.param('network_id', validateParam(schemas.params.name));
 // ------------------ Params ------------------
 
 router.route('/networks/:from/:id')
     .put(auth(AUTH.PRIVATE), network.updateNetwork)
     .delete(auth(AUTH.PRIVATE), network.removeNetwork);
 
+router.route('/networks/join')
+    .post(auth(AUTH.PRIVATE), network.sendVerifyNetwork)
+
+router.route('/networks/join/:token')
+    .post(/*auth(AUTH.PRIVATE),*/ network.validateNetwork)
+    //token is validation enough ?
+
 router.route('/networks/admin')
 	.post(auth(AUTH.PRIVATE), network.createNewNetwork);
 
 router.route('/networks/admin/:token')
     .get(auth(AUTH.PRIVATE), network.getFromToken);
+
 
 module.exports = router;
