@@ -34,7 +34,7 @@ const send_mail = (data, sender) => {
   wm.send(mail);
   return null;
 };
-
+// args{ mail: [], invite_id}
 const invite_user = (args) => {
 	let request = h.spe_profile({'u.id': args.uid})
 

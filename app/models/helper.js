@@ -36,7 +36,6 @@ h.sub_profile = db.select(h.p_uarray).from(TABLES.USER_PROFILES + ' as p')
     .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('p');
 	h.u_profile = db.select(h.up_array).from(h.sub_profile).join(h.sub_user, 'u.profile_id', 'p.id').groupBy('p.id').as('p');
 	h.ws_profile = (cond) => db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
-// h.exist = (table, value, name) => db(table).select('id').where(name || 'id', value)
 h.exist = (table, value, name) => db(table).select('id').whereRaw(`${name || 'id'} LIKE "%${value}%"`)
 	h.owner = (table, id, uid) => db(table).select('id').where({'id': id, 'user_id': uid})
 	h.admin = admin

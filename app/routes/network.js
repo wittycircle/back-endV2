@@ -22,5 +22,10 @@ router.route('/networks/:from/:id')
     .put(auth(AUTH.PRIVATE), network.updateNetwork)
     .delete(auth(AUTH.PRIVATE), network.removeNetwork);
 
+router.route('/networks/admin')
+	.post(auth(AUTH.PRIVATE), network.createNewNetwork);
+
+router.route('/networks/admin/:token')
+    .get(auth(AUTH.PRIVATE), network.getFromToken);
 
 module.exports = router;

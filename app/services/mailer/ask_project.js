@@ -1,4 +1,5 @@
 const {wm, TEMPLATES} = require('./wittymail');
+const h = require('../../models/helper'); //NIK
 const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
@@ -53,7 +54,7 @@ return Promise.all([fromUser, fromProject])
 		let sub = {
 			'*|FNAME|*': u.fullName,
 			'*|FPROJECT|*' : p.title,
-			'*|FMTITLE|*': args.title,
+			// '*|FMTITLE|*': args.title,
 			'*|FDESC|*': args.message,
 			'*|FIMG|*': u.profile_picture,
 			'*|FURL|*': wm.url(`project/${p.public_id}/${p.title}/feedback`),

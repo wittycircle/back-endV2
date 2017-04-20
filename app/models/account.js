@@ -12,6 +12,7 @@ exports.checkUsername = (username) => {
 
 // ------------------ Main methods ------------------
 exports.activate = (token) => {
+    console.log("In model activates")
     return db(TABLES.ACCOUNT_VALIDATION).select('user_email').where('token', token)
         .then((r) => {
             if (!r.length) {
@@ -59,6 +60,15 @@ const social_helper = {
         }
     }
 };
+// ------------------ VERIFY INVITE ------------------
+
+const verifyUser = (email) => {
+    return db(TABLES.INVITATION).select('invite_email').where('invite_email', email)
+    .then(r => {
+        if (r.length)
+            db(TABLES.INVITATION).update('status', 'registed').where('invite_email', email)
+    })
+}
 
 const newUser = (helper) => {
     return db(TABLES.USER_PROFILES).insert(helper.profile)
@@ -73,7 +83,8 @@ const newUser = (helper) => {
                         email: helper.user.email,
                     };
                 });
-        }).catch(console.error("ET NON"))
+        }).then(() => verifyUser(helper.user.email))
+        .catch(console.error("ET NON"))
 };
 
 const modifyUser = (helper, origin, ids) => {
@@ -136,18 +147,33 @@ let share_invite = (id) => {
         });
 }
 
+let permission = (id) => {
+    return db.batchInsert(TABLES.NOTIF_PERM, [
+        {'notif_type': 'profile_view', user_id: id}, 
+        {'notif_type': 'user_follow', user_id: id}, 
+        {'notif_type': 'follow_project', user_id: id}, 
+        {'notif_type': 'feedback', user_id: id}, 
+        {'notif_type': 'ask_project', user_id: id}, 
+        {'notif_type': 'reply_project', user_id: id}, 
+        {'notif_type': 'new_message', user_id: id}, 
+        ]);
+}
+
     return Promise.all([h.exist(TABLES.USERS, data.email, 'email'),
         h.exist(TABLES.USERS, data.username, 'username')])
         .then(([r, r2]) => {
-            if (r.length || r2.length)
-                return !r.length ? "Email already taken" : 'Username already taken'
+            if (r.length || r2.length){
+                console.log(r.length ? "Email already taken" : "username already taken")
+                return r.length ? "Email already taken" : "username already taken"
+            }
         else {
             return db(TABLES.USER_PROFILES).insert(profile_data)
                 .then((profileId) => {
                     user_data.profile_id = profileId[0];
                     return db(TABLES.USERS).insert(user_data)
-                        .then(r => share_invite(r[0]))
+                        .then(r => Promise.all([permission(r[0]), share_invite(r[0])]))
                         .then(() => db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token}))
+                        .then(() => verifyUser(data.email))
                 });
         }
     })

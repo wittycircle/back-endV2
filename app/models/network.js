@@ -98,3 +98,21 @@ exports.removeNetwork = (uid, from, id) => {
             }
         });
 };
+
+exports.getFromToken = (token) => {
+        return h.admin(TABLES.USERS, uid, uid)
+        .then(r => {
+            if (!r.length) 
+                return "Admins only"
+            return db(TABLES.NETWORKS).select('*').where('token', token)
+    })
+};
+
+exports.createNewNetwork = (uid, data) => {
+        return h.admin(TABLES.USERS, uid, uid)
+        .then(r => {
+            if (!r.length) 
+                return "Admins only"
+            return db(TABLES.NETWORKS).insert(data)
+    })
+};

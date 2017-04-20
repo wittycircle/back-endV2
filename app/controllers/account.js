@@ -58,7 +58,7 @@ exports.activate = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
-                mailer.welcome(r[0]) //r[0] is email
+                mailer.welcome({email: r[0].email})
 				res.send({success: true})
 			}
 		})
@@ -73,7 +73,6 @@ exports.resetPassword = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
-                mailer.reset_password({token: req.params.token, email: req.body.email})
 				res.send({success: true})
 			}
 		})
@@ -88,7 +87,7 @@ exports.recoverPassword = (req, res, next) => {
 				return next([r, 'Bad format'])
 			}
 			else{
- //			***	SEND RECOVER EMAIL	***
+                mailer.reset_password({token: token, email: req.body.email})
 				res.send({success: true})
 			}
 		})

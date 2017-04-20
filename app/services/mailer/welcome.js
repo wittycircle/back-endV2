@@ -11,18 +11,18 @@ args: {
 
 const send_mail = (email, data) => {
 	let	mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
+	wm.from(mail, 'quentin@wittycircle.com', "Quentin Verriere");
 	wm.content(mail)
-	wm.reply(mail, "noreply@wittycircle.com");
+	wm.reply(mail, "quentin@wittycircle.com");
 	mail.setTemplateId(TEMPLATES.welcome)
 	
 		let pers = new helper.Personalization();
-		let subject = '*|FFNAME|*  *|FLNAME|* sent you a message';
+		let subject = 'Welcome to Wittycircle';
 		let sub = {
 			"*|FNAME|*": data,
 		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
+		// console.log(sub)
+		// console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
 		wm.to(pers, email);
 		wm.substitutions(pers, sub)

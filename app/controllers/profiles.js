@@ -4,6 +4,7 @@
 
 const profiles = require('../models/profiles'),
     user = require('../models/users'),
+    mailer = require('../services/mailer'),
     _ = require('lodash');
 
 const has_liked = (foli, id) => {
@@ -87,7 +88,6 @@ exports.followProfile = (req, res, next) => {
             else {
                 mailer.user_follow({follower: req.user.id, following: req.params.id})
                 req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1});
-                mailer.user_follow()
                 res.send({success: true})
             }
         })

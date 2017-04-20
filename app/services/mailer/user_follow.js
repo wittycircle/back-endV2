@@ -18,7 +18,7 @@ const send_mail = (follower, followed) => {
 	mail.setTemplateId(TEMPLATES.user_follow)
 	
 		let pers = new helper.Personalization();
-		let subject = '*|FFNAME|*  *|FLNAME|* sent you a message';
+		let subject = '*|FFNAME|*  *|FLNAME|* is now following you';
 		let sub = {
 			"*|FNAME|*": followed.first_name,
 			"*|FFNAME|*": follower.first_name,
@@ -55,7 +55,7 @@ const user_follow = (args) => {
 				else
 					return console.log("Too bad, no notifs !")
 			})
-	return request.then(() => send_mail())
+	// return request.then(() => send_mail())
 };//exports
 
 module.exports = user_follow

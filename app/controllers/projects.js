@@ -1,5 +1,6 @@
 const project = require('../models/projects'),
     // format = require('./format'),
+    redis = require('ioredis')(require('../private').redis),//<= sale
     mailer = require('../services/mailer');
     _ = require('lodash');
 
@@ -17,16 +18,26 @@ const data = (req) => {
         project_visibility: req.body.public || 1,
         public_id: Math.floor((Math.random() * 90000) + 10000)
     };
-    if (req.body.location) {
-        r.country = req.body.location.country;
-        r.city = req.body.location.city;
-        r.state = req.body.location.state
-    }
-    return r;
+return redis.smembers('project_public_id').then(public => {
+        while (1){
+            let x = public.filter(e => e == r.public_id)
+            if (x.length){
+                r.public_id = Math.floor((Math.random() * 90000) + 10000)
+            }
+            else
+                break;
+        }
+        if (req.body.location) {
+            r.country = req.body.location.country;
+            r.city = req.body.location.city;
+            r.state = req.body.location.state
+        }
+        return r;
+    })
 };
 
 exports.createProject = (req, res, next) => {
-    let d = data(req);
+ data(req).then(d => {
     project.createProject(d, req.body.members, req.body.openings, req.body.discussions)
         .then(r => {
             if (typeof r === 'string') {
@@ -39,6 +50,7 @@ exports.createProject = (req, res, next) => {
             }
         })
         .catch(err => next(err))
+    });
 };
 
 exports.updateProject = (req, res, next) => {
@@ -214,6 +226,7 @@ exports.likeProject = (req, res, next) => {
             if (!_.isEmpty(r))
                 res.send({success: true});
             else {
+                console.log("should send stuff")
                 mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
                 req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
                 res.send({success: false})
