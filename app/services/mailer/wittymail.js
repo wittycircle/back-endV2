@@ -1,5 +1,6 @@
 const helper = require('sendgrid').mail;
 const {db, TABLES} = require('../../models/index');
+const config = require('../../private');
 const _ = require('lodash');
 
 const subst = (pers, obj) => {
@@ -20,7 +21,9 @@ const subject = (mail, pers, subject) => {
 };
 
 const send = (mail) => {
-	sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+	console.log(config.sendgrid.key)
+	// sg = require('sendgrid')('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'/*process.env.SENDGRID_API_KEY*/);
+	sg = require('sendgrid')(config.sendgrid.key)
 
 	const request = sg.emptyRequest({
 	  method: 'POST',

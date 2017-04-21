@@ -99,13 +99,9 @@ exports.removeNetwork = (uid, from, id) => {
         });
 };
 
+// ------------------ MAIL STUFF ------------------
 exports.getFromToken = (token) => {
-        return h.admin(TABLES.USERS, uid, uid)
-        .then(r => {
-            if (!r.length) 
-                return "Admins only"
-            return db(TABLES.NETWORKS).select('*').where('token', token)
-    })
+    return db(TABLES.NETWORKS).select('*').where('token', token)
 };
 
 exports.createNewNetwork = (uid, data) => {
@@ -115,4 +111,27 @@ exports.createNewNetwork = (uid, data) => {
                 return "Admins only"
             return db(TABLES.NETWORKS).insert(data)
     })
+};
+
+exports.sendVerifyNetwork = (data) => {
+    return h.exist(TABLES.USERS, data.user_id).then(r => {
+        if (!r.length)
+            return "Invalid user_id"
+        return db(TABLES.PROFILE_NETWORK).insert(data)
+    })
+};
+
+exports.validateNetwork = (token) => {
+    return db(TABLES.PROFILE_NETWORK).first().where('token', token)
+        .then(network => {
+            if (!network || !network.id){
+                console.log("ERROR ERROR ", network)
+                return "Bad token"
+            }
+            else
+                console.log(` network : \n ${network}`)
+           return db(TABLES.USERS).first('profile_id').where('id', network.user_id)
+            .then(profile => db(TABLES.USER_PROFILES).update('network', network.network).where('id', profile.profile_id))
+            .then(() => db(TABLES.PROFILE_NETWORK).update('verification', 1).where('token', token))
+        })
 };

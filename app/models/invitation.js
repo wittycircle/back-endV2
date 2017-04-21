@@ -13,7 +13,7 @@ exports.addInvitation = (uid, mail) => {
 			return "Unknown user"
 		} 
 		let x = mail.map(e => {return {user_id: uid, invite_email: e} }) 
-		return db.batchInsert(TABLES.SHARE_INVITE, x)
+		return db.batchInsert(TABLES.INVITATION, x)
 	})
 };
 
@@ -22,9 +22,10 @@ exports.fromUser = (id, email) => {
 		.then(r => {
 			if (!r.length)
 				return "Unknown invite"
-			return db(TABLES.INVITATION).insert({user_id: r[0],
+			return db(TABLES.INVITATION).insert({user_id: r[0].user_id,
 			 status: 'registed',
 			 invite_email: email
 			})
 		})
 };
+
