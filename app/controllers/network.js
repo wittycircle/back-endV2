@@ -101,7 +101,7 @@ exports.getFromToken = (req, res, next) => {
 };
 
 exports.createNewNetwork = (req, res, next) => {
-    const token = crypto.randomBytes(20).toString('hex')
+    const token = crypto.randomBytes(40).toString('hex')
     req.body.token = token;
     network.createNewNetwork(req.user.id, req.body)    
         .then(r => {
@@ -117,7 +117,7 @@ exports.createNewNetwork = (req, res, next) => {
 
 exports.sendVerifyNetwork = (req, res, next) => {
     let data = {
-        token : crypto.randomBytes(20).toString('hex'),
+        token : crypto.randomBytes(40).toString('hex'),
         email: req.body.email,
         network: req.body.network,
         user_id: req.user.id
