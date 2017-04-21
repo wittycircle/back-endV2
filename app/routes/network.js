@@ -34,7 +34,7 @@ router.route('/networks/admin')
 	.post(auth(AUTH.PRIVATE), network.createNewNetwork);
 
 router.route('/networks/admin/:token')
-    .get(auth(AUTH.PRIVATE), network.getFromToken);
+    .get(network.getFromToken);
 
 
 module.exports = router;

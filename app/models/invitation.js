@@ -22,7 +22,7 @@ exports.fromUser = (id, email) => {
 		.then(r => {
 			if (!r.length)
 				return "Unknown invite"
-			return db(TABLES.INVITATION).insert({user_id: r[0],
+			return db(TABLES.INVITATION).insert({user_id: r[0].user_id,
 			 status: 'registed',
 			 invite_email: email
 			})
