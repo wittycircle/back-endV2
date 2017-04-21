@@ -6,11 +6,12 @@ const express = require('express'),
     {validate, validateParam, schemas} = require('../middlewares/validation'),
     {auth, AUTH} = require('../services/auth');
 
-router.route('/networks/join')
-    .post(auth(AUTH.PRIVATE), network.sendVerifyNetwork)
     
 router.route('/networks/admin')
     .post(auth(AUTH.PRIVATE), network.createNewNetwork);
+
+router.route('/networks/join')
+    .post(auth(AUTH.PRIVATE), network.sendVerifyNetwork)
     
 router.route('/networks/join/:token')
     .post(/*auth(AUTH.PRIVATE),*/ network.validateNetwork)
