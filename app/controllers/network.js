@@ -86,7 +86,7 @@ exports.removeNetwork = (req, res, next) => {
 // ------------------ TOKEN / invite ------------------
 
 exports.getFromToken = (req, res, next) => {
-    network.getFromToken(req.user.id, req.params.token)
+    network.getFromToken(req.params.token)
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'bad token'])
