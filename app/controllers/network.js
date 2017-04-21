@@ -1,4 +1,6 @@
 const network = require('../models/network'),
+    crypto = require('crypto'),
+    mailer = require('../services/mailer'),
     _ = require('lodash');
 
 const allowed = 'Allowed: [networks, profile, profile_network, project, university]'
@@ -120,6 +122,7 @@ exports.sendVerifyNetwork = (req, res, next) => {
         network: req.body.network,
         user_id: req.user.id
     }
+    console.log(` data : \n ${data}`)
     network.sendVerifyNetwork(data)
         .then(r => {
             if (typeof r === 'string') {
