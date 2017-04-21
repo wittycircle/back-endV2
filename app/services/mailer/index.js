@@ -29,18 +29,18 @@ const files = require('fs').readdirSync('./app/services/mailer')
 
 let mails = {};
 // ------------------ PROD ENVIRONMENT ------------------
-// files.forEach(e => {
-// 	let n = e.split('.')[0]
-// 	mails[n]  = (args) => require(`./${n}`)(args)
-// });
+files.forEach(e => {
+	let n = e.split('.')[0]
+	mails[n]  = (args) => require(`./${n}`)(args)
+});
 
 // ------------------ DEV ENVIRONMENT ------------------
 
 
-files.forEach(e => {
-	let n = e.split('.')[0]
-	mails[n]  = (args) => console.log(`no [ ${n} ] mail, dev environment`)
-});
+// files.forEach(e => {
+// 	let n = e.split('.')[0]
+// 	mails[n]  = (args) => console.log(`no [ ${n} ] mail, dev environment`)
+// });
 
 
 module.exports = mails
