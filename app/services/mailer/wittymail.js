@@ -21,8 +21,6 @@ const subject = (mail, pers, subject) => {
 };
 
 const send = (mail) => {
-	console.log(config.sendgrid.key)
-	// sg = require('sendgrid')('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'/*process.env.SENDGRID_API_KEY*/);
 	sg = require('sendgrid')(config.sendgrid.key)
 
 	const request = sg.emptyRequest({
