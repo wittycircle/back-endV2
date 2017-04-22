@@ -32,7 +32,7 @@ const send_mail = (follower, followed) => {
 		console.log(sub)
 		console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*followed.email*/'sequoya@wittycircle.com');
+		wm.to(pers, followed.email);
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	wm.send(mail); 
