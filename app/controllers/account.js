@@ -43,15 +43,11 @@ exports.register = (req, res, next) => {
                 return next([r, 'Bad info [email or password]'])
             }
             else {
-                // mailer.validate_account({
-                // 	token: token,
-                // 	email: req.body.account.email
-                // });
+                mailer.validate_account({token: token, email: req.body.account.email });
                 req.broadcastEvent('user_register', {id: r[0]})
                 res.send({success: true}).status(200)
 			} 
 		}).catch(err => next(err))
-//			***	Send confirmation mail and stuff [account_alidation]	*** 
 	});
 };
 
@@ -62,7 +58,7 @@ exports.activate = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
-                // mailer.welcome(r[0])
+                mailer.welcome({email: r[0].email})
 				res.send({success: true})
 			}
 		})
@@ -77,7 +73,6 @@ exports.resetPassword = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
-                // mailer.reset_password({token: req.params.token, email: req.body.email})
 				res.send({success: true})
 			}
 		})
@@ -92,7 +87,7 @@ exports.recoverPassword = (req, res, next) => {
 				return next([r, 'Bad format'])
 			}
 			else{
- //			***	SEND RECOVER EMAIL	***
+                mailer.reset_password({token: token, email: req.body.email})
 				res.send({success: true})
 			}
 		})

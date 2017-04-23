@@ -1,4 +1,6 @@
 const network = require('../models/network'),
+    crypto = require('crypto'),
+    mailer = require('../services/mailer'),
     _ = require('lodash');
 
 const allowed = 'Allowed: [networks, profile, profile_network, project, university]'
@@ -49,9 +51,6 @@ exports.createNetwork = (req, res, next) => {
             }
             else {
                 if (req.params.from === 'profile_network') {
-                    // let data = req.body
-                    // data.user_id = req.user.id
-                    // mailer.verification_network(data)
                 }
                 res.send({success: true})
             }
@@ -80,6 +79,70 @@ exports.removeNetwork = (req, res, next) => {
                 return next([r, 'allowed'])
             }
             else {
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
+
+// ------------------ TOKEN / invite ------------------
+
+exports.getFromToken = (req, res, next) => {
+    network.getFromToken(req.params.token)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'bad token'])
+            }
+            else{
+                res.send({informations: r})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.createNewNetwork = (req, res, next) => {
+    const token = crypto.randomBytes(40).toString('hex')
+    req.body.token = token;
+    network.createNewNetwork(req.user.id, req.body)    
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Need to be an admin'])
+            }
+            else{
+                res.send({token: token})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.sendVerifyNetwork = (req, res, next) => {
+    let data = {
+        token : crypto.randomBytes(40).toString('hex'),
+        email: req.body.email,
+        network: req.body.network,
+        user_id: req.user.id
+    }
+    console.log(` data : \n ${data}`)
+    network.sendVerifyNetwork(data)
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Bad email'])
+            }
+            else{
+                mailer.verification_network(data)
+                res.send({success: true})
+            }
+        })
+        .catch(err => next(err))
+};
+
+exports.validateNetwork = (req, res, next) => {
+    network.validateNetwork(req.params.token)   
+        .then(r => {
+            if (typeof r === 'string') {
+                return next([r, 'Invalid token'])
+            }
+            else{
                 res.send({success: true})
             }
         })

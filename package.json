@@ -28,9 +28,11 @@
     "passport-google-oauth": "^1.0.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
+    "prerender-node": "^2.7.1",
     "redis": "^2.6.5",
     "redis-sessions": "^1.1.0",
     "satelize": "^0.2.0",
+    "sendgrid": "^5.0.0",
     "socket.io": "^1.7.3"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
 const discussion = require('../models/discussions'),
+    mailer = require('../services/mailer'),
 	_ = require('lodash');
 
 // ------------------ Project Discussions ------------------
@@ -47,18 +48,19 @@ exports.getDiscussionReplies = (req, res, next) => {
 };
 
 exports.replyDiscussion = (req, res, next) => {
+	let data = {
+		id: req.params.discussion_id, 
+		from: req.user.id, 
+		message: req.body.message 
+	};
 	discussion.replyDiscussion(req.params.discussion_id, req.user.id, req.body.message)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Could not reply'])
 			}
 			else{
-                req.broadcastEvent('discussion_reply', {
-                    id: req.params.discussion_id,
-                    from: req.user.id,
-                    message: req.body.message
-                });
-                // mailer.reply_project()
+                req.broadcastEvent('discussion_reply', data);
+                mailer.reply_project(data)
 				res.send({success: true})
 			}
 		})
