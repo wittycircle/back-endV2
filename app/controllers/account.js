@@ -44,7 +44,7 @@ exports.register = (req, res, next) => {
             }
             else {
                 mailer.validate_account({token: token, email: req.body.account.email });
-                // req.broadcastEvent('user_register', {id: r[0]})
+                req.broadcastEvent('user_register', {id: r[0].id});
                 res.send({success: true}).status(200)
 			} 
 		}).catch(err => next(err))
