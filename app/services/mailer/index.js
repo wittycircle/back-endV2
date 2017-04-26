@@ -26,18 +26,22 @@ const filt = e => e !== 'templates'
 
 const files = require('fs').readdirSync('./app/services/mailer')
     .filter(filt);
-
-let mails = {};
-if (process.env.NODE_ENV != 'development')
+if (process.env.DEVELOPMENT === true)
+    let mails = {};
+else
+// ------------------ PROD ENVIRONMENT ------------------
     files.forEach(e => {
         let n = e.split('.')[0]
-        mails[n] = (args) => require(`./${n}`)(args)
+        mails[n]  = (args) => require(`./${n}`)(args)
     });
-else
-//     files.forEach(e => {
-//         let n = e.split('.')[0]
-//         mails[n] = (args) => console.log(`no [ ${n} ] mail, dev environment`)
-//     });
+
+// ------------------ DEV ENVIRONMENT ------------------
+
+
+// files.forEach(e => {
+// 	let n = e.split('.')[0]
+// 	mails[n]  = (args) => console.log(`no [ ${n} ] mail, dev environment`)
+// });
 
 
 module.exports = mails
