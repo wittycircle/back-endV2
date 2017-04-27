@@ -28,8 +28,8 @@ exports.getProfileBy = (by) => {
         .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'))
         // .catch(err => err)
 
-    return h.super_exist(TABLES.USER_PROFILES, by['p.id'])
-        // .then(() => query)
+    return h.exist(TABLES.USER_PROFILES, by['p.id'])
+        .then(() => query)
         .catch(err => err)
 
 

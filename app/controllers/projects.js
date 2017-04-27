@@ -223,13 +223,16 @@ exports.getProjectLikes = (req, res, next) => {
 exports.likeProject = (req, res, next) => {
     project.likeProject(req.params.id, req.user.id)
         .then(r => {
-            if (!_.isEmpty(r))
-                res.send({success: true});
+            if (_.isEmpty(r))
+            {
+                console.log("returning false [follow project]")
+                res.send({success: false});
+            }
             else {
-                console.log("should send stuff")
+                console.log("should send stuff [true follow project]")
                 mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
                 req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
-                res.send({success: false})
+                res.send({success: true})
             }
         }).catch(err => next(err))
 };

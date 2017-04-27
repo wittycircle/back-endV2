@@ -26,8 +26,16 @@ const filt = e => e !== 'templates'
 
 const files = require('fs').readdirSync('./app/services/mailer')
     .filter(filt);
-if (process.env.DEVELOPMENT === true)
-    let mails = {};
+
+let mails = {}
+
+if (process.env.DEVELOPMENT === true) 
+{
+	files.forEach(e => {
+		let n = e.split('.')[0] 
+		mails[n]  = (args) => console.log(`no [ ${n} ] mail, dev environment`) 
+	}); 
+}
 else
 // ------------------ PROD ENVIRONMENT ------------------
     files.forEach(e => {
