@@ -29,7 +29,7 @@ const files = require('fs').readdirSync('./app/services/mailer')
 
 let mails = {}
 
-if (process.env.DEVELOPMENT === true) 
+if (process.env.NODE_ENV === "development") 
 {
 	files.forEach(e => {
 		let n = e.split('.')[0] 
