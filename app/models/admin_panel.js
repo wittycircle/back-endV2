@@ -6,8 +6,12 @@ exports.projectsInvite = (uid) => {
 	return h.admin(TABLES.USERS, uid, uid).then(r => {
 		if (!r.length)
 			return "Admin only"
-	return db(TABLES.PROJECTS)
-		.select(['id', 'user_id', 'title'])
+
+		let sent = db.raw('IF (pi.accepted IS NOT NULL, true, false) as sent')
+	return db(TABLES.PROJECTS + ' as p')
+		.select(['p.id', 'user_id', 'title', h.format_location,
+			 'picture', 'description', 'picture', 'public_id', sent])
+		.leftJoin(TABLES.PROJECT_INVITE + ' as pi', 'pi.project_id', 'p.id')
 		.whereIn('user_id', [1, 9])
 		.whereRaw('title <> "wittycircle"')
 	})

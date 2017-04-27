@@ -19,13 +19,13 @@ exports.projectsInvite = (req, res, next) => {
 
 exports.inviteProjects = (req, res, next) => {
 	const token = crypto.randomBytes(40).toString('hex')
-	panel.inviteProjects(1, req.body.id, token)
+	panel.inviteProjects(req.user.id, req.body.id, token)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad id'])
 			}
 			else{
-				// mailer.stuff({email: req.body.email, id: req.body.id, token : token})
+				// mailer.stuff({email: req.body.email, id: req.body.id, token : token, name: req.body.name})
 				res.send({success: true})
 			}
 		})

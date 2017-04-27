@@ -43,7 +43,10 @@ exports.getProfile = (req, res, next) => {
                 res.send({profile: profile});
             }
         })
-        .catch(err => next(err));
+        .catch(err => {
+            console.log("ERRUER WESH")
+            next(err)
+        });
 };
 
 exports.updateProfile = (req, res, next) => {
