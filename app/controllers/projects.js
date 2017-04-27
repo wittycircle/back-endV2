@@ -226,6 +226,7 @@ exports.likeProject = (req, res, next) => {
             if (_.isEmpty(r))
             {
                 console.log("returning false [follow project]")
+                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
                 res.send({success: false});
             }
             else {
@@ -237,13 +238,13 @@ exports.likeProject = (req, res, next) => {
         }).catch(err => next(err))
 };
 
+//deprecated, both in like
 exports.unlikeProject = (req, res, next) => {
     project.unlikeProject(req.params.id, req.user.id)
         .then(r => {
             if (r)
                 res.send({success: true});
             else {
-                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
                 res.send({success: false})
             }
         }).catch(err => next(err))
