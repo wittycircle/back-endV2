@@ -45,7 +45,4 @@ h.spe_profile = (cond) => db.select(h.p_uarray.concat(location)).from(TABLES.USE
     .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').where(cond).as('p');
 h.unix_time = (x, y) => db.raw(`UNIX_TIMESTAMP(${x} as ${y})`)
 
-
-h.super_exist = (table, value, name) => db(table).select('id').whereRaw(`${name || 'id'} LIKE "%${value}%"`)
-	.then(r => { throw {name: "NIK", message: "AAA"} })//.catch(err => err)
 module.exports = h;
