@@ -223,24 +223,28 @@ exports.getProjectLikes = (req, res, next) => {
 exports.likeProject = (req, res, next) => {
     project.likeProject(req.params.id, req.user.id)
         .then(r => {
-            if (!_.isEmpty(r))
-                res.send({success: true});
+            if (typeof r === 'string')
+                return next([r, "Invalid id"])
+            else if (_.isEmpty(r))
+            {
+                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
+                res.send({success: true, type: "Unlike"});
+            }
             else {
-                console.log("should send stuff")
                 mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
                 req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
-                res.send({success: false})
+                res.send({success: true, type: "Like"})
             }
         }).catch(err => next(err))
 };
 
+//deprecated, both in like
 exports.unlikeProject = (req, res, next) => {
     project.unlikeProject(req.params.id, req.user.id)
         .then(r => {
             if (r)
                 res.send({success: true});
             else {
-                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
                 res.send({success: false})
             }
         }).catch(err => next(err))

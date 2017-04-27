@@ -43,7 +43,10 @@ exports.getProfile = (req, res, next) => {
                 res.send({profile: profile});
             }
         })
-        .catch(err => next(err));
+        .catch(err => {
+            console.log("ERRUER WESH")
+            next(err)
+        });
 };
 
 exports.updateProfile = (req, res, next) => {
@@ -85,10 +88,16 @@ exports.followProfile = (req, res, next) => {
         .then((r) => {
             if (typeof r === 'string')
                 return next([r, "bad id"])
+            else if (_.isEmpty(r))
+            {
+                req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: -1});
+                res.send({success: true, type: "Unlike"})
+            }
             else {
                 mailer.user_follow({follower: req.user.id, following: req.params.id})
                 req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1});
-                res.send({success: true})
+                res.send({success: true, type: "Like"})
+
             }
         })
         .catch(error => next(error))
@@ -100,7 +109,6 @@ exports.unfollowProfile = (req, res, next) => {
             if (!r)
                 res.send({success: false});
             else {
-                req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: -1});
                 res.send({success: true})
             }
         })

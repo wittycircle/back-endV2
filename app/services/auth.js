@@ -20,6 +20,10 @@ exports.auth = (privilege) => (req, res, next) => passport.authenticate('bearer'
     else
         req.logIn(user, err => {
             if (err && privilege === AUTH_MODE.PRIVATE) next(err);
-            else next();
+            else {
+                if (typeof user.id !== 'undefined')
+                    req.broadcastEvent('user_activity', {id: user.id, route: req.originalUrl});
+                next();
+            }
         })
 })(req, res, next);

@@ -43,6 +43,6 @@ h.format_location = format_location
 h.username = db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')
 h.spe_profile = (cond) => db.select(h.p_uarray.concat(location)).from(TABLES.USER_PROFILES + ' as p')
     .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').where(cond).as('p');
-
+h.unix_time = (x, y) => db.raw(`UNIX_TIMESTAMP(${x} as ${y})`)
 
 module.exports = h;

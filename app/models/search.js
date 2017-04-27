@@ -153,7 +153,7 @@ exports.cardProject = (selector) => {
     if (selector.category)
         query.orderByRaw('(c.name = "' + selector.category + '") DESC')
     if (selector.status)
-            query.orderByRaw('CASE WHEN pr.status = "' + selector.status + '" THEN 1 else 2 END')
+            query.orderByRaw('CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END')
     return query;
 };
 

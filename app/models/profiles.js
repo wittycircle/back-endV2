@@ -22,11 +22,13 @@ exports.getProfileBy = (by) => {
     const ifo = db.distinct('follow_user_id', 'user_id')
         .from(TABLES.USER_FOLLOWERS).as('ifo');
 
-    let profile = h.spe_profile(by)
-    return db(profile)
+    let query =  db(h.spe_profile(by))
         .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
         .leftJoin(ifo, 'ifo.follow_user_id', 'p.uid')
         .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'))
+
+    return h.exist(TABLES.USER_PROFILES, by['p.id'])
+        .then(() => query)
 };
 
 exports.updateProfile = (stuff, cnd) => {

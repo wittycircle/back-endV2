@@ -9,7 +9,7 @@ const config = require('../private').algolia,
     {db, TABLES} = require('../models/index'),
     h = require('../models/helper');
 
-module.exports = () => {
+module.exports.initPeopleAndProjectIndex = () => {
     const client = algoliasearch(config.app, config.key);
 
     let people = client.initIndex('Users'),
@@ -35,3 +35,4 @@ module.exports = () => {
             })
         });
 };
+

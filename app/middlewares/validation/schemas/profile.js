@@ -18,6 +18,7 @@ const profile_update = Joi.object().keys({
     city: Joi.string().optional(),
     state: Joi.string().optional(),
     country: Joi.string().optional(),
+    network: Joi.string().optional()
 });
 
 exports.update = Joi.object().keys({
