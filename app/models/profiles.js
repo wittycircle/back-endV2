@@ -31,8 +31,6 @@ exports.getProfileBy = (by) => {
     return h.exist(TABLES.USER_PROFILES, by['p.id'])
         .then(() => query)
         .catch(err => err)
-
-
 };
 
 exports.updateProfile = (stuff, cnd) => {
