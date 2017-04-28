@@ -12,11 +12,11 @@
  suggestion_project: ,
  uc_invitation: UNDEFINED,
  -	user_follow: controllers/profiles [71],
- -	validate_account: controllers/accounts [45],
+ S-	validate_account: controllers/accounts [45],
  validation-network: FOR LATER,
  verification_network: controllers/network [52] (Way unsure about this one),
  profile_views:,
- -	welcome : controllers/account [59]
+S -	welcome : controllers/account [59]
  */
 
 const filt = e => e !== 'templates'
@@ -24,8 +24,9 @@ const filt = e => e !== 'templates'
 && e !== 'wittymail.js'
 && e !== 'example_kitchen.js';
 
-const files = require('fs').readdirSync('./app/services/mailer')
+const files = require('fs').readdirSync('../app/services/mailer')
     .filter(filt);
+
 
 let mails = {}
 
@@ -36,12 +37,13 @@ if (process.env.NODE_ENV === "development")
 		mails[n]  = (args) => console.log(`no [ ${n} ] mail, dev environment`) 
 	}); 
 }
-else
 // ------------------ PROD ENVIRONMENT ------------------
-    files.forEach(e => {
-        let n = e.split('.')[0]
-        mails[n]  = (args) => require(`./${n}`)(args)
-    });
+else {
+	files.forEach(e => {
+		let n = e.split('.')[0] 
+		mails[n]  = (args) => require(`./${n}`)(args) 
+	});
+ }
 
 // ------------------ DEV ENVIRONMENT ------------------
 

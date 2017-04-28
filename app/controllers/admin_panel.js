@@ -1,5 +1,5 @@
 const panel = require('../models/admin_panel'),
-      mailer = require('../services/mailer'),
+      // mailer = require('../services/mailer'),
       crypto = require('crypto'),
     _ = require('lodash');
 
