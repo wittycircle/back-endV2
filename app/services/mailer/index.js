@@ -28,21 +28,24 @@ S -	welcome : controllers/account [59]
 //     .filter(filt);
 
 
-const files = [ 'ask_project',
-  'invite_team',
-  'invite_user',
-  'new_message',
-  'new_project',
-  'profile_views',
-  'reply_project',
-  'reset_password',
-  'suggestion_profile',
-  'uc_invitation',
-  'upvote_project',
-  'user_follow',
-  'validate_account',
-  'verification_network',
-  'welcome' ];
+const files = [ 
+	'ask_project',
+	'invite_team',
+	'invite_user',
+	'new_message',
+	'new_project',
+	'profile_views',
+	'reply_project',
+	'reset_password',
+	'suggestion_profile',
+	'uc_invitation',
+	'upvote_project',
+	'user_follow',
+	'validate_account',
+	'verification_network',
+	'welcome',
+	'admin_invite'
+   ];
 
 let mails = {}
 
