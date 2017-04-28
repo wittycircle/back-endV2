@@ -12,7 +12,7 @@
  suggestion_project: ,
  uc_invitation: UNDEFINED,
  -	user_follow: controllers/profiles [71],
- S-	validate_account: controllers/accounts [45],
+ S -	validate_account: controllers/accounts [45],
  validation-network: FOR LATER,
  verification_network: controllers/network [52] (Way unsure about this one),
  profile_views:,

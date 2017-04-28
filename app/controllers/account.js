@@ -43,7 +43,8 @@ exports.register = (req, res, next) => {
                 return next([r, 'Bad info [email or password]'])
             }
             else {
-                req.broadcastEvent('mailer_validate_account', {token: token, email: req.body.account.email });
+            	mailer.validate_account({token : token, email: req.body.account.email})
+                // req.broadcastEvent('mailer_validate_account', {token: token, email: req.body.account.email });
                 req.broadcastEvent('user_register', {id: r[0].id});
                 res.send({success: true}).status(200)
 			} 
@@ -58,7 +59,8 @@ exports.activate = (req, res, next) => {
 				return next([r, 'Bad token'])
 			}
 			else{
-				req.broadcastEvent('mailer_welcome', {email : r[0].email})
+				mailer.welcome({email: r[0].email})
+				// req.broadcastEvent('mailer_welcome', {email : r[0].email})
 				res.send({success: true})
 			}
 		})
