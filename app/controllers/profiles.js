@@ -1,10 +1,10 @@
 /**
  * Created by rdantzer on 18/01/17.
  */
-
+'use strict'
 const profiles = require('../models/profiles'),
     user = require('../models/users'),
-    mailer = require('../services/mailer'),
+    // mailer = require('../services/mailer'),
     _ = require('lodash');
 
 const has_liked = (foli, id) => {
@@ -43,10 +43,7 @@ exports.getProfile = (req, res, next) => {
                 res.send({profile: profile});
             }
         })
-        .catch(err => {
-            console.log("ERRUER WESH")
-            next(err)
-        });
+        .catch(err => next([err, "Invalid"]));
 };
 
 exports.updateProfile = (req, res, next) => {
@@ -67,41 +64,35 @@ exports.getProfileFollowers = (req, res, next) => {
     Promise.all([
         profiles.getProfileFollowers('l.user_id', 'l.follow_user_id', req.params.id),
         profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id),
-        user.getProjectFollow(req.params.id)
-    ])
+        user.getProjectFollow(req.params.id) 
+        ]) 
         .then(([r, r1, r2]) => {
-            if (typeof r === 'string')
-                return next([r, "Invalid id"])
-            else {
-                let o = {
-                    project_upvoted: r2.length,
-                    following_count: r.length,
-                    followers_count: r1.length
-                }
-                res.send({Count: o, upvoted: r2, following: r, followers: r1})
-            }
-        }).catch(err => next(err))
+            let o = {
+                project_upvoted: r2.length, 
+                following_count: r.length, 
+                followers_count: r1.length 
+            } 
+            res.send({Count: o, upvoted: r2, following: r, followers: r1}) 
+        }) 
+        .catch(err => next([err, "Invalid id"]))
 };
 
 exports.followProfile = (req, res, next) => {
-    profiles.followProfile(req.params.id, req.user.id)
-        .then((r) => {
-            if (typeof r === 'string')
-                return next([r, "bad id"])
-            else if (_.isEmpty(r))
-            {
-                req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: -1});
-                res.send({success: true, type: "Unlike"})
-            }
-            else {
-                mailer.user_follow({follower: req.user.id, following: req.params.id})
-                req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1});
-                res.send({success: true, type: "Like"})
-
-            }
-        })
-        .catch(error => next(error))
-};
+    profiles.followProfile(req.params.id, req.user.id) 
+    .then((r) => {
+        if (_.isEmpty(r)) 
+        {
+            req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: -1}); 
+            res.send({success: true, type: "Unlike"}) 
+        } 
+        else {
+            mailer.user_follow({follower: req.user.id, following: req.params.id})
+            req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1}); 
+            res.send({success: true, type: "Like"}) 
+        } 
+    }) 
+    .catch(error => next([error, "Bad id"]))
+  };
 
 exports.unfollowProfile = (req, res, next) => {
     profiles.unfollowProfile(req.params.id, req.user.id)

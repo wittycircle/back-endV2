@@ -75,6 +75,7 @@ exports.getArticles = (uid, id) => {
         .leftJoin(TABLES.ARTICLE_MSG + ' as msg', 'msg.article_id', 'a.id')
         .leftJoin(h.u_profile, 'p.uid', 'a.author_id')
 			.groupBy('a.id')
+			.orderByRaw('a.creation_date DESC')
 
 	if (id)
 		query.when('a.article_id', id)

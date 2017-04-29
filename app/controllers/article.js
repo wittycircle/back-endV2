@@ -148,7 +148,7 @@ exports.getArticleUpvotes = (req, res, next) => {
 
 // ------------------ Comment ------------------
 exports.getComments = (req, res, next) => {
-	article.getComments(req.params.id)
+	articles.getComments(req.params.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad id'])
@@ -166,7 +166,7 @@ exports.postComment = (req, res, next) => {
 		user_id: req.user.id,
 		aricle_id: req.params.id
 	}
-	article.postComment(data)
+	articles.postComment(data)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'Bad id'])
@@ -180,7 +180,7 @@ exports.postComment = (req, res, next) => {
 
 
 exports.removeComment = (req, res, next) => {
-	article.removeComment(req.params.id)
+	articles.removeComment(req.params.id)
 		.then(r => {
 			if (typeof r === 'string') {
 				return next([r, 'bad id'])

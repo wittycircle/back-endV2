@@ -52,6 +52,9 @@ module.exports.update = Joi.object().keys({
 	description: Joi.string().trim().allow(p_empty),
 	about: Joi.string().trim().allow(p_empty),
 	network: Joi.string().trim().allow(p_empty),
+	link: Joi.string().trim().allow(p_empty),
+	app: Joi.string().trim().allow(p_empty),
+	logo: Joi.string().trim().allow(p_empty),
 	public: Joi.boolean(),
     project_visibility: Joi.boolean(),
 });
