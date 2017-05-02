@@ -17,7 +17,7 @@ const http = require('http'),
     cookieParser = require('cookie-parser');
 
 let app = express();
-//app.use(require('prerender-node').set('prerenderToken', 'BzYfju05gGdTtLeibr1B'));
+app.use(require('prerender-node').set('prerenderToken', 'BzYfju05gGdTtLeibr1B'));
 
 app.use(cors());
 
@@ -56,7 +56,6 @@ app.use(passport.session());
 
 app.set('port', process.env.PORT || 3000);
 
-require('./app/services/algolia')();
 router.use(require('./app/routes/index'));
 app.use(router);
 
