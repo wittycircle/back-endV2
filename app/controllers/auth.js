@@ -26,7 +26,7 @@ Todo: Find better solution*/
 const {db, TABLES} = require('../models/index');
 
 const ugly_mod = (id) => {
-    db(TABLES.USERS).first('moderator').where('id', id)
+   return db(TABLES.USERS).first('moderator').where('id', id)
 }
 /*end of ugliness*/
 exports.generateToken = (req, res, next) => {
