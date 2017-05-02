@@ -114,7 +114,7 @@ exports.updateArticle = (data, id) => {
 				.then(removeOldTag)
 				.then((res) => {
 					res.forEach((el, i) => {
-						x.push(db(TABLES.TAG_ARTICLES)
+						x.push(db(TABLES.TAG_ARTICLES) 
 							.insert({article_id: id, tag_id: el}).return())
 					}); 
 					return Promise.all(x).then(() => ["Finished"])
