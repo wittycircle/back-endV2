@@ -10,7 +10,7 @@ const articles = require('../models/article'),
 
 
 exports.createArticle = (req, res, next) => {
-	req.body.uid = req.user.id ;
+	req.body.uid = req.user.id;
 	articles.createArticle(req.body)
 		.then(r => {
 			if (r > 0){

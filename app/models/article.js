@@ -33,6 +33,7 @@ const removeOldTag = ([res, data]) => {
 
 exports.createArticle = (data) => {
 	let x = [];
+	let y = {};
 	const i_data = {
 		title: data.title,
 		text: data.text,
@@ -41,17 +42,22 @@ exports.createArticle = (data) => {
 	}
 	if (data.picture) i_data.picture = data.picture;
 
-	return db(TABLES.ARTICLES).insert(i_data)
+	return db(TABLES.ARTICLE_TAGS).distinct('name', 'id').then(tags => {
+		tags.forEach(el => {
+			y[el.name] = el.id
+		})
+		return db(TABLES.ARTICLES).insert(i_data) 
 		.then(([id]) => {
 			data.tags.forEach((el, i) => {
-				x.push(db(TABLES.TAG_ARTICLES)
-				.insert({
-					article_id: id, 
-					tag_id: el 
-				}));
+				console.log(y[el])
+				x.push(db(TABLES.TAG_ARTICLES) 
+					.insert({
+						article_id: id, 
+						tag_id: y[el]
+					})); 
 			}); 
-			return Promise.all(x).then(() => id) 
-		}); 
+			return Promise.all(x).then(() => id) });
+	})
 };
 
 exports.getArticles = (uid, id) => {
@@ -62,7 +68,7 @@ exports.getArticles = (uid, id) => {
         db.raw('GROUP_CONCAT(DISTINCT t.name) as tags'),
 			]
     if (uid) {
-        a_articles.push(db.raw('GROUP_CONCAT(DISTINCT IF(l.user_id = ' + uid + ', true, null))  as follow'))
+        a_articles.push(db.raw('IF(l.user_id = ' + uid + ', true, false)  as hasLiked'))
     }
 
 	let query =  db.select(a_articles)
@@ -78,7 +84,7 @@ exports.getArticles = (uid, id) => {
 			.orderByRaw('a.creation_date DESC')
 
 	if (id)
-		query.when('a.article_id', id)
+		query.where('a.article_id', id)
 	return query
 };
 
@@ -108,7 +114,7 @@ exports.updateArticle = (data, id) => {
 				.then(removeOldTag)
 				.then((res) => {
 					res.forEach((el, i) => {
-						x.push(db(TABLES.TAG_ARTICLES)
+						x.push(db(TABLES.TAG_ARTICLES) 
 							.insert({article_id: id, tag_id: el}).return())
 					}); 
 					return Promise.all(x).then(() => ["Finished"])
@@ -251,7 +257,16 @@ exports.updateTags = (id, name, uid) => {
 };
 
 exports.getComments = (id) => {
-	return db(TABLES.ARTICLE_MSG).distinct().where('article_id', id)
+	let selection = [
+	'article_id', 
+	'uid', 
+	'message', 
+	'm.creation_date', 
+	'p.username', 
+	'p.profile_picture'
+	]; 
+	return db(TABLES.ARTICLE_MSG + ' as m').distinct(selection).where('article_id', id)
+		.join(h.sub_profile, 'p.uid', 'm.user_id')
 };
 
 exports.postComment = (data) => {
