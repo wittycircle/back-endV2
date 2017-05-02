@@ -20,7 +20,15 @@ exports.logout = (req, res) => {
             }
         });
 };
+/*Ugly but needed?
+Todo: Find better solution*/
 
+const {db, TABLES} = require('../models/index');
+
+const ugly_mod = (id) => {
+    db(TABLES.USERS).first('moderator').where('id', id)
+}
+/*end of ugliness*/
 exports.generateToken = (req, res, next) => {
     session.createUserSession(req.user, (err, token) => {
         if (err) next({
@@ -29,16 +37,19 @@ exports.generateToken = (req, res, next) => {
             error_description: 'unable to generate session'
         });
         else {
-            req.token = {
-                auth: token,
-                ttl: 3600 * 24 * 365,
-                user: {
-                    id: req.user.id,
-                    profile_id: req.user.profile_id,
-                    email: req.user.email
-                }
-            };
-            next();
+            ugly_mod(req.user.id).then(mod => {
+                req.token = {
+                    auth: token,
+                    ttl: 3600 * 24 * 365,
+                    user: {
+                        id: req.user.id,
+                        moderator: mod,
+                        profile_id: req.user.profile_id,
+                        email: req.user.email
+                    }
+                };
+                next();
+            });//uugly
         }
     })
 };
