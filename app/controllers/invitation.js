@@ -1,5 +1,5 @@
 const invitation = require('../models/invitation'),
-    // mailer = require('../services/mailer');
+    mailer = require('../services/mailer');
     _ = require('lodash');
 
 exports.getInvitation = (req, res, next) => {

@@ -1,7 +1,7 @@
 const project = require('../models/projects'),
     // format = require('./format'),
     redis = require('ioredis')(require('../private').redis),//<= sale
-    // mailer = require('../services/mailer');
+    mailer = require('../services/mailer');
     _ = require('lodash');
 
 // ------------------ Project [main methods] ------------------
