@@ -45,8 +45,8 @@ const send_mail = (data) => {
 			"*|FLOC|*": wm.location(e),
 			email: e.email
 		};
-		console.log("\n-------------------------------------------------\n")
-		console.log(sub)
+		// console.log("\n-------------------------------------------------\n")
+		// console.log(sub)
 		wm.subject(pers, subject);
 		wm.to(pers, e.email);
 		wm.substitutions(pers, sub)
@@ -63,7 +63,13 @@ return db.select(selection)
 		.join(wm.notif('new_message'), 'n.user_id', 'm.to_user_id')
 		.where('m.m_read', 0)
 		.andWhere('m.m_send', 0)
-		.then(send_mail)
+		.whereRaw('creation_date <= DATE_SUB(NOW(),INTERVAL 2 HOUR)')
+		.then(r => {
+			let ids = r.map(e => e.id)
+			send_mail(r)
+			return db(TABLES.OMESSAGES).update('m_send', 1)
+				.whereIn('id', ids)
+		})
 };//exports
 
 module.exports = new_message

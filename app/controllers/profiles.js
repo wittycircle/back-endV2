@@ -86,7 +86,8 @@ exports.followProfile = (req, res, next) => {
             res.send({success: true, type: "Unlike"}) 
         } 
         else {
-            mailer.user_follow({follower: req.user.id, following: req.params.id})
+            // mailer.user_follow({follower: req.user.id, following: req.params.id})
+            req.broadcastEvent('mailer_follow_profile', {follower: req.user.id, following: req.params.id})
             req.broadcastEvent('user_follow', {from: req.user.id, id: req.params.id, value: 1}); 
             res.send({success: true, type: "Like"}) 
         } 
