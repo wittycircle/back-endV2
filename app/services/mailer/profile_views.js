@@ -4,43 +4,14 @@ const h = require('../../models/helper');
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
-let htmlString = (img, name, loc, url) => `
-            <table border="0" cellpadding="0" cellspacing="0" style="display: inline-block; margin: auto; background-color: #fff" max-width="110">
-                <tr>
-                    <td><img src="${img}" style="vertical-align: middle; display: inline-block; width: 70px; height: 70px; border-radius: 35px;" alt="user photo"/>
-                    </td>
-                    <td width="15"></td>
-                </tr>
-            </table>
-            
-            <table border="0" cellpadding="0" cellspacing="0" style="display: inline-block; margin: auto; background-color: #fff; vertical-align: top" width="265">
-                <tr height="10"></tr>
-                <tr>
-                    <td width="265" class="info-position">
-                        <div class="name-position" style="font-size: 18px; font-weight: 500;">${name}</div>
-                        <div style="height: 10px; width: 100%"></div>
-                        <div style="font-size: 14px; font-family: 'Helvetica'; max-width: 250px; font-weight: 400; color: #999999"><img src="https://res.cloudinary.com/dqpkpmrgk/image/upload/v1458222562/Witty-icon/Signup/location-icon-gray.png" alt="location" style="height: 14px; width: auto"> ${loc}</div>
-                    </td>
-                </tr>
-                <tr height="20"></tr>
-            </table>
-            
-            <table border="0" cellpadding="0" cellspacing="0" style="display: inline-block; margin: auto; background-color: #fff; text-align: center; vertical-align: top" width="250">
-                <tr height="10"></tr>
-                <tr>
-                	<td height="40" width="250">
-                        <a href="${url}" style="padding: 10px 25px; background-color: #416299; color: white; border-radius: 4px; text-decoration: none; font-size: 16px">View profile</a>
-                	</td>
-                </tr>
-                <tr height="30"></tr>
-            </table>
-            
-            <table border="0" cellpadding="0" cellspacing="0" style="margin: auto; background-color: #fff" max-width="600">
-                <td width="200" height="20"></td>
-            </table>`
 
 const fillSub = (d, sub, i) => {
-    return htmlString(d.profile_picture, d.fullName, d.location, wm.url(d.username))
+    sub[`*|FFNAME${i}|*`] = d.first_name,
+    sub[`*|FLNAME${i}|*`] = d.last_name,
+    sub[`*|FIMG${i}|*`] = d.profile_picture,
+    sub[`*|FLOC${i}|*`] = d.location,
+    sub[`*|FDESC${i}|*`] = wm.truncate(d.description)
+    sub[`*|FURL${i}|*`] = wm.url(d.username)
 };
 
 const send_mail = (data, bail) => {
@@ -52,23 +23,19 @@ const send_mail = (data, bail) => {
 
     data.forEach((e, i) => {
         let pers = new helper.Personalization();
-        let subject = `${e.first_name}, someone is interested in your profile.`
+        let subject = "You may have something special 🙈  *|NVIEW|* people recently visited your profile."
         let notif = e.notif.split(',')
         let laString = '';
         let nview = notif.length;
         let sub = {
-            "*|UNAME|*": e.first_name,
+            "*|FNAME|*": e.first_name,
             "*|NVIEW|*": nview.toString(),
             "*|EMAIL|*": e.email,
-            "*|PLEIN_DE_BAIL|*": "toto",
         };
-        bail[i].forEach(b => laString += fillSub(b, sub, i))
-        sub["*|PLEIN_DE_BAIL|*"] = laString || 'Not found';
-        console.log(sub)
-        console.log("\n-------------------------------------------------\n")
+        bail[i].forEach((b, j) => fillSub(b, sub, j + 1))
         wm.subject(pers, subject);
-        wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
-        wm.substitutions(pers, sub)
+        wm.to(pers, e.email);
+        wm.substitutions(pers, sub) 
         mail.addPersonalization(pers)
     }); //foreach
     wm.send(mail);
@@ -76,27 +43,36 @@ const send_mail = (data, bail) => {
 };
 
 const profile_views = (args) => {
-    const request = db.distinct('l.user_id', 'u.email', 'p.first_name', db.raw('GROUP_CONCAT(l.user_notif_id) as notif'))
-        .from(TABLES.NOTIF_LIST + ' as l')
-        .join(TABLES.USERS + ' as u', 'l.user_id', 'u.id')
+    const request = db.distinct('v.user_id', 'u.email', 'p.first_name', 'p.description', db.raw('GROUP_CONCAT(v.viewed) as notif'))
+    .count('v.viewed as vcount')
+        .from('views as v')
+        .join(TABLES.USERS + ' as u', 'v.user_id', 'u.id')
         .join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
-        .join(wm.notif('profile_view'), 'n.user_id', 'l.user_id')
-        .whereRaw(`DATE(date_of_view) <= CURDATE() - INTERVAL 1 DAY
-						AND DATE(date_of_view) >= CURDATE() - INTERVAL 2 DAY`) //unsure, just for testing
-        .andWhere('type_notif', 'view')
-        .andWhere('n_read', 0)
-        .groupBy('l.user_id')
+        .join(wm.notif('profile_view'), 'n.user_id', 'v.user_id')
+        .having('vcount', '>=', 5)
+        .andWhere('mail_sent', 0)
+        .groupBy('v.user_id')
 
     let reqAll = (notif) => db.distinct(h.p_uarray.concat([h.format_location])).from(TABLES.USER_PROFILES + ' as p')
         .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
         .whereIn('u.id', notif);
 
+    let setToOne = (ids) => db('views').update('mail_sent', 1).whereIn('user_id', ids)
+
     return request.then(array => {
+        if (!array.length){
+            console.log("empty")
+            return null;
+        }
         let x = [];
+        let ids = array.map(e => e.user_id)
+
         array.forEach(e => {
             let notif = e.notif.split(',')
-            x.push(reqAll(notif).then(x => x))
+                x.push(reqAll(notif).then(x => x))
         });//foreach
+        x.push(setToOne(ids).return())
+
         return Promise.all(x).then(bail => send_mail(array, bail))
     });
 };//exports

@@ -220,7 +220,8 @@ exports.likeProject = (req, res, next) => {
             res.send({success: true, type: "Unlike"}); 
         } 
         else {
-            mailer.upvote_project({user_id: req.user.id, project_id: req.params.id}) 
+            // mailer.upvote_project({user_id: req.user.id, project_id: req.params.id}) 
+            req.broadcastEvent('follow_project', {user_id: req.user.id, project_id: req.params.id}) 
             req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id}); 
             res.send({success: true, type: "Like"}) 
         } 
