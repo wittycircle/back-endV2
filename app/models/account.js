@@ -174,6 +174,7 @@ let permission = (id) => {
                         .then(r => Promise.all([permission(r[0]), share_invite(r[0])]))
                         .then(() => db(TABLES.ACCOUNT_VALIDATION).insert({user_email: data.email, token: token}))
                         .then(() => verifyUser(data.email))
+                        .then(() => db(TABLES.USERS).select(db.raw('MAX(id) as id')))
                 });
         }
     })

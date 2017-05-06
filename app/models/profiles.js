@@ -40,7 +40,7 @@ exports.updateProfile = (stuff, cnd) => {
 exports.getProfileFollowers = (cond, cond2, p_id) => {
     return h.exist(TABLES.USER_PROFILES, p_id).then(r => {
         if (!r.length)
-            return "Bad profile id"
+            throw "Bad profile id"
         else {
             return db.distinct(h.p_array).distinct('p.username', 'p.fullName')
                 .from(TABLES.USER_LIKES + ' as l') 
@@ -55,7 +55,7 @@ exports.followProfile = (id, uid) => {
 
     return h.exist(TABLES.USERS, id).then(r => {
         if (!r.length)
-            return "Bad id"
+            throw "Person to follow"
         return db(TABLES.USER_LIKES).first('id').where(obj)
             .then(r => {
                 if (!r)

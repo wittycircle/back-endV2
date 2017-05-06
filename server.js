@@ -12,14 +12,11 @@ const http = require('http'),
     passport = require('passport'),
     path = require('path'),
     compression = require('compression'),
-    cors = require('cors'),
     cloudinary = require('cloudinary'),
     cookieParser = require('cookie-parser');
 
 let app = express();
 //app.use(require('prerender-node').set('prerenderToken', 'BzYfju05gGdTtLeibr1B'));
-
-app.use(cors());
 
 const config = require('./app/private');
 

@@ -72,14 +72,9 @@ exports.updateProject = (req, res, next) => {
 exports.removeProject = (req, res, next) => {
     project.removeProject(req.params.id)
         .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'Invalid id'])
-            }
-            else {
                 res.send({success: true})
-            }
         })
-        .catch(err => next(err))
+        .catch(err => next([err, "Invalid id"]))
 };
 
 exports.getProject = (req, res, next) => {
@@ -173,21 +168,17 @@ exports.createOpening = (req, res, next) => {
         description: req.body.description,
         tags: req.body.tags
     };
-    project.createOpening(data)
-        .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'Invalid project id'])
-            } else {
-                req.broadcastEvent('opening_creation', {
-                    from: req.params.id,
-                    id: r[0],
-                    tag: data.tags.split(',')[0],
-                    what: data.status
-                });
-                res.send({id: r[0]})
-            }
-        })
-        .catch(err => next(err))
+    project.createOpening(data) 
+    .then(r => {
+        req.broadcastEvent('opening_creation', {
+            from: req.params.id, 
+            id: r[0], 
+            tag: data.tags.split(',')[0], 
+            what: data.status 
+        }); 
+        res.send({id: r[0]}) 
+    }) 
+    .catch(err => next([err, "Invalid project id"]))
 };
 
 exports.getProjectOpenings = (req, res, next) => {
@@ -221,21 +212,20 @@ exports.getProjectLikes = (req, res, next) => {
 };
 
 exports.likeProject = (req, res, next) => {
-    project.likeProject(req.params.id, req.user.id)
-        .then(r => {
-            if (typeof r === 'string')
-                return next([r, "Invalid id"])
-            else if (_.isEmpty(r))
-            {
-                req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id});
-                res.send({success: true, type: "Unlike"});
-            }
-            else {
-                mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
-                req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id});
-                res.send({success: true, type: "Like"})
-            }
-        }).catch(err => next(err))
+    project.likeProject(req.params.id, req.user.id) 
+    .then(r => {
+        if (_.isEmpty(r)) 
+        {
+            req.broadcastEvent('project_up', {id: req.params.id, value: -1, from: req.user.id}); 
+            res.send({success: true, type: "Unlike"}); 
+        } 
+        else {
+            // mailer.upvote_project({user_id: req.user.id, project_id: req.params.id}) 
+            req.broadcastEvent('follow_project', {user_id: req.user.id, project_id: req.params.id}) 
+            req.broadcastEvent('project_up', {id: req.params.id, value: 1, from: req.user.id}); 
+            res.send({success: true, type: "Like"}) 
+        } 
+    }).catch(err => next([err, "Invalid id"])) 
 };
 
 //deprecated, both in like
@@ -253,42 +243,27 @@ exports.unlikeProject = (req, res, next) => {
 // ------------------ INVITATION ------------------
 
 exports.inviteTeam = (req, res, next) => {
-    project.inviteTeam(req.user.id, req.params.id, req.body.id)
-        .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'bad id'])
-            }
-            else{
-                // mailer.invite_user //toset
-                res.send({success: true})
-            }
-        })
-        .catch(err => next(err))
+    project.inviteTeam(req.user.id, req.params.id, req.body.id) 
+    .then(r => {
+        res.send({success: true}) 
+        // mailer.invite_user //toset 
+    }) 
+    .catch(err => next([err, "Bad id"])) 
 };
 
 exports.getInvite = (req, res, next) => {
-    project.getInvite(req.params.id)
-        .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'bad id'])
-            }
-            else{
-                res.send({invitations: r})
-            }
-        })
-        .catch(err => next(err))
+    project.getInvite(req.params.id) 
+    .then(r => {
+        res.send({invitations: r}) 
+    }) 
+    .catch(err => next(err))
 };
 
 exports.deleteInvite = (req, res, next) => {
     project.deleteInvite(req.user.id, req.params.id)
         .then(r => {
-            if (typeof r === 'string') {
-                return next([r, 'Bad id'])
-            }
-            else{
-                res.send({success: true})
-            }
-        })
-        .catch(err => next(err))
+            res.send({success: true}) 
+        }) 
+        .catch(err => next([err, "Bad id"]))
 };
 

@@ -29,7 +29,7 @@ exports.updateProject = (id, project_data) => {
 exports.removeProject = (id) => {
 	return h.exist(TABLES.PROJECTS, id).then(r => {
 		if (!r.length){
-			return "could not remove project"
+			throw "could not remove project"
 		} else{
 			return db(TABLES.PROJECTS).del().where('id', id);
 		}
@@ -60,7 +60,7 @@ exports.getProject = (id) => {
 	const pr_array = [
             'pr.id', 'pr.title', 'pr.picture', 'pr.description', project_location,
             'pr.about', 'pr.video', 'c.name as category', 'p.id as profile_id', 'pr.public_id',
-            'pr.project_visibility'
+            'pr.project_visibility', 'pr.link', 'pr.app', 'pr.logo'
 	],
 	x = [];
 	const req = db.distinct(pr_array)
@@ -156,7 +156,7 @@ exports.getProjectDiscussion = (id) => {
 exports.createOpening = (data) => {
 		return h.exist(TABLES.PROJECTS, data.project_id).then(r => {
 		if (!r.length){
-			return "could not create project opening"
+			throw "could not create project opening"
 		} else{
 		return db(TABLES.PROJECT_OPENINGS)	
 			.insert(data)
@@ -184,7 +184,7 @@ exports.likeProject = (project_id, uid) => {
     let obj = {user_id: uid, project_id: project_id}
 	return h.exist(TABLES.PROJECTS, project_id).then(r => {
         if (!r.length)
-            return "Project not found"
+            throw "Project not found"
         return db(TABLES.PROJECT_LIKES).first('id').where(obj)
             .then(r => {
                 if (!r)
@@ -225,11 +225,11 @@ exports.inviteTeam = (uid, project_id, user_id) => {
 		}
 	return h.exist(TABLES.PROJECTS, project_id).then(r => {
 	if (!r.length)
-		return ("Could not match project")
+		throw "Could not match project"
 	return db.select('id').from(TABLES.PROJECT_MEMBERS).where(o)
 		.then(r => {
 			if (r.length)
-				return "Already exist"
+				throw "Already exist"
 			else {
 				return db(TABLES.PROJECT_MEMBERS).insert(o)
 			}
@@ -240,7 +240,7 @@ exports.inviteTeam = (uid, project_id, user_id) => {
 exports.getInvite = (project_id) => {
 	return h.exist(TABLES.PROJECTS, project_id).then(r => {
 		if (!r.length)
-			return "Could not match project"
+			throw "Could not match project"
 		return db(TABLES.PROJECT_MEMBERS + ' as m')
 			.select(['m.id', 'project_id', 'user_id', 'invited_by', 'n_read', 'n_accept',
 				'p.profile_picture', 'p.fullName'])
@@ -253,7 +253,7 @@ exports.deleteInvite = (uid, invite_id) => {
 	return db(TABLES.PROJECT_MEMBERS).select('id')
 		.where({'id': invite_id, 'invited_by': uid}).then(r => {
 		if (!r.length)
-			return "Ressource does not exist, or you didn't invite that person"
+			throw "Ressource does not exist, or you didn't invite that person"
 		return db(TABLES.PROJECT_MEMBERS).del().where({id: invite_id})
 	})
 };

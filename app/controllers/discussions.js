@@ -1,5 +1,5 @@
 const discussion = require('../models/discussions'),
-    mailer = require('../services/mailer'),
+    // mailer = require('../services/mailer'),
 	_ = require('lodash');
 
 // ------------------ Project Discussions ------------------
