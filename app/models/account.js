@@ -66,7 +66,8 @@ const verifyUser = (email) => {
     return db(TABLES.INVITATION).select('invite_email').where('invite_email', email)
     .then(r => {
         if (r.length)
-            db(TABLES.INVITATION).update('status', 'registed').where('invite_email', email)
+          return  db(TABLES.INVITATION).update('status', 'registed').where('invite_email', email)
+      return null;
     })
 }
 
@@ -78,13 +79,12 @@ const newUser = (helper) => {
             return db(TABLES.USERS).insert(helper.user)
                 .then((r) => {
                     return {
-                        id: r[0],
-                        profile_id: helper.user.profile_id[0],
-                        email: helper.user.email,
+                        id: r[0], 
+                        profile_id: helper.user.profile_id[0], 
+                        email: helper.user.email, 
                     };
                 });
-        }).then(() => verifyUser(helper.user.email))
-        .catch(console.error("ET NON"))
+        })
 };
 
 const modifyUser = (helper, origin, ids) => {
