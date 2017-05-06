@@ -19,7 +19,7 @@ let redirect = (req, res) => {
 let social_redirect = (req, res) => {
     res.cookie('auth', JSON.stringify(req.token), {maxAge: 24 * 3600 * 60});
     res.redirect('/');
-}
+};
 
 router.use('/local', validate(schemas.auth.local));
 router.route('/local')
@@ -32,7 +32,7 @@ router.route('/google/callback')
     .get(auth.socialLogin('google', {successRedirect: '/'}), auth.generateToken, social_redirect);
 
 router.route('/facebook')
-    .get(auth.socialLogin('facebook', {scope: ['email']}));
+    .get(auth.socialLogin('facebook', {scope: ['email', 'user_friends']}));
 
 router.route('/facebook/callback')
     .get(auth.socialLogin('facebook', {successRedirect: '/'}), auth.generateToken, social_redirect);
