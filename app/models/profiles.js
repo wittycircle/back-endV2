@@ -66,10 +66,6 @@ exports.followProfile = (id, uid) => {
     });
 };
 
-exports.unfollowProfile = (id, uid) => {
-    return db(TABLES.USER_FOLLOWERS).del() 
-        .where({user_id: id, follow_user_id: uid})
-};
 // ------------------ Location ------------------
 exports.getLocation = (p_id) => {
     return db(TABLES.USER_PROFILES)
