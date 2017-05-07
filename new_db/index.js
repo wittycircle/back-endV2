@@ -33,9 +33,27 @@ const laider = () => {
 });
 
  rl.question('Password: ', function(password) {
-    console.log('\nPassword is ' + password); 
     special_config.connection.password = password; 
+    // ------------------ Call the creation function ------------------
     create_db() 
+    .then(e => {
+        console.log("Done")
+        process.exit(1);
+    })
+    .catch(err => {
+        if (err.code === 'ER_ACCESS_DENIED_ERROR'){
+            console.log("Bad password")
+            process.exit()
+        }
+        else if (err.code === 'ER_BAD_DB_ERROR'){
+            console.log("Bad db name")
+            process.exit()
+        }
+        else{
+            console.error(err)
+        }
+    })
+
     rl.close(); 
 });
  mutableStdout.muted = true; 
@@ -50,8 +68,6 @@ else {
     laider()
 }
 
-const db = require('knex')(special_config),
-    _ = require('lodash');
 
  // ------------------ TODO ------------------
  /*
@@ -90,24 +106,12 @@ const location_first = (db) => {
 };
 
  const create_db = () => {
-    console.log(special_config)   
-	// return location_first(db)
- //        .then(main_tables(db))
-	// 	.then(secondary_tables(db))
-	// 	.then(ternary_tables(db))
- //        .then(quaternary_tables(db))
+    const db = require('knex')(special_config);
+
+    return location_first(db)
+        .then(main_tables(db))
+        .then(secondary_tables(db))
+        .then(ternary_tables(db))
+        .then(quaternary_tables(db))
  };
 
- // create_db()
- // .then(console.log("Success"))
- // .catch(err => console.error(err))
-
-
- /*	**************************************************************
-	'users'
-	'categories'
-	'projects'
-	'profiles'
-	'social_profiles'
- 	************************************************************** */
- 

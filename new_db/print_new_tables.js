@@ -6,7 +6,7 @@ fs.readdir('./', (err, files) => {
     files.forEach(file => {
         fs.readFile(`./${file}`, (err, data) => {
             let array = data.toString().split("\n"), 
-            re = /(?:Exists)\((.*),/g;
+            re = /(?:NotExists)\((.*),/g;
             for(i in array) {
                 if (x = re.exec(array[i])){
                     y.push(file, x[1])
@@ -17,6 +17,7 @@ fs.readdir('./', (err, files) => {
 })
 
 let tes  = {
+    "index.js": "\x1b[37m",
     "main_tables.js": "\x1b[32m",
     "secondary_tables.js":  "\x1b[33m",
     "ternary_tables.js": "\x1b[34m",
