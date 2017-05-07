@@ -3,7 +3,7 @@ const special_config = {
     connection: process.env.DATABASE_URL || {
         host: '127.0.0.1',
         user: 'root',
-        password: 'dbwitty',
+        password: '14725803',
         database: 'newdb', //The one for test
     },
     pool: {

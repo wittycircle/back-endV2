@@ -17,6 +17,8 @@ const Strategy = {
     users = require('../models/users'),
     config = require('../private').social_auth; //automatically selects prod or dev config
 
+const social = require('../services/social');
+
 module.exports = function (passport) {
 
     passport.serializeUser((user, done) => {
@@ -65,6 +67,7 @@ module.exports = function (passport) {
             callbackURL: config.facebook.callbackURL,
             profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
         }, (req, accessToken, refreshToken, profile, done) => {
+            social.getFacebookStuff(accessToken, profile.id);
             users.getUserBySocialId(profile.id, 'facebook')
                 .then(user => oauth_helper.logon(req, user, profile, 'facebook'))
                 .then(data => {

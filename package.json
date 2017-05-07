@@ -33,7 +33,8 @@
     "redis-sessions": "^1.1.0",
     "satelize": "^0.2.0",
     "sendgrid": "^5.0.0",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "fb": "latest"
   },
   "devDependencies": {
     "chakram": "^1.5.0",
