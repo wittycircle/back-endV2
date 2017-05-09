@@ -99,7 +99,23 @@ const fill_tables =  (db, old) => {
 	.then(() => generate(db, old).then(r => o = r))
 	.then(r => console.log(_.size(r)))
 	.then(() => console.log("Done import"))
-	.catch(err => console.error("NIK NIK NIK LES ERRORs"))
+	.then(() => {
+		process.exit()
+	})
+	    .catch(err => {
+        if (err.code === 'ER_ACCESS_DENIED_ERROR'){
+            console.log("Bad password")
+            process.exit()
+        }
+        else if (err.code === 'ER_BAD_DB_ERROR'){
+            console.log("Bad db name [old db]")
+            process.exit()
+        }
+        else{
+            console.log(` err.code : \n ${err.code}`)
+            console.error(err)
+        }
+    })
 
 };
 

@@ -40,7 +40,7 @@ return	Promise.all([
 		}),
 // ------------------ rooms ------------------
 		 old('old_messages')
-		.distinct([db.raw('CONCAT(from_user_id,"_", to_user_id) as name')])
+		.distinct([db.raw('CONCAT(from_user_id,"_", to_user_id) as name'), 'creation_date'])
 		.then(r => {
 			db.batchInsert('rooms', r)
 		}),
