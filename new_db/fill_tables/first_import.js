@@ -1,4 +1,4 @@
-const first_import = (db,old) => {
+const first_import = (db, old, h) => {
 return	Promise.all([
 // ------------------ users ------------------
 			 old('users as u')
@@ -40,10 +40,42 @@ return	Promise.all([
 		}),
 // ------------------ rooms ------------------
 		 old('old_messages')
-		.distinct([db.raw('CONCAT(from_user_id,"_", to_user_id) as name'), 'creation_date'])
+		.distinct([db.raw('CONCAT(from_user_id,"_", to_user_id) as name'),
+			db.raw('MIN(creation_date) as creation_date')])
+		.groupBy('creation_date')
 		.then(r => {
 			db.batchInsert('rooms', r)
 		}),
+// ------------------ university_list ------------------
+		old('university_list')
+		.select(['name', 'website as url', 'launched', 'popular', 'country'])
+		.then(r => {
+		db.batchInsert('university_list', r)
+		}),
+
+/*	**************************************************************
+				LES BAILS DENROULES ICI A FAIRE
+	************************************************************** */
+
+// ------------------ networks ------------------
+			old('networks')
+			.select(['name', 'type', 'url_name as url', 'token'])
+			.then(r => {
+			db.batchInsert('networks', r)
+			}),
+// ------------------ networks_group ------------------
+			old('networks_group')
+			.select(['title', 'logo', 'cover_picture', 'story', 'creation_date',
+				db.raw('CONCAT(city, "_", state, "_", country) as loc_id' )])
+			.then(r => {
+				r.forEach(e => {
+					console.log(h.location[e.loc_id.toUpperCase()])
+					e.loc_id = h.location[e.loc_id.toUpperCase()];
+				})
+			db.batchInsert('networks_group', r)
+			}),
+
+
 	]); //promise_all
 };
 

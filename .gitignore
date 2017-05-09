@@ -20,3 +20,4 @@ test_chart
 nginx.conf
 .gitignore
 server.js
+new_db/nik.bash

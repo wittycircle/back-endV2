@@ -79,37 +79,43 @@ const main_tables = (db) => Promise.all([
 		t.charset('utf8');
 	}),
 
-/*	**************************************************************
-				thoses that needs location
-	************************************************************** */
 
 // ------------------ university_list ------------------
 	db.schema.createTableIfNotExists('university_list', function(t) {
 		t.increments();
-		t.integer('loc_id').unsigned().notNullable();
+		// t.integer('loc_id').unsigned();
 		t.string('name', 128).notNullable();
+		t.string('country', 128);
 		t.string('url', 128);
 		t.boolean('launched');
 		t.boolean('popular');
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
-	//			*** relations ***
-		t.foreign('loc_id').references('location.id').onDelete('cascade');
-		
 	}),
 // ------------------ networks ------------------
 	db.schema.createTableIfNotExists('networks', function(t) {
 		t.increments();
-		t.integer('loc_id').unsigned().notNullable();
-		t.string('title', 128).notNullable();
+		t.string('name', 128).notNullable();
 		t.string('type', 128).notNullable();
 		t.string('url',128).notNullable();
-		t.string('logo',128);
-		t.text('story');
 		t.string('token', 128);
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
-		//			*** relations ***
+	}),
+/*	**************************************************************
+				thoses that needs location
+	************************************************************** */
+// ------------------ networks_group ------------------
+	db.schema.createTableIfNotExists('networks_group', function(t) {
+		t.increments();
+		t.integer('loc_id').unsigned().notNullable();
+		t.string('title', 128);
+		t.string('logo',128);
+		t.string('cover_picture', 128);
+		t.text('story');
+	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+		t.charset('utf8');
+	//			*** relations ***
 		t.foreign('loc_id').references('location.id').onDelete('cascade');
 	}),
 ]);
