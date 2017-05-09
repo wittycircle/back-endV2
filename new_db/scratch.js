@@ -59,23 +59,13 @@ article_message
 invitation
 notification_permission
 invite_university
+views
 
 /*	**************************************************************
 
-+---------------+------------+------+-----+-------------------+----------------+
-| Field         | Type       | Null | Key | Default           | Extra          |
-+---------------+------------+------+-----+-------------------+----------------+
-| id            | int(11)    | NO   | PRI | NULL              | auto_increment |
-| user_id       | int(11)    | NO   | MUL | NULL              |                |
-| viewed        | int(11)    | NO   | MUL | NULL              |                |
-| creation_date | timestamp  | NO   |     | CURRENT_TIMESTAMP |                |
-| mail_sent     | tinyint(1) | YES  |     | 0                 |                |
-+---------------+------------+------+-----+-------------------+----------------+
-************************************************************** */
 
 
 // ------------------ remaining ------------------
-views
 profile_ranking
 rank_of_the_day
 messages

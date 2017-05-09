@@ -71,19 +71,6 @@ const main_tables = (db) => Promise.all([
 		t.charset('utf8');
 		t.unique('name');
 	}),
-// ------------------ invitations ------------------
-	db.schema.createTableIfNotExists('invitations', function(t) {
-		t.increments();
-		t.integer('uid').unsigned().notNullable();
-		t.string('mail_to', 128).notNullable();
-		t.boolean('mail_sent').defaultTo(0);
-	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-		//t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-		t.charset('utf8');
-	//			*** relations ***
-		t.foreign('uid').references('users.id').onDelete('cascade');
-	}),
 // ------------------ rooms ------------------
 	db.schema.createTableIfNotExists('rooms', function(t) {
 		t.increments();

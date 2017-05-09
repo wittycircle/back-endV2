@@ -4,7 +4,7 @@ const special_config = {
         host: '127.0.0.1',
         user: 'root',
         password: '',
-        database: '', //The one for test
+        database: '',
     },
     pool: {
         min: 0,
@@ -12,61 +12,9 @@ const special_config = {
     }
 };
 
-const laider = () => {
-    let readline = require('readline'); 
-    let Writable = require('stream').Writable;
- 
- let mutableStdout = new Writable({
-    write: function(chunk, encoding, callback) {
-        if (!this.muted) 
-            process.stdout.write(chunk, encoding); 
-        callback(); 
-    } 
-});
- 
- mutableStdout.muted = false;
- 
- let rl = readline.createInterface({
-    input: process.stdin, 
-    output: mutableStdout, 
-    terminal: true 
-});
+    special_config.connection.database = process.argv[2];
+    special_config.connection.password = process.argv[3];
 
- rl.question('Password: ', function(password) {
-    special_config.connection.password = password; 
-    // ------------------ Call the creation function ------------------
-    create_db() 
-    .then(e => {
-        console.log("Done")
-        process.exit(1);
-    })
-    .catch(err => {
-        if (err.code === 'ER_ACCESS_DENIED_ERROR'){
-            console.log("Bad password")
-            process.exit()
-        }
-        else if (err.code === 'ER_BAD_DB_ERROR'){
-            console.log("Bad db name")
-            process.exit()
-        }
-        else{
-            console.error(err)
-        }
-    })
-
-    rl.close(); 
-});
- mutableStdout.muted = true; 
-}
-
-if (!process.argv[2]) {
-    console.log("Please enter the database name as argument")
-    process.exit()
-}
-else {
-    special_config.connection.database = process.argv[2]    
-    laider()
-}
 
 
  // ------------------ TODO ------------------
@@ -113,5 +61,26 @@ const location_first = (db) => {
         .then(secondary_tables(db))
         .then(ternary_tables(db))
         .then(quaternary_tables(db))
+        .then(console.log("\n"))
+        .then(console.log("Done creating db, will now import data"))
+        .then(e => {
+        process.exit(1);
+        });
  };
+
+    create_db()
+    .catch(err => {
+        if (err.code === 'ER_ACCESS_DENIED_ERROR'){
+            console.log("Bad password")
+            process.exit()
+        }
+        else if (err.code === 'ER_BAD_DB_ERROR'){
+            console.log("Bad db name")
+            process.exit()
+        }
+        else{
+            console.log(` err.code : \n ${err.code}`)
+            console.error(err)
+        }
+    })
 
