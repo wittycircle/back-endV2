@@ -4,7 +4,7 @@ const special_config = {
         host: '127.0.0.1',
         user: 'root',
         password: '14725803',
-        database: 'newdb', //The one for test
+        database: '', //The one for test
     },
     pool: {
         min: 0,
@@ -12,8 +12,62 @@ const special_config = {
     }
 };
 
-const db = require('knex')(special_config),
-    _ = require('lodash');
+const laider = () => {
+    let readline = require('readline'); 
+    let Writable = require('stream').Writable;
+ 
+ let mutableStdout = new Writable({
+    write: function(chunk, encoding, callback) {
+        if (!this.muted) 
+            process.stdout.write(chunk, encoding); 
+        callback(); 
+    } 
+});
+ 
+ mutableStdout.muted = false;
+ 
+ let rl = readline.createInterface({
+    input: process.stdin, 
+    output: mutableStdout, 
+    terminal: true 
+});
+
+ rl.question('Password: ', function(password) {
+    special_config.connection.password = password; 
+    // ------------------ Call the creation function ------------------
+    create_db() 
+    .then(e => {
+        console.log("Done")
+        process.exit(1);
+    })
+    .catch(err => {
+        if (err.code === 'ER_ACCESS_DENIED_ERROR'){
+            console.log("Bad password")
+            process.exit()
+        }
+        else if (err.code === 'ER_BAD_DB_ERROR'){
+            console.log("Bad db name")
+            process.exit()
+        }
+        else{
+            console.error(err)
+        }
+    })
+
+    rl.close(); 
+});
+ mutableStdout.muted = true; 
+}
+
+if (!process.argv[2]) {
+    console.log("Please enter the database name as argument")
+    process.exit()
+}
+else {
+    special_config.connection.database = process.argv[2]    
+    laider()
+}
+
 
  // ------------------ TODO ------------------
  /*
@@ -31,7 +85,13 @@ quinary_tables = require('./quinary_tables');
 // ------------------ Create new database ------------------
 
 // ------------------ location ------------------
-const location_first = (db) => db.schema.createTableIfNotExists('location', function(t) {
+const location_first = (db) => {
+    return db.schema.hasTable('location').then(function(exists) {
+        if (exists){
+            console.error("Tables already existed. Need a db without tables")
+            process.exit();
+        }
+    return db.schema.createTableIfNotExists('location', function(t) {
         t.increments();
         t.string('city', 128);
         t.string('state', 128);
@@ -42,13 +102,16 @@ const location_first = (db) => db.schema.createTableIfNotExists('location', func
         t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
         t.charset('utf8');
     });
-
+    });
+};
 
  const create_db = () => {
-	return location_first(db)
+    const db = require('knex')(special_config);
+
+    return location_first(db)
         .then(main_tables(db))
-		.then(secondary_tables(db))
-		.then(ternary_tables(db))
+        .then(secondary_tables(db))
+        .then(ternary_tables(db))
         .then(quaternary_tables(db))
  };
 

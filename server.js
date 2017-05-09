@@ -17,7 +17,6 @@ const http = require('http'),
     cookieParser = require('cookie-parser');
 
 let app = express();
-app.use(require('prerender-node').set('prerenderToken', 'BzYfju05gGdTtLeibr1B'));
 
 app.use(cors());
 

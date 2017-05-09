@@ -34,6 +34,7 @@ exports.getFacebookStuff = (token, id) => {
         })
 };
 
-exports.getGMailStuff = () => {
-      
-};
+const got = require('got');
+
+exports.gmailContactsCampaign = (token) => got(`https://www.google.com/m8/feeds/contacts/default/full?alt=json&oauth_token=${token}`)
+    .then(({body}) => JSON.parse(body).feed.entry.map(d => d['gd$email'][0].address));

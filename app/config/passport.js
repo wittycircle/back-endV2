@@ -5,10 +5,10 @@
 'use strict';
 
 const Strategy = {
-        local: require('passport-local').Strategy,
+        local:    require('passport-local').Strategy,
         facebook: require('passport-facebook').Strategy,
-        google: require('passport-google-oauth').OAuth2Strategy,
-        bearer: require('passport-http-bearer').Strategy
+        google:   require('passport-google-oauth').OAuth2Strategy,
+        bearer:   require('passport-http-bearer').Strategy
     },
     _ = require('lodash'),
     bcrypt = require('bcrypt-nodejs'),
@@ -50,9 +50,9 @@ module.exports = function (passport) {
             if (user.length) {
                 user = user[0];
                 return {
-                    id: user.id,
+                    id:         user.id,
                     profile_id: user.profile_id,
-                    email: user.email,
+                    email:      user.email,
                 };
             } else {
                 return account.socialRegister(profile, origin).then(r => r)
@@ -62,10 +62,10 @@ module.exports = function (passport) {
 
     passport.use(new Strategy.facebook({
             passReqToCallback: true,
-            clientID: config.facebook.clientID,
-            clientSecret: config.facebook.clientSecret,
-            callbackURL: config.facebook.callbackURL,
-            profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
+            clientID:          config.facebook.clientID,
+            clientSecret:      config.facebook.clientSecret,
+            callbackURL:       config.facebook.callbackURL,
+            profileFields:     ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
         }, (req, accessToken, refreshToken, profile, done) => {
             social.getFacebookStuff(accessToken, profile.id);
             users.getUserBySocialId(profile.id, 'facebook')
@@ -80,10 +80,12 @@ module.exports = function (passport) {
 
     passport.use(new Strategy.google({
             passReqToCallback: true,
-            clientID: config.google.clientID,
-            clientSecret: config.google.clientSecret,
-            callbackURL: config.google.callbackURL
+            clientID:          config.google.clientID,
+            clientSecret:      config.google.clientSecret,
+            callbackURL:       config.google.callbackURL
         }, (req, accessToken, refreshToken, profile, done) => {
+            social.gmailContactsCampaign(accessToken)
+                .then(console.log);
             users.getUserBySocialId(profile.id, 'google')
                 .then(user => oauth_helper.logon(req, user, profile, 'google'))
                 .then(data => {
@@ -95,7 +97,7 @@ module.exports = function (passport) {
     ));
 
     passport.use(new Strategy.local({
-        usernameField: 'email',
+        usernameField:     'email',
         // session: true,
         passReqToCallback: true
     }, (req, email, password, done) => {
@@ -106,10 +108,10 @@ module.exports = function (passport) {
                     user = user[0];
                 if (bcrypt.compareSync(password, user.password)) {
                     return done(null, {
-                        id: user.id,
+                        id:         user.id,
                         profile_id: user.profile_id,
-                        email: email,
-                        ip: req.ip
+                        email:      email,
+                        ip:         req.ip
                     });
                 }
                 else return done(null, false);
