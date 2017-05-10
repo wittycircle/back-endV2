@@ -44,8 +44,8 @@ const location_first = (db) => {
         t.string('city', 128);
         t.string('state', 128);
         t.string('country', 128).notNullable();
-        t.float('latitude')
-        t.float('longitude')
+        t.float('lat')
+        t.float('lng')
         t.string('name', 128);
         t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
         t.charset('utf8');

@@ -66,11 +66,11 @@ return	Promise.all([
 // ------------------ networks_group ------------------
 			old('networks_group')
 			.select(['title', 'logo', 'cover_picture', 'story', 'creation_date',
-				db.raw('CONCAT(city, "_", state, "_", country) as loc_id' )])
+				'city', 'state', 'country'])
 			.then(r => {
 				r.forEach(e => {
-					console.log(h.location[e.loc_id.toUpperCase()])
-					e.loc_id = h.location[e.loc_id.toUpperCase()];
+					let key = `${e.city}_${e.state}_${e.country}`.toUpperCase();
+					e.loc_id = 1;
 				})
 			db.batchInsert('networks_group', r)
 			}),

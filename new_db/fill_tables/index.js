@@ -51,16 +51,27 @@ third_import = require('./third_import'),
 fourth_import = require('./fourth_import'),
 fifth_import = require('./fifth_import'),
 generate = require('./generate_user_object'),
+// toolbox = require('./toolbox'),
 _ = require('lodash');
 
-const fill_location = (db, old) => {
+/*	
+	let toInsert = []
+	let toPromise = []
+	r.forEach(e => {
+	toPromise.push(toolbox.google_loc('paris').then(r => toInsert.push(r)).catch(err=> console.error("wrg"))) 
+	}) 
+	return Promise.all(toPromise).then(() => {
+	return db.batchInsert('location', toInsert) 
+	}); 
+*/
 
+const fill_location = (db, old) => {
 return	old('profiles').distinct(['city', 'state', 'country'])
 	.union(old('projects').distinct(['city', 'state', 'country']))
 	.then(r => {
-		return db.batchInsert('location', r)
+			return db.batchInsert('location', r)
 	})
-}
+};
 
 
 const fill_tables =  (db, old) => {
@@ -71,8 +82,8 @@ const fill_tables =  (db, old) => {
 	.then(() => first_import(db, old, h))
 	.then(() => generate.users(db, old))
 	.then(r => h.users = r)
-	.then(r => console.log(_.size(h)))
-	// .then(() => second_import(db, old, h))
+	.then(r => console.log(h))
+	// // .then(() => second_import(db, old, h))
 	.then(() => console.log("Done import"))
 	.then(() => {
 		process.exit()
