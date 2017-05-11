@@ -14,7 +14,7 @@ const init = module.exports.initPeopleAndProjectIndex = () => {
 
     let people = client.initIndex('Users'),
         project = client.initIndex('Projects'),
-        pandp = client.initIndex('PandP');
+        pandp = client.initIndex('PAndP');
 
     let storage = {};
 
@@ -37,5 +37,7 @@ const init = module.exports.initPeopleAndProjectIndex = () => {
                     project.addObjects(projects)
                 })
             })])
-        .then(() => pandp.addObjects([...storage.profiles, ...storage.projects]))
+        .then(() => client.deleteIndex('PAndP', err => pandp.addObjects([...storage.profiles, ...storage.projects])))
 };
+
+init();
