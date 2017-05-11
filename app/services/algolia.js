@@ -31,6 +31,7 @@ const init = module.exports.initPeopleAndProjectIndex = () => {
         db(TABLES.PROJECTS + ' as p')
             .select('*')
             .innerJoin('categories', 'categories.id', 'p.category_id')
+            .where('p.project_visibility', 1)
             .then(projects => {
                 storage.projects = projects;
                 client.deleteIndex('Projects', (err) => {
