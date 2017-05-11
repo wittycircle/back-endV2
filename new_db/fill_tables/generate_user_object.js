@@ -1,6 +1,12 @@
 
-_ = require('lodash')
+const _ = require('lodash'),
+user_list = require('./data/users_data'),
+location_list = require('./data/location_data');
+
+
 module.exports.users = (db, old) => {
+	if (user_list)
+		return user_list;
 	let users = {}
 	let old_u = old('users').select('id');
 	let new_u = db('users').select('id');
@@ -17,13 +23,10 @@ return 	Promise.all([old_u, new_u]).then(([r, rr]) => {
 
 module.exports.location = (db, old) => {
 	let loc = {"unknown" : 1}
-	return db('location').select('city', 'state', 'country', 'id') 
+	return db('location').select('city', 'id')
 	.then((r) => {
 		r.forEach(e => {
-			let key = `${e.city}_${e.state}_${e.country}`.toUpperCase();
-			key = key.toUpperCase();
-			console.log(key);
-			loc[key] = e.id
+			loc[e.city] = e.id
 		}) 
 		return loc;
 	})

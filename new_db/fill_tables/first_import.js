@@ -6,37 +6,37 @@ return	Promise.all([
 			 'valid', 'moderator', 'fake', 'invite_id as invite_link'])
 			.leftJoin('share_invite_link as s', 'u.id', 's.user_id')
 			.then(r => {
-			db.batchInsert('users', r)
+			return db.batchInsert('users', r)
 			}),
 // ------------------ categories ------------------ 
 			 old('categories')
 			.select(['name']) 
 			.then(r => {
-			db.batchInsert('categories', r) 
+			return db.batchInsert('categories', r) 
 			}),
 // ------------------ account_validation ------------------
 		 old('account_validation')
 		.select(['token', 'user_email as email'])
 		.then(r => {
-			db.batchInsert('account_validation', r)
+			return db.batchInsert('account_validation', r)
 		}),
 // ------------------ skills ------------------
 		 old('skills')
 		.select(['name', 'category', 'priority'])
 		.then(r => {
-			db.batchInsert('skills', r)
+			return db.batchInsert('skills', r)
 		}),
 // ------------------ interests ------------------
 		 old('interests')
 		.distinct(['name', db.raw('MAX(priority) as priority')])
 		.then(r => {
-			db.batchInsert('interests', r)
+			return db.batchInsert('interests', r)
 		}),
 // ------------------ article_tags ------------------
 		 old('article_tags')
 		.select(['name'])
 		.then(r => {
-			db.batchInsert('article_tags', r)
+			return db.batchInsert('article_tags', r)
 		}),
 // ------------------ rooms ------------------
 		 old('old_messages')
@@ -44,13 +44,13 @@ return	Promise.all([
 			db.raw('MIN(creation_date) as creation_date')])
 		.groupBy('creation_date')
 		.then(r => {
-			db.batchInsert('rooms', r)
+			return db.batchInsert('rooms', r)
 		}),
 // ------------------ university_list ------------------
 		old('university_list')
 		.select(['name', 'website as url', 'launched', 'popular', 'country'])
 		.then(r => {
-		db.batchInsert('university_list', r)
+		return db.batchInsert('university_list', r)
 		}),
 
 /*	**************************************************************
@@ -58,24 +58,22 @@ return	Promise.all([
 	************************************************************** */
 
 // ------------------ networks ------------------
-			old('networks')
-			.select(['name', 'type', 'url_name as url', 'token'])
-			.then(r => {
-			db.batchInsert('networks', r)
-			}),
-// ------------------ networks_group ------------------
-			old('networks_group')
-			.select(['title', 'logo', 'cover_picture', 'story', 'creation_date',
-				'city', 'state', 'country'])
-			.then(r => {
-				r.forEach(e => {
-					let key = `${e.city}_${e.state}_${e.country}`.toUpperCase();
-					e.loc_id = 1;
-				})
-			db.batchInsert('networks_group', r)
-			}),
-
-
+		old('networks')
+		.select(['name', 'type', 'url_name as url', 'token'])
+		.then(r => {
+		return db.batchInsert('networks', r)
+		}),
+// // ------------------ networks_group ------------------
+		old('networks_group')
+		// .select('*')
+		.select(['title', 'logo', 'cover_picture', 'story', 'creation_date', 'city'])
+		.then(r => {
+			r.forEach(e => {
+				e.loc_id = h.location[e.city] || 1
+				delete e.city;
+			})
+		return db.batchInsert('networks_group', r)
+		}),
 	]); //promise_all
 };
 

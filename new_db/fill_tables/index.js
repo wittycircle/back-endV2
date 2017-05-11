@@ -51,38 +51,50 @@ third_import = require('./third_import'),
 fourth_import = require('./fourth_import'),
 fifth_import = require('./fifth_import'),
 generate = require('./generate_user_object'),
-// toolbox = require('./toolbox'),
+toolbox = require('./toolbox'),
 _ = require('lodash');
 
 /*	
-	let toInsert = []
-	let toPromise = []
-	r.forEach(e => {
-	toPromise.push(toolbox.google_loc('paris').then(r => toInsert.push(r)).catch(err=> console.error("wrg"))) 
-	}) 
-	return Promise.all(toPromise).then(() => {
-	return db.batchInsert('location', toInsert) 
-	}); 
 */
 
 const fill_location = (db, old) => {
-return	old('profiles').distinct(['city', 'state', 'country'])
-	.union(old('projects').distinct(['city', 'state', 'country']))
-	.then(r => {
-			return db.batchInsert('location', r)
-	})
+	location_list = require('./data/espoir');
+	if (location_list){
+		console.log("IT WORKED")
+		return db.batchInsert('location', location_list)
+	}
+	// else {
+	// 	console.log("GOOGLE THINGY")
+	// 	return	old('profiles').distinct(['city']) 
+	// 	.union(old('projects').distinct(['city'])) 
+	// 	.then(r => {
+	// 		let toInsert = [] 
+	// 		let toPromise = [] 
+	// 		r.forEach((e,i) => {
+	// 			setInterval(() => 
+	// 			toPromise.push(toolbox.google_loc(e.city) 
+	// 				.then(r => {
+	// 					toInsert.push(r)
+	// 					console.log(r)
+	// 				}) 
+	// 				.catch(err=> console.error("wrg")) ) 
+	// 			, 1000)
+	// 		}) 
+	// 		return Promise.all(toPromise).then(() => {
+	// 			return db.batchInsert('location', toInsert) }); 
+	// 			}) 
+	// } 
 };
-
 
 const fill_tables =  (db, old) => {
 	let h = {}
 	fill_location(db, old)
-	.then(() => generate.location(db, old))
+	.then((r) => generate.location(db, old))
 	.then(r => h.location = r)
 	.then(() => first_import(db, old, h))
 	.then(() => generate.users(db, old))
 	.then(r => h.users = r)
-	.then(r => console.log(h))
+	// .then(r => console.log(h))
 	// // .then(() => second_import(db, old, h))
 	.then(() => console.log("Done import"))
 	.then(() => {
