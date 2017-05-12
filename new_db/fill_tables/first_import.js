@@ -1,4 +1,4 @@
-const first_import = (db, old, h) => {
+const first_import = (db, old) => {
 return	Promise.all([
 // ------------------ users ------------------
 			 old('users as u')
@@ -46,35 +46,20 @@ return	Promise.all([
 		.then(r => {
 			return db.batchInsert('rooms', r)
 		}),
-// ------------------ university_list ------------------
+// ------------------ networks_list ------------------
 		old('university_list')
 		.select(['name', 'website as url', 'launched', 'popular', 'country'])
 		.then(r => {
-		return db.batchInsert('university_list', r)
+			r = [{name: "Unknown"}, ...r]
+		return db.batchInsert('networks_list', r)
 		}),
-
-/*	**************************************************************
-				LES BAILS DENROULES ICI A FAIRE
-	************************************************************** */
-
-// ------------------ networks ------------------
+// ------------------ partnerships ------------------
 		old('networks')
 		.select(['name', 'type', 'url_name as url', 'token'])
 		.then(r => {
-		return db.batchInsert('networks', r)
+		return db.batchInsert('partnerships', r)
 		}),
-// // ------------------ networks_group ------------------
-		old('networks_group')
-		// .select('*')
-		.select(['title', 'logo', 'cover_picture', 'story', 'creation_date', 'city'])
-		.then(r => {
-			r.forEach(e => {
-				e.loc_id = h.location[e.city] || 1
-				delete e.city;
-			})
-		return db.batchInsert('networks_group', r)
-		}),
-	]); //promise_all
+	]);
 };
 
 module.exports = first_import;

@@ -9,7 +9,6 @@ const secondary_tables = (db) => Promise.all([
 		t.increments();
 		t.integer('uid').unsigned().notNullable();
 		t.integer('category_id').unsigned().notNullable();
-		t.integer('network_id').unsigned().notNullable();
 		t.integer('loc_id').unsigned().notNullable();
 		t.string('status', 128).notNullable();
 		t.string('title', 512).notNullable();
@@ -30,7 +29,6 @@ const secondary_tables = (db) => Promise.all([
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade')
 		t.foreign('category_id').references('categories.id').onDelete('cascade').onUpdate('cascade')
-		t.foreign('network_id').references('networks.id').onDelete('cascade');
 		t.foreign('loc_id').references('location.id').onDelete('cascade');
 	}),
 
@@ -54,7 +52,7 @@ const secondary_tables = (db) => Promise.all([
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade')
 		t.foreign('loc_id').references('location.id').onDelete('cascade')
-		t.foreign('network_id').references('networks.id').onDelete('cascade');
+		t.foreign('network_id').references('networks_list.id').onDelete('cascade');
 	}),
 // ------------------ reset_passwords ------------------
 	db.schema.createTableIfNotExists('reset_passwords', function(t) {
@@ -215,6 +213,34 @@ const secondary_tables = (db) => Promise.all([
 
 		t.charset('utf8');
 	//			*** relations ***
+		t.foreign('uid').references('users.id').onDelete('cascade');
+	}),
+// ------------------ networks_info ------------------
+	db.schema.createTableIfNotExists('networks_info', function(t) {
+		t.increments();
+		t.integer('loc_id').unsigned().notNullable();
+		t.integer('network_id').unsigned().notNullable();
+		t.string('logo',128);
+		t.string('cover_picture', 128);
+		t.text('story');
+	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+		t.charset('utf8');
+	//			*** relations ***
+		t.foreign('loc_id').references('location.id').onDelete('cascade');
+		t.foreign('network_id').references('networks_list.id').onDelete('cascade')
+	}),
+// ------------------ network_verification ------------------
+	db.schema.createTableIfNotExists('network_verification', function(t) {
+		t.increments();
+		t.integer('network_id').unsigned().notNullable();
+		t.integer('uid').unsigned().notNullable();
+		t.boolean('verification').defaultTo(0);
+		t.string('token').notNullable();
+	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+
+		t.charset('utf8');
+	//			*** relations ***
+		t.foreign('network_id').references('networks_list.id').onDelete('cascade');
 		t.foreign('uid').references('users.id').onDelete('cascade');
 	}),
 ]);

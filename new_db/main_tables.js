@@ -47,8 +47,8 @@ const main_tables = (db) => Promise.all([
 		t.string('city', 128);
 		t.string('state', 128);
 		t.string('country', 128).notNullable();
-		t.float('lat')
-		t.float('lng')
+		t.decimal('lat', 9, 6)
+		t.decimal('lng', 9, 6)
 		t.string('name', 128);
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
@@ -80,10 +80,9 @@ const main_tables = (db) => Promise.all([
 	}),
 
 
-// ------------------ university_list ------------------
-	db.schema.createTableIfNotExists('university_list', function(t) {
+// ------------------ networks_list ------------------
+	db.schema.createTableIfNotExists('networks_list', function(t) {
 		t.increments();
-		// t.integer('loc_id').unsigned();
 		t.string('name', 128).notNullable();
 		t.string('country', 128);
 		t.string('url', 128);
@@ -92,8 +91,8 @@ const main_tables = (db) => Promise.all([
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
 	}),
-// ------------------ networks ------------------
-	db.schema.createTableIfNotExists('networks', function(t) {
+// ------------------ partnerships ------------------
+	db.schema.createTableIfNotExists('partnerships', function(t) {
 		t.increments();
 		t.string('name', 128).notNullable();
 		t.string('type', 128).notNullable();
@@ -101,22 +100,6 @@ const main_tables = (db) => Promise.all([
 		t.string('token', 128);
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
-	}),
-/*	**************************************************************
-				thoses that needs location
-	************************************************************** */
-// ------------------ networks_group ------------------
-	db.schema.createTableIfNotExists('networks_group', function(t) {
-		t.increments();
-		t.integer('loc_id').unsigned().notNullable();
-		t.string('title', 128);
-		t.string('logo',128);
-		t.string('cover_picture', 128);
-		t.text('story');
-	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-		t.charset('utf8');
-	//			*** relations ***
-		t.foreign('loc_id').references('location.id').onDelete('cascade');
 	}),
 ]);
 

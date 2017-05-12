@@ -50,7 +50,7 @@ second_import = require('./second_import'),
 third_import = require('./third_import'),
 fourth_import = require('./fourth_import'),
 fifth_import = require('./fifth_import'),
-generate = require('./generate_user_object'),
+generate = require('./generate_stuff'),
 toolbox = require('./toolbox'),
 _ = require('lodash');
 
@@ -63,39 +63,20 @@ const fill_location = (db, old) => {
 		console.log("IT WORKED")
 		return db.batchInsert('location', location_list)
 	}
-	// else {
-	// 	console.log("GOOGLE THINGY")
-	// 	return	old('profiles').distinct(['city']) 
-	// 	.union(old('projects').distinct(['city'])) 
-	// 	.then(r => {
-	// 		let toInsert = [] 
-	// 		let toPromise = [] 
-	// 		r.forEach((e,i) => {
-	// 			setInterval(() => 
-	// 			toPromise.push(toolbox.google_loc(e.city) 
-	// 				.then(r => {
-	// 					toInsert.push(r)
-	// 					console.log(r)
-	// 				}) 
-	// 				.catch(err=> console.error("wrg")) ) 
-	// 			, 1000)
-	// 		}) 
-	// 		return Promise.all(toPromise).then(() => {
-	// 			return db.batchInsert('location', toInsert) }); 
-	// 			}) 
-	// } 
 };
 
 const fill_tables =  (db, old) => {
-	let h = {}
-	fill_location(db, old)
-	.then((r) => generate.location(db, old))
-	.then(r => h.location = r)
-	.then(() => first_import(db, old, h))
-	.then(() => generate.users(db, old))
-	.then(r => h.users = r)
-	// .then(r => console.log(h))
-	// // .then(() => second_import(db, old, h))
+	let h = {};
+
+	return fill_location(db, old)
+	.then(() => first_import(db, old))
+	.then(() => generate.stuff(db, old, h))
+	// .then(() => {
+	// 	for (k in h){
+	// 		console.log(k, h[k])
+	// 	}
+	// })
+	.then(() => second_import(db, old, h))
 	.then(() => console.log("Done import"))
 	.then(() => {
 		process.exit()
