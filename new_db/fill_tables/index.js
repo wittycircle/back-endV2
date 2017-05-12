@@ -58,7 +58,7 @@ _ = require('lodash');
 */
 
 const fill_location = (db, old) => {
-	location_list = require('./data/espoir');
+	location_list = require('./data/location_data');
 	if (location_list){
 		console.log("IT WORKED")
 		return db.batchInsert('location', location_list)
@@ -71,11 +71,6 @@ const fill_tables =  (db, old) => {
 	return fill_location(db, old)
 	.then(() => first_import(db, old))
 	.then(() => generate.stuff(db, old, h))
-	// .then(() => {
-	// 	for (k in h){
-	// 		console.log(k, h[k])
-	// 	}
-	// })
 	.then(() => second_import(db, old, h))
 	.then(() => console.log("Done import"))
 	.then(() => {

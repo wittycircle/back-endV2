@@ -2,35 +2,10 @@ tools = require('./toolbox');
 
 const second_import = (db,old, h) => {
 return	Promise.all([
-
-	/*	**************************************************************
-				| Field              | Type         | Null | Key | Default           | Extra          |
-+--------------------+--------------+------+-----+-------------------+----------------+
-| id                 | int(11)      | NO   | PRI | NULL              | auto_increment |
-| user_id            | int(11)      | NO   | MUL | NULL              |                |
-| category_id        | int(11)      | NO   | MUL | NULL              |                |
-| title              | varchar(512) | NO   |     | NULL              |                |
-| description        | varchar(512) | NO   |     | NULL              |                |
-| city               | varchar(128) | NO   |     | NULL              |                |
-| state              | varchar(128) | YES  |     | NULL              |                |
-| country            | varchar(128) | NO   |     | NULL              |                |
-| picture            | varchar(128) | NO   |     | NULL              |                |
-| about              | mediumtext   | YES  |     | NULL              |                |
-| status             | varchar(128) | NO   |     | NULL              |                |
-| video              | varchar(128) | YES  |     | NULL              |                |
-| public_id          | int(11)      | NO   | UNI | NULL              |                |
-| project_visibility | tinyint(1)   | YES  |     | NULL              |                |
-| creation_date      | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
-| network            | varchar(128) | YES  |     | NULL              |                |
-| link               | varchar(255) | YES  |     | NULL              |                |
-| app                | varchar(255) | YES  |     | NULL              |                |
-| logo               | varchar(255) | YES  |     | NULL              |                |
-+--------------------+--------------+------+-----+-------------------+----------------+
-		************************************************************** */
 // ------------------ projects ------------------
 		old('projects')
 		.select(['user_id as uid', 'category_id', 'city as loc_id',
-		 'title', 'description', 'about', 'status', 
+		 'title', 'description', 'about', 'status',
 		 'picture', 'video', 'link', 'app', 'logo',
 		 'public_id',
 		 'project_visibility'
@@ -53,12 +28,36 @@ return	Promise.all([
 		}),
 
 // ------------------ reset_passwords ------------------
-			// old('reset_passwords')
-			// .select(['user_id as uid', 'token', db.raw('1 as mail_sent')])
-			// .then(r => {
-			// 	r = h.transform(r, ['users'])
-			// 	return db.batchInsert('reset_passwords', r)
-			// }),
+			old('reset_passwords')
+			.select(['user_id as uid', 'token', db.raw('1 as mail_sent')])
+			.then(r => {
+				r = h.transform(r, ['users'])
+				return db.batchInsert('reset_passwords', r)
+			}),
+// ------------------ user_skills ------------------
+			old('user_skills')
+			.select(['user_id as uid', 'skill_id'])
+			.then(r => {
+				r = h.transform(r, ['users'])
+				return db.batchInsert('user_skills', r)
+			}),
+// ------------------ user_experiences ------------------
+			old('user_experiences')
+			.select(['user_id as uid', 'location_city as loc_id',
+				'title', 'company', 'date_from', 'date_to', 'description'])
+			.then(r => {
+				r = h.transform(r, ['users', 'location'])
+				return db.batchInsert('user_experiences', r)
+			}),
+// ------------------ user_interests ------------------
+			old('user_interests')
+			.select(['user_id as uid', 'interest_id'])
+			.then(r => {
+				r = h.transform(r, ['users', 'interests'])
+				return db.batchInsert('user_interests', r)
+			}),
+
+
 
 // // ------------------ networks_group ------------------
 	// old('networks_group')

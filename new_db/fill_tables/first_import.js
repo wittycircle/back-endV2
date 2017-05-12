@@ -10,7 +10,7 @@ return	Promise.all([
 			}),
 // ------------------ categories ------------------ 
 			 old('categories')
-			.select(['name']) 
+			.select(['id', 'name']) 
 			.then(r => {
 			return db.batchInsert('categories', r) 
 			}),
@@ -22,13 +22,13 @@ return	Promise.all([
 		}),
 // ------------------ skills ------------------
 		 old('skills')
-		.select(['name', 'category', 'priority'])
+		.select(['id', 'name', 'category', 'priority'])
 		.then(r => {
 			return db.batchInsert('skills', r)
 		}),
 // ------------------ interests ------------------
 		 old('interests')
-		.distinct(['name', db.raw('MAX(priority) as priority')])
+		.distinct(['name', db.raw('MAX(priority) as priority')]).groupBy('name')
 		.then(r => {
 			return db.batchInsert('interests', r)
 		}),
