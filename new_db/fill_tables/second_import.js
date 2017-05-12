@@ -56,8 +56,55 @@ return	Promise.all([
 				r = h.transform(r, ['users', 'interests'])
 				return db.batchInsert('user_interests', r)
 			}),
-
-
+// ------------------ articles ------------------
+  		old('articles')
+  		.select(['author_id as uid', 'title', 'text',
+			'picture', 'views', 'article_id as public_id', 'read_time', 'creation_date'])
+  		.then(r => {
+				r = h.transform(r, ['users'])
+  			return db.batchInsert('articles', r)
+  		}),
+// ------------------ notification_permission ------------------
+  		old('notification_permission')
+  		.select(['user_id as uid', 'notif_type', 'permission'])
+  		.then(r => {
+				r = h.transform(r, ['users'])
+  			return db.batchInsert('notification_permission', r)
+  		}),
+// ------------------ invite_university ------------------
+  		old('invite_university')
+  		.select(['number_students as nb_students', 'sender as uid',
+			'university as partnership_id'])
+  		.then(r => {
+				r = h.transform(r, ['users', 'partnerships'])
+  			return db.batchInsert('partnerships_invite', r)
+  		}),
+// ------------------ views ------------------
+  		old('views')
+  		.select(['user_id as uid', 'viewed', db.raw('1 as mail_sent'), 'creation_date'])
+  		.then(r => {
+				r = h.transform(r, ['users', 'viewed'])
+  			return db.batchInsert('views', r)
+  		}),
+// ------------------ room_members ------------------
+  		db('rooms')
+  		.select(['id', 'name'])
+  		.then(r => {
+				let toInsert = []
+				r.forEach(e => {
+					let x = e.name.split('_')
+					toInsert.push({
+						room_id: e.id,
+						uid: x[0]
+					});
+					toInsert.push({
+						room_id: e.id,
+						uid: x[1]
+					});
+				});
+				toInsert = h.transform(toInsert, ['users'])
+  			return db.batchInsert('room_members', toInsert)
+  		}),
 
 // // ------------------ networks_group ------------------
 	// old('networks_group')

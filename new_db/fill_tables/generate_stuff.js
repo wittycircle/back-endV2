@@ -49,26 +49,44 @@ const getInterests = (db, old) => {
 		.then(([nr, or]) => {
 			or.forEach(e => {
 				let x = nr.find(n => n.name == e.name).id
-				// console.log(e.name, e.id, x)
 				interests[e.id] = x;
 				})
 				return interests;
-		});
-}
+		})
+};
 
+const getPartnerships = (db, old) => {
+	let partnerships = {};
+	return db('partnerships').select('id', 'name')
+		.then(r => {
+			r.forEach(e => {
+				partnerships[e.name] = e.id
+			})
+				return partnerships
+		})
+};
 
 module.exports.stuff = (db, old, h) => {
-	return Promise.all([getUsers(db, old), getLocation(db, old),
-		 getNetworks(db, old), getInterests(db, old)])
-	.then(([users, location, networks, interests]) => {
+	return Promise.all([
+		getUsers(db, old),
+		getLocation(db, old),
+		getNetworks(db, old),
+		getInterests(db, old),
+		getPartnerships(db, old) ])
+	.then(([users, location, networks, interests, partnerships]) => {
 		h.users = users;
 		h.location = location;
 		h.networks = networks;
 		h.interests = interests;
+		h.partnerships = partnerships;
 		h.transform = (r, t) => {
-			return r.map(e => {
+		let nik = []
+		r.forEach(e => {
 				if (t.indexOf('users') !== -1){
-					e.uid = h.users[e.uid] || 1
+					e.uid = h.users[e.uid] || 0
+				}
+				if (t.indexOf('viewed') !== -1){
+					e.viewed = h.users[e.viewed]
 				}
 				if (t.indexOf('location') !== -1){
 					e.loc_id = h.location[e.loc_id] || 1
@@ -79,8 +97,13 @@ module.exports.stuff = (db, old, h) => {
 				if (t.indexOf('interests') !== -1){
 					e.interest_id = h.interests[e.interest_id] || 1
 				}
-				return e;
+				if (t.indexOf('partnerships') !== -1){
+					e.partnership_id = h.partnerships[e.partnership_id]
+				}
+				if (e.uid !== 0)
+					nik.push(e)
 			});
+			return nik;
 		}
 	});
 }

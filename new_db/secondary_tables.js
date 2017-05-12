@@ -47,7 +47,7 @@ const secondary_tables = (db) => Promise.all([
 		t.string('genre', 128);
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-	
+
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade')
@@ -71,12 +71,12 @@ const secondary_tables = (db) => Promise.all([
 		t.integer('uid').unsigned().notNullable();
 		t.integer('skill_id').unsigned().notNullable();
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-	
+
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade');
 		t.foreign('skill_id').references('skills.id').onDelete('cascade')
-		
+
 	}),
 // ------------------ user_experiences ------------------
 	db.schema.createTableIfNotExists('user_experiences', function(t) {
@@ -91,7 +91,7 @@ const secondary_tables = (db) => Promise.all([
 
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		//t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-	
+
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade');
@@ -115,7 +115,7 @@ const secondary_tables = (db) => Promise.all([
 		t.integer('interest_id').unsigned().notNullable();
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		//t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-	
+
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade');
@@ -132,7 +132,7 @@ const secondary_tables = (db) => Promise.all([
 		t.integer('public_id').unsigned();
 		t.integer('read_time').unsigned();
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-	
+
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade');
@@ -150,16 +150,18 @@ const secondary_tables = (db) => Promise.all([
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade');
 	}),
-// ------------------ invite_university ------------------
-	db.schema.createTableIfNotExists('invite_university', function(t) {
+// ------------------ partnerships_invite ------------------
+	db.schema.createTableIfNotExists('partnerships_invite', function(t) {
 		t.increments();
 		t.integer('uid').unsigned().notNullable();
+		t.integer('partnership_id').unsigned().notNullable();
 		t.integer('nb_students').unsigned().defaultTo(0);
 		t.text('message');
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('uid').references('users.id').onDelete('cascade');
+		t.foreign('partnership_id').references('partnerships.id').onDelete('cascade');
 	}),
 // ------------------ views ------------------
 	db.schema.createTableIfNotExists('views', function(t) {
