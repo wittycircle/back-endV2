@@ -19,27 +19,21 @@ const getUsers = (db, old) => {
 	})
 };
 
-const getLocation = (db, old) => {
-	let loc = {}
-	return db('location').select('city', 'id')
-	.then((r) => {
-		r.forEach(e => {
-			loc[e.city] = e.id
-		})
-		return loc;
+const getMatchingId = (db, old, table) => {
+	let data = {}
+	let old_u = old(table).select('id');
+	let new_u = db(table).select('id');
+	return 	Promise.all([old_u, new_u]).then(([r, rr]) => {
+		let l = r.length;
+		for(let i = 0;i< l;i++){
+			let k =	 r[i].id;
+			let v = rr[i].id;
+			data[k] = v
+		}
+		return data;
 	})
 };
 
-const getNetworks = (db, old) => {
-	let networks = {};
-	return db('networks_list').select('id', 'name')
-	.then(r => {
-		r.forEach(e => {
-			networks[e.name] = e.id;
-		})
-		return networks;
-	})
-};
 
 const getInterests = (db, old) => {
 	let interests = {};
@@ -55,35 +49,44 @@ const getInterests = (db, old) => {
 		})
 };
 
-const getPartnerships = (db, old) => {
-	let partnerships = {};
-	return db('partnerships').select('id', 'name')
+const getFromName = (db, old, table, value = "name" ) => {
+	let o = {};
+	return db(table).select('id', value)
 		.then(r => {
-			r.forEach(e => {
-				partnerships[e.name] = e.id
-			})
-				return partnerships
+			r.forEach(e =>  o[e[value]] = e.id )
+			return o;
 		})
 };
 
+module.exports.moreStuff = (db, old, h) => {
+	return Promise.all([
+		getMatchingId(db, old, 'projects'),
+	]).then(([projects]) => {
+		h.projects = projects;
+	});
+}
+
+
 module.exports.stuff = (db, old, h) => {
 	return Promise.all([
-		getUsers(db, old),
-		getLocation(db, old),
-		getNetworks(db, old),
+		getMatchingId(db, old, 'users'),
+		getFromName(db, old, 'location', 'city'),
+		getFromName(db, old, 'networks_list'),
 		getInterests(db, old),
-		getPartnerships(db, old) ])
-	.then(([users, location, networks, interests, partnerships]) => {
+		getFromName(db, old, 'partnerships'),
+	 	getFromName(db, old, 'rooms')])
+	.then(([users, location, networks, interests, partnerships, rooms]) => {
 		h.users = users;
 		h.location = location;
 		h.networks = networks;
 		h.interests = interests;
 		h.partnerships = partnerships;
+		h.rooms = rooms;
 		h.transform = (r, t) => {
 		let nik = []
 		r.forEach(e => {
 				if (t.indexOf('users') !== -1){
-					e.uid = h.users[e.uid] || 0
+					e.user_id = h.users[e.user_id] || 0
 				}
 				if (t.indexOf('viewed') !== -1){
 					e.viewed = h.users[e.viewed]
@@ -100,7 +103,13 @@ module.exports.stuff = (db, old, h) => {
 				if (t.indexOf('partnerships') !== -1){
 					e.partnership_id = h.partnerships[e.partnership_id]
 				}
-				if (e.uid !== 0)
+				if (t.indexOf('rooms') !== -1) {
+					e.room_id = h.rooms[e.room_id]
+				}
+				if (t.indexOf('projects') !== -1) {
+					e.project_id = h.projects[e.project_id]
+				}
+				if (e.user_id !== 0)
 					nik.push(e)
 			});
 			return nik;

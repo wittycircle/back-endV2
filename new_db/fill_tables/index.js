@@ -8,7 +8,7 @@ const special_config = {
         host: '127.0.0.1',
         user: 'root',
         password: '',
-        database: '', 
+        database: '',
     },
     pool: {
         min: 0,
@@ -21,7 +21,7 @@ const special_config = {
         host: '127.0.0.1',
         user: 'root',
         password: '',
-        database: '', 
+        database: '',
     },
     pool: {
         min: 0,
@@ -54,13 +54,12 @@ generate = require('./generate_stuff'),
 toolbox = require('./toolbox'),
 _ = require('lodash');
 
-/*	
+/*
 */
 
 const fill_location = (db, old) => {
 	location_list = require('./data/location_data');
 	if (location_list){
-		console.log("IT WORKED")
 		return db.batchInsert('location', location_list)
 	}
 };
@@ -72,6 +71,8 @@ const fill_tables =  (db, old) => {
 	.then(() => first_import(db, old))
 	.then(() => generate.stuff(db, old, h))
 	.then(() => second_import(db, old, h))
+  .then(() => generate.moreStuff(db, old, h))
+  .then(() => third_import(db, old, h))
 	.then(() => console.log("Done import"))
 	.then(() => {
 		process.exit()

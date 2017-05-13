@@ -1,7 +1,7 @@
 const quaternary_tables = (db) => Promise.all([
 	db.schema.createTableIfNotExists('discussion_messages', function(t) {
 		t.increments();
-		t.integer('uid').unsigned().notNullable();
+		t.integer('user_id').unsigned().notNullable();
 		t.integer('discussion_id').unsigned().notNullable();
 		t.text('message').notNullable();
 	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
@@ -10,7 +10,7 @@ const quaternary_tables = (db) => Promise.all([
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('discussion_id').references('discussions.id').onDelete('cascade');
-		t.foreign('uid').references('users.id').onDelete('cascade');
+		t.foreign('user_id').references('users.id').onDelete('cascade');
 		
 	}),
 	db.schema.createTableIfNotExists('opening_tags', function(t) {
