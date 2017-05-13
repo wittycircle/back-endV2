@@ -56,7 +56,7 @@ return	Promise.all([
 			}),
 // ------------------ articles ------------------
   		old('articles')
-  		.select(['author_id as user_id', 'title', 'text',
+  		.select(['id', 'author_id as user_id', 'title', 'text',
 			'picture', 'views', 'article_id as public_id', 'read_time', 'creation_date'])
   		.then(r => {
 				r = h.transform(r, ['users'])

@@ -61,8 +61,10 @@ const getFromName = (db, old, table, value = "name" ) => {
 module.exports.moreStuff = (db, old, h) => {
 	return Promise.all([
 		getMatchingId(db, old, 'projects'),
-	]).then(([projects]) => {
+		getFromName(db, old, 'skills')
+	]).then(([projects, skills]) => {
 		h.projects = projects;
+		h.skills = skills;
 	});
 }
 
@@ -83,13 +85,16 @@ module.exports.stuff = (db, old, h) => {
 		h.partnerships = partnerships;
 		h.rooms = rooms;
 		h.transform = (r, t) => {
-		let nik = []
+		let ret = []
 		r.forEach(e => {
 				if (t.indexOf('users') !== -1){
 					e.user_id = h.users[e.user_id] || 0
 				}
 				if (t.indexOf('viewed') !== -1){
 					e.viewed = h.users[e.viewed]
+				}
+				if (t.indexOf('invited_by') !== -1){
+					e.invited_by = h.users[e.invited_by]
 				}
 				if (t.indexOf('location') !== -1){
 					e.loc_id = h.location[e.loc_id] || 1
@@ -109,10 +114,13 @@ module.exports.stuff = (db, old, h) => {
 				if (t.indexOf('projects') !== -1) {
 					e.project_id = h.projects[e.project_id]
 				}
+				if (t.indexOf('skills') !== -1) {
+					e.skill_id = h.skills[e.skill_id] || 1274
+				}
 				if (e.user_id !== 0)
-					nik.push(e)
+					ret.push(e)
 			});
-			return nik;
+			return ret;
 		}
 	});
 }

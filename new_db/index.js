@@ -61,6 +61,7 @@ const location_first = (db) => {
         .then(secondary_tables(db))
         .then(ternary_tables(db))
         .then(quaternary_tables(db))
+        .then(quinary_tables(db))
         .then(console.log("\n"))
         .then(console.log("Done creating db, will now import data"))
         .then(e => {
@@ -83,4 +84,3 @@ const location_first = (db) => {
             console.error(err)
         }
     })
-

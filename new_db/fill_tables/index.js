@@ -73,6 +73,8 @@ const fill_tables =  (db, old) => {
 	.then(() => second_import(db, old, h))
   .then(() => generate.moreStuff(db, old, h))
   .then(() => third_import(db, old, h))
+  .then(() => fourth_import(db, old, h))
+  .then(() => fifth_import(db, old, h))
 	.then(() => console.log("Done import"))
 	.then(() => {
 		process.exit()

@@ -57,10 +57,12 @@ const ternary_tables = (db) => Promise.all([
 	db.schema.createTableIfNotExists('discussions', function(t) {
 		t.increments();
 		t.integer('project_id').unsigned().notNullable();
-	    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+		t.integer('user_id').unsigned().notNullable();
+    t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
 		t.charset('utf8');
 	//			*** relations ***
 		t.foreign('project_id').references('projects.id').onDelete('cascade')
+		t.foreign('user_id').references('users.id').onDelete('cascade');
 	}),
 // ------------------ project_invites ------------------
 	db.schema.createTableIfNotExists('project_invites', function(t) {
@@ -78,7 +80,7 @@ const ternary_tables = (db) => Promise.all([
 	//			*** relations ***
 		t.foreign('project_id').references('projects.id').onDelete('cascade')
 	}),
-// ------------------ project_openings ------------------
+// ------------------ openings ------------------
 	db.schema.createTableIfNotExists('openings', function(t) {
 		t.increments();
 		t.integer('project_id').unsigned().notNullable();

@@ -8,11 +8,11 @@ return	Promise.all([
 			.then(r => {
 			return db.batchInsert('users', r)
 			}),
-// ------------------ categories ------------------ 
+// ------------------ categories ------------------
 			 old('categories')
-			.select(['id', 'name']) 
+			.select(['id', 'name'])
 			.then(r => {
-			return db.batchInsert('categories', r) 
+			return db.batchInsert('categories', r)
 			}),
 // ------------------ account_validation ------------------
 		 old('account_validation')
@@ -24,6 +24,7 @@ return	Promise.all([
 		 old('skills')
 		.select(['id', 'name', 'category', 'priority'])
 		.then(r => {
+			// r.push({id: 1, name: "unknown"})
 			return db.batchInsert('skills', r)
 		}),
 // ------------------ interests ------------------
@@ -63,4 +64,3 @@ return	Promise.all([
 };
 
 module.exports = first_import;
-
