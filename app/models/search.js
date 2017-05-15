@@ -69,14 +69,12 @@ exports.cardProfile = selector => {
 
   const profile_array = [
     'p.id',
+    'p.user_id',
     'p.picture',
     'p.about',
     'p.cover_picture',
     'p.description',
     'nl.name as network',
-    'p.city',
-    'p.state',
-    'p.country',
     h.format_location,
     h.fullname,
     'u.username'
@@ -90,7 +88,7 @@ exports.cardProfile = selector => {
       .select(profile_array)
       .where('p.description', '!=', 'NULL')
       .andWhere('p.picture', '!=', 'NULL')
-      .andWhere('p.fake', '=', '0');
+      .andWhere('u.fake', '=', '0');
     return _query.as('p');
   };
   const ret_array = [
@@ -99,7 +97,7 @@ exports.cardProfile = selector => {
     'rank',
     'sort.id as user_id',
     'p.id',
-    'profile_picture as picture',
+    'picture',
     'foli',
     'cover_picture',
     'about',

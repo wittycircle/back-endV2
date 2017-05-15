@@ -1,12 +1,12 @@
 const { db, TABLES } = require('./index');
 
 const format_location = db.raw(`
-	CASE WHEN (p.city IS NOT NULL)
+	CASE WHEN (loc.city IS NOT NULL)
 		THEN
-			CASE WHEN (p.state != NULL)
-				THEN CONCAT(p.city, ', ', p.state)
-			WHEN (p.country IS NOT NULL)
-				THEN CONCAT(p.city, ', ', p.country)
+			CASE WHEN (loc.state != NULL)
+				THEN CONCAT(loc.city, ', ', loc.state)
+			WHEN (loc.country IS NOT NULL)
+				THEN CONCAT(loc.city, ', ', loc.country)
 				ELSE ' '
 			END
 		ELSE ' '
