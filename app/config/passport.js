@@ -30,8 +30,7 @@ module.exports = function (passport) {
     passport.use(new Strategy.bearer({
             session: true
         }, (token, done) => {
-            console.log(token);
-            session.getUser(token, function (err, resp) {
+             session.getUser(token, function (err, resp) {
                     if (err)
                         return done(err);
                     if (_.isEmpty(resp))
@@ -44,7 +43,7 @@ module.exports = function (passport) {
     ));
 
     const oauth_helper = {
-        logon: (req, user, profile, origin) => {
+        logon: (req, user, profile, token, origin) => {
             if (user.length) {
                 user = user[0];
                 return {
@@ -53,7 +52,7 @@ module.exports = function (passport) {
                     email: user.email,
                 };
             } else {
-                return account.socialRegister(profile, origin).then(r => r)
+                return account.socialRegister(profile, token,  origin).then(r => {return r});
             }
         }
     };
@@ -66,10 +65,11 @@ module.exports = function (passport) {
             profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified', 'photos', 'displayName']
         }, (req, accessToken, refreshToken, profile, done) => {
             users.getUserBySocialId(profile.id, 'facebook')
-                .then(user => oauth_helper.logon(req, user, profile, 'facebook'))
+                .then(user => oauth_helper.logon(req, user, profile, accessToken, 'facebook'))
                 .then(data => {
-                    data.ip = req.ip;
-                    done(null, data);
+		    console.log(data);
+		    data.ip = req.ip;
+		    done(null, data);
                 })
                 .catch(err => done(err))
         }
@@ -82,7 +82,7 @@ module.exports = function (passport) {
             callbackURL: config.google.callbackURL
         }, (req, accessToken, refreshToken, profile, done) => {
             users.getUserBySocialId(profile.id, 'google')
-                .then(user => oauth_helper.logon(req, user, profile, 'google'))
+                .then(user => oauth_helper.logon(req, user, profile, accessToken, 'google'))
                 .then(data => {
                     data.ip = req.ip;
                     done(null, data);

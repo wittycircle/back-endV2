@@ -43,21 +43,21 @@ const send_mail = (data, bail) => {
 };
 
 const profile_views = (args) => {
-    const request = db.distinct('v.user_id', 'u.email', 'p.first_name', 'p.description', db.raw('GROUP_CONCAT(v.viewed) as notif'))
-    .count('v.viewed as vcount')
+    const request = db.distinct('v.viewed', 'u.email', 'p.first_name', 'p.description', db.raw('GROUP_CONCAT(v.user_id) as notif'))
+    .count('v.user_id as vcount')
         .from('views as v')
-        .join(TABLES.USERS + ' as u', 'v.user_id', 'u.id')
+        .join(TABLES.USERS + ' as u', 'v.viewed', 'u.id')
         .join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
-        .join(wm.notif('profile_view'), 'n.user_id', 'v.user_id')
+        .join(wm.notif('profile_view'), 'n.user_id', 'v.viewed')
         .having('vcount', '>=', 5)
         .andWhere('mail_sent', 0)
-        .groupBy('v.user_id')
+        .groupBy('v.viewed')
 
     let reqAll = (notif) => db.distinct(h.p_uarray.concat([h.format_location])).from(TABLES.USER_PROFILES + ' as p')
         .join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id')
         .whereIn('u.id', notif);
 
-    let setToOne = (ids) => db('views').update('mail_sent', 1).whereIn('user_id', ids)
+    let setToOne = (ids) => db('views').update('mail_sent', 1).whereIn('viewed', ids)
 
     return request.then(array => {
         if (!array.length){
@@ -65,9 +65,8 @@ const profile_views = (args) => {
             return null;
         }
         let x = [];
-        let ids = array.map(e => e.user_id)
-
-        array.forEach(e => {
+        let ids = array.map(e => e.viewed)
+        array.forEach((e, i) => {
             let notif = e.notif.split(',')
                 x.push(reqAll(notif).then(x => x))
         });//foreach
