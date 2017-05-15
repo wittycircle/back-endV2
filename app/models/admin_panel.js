@@ -7,7 +7,7 @@ exports.projectsInvite = (uid) => {
 		if (!r.length)
 			return "Admin only"
 
-		let sent = db.raw('IF (pi.accepted IS NOT NULL, true, false) as sent')
+	let sent = db.raw('IF (pi.accepted IS NOT NULL, true, false) as sent')
 	return db(TABLES.PROJECTS + ' as p')
 		.select(['p.id', 'user_id', 'title', h.format_location,
 			 'picture', 'description', 'picture', 'public_id', sent])

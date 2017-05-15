@@ -66,7 +66,7 @@ module.exports = [
   lat: 48.812995 },
 { city: 'Singapore',
   state: '',
-  country: undefined,
+  country: 'Singapore',
   lng: 103.819836,
   lat: 1.352083 },
 { city: 'Da Nang',

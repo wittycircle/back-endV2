@@ -7,7 +7,7 @@
 const search = require('../models/search'),
     _ = require('lodash');
 
-const profile_lookup = {
+    const profile_lookup = {
         'rank': 'sort.rank',
         'id': 'sort.id',
         'magic': 'RAND()',
@@ -53,8 +53,8 @@ exports.searchProfile = (req, res, next) => {
 
     let q = search.cardProfile(selector)
         .orderByRaw(`${order_by} ${ query && query.sort && query.sort.reverse ? 'desc' : 'asc'}`)
-    if (paginate)
-        q.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit)
+    // if (paginate)
+    q.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit)
     q.then(results => {
         if (!_.isEmpty(results))
             res.send({
