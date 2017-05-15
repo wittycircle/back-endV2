@@ -41,10 +41,10 @@ np = exports.networkProfiles = (name) => {
     return h.exist(TABLES.USER_PROFILES, name, 'network').then(r => {
         if (!r.length)
             return "error"
-        return db.select(['u.username', 'p.profile_picture', 'p.id',
+        return db.select(['u.username', 'p.picture', 'p.id',
             db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName')])
             .from(TABLES.USERS + ' as u')
-            .join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+            .join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
             .whereRaw(`p.network LIKE "%${name}%"`)
     })
 };
@@ -187,7 +187,7 @@ const subInfoProfiles = (id) => {
             .where('user_id', id).from(TABLES.USER_FOLLOWERS),
 
         follower = db.countDistinct('id').distinct(name('followers'))
-            .where('follow_user_id', id).from(TABLES.USER_FOLLOWERS),
+            .where('followed', id).from(TABLES.USER_FOLLOWERS),
 
         upvoted_project = db.countDistinct('id').distinct(name('upvoted_project'))
             .where('user_id', id).from(TABLES.PROJECT_MEMBERS),

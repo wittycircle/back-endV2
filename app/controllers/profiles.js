@@ -62,8 +62,8 @@ exports.updateProfile = (req, res, next) => {
 
 exports.getProfileFollowers = (req, res, next) => {
     Promise.all([
-        profiles.getProfileFollowers('l.user_id', 'l.follow_user_id', req.params.id),
-        profiles.getProfileFollowers('l.follow_user_id', 'l.user_id', req.params.id),
+        profiles.getProfileFollowers('l.user_id', 'l.followed', req.params.id),
+        profiles.getProfileFollowers('l.followed', 'l.user_id', req.params.id),
         user.getProjectFollow(req.params.id) 
         ]) 
         .then(([r, r1, r2]) => {

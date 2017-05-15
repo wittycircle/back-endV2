@@ -84,12 +84,17 @@ module.exports.stuff = (db, old, h) => {
         if (t.indexOf('users') !== -1) {
           e.user_id = h.users[e.user_id] || 0;
         }
+        // par flemme et convenience les 3 suivants :
         if (t.indexOf('viewed') !== -1) {
           e.viewed = h.users[e.viewed];
         }
         if (t.indexOf('invited_by') !== -1) {
           e.invited_by = h.users[e.invited_by];
         }
+        if (t.indexOf('followed') !== -1) {
+          e.followed = h.users[e.followed];
+        }
+
         if (t.indexOf('location') !== -1) {
           e.loc_id = h.location[e.loc_id] || 1;
         }

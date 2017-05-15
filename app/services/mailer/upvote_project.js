@@ -21,7 +21,7 @@ const fromProject = db(TABLES.PROJECTS).first('title').where('id', args.project_
 
 const toUsers = db.select(common_array) 
 		.from(TABLES.USERS + ' as u') 
-		.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id') 
+		.join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id') 
 		.join(TABLES.PROJECTS + ' as pr', 'pr.user_id', 'u.id') 
 		.join(wm.notif('follow_project'), 'n.user_id', 'u.id') 
 		.where('pr.id', args.project_id)
@@ -71,14 +71,14 @@ module.exports = upvote_project
 // ------------------ If decide in future to send to all that follow the project ------------------
 // const toUsers = db .distinct(common_array)
  // 				.from(TABLES.USERS + ' as u')
-	// 			.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+	// 			.join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
 	// 			.join(TABLES.PROJECT_LIKES + ' as l', 'l.user_id', 'u.id')
 	// 			.join(wm.notif('follow_project'), 'n.user_id', 'u.id')
 	// 			.where('l.project_id', args.project_id)
 	// 			.union(function() {
 	// 				this.select(common_array)
 	// 				.from(TABLES.USERS + ' as u')
-	// 				.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+	// 				.join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
 	// 				.join(TABLES.PROJECT_MEMBERS + ' as m', 'm.user_id', 'u.id')
 	// 				.join(wm.notif('follow_project'), 'n.user_id', 'u.id')
 	// 				.where('m.project_id', args.project_id)
@@ -86,7 +86,7 @@ module.exports = upvote_project
 	// 			.union(function() {
 	// 				this.select(common_array)
 	// 					.from(TABLES.USERS + ' as u') 
-	// 					.join(TABLES.USER_PROFILES + ' as p', 'p.id', 'u.profile_id')
+	// 					.join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
 	// 					.join(TABLES.PROJECTS + ' as pr', 'pr.user_id', 'u.id')
 	// 					.join(wm.notif('follow_project'), 'n.user_id', 'u.id')
 	// 					.where('pr.id', args.project_id)

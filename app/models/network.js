@@ -6,7 +6,7 @@ const {db, TABLES} = require('./index'),
 
 exports.getNetwork = (from) => {
     if (from == 'university')
-        return db(TABLES.UNIV_NETWORK).distinct('name as network', 'launched', 'website').orderByRaw('popular DESC')
+        return db(TABLES.NETWORKS_LIST).distinct('name as network', 'launched', 'website').orderByRaw('popular DESC')
     else if (from == 'profile')
         return db(TABLES.PROFILE_NETWORK).distinct('network')
     else if (from == 'profile_incubator')
@@ -26,7 +26,7 @@ exports.getNetworkInfo = (uid, from) => {
                 return `Bad network : ${from}`
             else {
                 if (from == 'university')
-                    return db(TABLES.UNIV_NETWORK).select().orderByRaw('popular DESC')
+                    return db(TABLES.NETWORKS_LIST).select().orderByRaw('popular DESC')
                 else if (from == 'profile')
                     return db(TABLES.PROFILE_NETWORK).select()
                 else if (from == 'profile_incubator')
@@ -46,7 +46,7 @@ exports.createNetwork = (uid, from, data) => {
                 return `Bad network : ${from}`
             else {
                 if (from == 'university')
-                    return db(TABLES.UNIV_NETWORK).insert(data)
+                    return db(TABLES.NETWORKS_LIST).insert(data)
                 else if (from == 'profile')
                     return db(TABLES.PROFILE_NETWORK).insert(data)
                 else if (from == 'profile_incubator')
@@ -66,7 +66,7 @@ exports.updateNetwork = (uid, from, id, data) => {
                 return `Bad network : ${from}`
             else {
                 if (from == 'university')
-                    return db(TABLES.UNIV_NETWORK).update(data).where({'id': id})
+                    return db(TABLES.NETWORKS_LIST).update(data).where({'id': id})
                 else if (from == 'profile')
                     return db(TABLES.PROFILE_NETWORK).update(data).where({'id': id})
                 else if (from == 'profile_incubator')
@@ -86,7 +86,7 @@ exports.removeNetwork = (uid, from, id) => {
                 return `Bad network : ${from}`
             else {
                 if (from == 'university')
-                    return db(TABLES.UNIV_NETWORK).del().where({'id': id})
+                    return db(TABLES.NETWORKS_LIST).del().where({'id': id})
                 else if (from == 'profile')
                     return db(TABLES.PROFILE_NETWORK).del().where({'id': id})
                 else if (from == 'profile_incubator')

@@ -18,7 +18,7 @@ exports.getUserBySocialId = (id, auth) => {
     let key = `${auth}_id`;
     return db.select('*')
         .from(`${TABLES.USER_PROFILES} as p`)
-        .innerJoin(`${TABLES.USERS} as u`, 'p.id', 'u.profile_id')
+        .innerJoin(`${TABLES.USERS} as u`, 'p.user_id', 'u.id')
         .where(key, id)
 };
 

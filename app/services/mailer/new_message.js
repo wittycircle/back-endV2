@@ -8,14 +8,14 @@ const new_message = () => {
 
 const	p_uarray = ['p.id', 'u.id as uid', 'p.first_name', 'p.last_name', 'u.email',
 		'u.username', db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
-		'p.profile_picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network',
+		'p.picture', 'p.about', 'p.cover_picture', 'p.description', 'p.network',
 		'p.city', 'p.country', 'p.state'];
 
 const		sender = db.select(p_uarray).from(TABLES.USER_PROFILES + ' as p')
-					.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('s');
+					.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id').as('s');
 
 const		receiver = db.select(p_uarray).from(TABLES.USER_PROFILES + ' as p')
-					.join(TABLES.USERS + ' as u', 'u.profile_id', 'p.id').as('r');
+					.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id').as('r');
 
 const selection = [
 			'm.to_user_id', 'm.from_user_id', 'm.message', 'm.id',

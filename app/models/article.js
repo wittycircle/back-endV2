@@ -61,7 +61,7 @@ exports.createArticle = (data) => {
 };
 
 exports.getArticles = (uid, id) => {
-    const a_articles = ['a.id', 'author_id', h.username, 'p.profile_picture',
+    const a_articles = ['a.id', 'author_id', h.fullname, 'p.picture',
         'a.creation_date', 'picture', 'title', 'text',
 			db.raw('IFNULL (views, 0) as views'),
 			db.raw('IFNULL (read_time, 0) as read_time'),
@@ -263,7 +263,7 @@ exports.getComments = (id) => {
 	'message', 
 	'm.creation_date', 
 	'p.username', 
-	'p.profile_picture'
+	'p.picture'
 	]; 
 	return db(TABLES.ARTICLE_MSG + ' as m').distinct(selection).where('article_id', id)
 		.join(h.sub_profile, 'p.uid', 'm.user_id')

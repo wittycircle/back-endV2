@@ -3,7 +3,7 @@ const { db, TABLES } = require('./index'),
 		h = require('./helper');
 
 //will disapear in v3
-const project_location = db.raw(` 
+const project_location = db.raw(`
 	CASE WHEN (pr.city IS NOT NULL)
 		THEN
 			CASE WHEN (pr.state != NULL)
@@ -13,7 +13,7 @@ const project_location = db.raw(`
 				ELSE ' '
 			END
 		ELSE ' '
-	END as location 
+	END as location
 `);
 // ------------------ Projects [main methods] ------------------
 
@@ -44,7 +44,7 @@ const getMembers = (id) => {//Not sure about this, if project contributor or pro
         .where('pcr.n_accept', 1)
 
 	return db.distinct(['p.uid as id', 'p.first_name', 'p.last_name',
-	 db.raw('CONCAT (p.first_name, " ", p.last_name) as username')]) 
+	 db.raw('CONCAT (p.first_name, " ", p.last_name) as username')])
 		.from(h.u_profile)
 		.join(members, function() {
 			this.on('p.uid', '=', 'pcr.user_id').orOn('p.uid', '=', 'creator')
@@ -52,7 +52,7 @@ const getMembers = (id) => {//Not sure about this, if project contributor or pro
 	};
 
 const getFollowerCount = (id) => {
-	return  db.count('project_id as count').from(TABLES.PROJECT_LIKES + ' as l') 
+	return  db.count('project_id as count').from(TABLES.PROJECT_LIKES + ' as l')
 	 	.join(TABLES.PROJECTS + ' as p', 'p.id', 'l.project_id').where('p.id', id)
 	};
 
@@ -84,7 +84,7 @@ exports.getProject = (id) => {
 exports.getProjectList = () => {
     const p_array = ['pr.id', 'pr.title', 'pr.description', 'pr.picture_card as picture', 'pr.status', 'pr.public_id',
 	 'c.id as category_id', 'c.name as category_name', 'p.network',
-	 'p.profile_picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
+	 'p.picture', 'p.uid as user_id', db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
 	 db.raw('CONCAT (city, ", ", country) as location')
 	 ];
 
@@ -115,7 +115,7 @@ exports.createProjectDiscussion = (data) => {
 };
 
 exports.getProjectDiscussion = (id) => {
-    let replies = (id) => db.select(['rep.id', 'user_id', 'p.fullName', 'p.username', 'p.profile_picture',
+    let replies = (id) => db.select(['rep.id', 'user_id', 'p.fullName', 'p.username', 'p.picture',
         'creation_date', 'message'])
         .from(TABLES.PROJECT_DISCUSSION_REPLIES + ' as rep')
         .join(h.sub_profile, 'p.uid', 'rep.user_id')
@@ -128,7 +128,7 @@ exports.getProjectDiscussion = (id) => {
 			.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
         .orderByRaw('creation_date DESC')
 
-    return db.select(['pr.id', 'pr.user_id', 'p.fullName', 'p.username', 'p.profile_picture',
+    return db.select(['pr.id', 'pr.user_id', 'p.fullName', 'p.username', 'p.picture',
         'pr.title', 'pr.message', 'pr.creation_date'])
 		.from(TABLES.PROJECT_DISCUSSION + ' as pr')
         .join(h.sub_profile, 'p.uid', 'pr.user_id')
@@ -142,8 +142,8 @@ exports.getProjectDiscussion = (id) => {
 				x.push(like(el.id).then(rr=> el.likes = rr))
 				x.push(replies(el.id).then(rr => {
 					rr.forEach(i => {y.push(rep_like(i.id).then(rr => {return i.likes = rr })) });
-					return (el.replies = rr); 
-				})) 
+					return (el.replies = rr);
+				}))
 			});
 			return Promise.all(x)
 				.then(()=> {
@@ -158,7 +158,7 @@ exports.createOpening = (data) => {
 		if (!r.length){
 			throw "could not create project opening"
 		} else{
-		return db(TABLES.PROJECT_OPENINGS)	
+		return db(TABLES.PROJECT_OPENINGS)
 			.insert(data)
 		}
 	})
@@ -192,14 +192,14 @@ exports.likeProject = (project_id, uid) => {
                 else
                     return db(TABLES.PROJECT_LIKES).del().where(obj)
             });
-		}); 
+		});
 };
 
 exports.unlikeProject = (project_id, uid) => {
 	return db(TABLES.PROJECT_LIKES)	.del()
 			.where({
-				user_id: uid, 
-				project_id: project_id 
+				user_id: uid,
+				project_id: project_id
 			})
 };
 
@@ -243,7 +243,7 @@ exports.getInvite = (project_id) => {
 			throw "Could not match project"
 		return db(TABLES.PROJECT_MEMBERS + ' as m')
 			.select(['m.id', 'project_id', 'user_id', 'invited_by', 'n_read', 'n_accept',
-				'p.profile_picture', 'p.fullName'])
+				'p.picture', 'p.fullName'])
 			.join(h.sub_profile, 'p.uid', 'm.user_id')
 			.where('project_id', project_id)
 	})

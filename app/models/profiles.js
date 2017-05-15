@@ -19,12 +19,12 @@ exports.getProfiles = () => {
 };
 
 exports.getProfileBy = (by) => {
-    const ifo = db.distinct('follow_user_id', 'user_id')
+    const ifo = db.distinct('followed', 'user_id')
         .from(TABLES.USER_FOLLOWERS).as('ifo');
 
     let query =  db(h.spe_profile(by))
         .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
-        .leftJoin(ifo, 'ifo.follow_user_id', 'p.uid')
+        .leftJoin(ifo, 'ifo.followed', 'p.uid')
         .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'))
 
     return h.exist(TABLES.USER_PROFILES, by['p.id'])
@@ -51,7 +51,7 @@ exports.getProfileFollowers = (cond, cond2, p_id) => {
 };
 
 exports.followProfile = (id, uid) => {
-    let obj = {user_id: uid, follow_user_id: id}
+    let obj = {user_id: uid, followed: id}
 
     return h.exist(TABLES.USERS, id).then(r => {
         if (!r.length)

@@ -31,7 +31,7 @@ exports.getDiscussionReplies = (discussion_id) => {
 	let rep_like = (id) => db.select('user_id', 'creation_date')
 					.from(TABLES.PROJECT_REPLY_LIKES).where({'project_reply_id': id})
 
-    return db.select(['rep.id', 'user_id', 'p.fullName', 'p.username', 'p.profile_picture',
+    return db.select(['rep.id', 'user_id', 'p.fullName', 'p.username', 'p.picture',
         'creation_date', 'message'])
         .from(TABLES.PROJECT_DISCUSSION_REPLIES + ' as rep')
         .join(h.sub_profile, 'p.uid', 'rep.user_id')
