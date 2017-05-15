@@ -3,7 +3,7 @@ const special_config = {
     connection: process.env.DATABASE_URL || {
         host: '127.0.0.1',
         user: 'root',
-        password: '',
+        password: '14725803',
         database: '', //The one for test
     },
     pool: {
@@ -115,3 +115,16 @@ const location_first = (db) => {
         .then(quaternary_tables(db))
  };
 
+ create_db()
+ .then(console.log("Success"))
+ .catch(err => console.error(err))
+
+
+ /*	**************************************************************
+	'users'
+	'categories'
+	'projects'
+	'profiles'
+	'social_profiles'
+ 	************************************************************** */
+ 

@@ -1,6 +1,6 @@
 const account = require('../models/account'),
 	bcrypt = require('bcrypt-nodejs'),
-    // mailer = require('../services/mailer'),
+mailer = require('../services/mailer'),
 	crypto = require('crypto'),
     _ = require('lodash');	
 
@@ -43,7 +43,7 @@ exports.register = (req, res, next) => {
                 return next([r, 'Bad info [email or password]'])
             }
             else {
-            	mailer.validate_account({token : token, email: req.body.account.email})
+            	mailer.validate_account({token : token, email: req.body.account.email});
                 // req.broadcastEvent('mailer_validate_account', {token: token, email: req.body.account.email });
                 req.broadcastEvent('user_register', {id: r[0].id});
                 res.send({success: true}).status(200)

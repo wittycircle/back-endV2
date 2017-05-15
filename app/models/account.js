@@ -28,14 +28,14 @@ exports.activate = (token) => {
 };
 // ------------------ Social [google/facebook] ------------------
 const social_helper = {
-    'facebook': (data) => {
+    'facebook': (data, token) => {
         return {
             profile: {
                 facebook_id: data.id,
                 facebook_url: data.profileUrl,
                 first_name: data.name.givenName,
                 last_name: data.name.familyName,
-                profile_picture: data.photos[0].value
+                profile_picture: 'https://graph.facebook.com/me/picture?width=200&height=200&access_token=' + token
             },
             user: {
                 email: data.emails[0].value,
@@ -43,7 +43,7 @@ const social_helper = {
             }
         }
     },
-    'google': (data) => {
+    'google': (data, token) => {
         data = JSON.parse(data._raw);
         return {
             profile: {
@@ -66,8 +66,8 @@ const verifyUser = (email) => {
     return db(TABLES.INVITATION).select('invite_email').where('invite_email', email)
     .then(r => {
         if (r.length)
-          return  db(TABLES.INVITATION).update('status', 'registed').where('invite_email', email)
-      return null;
+            db(TABLES.INVITATION).update('status', 'registed').where('invite_email', email)
+	return null;
     })
 }
 
@@ -76,15 +76,19 @@ const newUser = (helper) => {
         .then(profileId => {
             helper.user.profile_id = profileId;
             helper.user.password = '';
-            return db(TABLES.USERS).insert(helper.user)
+	    return db(TABLES.USERS).insert(helper.user)
                 .then((r) => {
-                    return {
-                        id: r[0], 
-                        profile_id: helper.user.profile_id[0], 
-                        email: helper.user.email, 
-                    };
+                    return verifyUser(helper.user.email)
+                    .then( () => {
+			console.log('hello world');
+                        return {
+                            id: r[0],
+                            profile_id: helper.user.profile_id[0],
+                            email: helper.user.email,
+                        };
+                    })
                 });
-        })
+	})
 };
 
 const modifyUser = (helper, origin, ids) => {
@@ -109,14 +113,15 @@ const modifyUser = (helper, origin, ids) => {
         })
 };
 
-exports.socialRegister = (data, origin) => {
-    const helper = social_helper[origin](data);
+exports.socialRegister = (data, token, origin) => {
+    const helper = social_helper[origin](data, token);
     return db(TABLES.USERS).first(['profile_id', 'id']).where({email: helper.user.email})
         .then(r => {
             if (r) {
                 return modifyUser(helper, origin, r)
             }
             else {
+		console.log(helper);
                 return newUser(helper)
             }
         });
