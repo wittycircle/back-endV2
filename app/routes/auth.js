@@ -18,21 +18,21 @@ let redirect = (req, res) => {
 
 let social_redirect = (req, res) => {
     res.cookie('auth', JSON.stringify(req.token), {maxAge: 24 * 3600 * 60});
-	res.redirect('/');
-}
+	res.redirect('/')
+};
 
 router.use('/local', validate(schemas.auth.local));
 router.route('/local')
     .post(auth.localLogin, auth.generateToken, redirect);
 
 router.route('/google')
-    .get(auth.socialLogin('google', {scope: ['profile', 'email']}));
+    .get(auth.socialLogin('google', {scope: ['profile', 'email', 'https://www.google.com/m8/feeds/contacts/default/full']}));
 
 router.route('/google/callback')
     .get(auth.socialLogin('google', {successRedirect: 'https://www.wittycircle.com', failureRedirect : 'https://www.wittycircle.com'}), auth.generateToken, social_redirect);
 
 router.route('/facebook')
-    .get(auth.socialLogin('facebook', {scope: ['email']}));
+    .get(auth.socialLogin('facebook', {scope: ['email', 'user_friends']}));
 
 router.route('/facebook/callback')
     .get(auth.socialLogin('facebook', {successRedirect: 'https://www.wittycircle.com', failureRedirect : 'https://www.wittycircle.com'}), auth.generateToken, social_redirect);

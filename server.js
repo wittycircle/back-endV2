@@ -17,7 +17,6 @@ const http = require('http'),
     cookieParser = require('cookie-parser');
 
 let app = express();
-app.use(require('prerender-node').set('prerenderToken', 'BzYfju05gGdTtLeibr1B'));
 
 app.use(cors());
 
@@ -43,6 +42,7 @@ app.use(compression());
 app.use(express.static(path.join(__dirname, 'dist')));
 
 //send mails
+
 require('./watch_message')()
 /**
  * TODO remove

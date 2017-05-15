@@ -43,7 +43,7 @@ exports.getProfileFollowers = (cond, cond2, p_id) => {
             throw "Bad profile id"
         else {
             return db.distinct(h.p_array).distinct('p.username', 'p.fullName')
-                .from(TABLES.USER_LIKES + ' as l') 
+                .from(TABLES.USER_FOLLOWERS + ' as l') 
                 .join(h.sub_profile, 'p.uid', cond2) 
                 .where(cond, p_id)
         }
@@ -56,20 +56,16 @@ exports.followProfile = (id, uid) => {
     return h.exist(TABLES.USERS, id).then(r => {
         if (!r.length)
             throw "Person to follow"
-        return db(TABLES.USER_LIKES).first('id').where(obj)
+        return db(TABLES.USER_FOLLOWERS).first('id').where(obj)
             .then(r => {
                 if (!r)
-                    return db(TABLES.USER_LIKES).insert(obj)
+                    return db(TABLES.USER_FOLLOWERS).insert(obj)
                 else
-                    return db(TABLES.USER_LIKES).del().where(obj)
+                    return db(TABLES.USER_FOLLOWERS).del().where(obj)
             });
     });
 };
 
-exports.unfollowProfile = (id, uid) => {
-    return db(TABLES.USER_LIKES).del() 
-        .where({user_id: id, follow_user_id: uid})
-};
 // ------------------ Location ------------------
 exports.getLocation = (p_id) => {
     return db(TABLES.USER_PROFILES)

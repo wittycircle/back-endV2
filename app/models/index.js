@@ -20,9 +20,7 @@ exports.TABLES = {
     USER_PROFILES: 'profiles',
     USER_SKILLS: 'user_skills',
     USER_EXPERIENCES: 'user_experiences',
-    USER_LIKES: 'user_followers',
     USER_FOLLOWERS: 'user_followers',
-    RESET: 'reset_passwords',
     FIRST_LOG: 'first_log',
     'SHARE_INVITE': 'share_invite_link',
 //            *** INTERESTS  ***
@@ -67,7 +65,28 @@ exports.TABLES = {
     SKILLS: 'skills',
 //            ***   Notifications    ***
     NOTIF_PERM: 'notification_permission',
-    NOTIF_LIST: 'notification_list'
+    NOTIF_LIST: 'notification_list',
+
+    //            *** FORGOTTEN TABLES ***
+    INVITE_UNIVERSITY: 'invite_university',
+    VIEWS: 'views',
+profile_ranking: 'profile_ranking',
+// ask_replies: 'ask_replies',
+// feedback_replies: 'feedback_replies',
+// history: 'history',
+// news_feature: 'news_feature',
+// notification_view: 'notification_view',
+// opening_skills: 'opening_skills',
+// portfolios_likes: 'portfolios_likes',
+// project_asks: 'project_asks',
+// project_feedbacks: 'project_feedbacks',
+// project_polls: 'project_polls',
+// send_mail: 'send_mail',
+// sessions: 'sessions',
+// track_client_ip: 'track_client_ip',
+// user_portfolios: 'user_portfolios',
+// witty_cover_pictures: 'witty_cover_pictures',
+// witty_profile_pictures: 'witty_profile_pictures',
 };
 
 
