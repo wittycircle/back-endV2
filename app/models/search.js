@@ -9,7 +9,6 @@ const { db, TABLES } = require('./index'),
   _ = require('lodash');
 
 const addLocation = (table, location, query) => {
-  console.log('ADD LOCATION');
   if (!_.isEmpty(location)) {
     const _location = location.split(',');
     let selected = '';
@@ -143,18 +142,18 @@ exports.cardProfile = selector => {
 
 // ------------------ Project ------------------
 exports.cardProject = selector => {
-  const project_location = db.raw(`
-    CASE WHEN (pr.city IS NOT NULL)
-        THEN
-            CASE WHEN (pr.state != NULL)
-                THEN CONCAT(pr.city, ', ', pr.state)
-            WHEN (pr.country IS NOT NULL)
-                THEN CONCAT(pr.city, ', ', pr.country)
-                ELSE ' '
-            END
-        ELSE ' '
-    END as location
-`);
+  //   const project_location = db.raw(`
+  //     CASE WHEN (pr.city IS NOT NULL)
+  //         THEN
+  //             CASE WHEN (pr.state != NULL)
+  //                 THEN CONCAT(pr.city, ', ', pr.state)
+  //             WHEN (pr.country IS NOT NULL)
+  //                 THEN CONCAT(pr.city, ', ', pr.country)
+  //                 ELSE ' '
+  //             END
+  //         ELSE ' '
+  //     END as location
+  // `);
 
   const pr_array = [
     'pr.id',
@@ -165,12 +164,15 @@ exports.cardProject = selector => {
     'pr.public_id',
     'c.id as category_id',
     'c.name as category_name',
-    'pr.network as project_network',
-    'p.network',
+    'nl.name as network',
     'p.picture',
     'p.uid as user_id',
     db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-    project_location
+    // project_location
+    h.format_location,
+    'loc.city',
+    'loc.country',
+    'loc.state'
     /*
          'o.skill',  'o.tags',
          db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'),
@@ -180,7 +182,7 @@ exports.cardProject = selector => {
 
   const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m')
     .select('m.project_id', 'm.user_id')
-    .where('n_accept', 1)
+    .where('accepted', 1)
     .as('m'),
     sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
       .select([
@@ -201,7 +203,9 @@ exports.cardProject = selector => {
     .countDistinct('pl.id as followers')
     .countDistinct('m.user_id as members')
     .from(TABLES.PROJECTS + ' as pr')
-    .join(h.u_profile, 'p.uid', 'pr.user_id')
+    .join(h.sub_profile, 'p.uid', 'pr.user_id')
+    .join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+    .join(TABLES.LOCATION + ' as loc', 'loc.id', 'pr.loc_id')
     .join(sub_category, 'c.id', 'pr.category_id')
     .leftJoin(TABLES.PROJECT_LIKES + ' as pl', 'pl.project_id', 'pr.id')
     .leftJoin(sub_members, 'm.project_id', 'pr.id')
@@ -209,6 +213,7 @@ exports.cardProject = selector => {
     .whereRaw('pr.picture <> ""')
     .groupBy('pr.id');
 
+  //SELECTOR
   if (selector.uid) {
     pr_array.push(
       db.raw(
@@ -221,12 +226,13 @@ exports.cardProject = selector => {
 
   if (selector.network) {
     query.orderByRaw(
-      `CASE WHEN p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%" THEN 1 else 2 END`
+      `CASE WHEN nl.name like "%${selector.network}%" THEN 1 else 2 END`
     );
     // query.whereRaw(`p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%"`)
   }
   if (selector.opening || selector.skills)
     query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+
   if (selector.skills) {
     let selected = _.words(selector.skills)
       .map(
@@ -239,9 +245,10 @@ exports.cardProject = selector => {
           (i + 1)
       )
       .join(' ');
-    query.orderByRaw('CASE ' + selected + ' ELSE 100 END');
+    // query.orderByRaw('CASE ' + selected + ' ELSE 100 END');
+    query.whereRaw(selected);
   }
-  addLocation('pr', selector.location, query);
+  addLocation('loc', selector.location, query);
   if (selector.opening)
     query.orderByRaw(
       'CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END'

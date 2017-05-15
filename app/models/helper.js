@@ -23,7 +23,7 @@ const h = {
     'p.about',
     'p.cover_picture',
     'p.description',
-    'p.network'
+    'p.network_id'
   ],
   p_uarray: [
     'p.id',
@@ -36,7 +36,7 @@ const h = {
     'p.about',
     'p.cover_picture',
     'p.description',
-    'p.network'
+    'p.network_id'
   ]
 },
   admin = (table, id, uid) => {
@@ -48,18 +48,13 @@ const h = {
 
 // prototype
 h.up_array = h.p_array.concat('u.id as uid');
-h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u');
+h.sub_user = db.select('id').from(TABLES.USERS).as('u');
 h.sub_profile = db
   .select(h.p_uarray)
   .from(`${TABLES.USER_PROFILES} as p`)
   .join(`${TABLES.USERS} as u`, 'u.id', 'p.user_id')
   .as('p');
-h.u_profile = db
-  .select(h.up_array)
-  .from(h.sub_profile)
-  .join(h.sub_user, 'u.id', 'p.user_id')
-  .groupBy('p.id')
-  .as('p');
+h.u_profile = db.select(h.up_array).from(h.sub_profile).groupBy('p.id').as('p');
 h.ws_profile = cond =>
   db.select(h.p_array).from(`${TABLES.USER_PROFILES} as p`).where(cond).as('p');
 h.exist = (table, value, name) =>

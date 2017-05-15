@@ -56,12 +56,10 @@ const getFromName = (db, old, table, value = 'name') => {
 const getFromUpperName = (db, old, table, value = 'name') => {
   let o = {};
   return db(table).select('id', value).then(r => {
-    r.forEach(e => (o[e[value.toUpperCase()]] = e.id));
+    r.forEach(e => (o[e[value].toUpperCase()] = e.id));
+    console.log(o);
     return o;
   });
-};
-const getDiscussions = (db, old) => {
-  db();
 };
 
 module.exports.moreStuff = (db, old, h) => {
@@ -101,8 +99,12 @@ module.exports.stuff = (db, old, h) => {
         if (t.indexOf('invited_by') !== -1) {
           e.invited_by = h.users[e.invited_by];
         }
+        if (t.indexOf('followed') !== -1) {
+          e.followed = h.users[e.followed];
+        }
         if (t.indexOf('location') !== -1) {
-          e.loc_id = h.location[e.loc_id.toUpperCase()] || 1;
+          if (!e.loc_id) e.loc_id = 1;
+          else e.loc_id = h.location[e.loc_id.toUpperCase()] || 1;
         }
         if (t.indexOf('networks') !== -1) {
           e.network_id = h.networks[e.network_id] || 1;
