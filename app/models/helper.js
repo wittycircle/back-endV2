@@ -40,19 +40,19 @@ const h = {
   ]
 },
   admin = (table, id, uid) => {
-    let x = [];
+    const x = [];
     x.push(h.exist(table, id));
     x.push(db(TABLES.USERS).select('id').where({ id: uid, moderator: 1 }));
     return Promise.all(x);
   };
 
-//prototype
+// prototype
 h.up_array = h.p_array.concat('u.id as uid');
 h.sub_user = db.select('id', 'profile_id').from(TABLES.USERS).as('u');
 h.sub_profile = db
   .select(h.p_uarray)
-  .from(TABLES.USER_PROFILES + ' as p')
-  .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
+  .from(`${TABLES.USER_PROFILES} as p`)
+  .join(`${TABLES.USERS} as u`, 'u.id', 'p.user_id')
   .as('p');
 h.u_profile = db
   .select(h.up_array)
@@ -61,11 +61,10 @@ h.u_profile = db
   .groupBy('p.id')
   .as('p');
 h.ws_profile = cond =>
-  db.select(h.p_array).from(TABLES.USER_PROFILES + ' as p').where(cond).as('p');
+  db.select(h.p_array).from(`${TABLES.USER_PROFILES} as p`).where(cond).as('p');
 h.exist = (table, value, name) =>
   db(table).select('id').whereRaw(`${name || 'id'} LIKE "%${value}%"`);
-h.owner = (table, id, uid) =>
-  db(table).select('id').where({ id: id, user_id: uid });
+h.owner = (table, id, uid) => db(table).select('id').where({ id, user_id: uid });
 h.admin = admin;
 h.format_location = format_location;
 h.getLocation = id => db(TABLES.LOCATION).select(h.format_location);
@@ -74,8 +73,8 @@ h.fullname = db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName');
 h.spe_profile = cond =>
   db
     .select(h.p_uarray.concat(location))
-    .from(TABLES.USER_PROFILES + ' as p')
-    .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
+    .from(`${TABLES.USER_PROFILES} as p`)
+    .join(`${TABLES.USERS} as u`, 'u.id', 'p.user_id')
     .where(cond)
     .as('p');
 h.unix_time = (x, y) => db.raw(`UNIX_TIMESTAMP(${x} as ${y})`);

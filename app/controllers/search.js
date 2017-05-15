@@ -7,13 +7,13 @@
 const search = require('../models/search'), _ = require('lodash');
 
 const profile_lookup = {
-  rank: 'sort.rank',
-  id: 'sort.id',
-  magic: 'RAND()',
   skills: 'skills',
   location: 'location',
   network: 'network',
-  about: 'about'
+  about: 'about',
+  rank: 'sort.rank',
+  id: 'sort.id',
+  magic: 'RAND()'
 },
   project_lookup = {
     id: 'pr.id',

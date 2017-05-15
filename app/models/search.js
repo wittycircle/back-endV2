@@ -9,9 +9,11 @@ const { db, TABLES } = require('./index'),
   _ = require('lodash');
 
 const addLocation = (table, location, query) => {
+  console.log('ADD LOCATION');
   if (!_.isEmpty(location)) {
     const _location = location.split(',');
     let selected = '';
+    console.log('HERE');
     selected += `WHEN ${table}.city LIKE "%${_location[0]}%" THEN 1 `;
     selected += `WHEN ${table}.state LIKE "%${_location[1]}%" THEN 2 `;
     selected += `WHEN ${table}.country LIKE "%${_location[1]}%" THEN 3 `;
@@ -76,6 +78,9 @@ exports.cardProfile = selector => {
     'p.description',
     'nl.name as network',
     h.format_location,
+    'loc.city',
+    'loc.country',
+    'loc.state',
     h.fullname,
     'u.username'
   ];
