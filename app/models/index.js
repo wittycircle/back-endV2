@@ -20,6 +20,7 @@ exports.TABLES = {
   USER_SKILLS: 'user_skills',
   USER_EXPERIENCES: 'user_experiences',
   USER_FOLLOWERS: 'user_followers',
+  USER_SOCIALS: 'user_socials',
   FIRST_LOG: 'first_log',
   SHARE_INVITE: 'share_invite_link',
   //            *** INTERESTS  ***
@@ -60,7 +61,7 @@ exports.TABLES = {
   //            ***    MISC    ***
   CATEGORIES: 'categories',
   RANK: 'ranks',
-  INVITATION: 'invitation',
+  INVITATION: 'invitations',
   SKILLS: 'skills',
   LOCATION: 'location',
   //            ***   Notifications    ***

@@ -67,7 +67,7 @@ const secondary_tables = db =>
       t.increments();
       t.integer('user_id').unsigned().notNullable();
       t.string('token', 128).notNullable();
-      t.boolean('mail_sent').defaultTo(0);
+      t.string('email', 128).notNullable();
       t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
       t.charset('utf8');
       //			*** relations ***
@@ -219,7 +219,7 @@ const secondary_tables = db =>
       t.increments();
       t.integer('user_id').unsigned().notNullable();
       t.string('mail_to', 128).notNullable();
-      t.boolean('mail_sent').defaultTo(0);
+      t.boolean('status').defaultTo(0);
       t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
       //t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 

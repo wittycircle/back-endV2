@@ -57,7 +57,6 @@ const getFromUpperName = (db, old, table, value = 'name') => {
   let o = {};
   return db(table).select('id', value).then(r => {
     r.forEach(e => (o[e[value].toUpperCase()] = e.id));
-    console.log(o);
     return o;
   });
 };

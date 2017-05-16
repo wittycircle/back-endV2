@@ -45,7 +45,7 @@ const second_import = (db, old, h) => {
 
     // ------------------ reset_passwords ------------------
     old('reset_passwords')
-      .select(['user_id as user_id', 'token', db.raw('1 as mail_sent')])
+      .select(['user_id', 'user_email as email', 'token'])
       .then(r => {
         r = h.transform(r, ['users']);
         return db.batchInsert('reset_passwords', r);
@@ -167,7 +167,7 @@ const second_import = (db, old, h) => {
         'user_id',
         'invite_email as mail_to',
         'creation_date',
-        old.raw('if(status = "pending", 0, 1) as mail_sent')
+        old.raw('if(status = "pending", 0, 1) as status')
       ])
       .then(r => {
         r = h.transform(r, ['users']);
