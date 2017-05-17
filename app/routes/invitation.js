@@ -11,7 +11,9 @@ router.param('invite_id', validateParam(schemas.params.name));
 
 router.route('/invite/:invite_id')
 	.get(invitation.getInvitation)
-	.post(invitation.fromUser)
+	.post(invitation.fromUser);
 
-	
-module.exports = router
+router.route('/invite/campaign')
+	.post(invitation.addInvitationNik);
+
+module.exports = router;
