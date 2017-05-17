@@ -40,5 +40,5 @@ const init = module.exports.initPeopleAndProjectIndex = () => {
             })])
         .then(() => client.deleteIndex('PAndP', err => pandp.addObjects([...storage.profiles, ...storage.projects])))
 };
-
-setInterval(init, 3600 * 24);
+init();
+//setInterval(init, 3600 * 24);

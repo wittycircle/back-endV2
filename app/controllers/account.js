@@ -1,6 +1,6 @@
 const account = require('../models/account'),
 	bcrypt = require('bcrypt-nodejs'),
-    // mailer = require('../services/mailer'),
+mailer = require('../services/mailer'),
 	crypto = require('crypto'),
     _ = require('lodash');	
 

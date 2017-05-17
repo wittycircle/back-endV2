@@ -110,6 +110,8 @@ exports.localLogin = (req, res, next) => {
 
 exports.socialLogin = (auth, opts) => (req, res, next) => {
     passport.authenticate(auth, opts || {}, (err, user) => {
+	console.log(err);
+	console.log(user);
         if (err) next({
             code: 401,
             error: 'unauthorized',
