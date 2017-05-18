@@ -53,7 +53,7 @@ wm.section = sect;
 wm.send = send;
 wm.truncate = (x) =>  _.truncate(x, {length: 76, separator: ' '});
 wm.location = (e) => e.city + ', ' + (e.country ? e.country : e.state ? e.state : '');
-wm.url = (spec) => 'https://www.wittycircle.com/' + spec;
+wm.url = (spec) => `https://www.wittycircle.com${spec[0] === '/' ? '' : '/'}${spec}`;
 
 // ------------------ db stuff ------------------
 wm.notif = (type) => db.select('user_id').from(TABLES.NOTIF_PERM + ' as n')
