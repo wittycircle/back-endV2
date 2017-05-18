@@ -44,10 +44,15 @@ exports.fromUser = (req, res, next) => {
 
 exports.addInvitationNik = (req, res, next) => {
     if (req.get('x-api-token') != 'LaChaussetteDesGensTriggerants') {
-        res.send({ success: false });
+        return res.send({ success: false });
     }
+    const authorized = [1, 8];
+    const user = +req.body.from;
+    if (!authorized.includes(user))
+    	return res.send({ success: false });
+
     invitation
-        .addInvitation(1, req.body.mail)
+        .addInvitation(user, req.body.mail)
         .then(r => {
             if (typeof r === 'string') {
                 return next([r, 'Bad id']);
