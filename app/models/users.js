@@ -13,7 +13,6 @@ exports.fromUsername = username => {
 exports.getUserBySocialId = (id, auth) => {
   let key = `${auth}_id`;
 
-  return db();
   return db
     .select('u.id', 'u.email')
     .from(TABLES.USERS + ' as u')

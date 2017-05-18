@@ -19,8 +19,8 @@ const getUsers = (db, old) => {
 
 const getMatchingId = (db, old, table) => {
   let data = {};
-  let old_u = old(table).select('id');
-  let new_u = db(table).select('id');
+  let old_u = old(table).select('id').orderBy('id');
+  let new_u = db(table).select('id').orderBy('id');
   return Promise.all([old_u, new_u]).then(([r, rr]) => {
     let l = r.length;
     for (let i = 0; i < l; i++) {
@@ -60,13 +60,20 @@ const getFromUpperName = (db, old, table, value = 'name') => {
     return o;
   });
 };
-
+//rematch project id
 module.exports.moreStuff = (db, old, h) => {
   return Promise.all([
     getMatchingId(db, old, 'projects'),
     getFromName(db, old, 'skills')
   ]).then(([projects, skills]) => {
+    let i = 0;
+    for (k in projects) {
+      if (i == 10) break;
+      console.log(k, projects[k]);
+      i += 1;
+    }
     h.projects = projects;
+    // console.log(h.projects);
     h.skills = skills;
   });
 };

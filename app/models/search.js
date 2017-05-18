@@ -186,12 +186,12 @@ exports.cardProject = selector => {
     .as('m'),
     sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
       .select([
-        db.raw('GROUP_CONCAT(ot.tag) as tags'),
+        db.raw('GROUP_CONCAT(s.name) as tags'),
         'o.status',
-        'o.project_id',
-        'o.skill'
+        'o.project_id'
       ])
       .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
+      .leftJoin(TABLES.SKILLS + ' as s', 'ot.skill_id', 's.id')
       .groupBy('o.id')
       .as('o'),
     sub_category = db(TABLES.CATEGORIES + ' as c')
@@ -233,21 +233,22 @@ exports.cardProject = selector => {
   if (selector.opening || selector.skills)
     query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
 
-  if (selector.skills) {
-    let selected = _.words(selector.skills)
-      .map(
-        (el, i) =>
-          'WHEN o.skill LIKE "%' +
-          el +
-          '%" OR o.tags LIKE "%' +
-          el +
-          '%" THEN ' +
-          (i + 1)
-      )
-      .join(' ');
-    // query.orderByRaw('CASE ' + selected + ' ELSE 100 END');
-    query.whereRaw(selected);
-  }
+  // if (selector.skills) {
+  //   let selected = _.words(selector.skills)
+  //     .map(
+  //       (el, i) =>
+  //         'o.tags LIKE "%' +
+  //         // el +
+  //         // '%" OR o.tags LIKE "%' +
+  //         el +
+  //         '%" THEN ' +
+  //         (i + 1)
+  //     )
+  //     .join(' ');
+  //   // query.orderByRaw('CASE ' + selected + ' ELSE 100 END');
+  //   query.whereRaw(`o.tags like '%${selector.skills}%'`);
+  //   // query.whereRaw(selected);
+  // }
   addLocation('loc', selector.location, query);
   if (selector.opening)
     query.orderByRaw(
