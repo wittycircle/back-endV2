@@ -47,9 +47,9 @@ const reply_project = (args) => {
 	const sender = h.spe_profile({'u.id': args.from});
 
 	const discussion = db.select('u.email', 'p.title', 'p.public_id')
-						.from(TABLES.PROJECT_DISCUSSION + ' as d')
+						.from(TABLES.discussions + ' as d')
 						.join(TABLES.PROJECTS + ' as p', 'd.project_id', 'p.id')
-						.leftJoin(TABLES.PROJECT_DISCUSSION_REPLIES + ' as r', 'r.project_discussion_id', 'd.id')
+						.leftJoin(TABLES.discussions_REPLIES + ' as r', 'r.discussions_id', 'd.id')
 						.join(TABLES.USERS + ' as u', function() {
 							this.on('u.id', 'p.user_id')
 							.orOn('u.id', 'd.user_id')

@@ -13,8 +13,7 @@
     "server.js"
   ],
   "env": {
-    "NODE_ENV": "development", "PORT": 3000,
-    "DEBUG": "*"
+    "NODE_ENV": "development", "PORT": 3000
   },
   "ext": "js json"
 }

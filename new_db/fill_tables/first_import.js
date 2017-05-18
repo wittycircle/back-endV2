@@ -25,7 +25,7 @@ const first_import = (db, old) => {
     }),
     // ------------------ skills ------------------
     old('skills').select(['id', 'name', 'category', 'priority']).then(r => {
-      // r.push({id: 1, name: "unknown"})
+      r.push({ id: 1, name: 'unknown' });
       return db.batchInsert('skills', r);
     }),
     // ------------------ interests ------------------

@@ -85,7 +85,7 @@ exports.cardProfile = selector => {
   ];
 
   const profileStuff = location => {
-    let _query = db(TABLES.USER_PROFILES + ' as p')
+    let _query = db(TABLES.PROFILES + ' as p')
       .join(TABLES.USERS + ' as u', 'p.user_id', 'u.id')
       .join(TABLES.NETWORKS_LIST + ' as nl', 'p.network_id', 'nl.id')
       .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')

@@ -97,7 +97,7 @@ const newUser = (helper, origin) => {
     profileInsert.user_id = id;
     return Promise.all([
       db(TABLES.USER_SOCIALS).insert(socialInsert),
-      db(TABLES.USER_PROFILES).insert(profileInsert)
+      db(TABLES.PROFILES).insert(profileInsert)
     ]).then(r => {
       return {
         id: id,
@@ -173,7 +173,7 @@ exports.register = (data, token) => {
       return db(TABLES.USERS).insert(user_data).then(user => {
         profile_data.user_id = user[0].id;
         return Promise.all([
-          db(TABLES.USER_PROFILES).insert(profile_data),
+          db(TABLES.PROFILES).insert(profile_data),
           permission(user[0]),
           db(TABLES.ACCOUNT_VALIDATION).insert({
             email: data.email,

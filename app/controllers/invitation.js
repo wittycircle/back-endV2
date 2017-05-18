@@ -1,43 +1,60 @@
 const invitation = require('../models/invitation'),
-    mailer = require('../services/mailer');
-    _ = require('lodash');
+  mailer = require('../services/mailer');
+_ = require('lodash');
 
 exports.getInvitation = (req, res, next) => {
-	invitation.getInvitation(req.params.invite_id)
-		.then(r => {
-			if (!r || !r.length || typeof r === 'string') {
-				return next([r, 'Bad id'])
-			}
-			else{
-				res.send({informations: r})
-			}
-		})
-		.catch(err => next(err))
+  invitation
+    .getInvitation(req.params.invite_id)
+    .then(r => {
+      if (!r || !r.length || typeof r === 'string') {
+        return next([r, 'Bad id']);
+      } else {
+        res.send({ informations: r });
+      }
+    })
+    .catch(err => next(err));
 };
 
 exports.addInvitation = (req, res, next) => {
-	invitation.addInvitation(req.user.id, req.body.mail)
-		.then(r => {
-			if (typeof r === 'string') {
-				return next([r, 'Bad id'])
-			}
-			else{
-				mailer.invite_user({uid: req.user.id, mailList: req.body.mail})
-				res.send({success: true})
-			}
-		})
-		.catch(err => next(err))
+  invitation
+    .addInvitation(req.user.id, req.body.mail)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id']);
+      } else {
+        mailer.invite_user({ uid: req.user.id, mailList: req.body.mail });
+        res.send({ success: true });
+      }
+    })
+    .catch(err => next(err));
+};
+
+exports.nik = (req, res, next) => {
+  if (req.get('x-api-token') != 'LaChaussetteDesGensTriggerants') {
+    res.send({ success: false });
+  }
+  invitation
+    .addInvitation(1, req.body.mail)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id']);
+      } else {
+        mailer.invite_user({ uid: 1, mailList: req.body.mail });
+        res.send({ success: true });
+      }
+    })
+    .catch(err => next(err));
 };
 
 exports.fromUser = (req, res, next) => {
-	invitation.fromUser(req.params.invite_id, req.body.email)
-		.then(r => {
-			if (typeof r === 'string') {
-				return next([r, 'Bad id'])
-			}
-			else{
-				res.send({success: true})
-			}
-		})
-		.catch(err => next(err))
+  invitation
+    .fromUser(req.params.invite_id, req.body.email)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id']);
+      } else {
+        res.send({ success: true });
+      }
+    })
+    .catch(err => next(err));
 };

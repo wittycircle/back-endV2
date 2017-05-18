@@ -16,7 +16,7 @@ exports.TABLES = {
   ACCOUNT_VALIDATION: 'account_validation',
   RESET_PASSWORDS: 'reset_passwords',
   USERS: 'users',
-  USER_PROFILES: 'profiles',
+  PROFILES: 'profiles',
   USER_SKILLS: 'user_skills',
   USER_EXPERIENCES: 'user_experiences',
   USER_FOLLOWERS: 'user_followers',
@@ -30,23 +30,20 @@ exports.TABLES = {
   //            ***    PROJECTS    ***
   PROJECTS: 'projects',
   PROJECT_LIKES: 'project_followers',
-  PROJECT_REPLY_LIKES: 'project_reply_likes',
-  PROJECT_DISCUSSION: 'project_discussion',
-  PROJECT_DISCUSSION_LIKES: 'project_discussion_likes',
-  PROJECT_DISCUSSION_REPLIES: 'project_discussion_replies',
+  DISCUSSIONS: 'discussions',
+  DISCUSSION_LIKES: 'discussion_likes',
+  DISCUSSION_MESSAGES: 'discussion_messages',
   PROJECT_MEMBERS: 'project_members',
   PROJECT_CONTRIBUTOR: 'project_contributor',
   PROJECT_INVITE: 'project_invites',
   //            ***   openings     ***
-  PROJECT_OPENINGS: 'project_openings',
+  PROJECT_OPENINGS: 'openings',
   OPENING_TAGS: 'opening_tags',
   //            ***    NETWORK    ***
-  NETWORKS: 'networks',
-  NETWORKS_GROUP: 'networks_group',
-  PROJECT_NETWORK: 'project_network',
+  NETWORKS: 'partnerships',
+  NETWORKS_INFO: 'networks_info',
   NETWORKS_LIST: 'networks_list',
-  PROFILE_NETWORK: 'profile_network',
-  PROFILE_INCUBATOR: 'profile_network_2',
+  NETWORK_VERIFICATION: 'network_verification',
   //            *** HISTORY ***
   HISTORY: 'project_history',
   //            ***    ARTICLES    ***
@@ -54,7 +51,7 @@ exports.TABLES = {
   TAG_ARTICLES: 'tag_articles',
   ARTICLE_TAGS: 'article_tags',
   ARTICLE_LIKES: 'article_likes',
-  ARTICLE_MSG: 'article_message',
+  ARTICLE_MSG: 'article_messages',
   //            ***    CHAT    ***
   MESSAGES: 'messages',
   OMESSAGES: 'old_messages',
