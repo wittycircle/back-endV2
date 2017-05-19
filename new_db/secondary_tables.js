@@ -204,11 +204,20 @@ const secondary_tables = db =>
       t.integer('user_id').unsigned().notNullable();
       t.integer('room_id').unsigned().notNullable();
       t.text('message').notNullable();
-      t.boolean('read').defaultTo(0);
-      t.boolean('mail_sent').defaultTo(0);
       t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-      //t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
+      t.charset('utf8');
+      //			*** relations ***
+      t.foreign('room_id').references('rooms.id').onDelete('cascade');
+      t.foreign('user_id').references('users.id').onDelete('cascade');
+    }),
+    // ------------------ room_status ------------------
+    db.schema.createTableIfNotExists('room_status', function(t) {
+      t.increments();
+      t.integer('user_id').unsigned().notNullable();
+      t.integer('room_id').unsigned().notNullable();
+      t.boolean('mail_sent').defaultTo(0);
+      t.boolean('read').defaultTo(0);
+      t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
       t.charset('utf8');
       //			*** relations ***
       t.foreign('room_id').references('rooms.id').onDelete('cascade');
@@ -221,8 +230,6 @@ const secondary_tables = db =>
       t.string('mail_to', 128).notNullable();
       t.boolean('status').defaultTo(0);
       t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
-      //t.timestamp('updated_at').defaultTo(db.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
       t.charset('utf8');
       //			*** relations ***
       t.foreign('user_id').references('users.id').onDelete('cascade');

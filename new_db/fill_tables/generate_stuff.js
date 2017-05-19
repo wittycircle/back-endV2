@@ -122,7 +122,9 @@ module.exports.stuff = (db, old, h) => {
           e.partnership_id = h.partnerships[e.partnership_id];
         }
         if (t.indexOf('rooms') !== -1) {
-          e.room_id = h.rooms[e.room_id];
+          const nr = e.room_id.split('_');
+          const n = `${nr[1]}_${nr[0]}`;
+          e.room_id = h.rooms[e.room_id] ? h.rooms[e.room_id] : h.rooms[n];
         }
         if (t.indexOf('projects') !== -1) {
           e.project_id = h.projects[e.project_id];

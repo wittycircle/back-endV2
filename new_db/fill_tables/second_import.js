@@ -153,13 +153,25 @@ const second_import = (db, old, h) => {
       .select([
         'from_user_id as user_id',
         'message',
-        'm_read as read',
-        'm_send as mail_sent',
         db.raw('CONCAT(from_user_id, "_", to_user_id) as room_id')
       ])
       .then(r => {
         r = h.transform(r, ['users', 'rooms']);
         return db.batchInsert('messages', r);
+      }),
+    // ------------------ room_status ------------------
+    old('old_messages')
+      .select([
+        'm_read as read',
+        'm_send as mail_sent',
+        'to_user_id as user_id',
+        db.raw('CONCAT(from_user_id, "_", to_user_id) as room_id')
+      ])
+      .where('m_read', 1)
+      .orWhere('m_send', 1)
+      .then(r => {
+        r = h.transform(r, ['users', 'rooms']);
+        return db.batchInsert('room_status', r);
       }),
     // ------------------ invitations ------------------
     old('invitation')

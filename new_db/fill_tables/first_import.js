@@ -41,13 +41,32 @@ const first_import = (db, old) => {
     }),
     // ------------------ rooms ------------------
     old('old_messages')
-      .distinct([
-        db.raw('CONCAT(from_user_id,"_", to_user_id) as name'),
-        db.raw('MIN(creation_date) as creation_date')
-      ])
-      .groupBy('creation_date')
+      .distinct([db.raw('CONCAT(from_user_id, "_", to_user_id) as name')])
       .then(r => {
-        return db.batchInsert('rooms', r);
+        let a = [];
+        let nr = [];
+        r.forEach(e => {
+          let n = e.name.split('_');
+          a.forEach(el => {
+            if (
+              (el[0] == n[0] && n[1] == el[1]) ||
+              (el[1] == n[0] && n[1] == el[0])
+            ) {
+              console.log('EXIST');
+              console.log(el, n);
+              n[0] = 'EXIST';
+            }
+          });
+          if (n[0] !== 'EXIST') {
+            console.log('DOES NOT');
+            a.push(n);
+            nr.push(e);
+          } else {
+            delete e;
+          }
+        });
+        console.log('r length after');
+        return db.batchInsert('rooms', nr);
       }),
     // ------------------ networks_list ------------------
     old('university_list')
