@@ -67,7 +67,7 @@ exports.getArticles = (uid, id) => {
     'a.id',
     'a.user_id',
     h.fullname,
-    'p.picture',
+    'p.picture as profile_picture',
     'a.creation_date',
     'a.picture',
     'title',

@@ -17,9 +17,15 @@ exports.getProfileBy = by => {
     .as('ifo');
 
   let query = db(h.spe_profile(by))
+    .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
     .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
     .leftJoin(ifo, 'ifo.followed', 'p.uid')
-    .first('rank', 'p.*', db.raw('GROUP_CONCAT(ifo.user_id) as foli'));
+    .first(
+      'rank',
+      'p.*',
+      db.raw('GROUP_CONCAT(ifo.user_id) as foli'),
+      h.format_location
+    );
 
   return h.exist(TABLES.PROFILES, by['p.id']).then(r => {
     if (!r.length) throw 'Bad id';

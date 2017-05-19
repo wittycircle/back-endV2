@@ -73,6 +73,7 @@ const third_import = (db, old, h) => {
     old('article_message')
       .select(['article_id', 'user_id', 'message', 'creation_date'])
       .then(r => {
+        r = h.transform(r, ['users']);
         return db.batchInsert('article_messages', r);
       })
   ]); //promise_all

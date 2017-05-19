@@ -52,20 +52,16 @@ const first_import = (db, old) => {
               (el[0] == n[0] && n[1] == el[1]) ||
               (el[1] == n[0] && n[1] == el[0])
             ) {
-              console.log('EXIST');
-              console.log(el, n);
               n[0] = 'EXIST';
             }
           });
           if (n[0] !== 'EXIST') {
-            console.log('DOES NOT');
             a.push(n);
             nr.push(e);
           } else {
             delete e;
           }
         });
-        console.log('r length after');
         return db.batchInsert('rooms', nr);
       }),
     // ------------------ networks_list ------------------
