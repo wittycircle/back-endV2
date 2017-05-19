@@ -17,10 +17,6 @@ const addLocation = (table, location, query) => {
     selected += `WHEN ${table}.state LIKE "%${_location[1]}%" THEN 2 `;
     selected += `WHEN ${table}.country LIKE "%${_location[1]}%" THEN 3 `;
     query.orderByRaw('CASE ' + selected + ' else 100 END');
-
-    // query.whereRaw(`{table}.city like "%${_location[0]}%"
-    //     or {table}.state like "%${_location[1]}%"
-    //     or {table}.country like "%${_location[1]}%"`)
   }
 };
 // ------------------ Profile ------------------
@@ -142,19 +138,6 @@ exports.cardProfile = selector => {
 
 // ------------------ Project ------------------
 exports.cardProject = selector => {
-  //   const project_location = db.raw(`
-  //     CASE WHEN (pr.city IS NOT NULL)
-  //         THEN
-  //             CASE WHEN (pr.state != NULL)
-  //                 THEN CONCAT(pr.city, ', ', pr.state)
-  //             WHEN (pr.country IS NOT NULL)
-  //                 THEN CONCAT(pr.city, ', ', pr.country)
-  //                 ELSE ' '
-  //             END
-  //         ELSE ' '
-  //     END as location
-  // `);
-
   const pr_array = [
     'pr.id',
     'pr.title',
@@ -165,19 +148,11 @@ exports.cardProject = selector => {
     'c.id as category_id',
     'c.name as category_name',
     'nl.name as network',
-    'p.picture',
+    'p.picture as profile_picture',
     'p.uid as user_id',
+    // 'o.tags', -> debug
     db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
-    // project_location
-    h.format_location,
-    'loc.city',
-    'loc.country',
-    'loc.state'
-    /*
-         'o.skill',  'o.tags',
-         db.raw('GROUP_CONCAT(DISTINCT if(o.tags <> "0", o.tags, null)) as skills'),
-         Debug to see if order correctly
-         */
+    h.format_location
   ];
 
   const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m')
@@ -233,22 +208,14 @@ exports.cardProject = selector => {
   if (selector.opening || selector.skills)
     query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
 
-  // if (selector.skills) {
-  //   let selected = _.words(selector.skills)
-  //     .map(
-  //       (el, i) =>
-  //         'o.tags LIKE "%' +
-  //         // el +
-  //         // '%" OR o.tags LIKE "%' +
-  //         el +
-  //         '%" THEN ' +
-  //         (i + 1)
-  //     )
-  //     .join(' ');
-  //   // query.orderByRaw('CASE ' + selected + ' ELSE 100 END');
-  //   query.whereRaw(`o.tags like '%${selector.skills}%'`);
-  //   // query.whereRaw(selected);
-  // }
+  if (selector.skills) {
+    selector.skills.forEach(
+      (e, i) =>
+        i == 0
+          ? query.where('o.tags', 'like', `%${e}%`)
+          : query.orWhere('o.tags', 'like', `%${e}%`)
+    );
+  }
   addLocation('loc', selector.location, query);
   if (selector.opening)
     query.orderByRaw(
