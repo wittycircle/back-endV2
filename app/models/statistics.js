@@ -234,16 +234,12 @@ const subInfoProfiles = id => {
       .distinct(name('views'))
       .where('viewed', id)
       .from(TABLES.VIEWS),
-    messages = db(TABLES.ROOM_MEMBERS)
-      .distinct('room_id')
-      .where({ user_id: id })
-      .then(r => {
-        return db(TABLES.MESSAGES)
-          .countDistinct('id')
-          .distinct(name('messages'))
-          .where('user_id', '<>', id)
-          .whereIn('room_id', r);
-      });
+    messages = db(TABLES.MESSAGES + ' as m')
+      .join(TABLES.ROOM_MEMBERS + ' as rm', 'rm.room_id', 'm.room_id')
+      .where('rm.user_id', id)
+      .andWhere('m.user_id', '<>', id)
+      .countDistinct('m.message')
+      .distinct(name('messages'));
 
   let test = [
     started_projects,

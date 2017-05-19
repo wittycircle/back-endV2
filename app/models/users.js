@@ -90,7 +90,7 @@ exports.getProjectsInvolved = uid => {
     'pr.public_id',
     h.format_location,
     'p.fullName as creator_name',
-    'p.profile_picture as creator_picture'
+    'p.picture as creator_picture'
   ];
 
   let real_members = db

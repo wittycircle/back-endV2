@@ -54,7 +54,7 @@ exports.TABLES = {
   ARTICLE_MSG: 'article_messages',
   //            ***    CHAT    ***
   MESSAGES: 'messages',
-  OMESSAGES: 'old_messages',
+  ROOM_MEMBERS: 'room_members',
   //            ***    MISC    ***
   CATEGORIES: 'categories',
   RANK: 'ranks',
