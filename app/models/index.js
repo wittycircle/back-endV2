@@ -55,6 +55,8 @@ exports.TABLES = {
   //            ***    CHAT    ***
   MESSAGES: 'messages',
   ROOM_MEMBERS: 'room_members',
+  ROOM_STATUS: 'room_status',
+  ROOMS: 'rooms',
   //            ***    MISC    ***
   CATEGORIES: 'categories',
   RANK: 'ranks',

@@ -77,9 +77,7 @@ exports.getArticles = (uid, id) => {
     db.raw('GROUP_CONCAT(DISTINCT t.name) as tags')
   ];
   if (uid) {
-    a_articles.push(
-      db.raw('IF(l.user_id = ' + uid + ', true, false)  as hasLiked')
-    );
+    a_articles.push(db.raw('GROUP_CONCAT(DISTINCT l.user_id) as hasLiked'));
   }
 
   let query = db

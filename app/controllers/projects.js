@@ -76,15 +76,20 @@ exports.removeProject = (req, res, next) => {
 };
 
 exports.getProject = (req, res, next) => {
+  let uid = req.user ? req.user.id : null;
   project
-    .getProject(req.params.id)
+    .getProject(req.params.id, uid)
     .then(r => {
-      console.log('r', r);
-      if (!r.length) {
-        return next(['Could not retrieve project', 'Invalid id']);
-      } else {
-        res.send({ project: r[0] });
+      if (uid) {
+        r.forEach(e => {
+          let ar = e.hasLiked.split(',');
+          e.hasLiked = ar.indexOf(uid) != -1;
+        });
       }
+      r.forEach(e => {
+        console.log('rCONTROL', e.discussions[0].replies);
+      });
+      res.send({ project: r[0] });
     })
     .catch(err => next(err));
 };
@@ -116,9 +121,6 @@ exports.createProjectDiscussion = (req, res, next) => {
 let hackLiked = (r, req) => {
   if (req.user) {
     r.forEach(rep => {
-      let liked = false;
-      rep.likes.forEach(l => (liked = l.user_id === req.user.id ? true : liked));
-      rep.liked = liked;
       rep.replies.forEach(rl => {
         liked = false;
         rl.likes.forEach(l => (liked = l.user_id === req.user.id ? true : liked));

@@ -42,14 +42,13 @@ exports.removeProject = id => {
 };
 
 const getMembers = id => {
-  //Not sure about this, if project contributor or project user
   const members = db
     .select('p.user_id as creator', 'pcr.user_id')
     .from(TABLES.PROJECT_MEMBERS + ' as pcr')
     .join(TABLES.PROJECTS + ' as p', 'p.id', 'pcr.project_id')
     .where('project_id', id)
-    .as('pcr')
-    .where('pcr.accepted', 1);
+    .where('pcr.accepted', 1)
+    .as('pcr');
 
   return db
     .distinct([
@@ -72,7 +71,7 @@ const getFollowerCount = id => {
     .where('p.id', id);
 };
 
-exports.getProject = id => {
+exports.getProject = (id, uid) => {
   const pr_array = [
     'pr.id',
     'pr.title',
@@ -90,12 +89,16 @@ exports.getProject = id => {
     'pr.logo'
   ],
     x = [];
+  if (uid) {
+    pr_array.push(db.raw('GROUP_CONCAT(l.user_id) as hasLiked'));
+  }
   const req = db
     .distinct(pr_array)
     .from(TABLES.PROJECTS + ' as pr')
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'pr.loc_id')
     .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
-    .join(h.sub_profile, 'p.uid', 'pr.user_id');
+    .join(h.sub_profile, 'p.uid', 'pr.user_id')
+    .leftJoin(TABLES.PROJECT_LIKES + ' as l', 'l.project_id', 'pr.id');
   req.where('pr.public_id', id);
 
   return req.then(r => {
@@ -117,7 +120,9 @@ exports.getProject = id => {
         })
       );
     });
-    return Promise.all(x).then(() => r);
+    return Promise.all(x).then(() => {
+      return r;
+    });
   });
 };
 //

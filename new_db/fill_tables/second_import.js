@@ -153,8 +153,10 @@ const second_import = (db, old, h) => {
       .select([
         'from_user_id as user_id',
         'message',
+        'creation_date',
         db.raw('CONCAT(from_user_id, "_", to_user_id) as room_id')
       ])
+      .orderBy('creation_date')
       .then(r => {
         r = h.transform(r, ['users', 'rooms']);
         return db.batchInsert('messages', r);

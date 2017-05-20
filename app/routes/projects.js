@@ -27,7 +27,7 @@ router
 
 router
   .route('/projects/:id')
-  .get(projects.getProject)
+  .get(auth(AUTH.PUBLIC), projects.getProject)
   .put(
     auth(AUTH.PRIVATE),
     validate(schemas.project.update),

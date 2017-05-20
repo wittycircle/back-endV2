@@ -119,11 +119,15 @@ exports.cardProfile = selector => {
 
   addLocation('p', selector.location, q);
   if (selector.skills) {
-    let selected = _.words(selector.skills)
-      .map((el, i) => 'WHEN sort.skills LIKE "%' + el + '%" THEN ' + (i + 1))
+    let selected = selector.skills
+      .map(
+        (el, i) =>
+          `WHEN sort.skills = "${el}" THEN ${i + 1} WHEN sort.skills LIKE "%${el}%" THEN ${i + 10}`
+      )
       .join(' ');
     q.orderByRaw('CASE ' + selected + ' else 100  END');
   }
+
   if (selector.network) {
     q.orderByRaw(
       `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
@@ -150,7 +154,7 @@ exports.cardProject = selector => {
     'nl.name as network',
     'p.picture as profile_picture',
     'p.uid as user_id',
-    // 'o.tags', -> debug
+    'o.tags',
     db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
     h.format_location
   ];
@@ -209,13 +213,15 @@ exports.cardProject = selector => {
     query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
 
   if (selector.skills) {
-    selector.skills.forEach(
-      (e, i) =>
-        i == 0
-          ? query.where('o.tags', 'like', `%${e}%`)
-          : query.orWhere('o.tags', 'like', `%${e}%`)
-    );
+    let selected = selector.skills
+      .map(
+        (el, i) =>
+          `WHEN o.tags = "${el}" THEN ${i + 1} WHEN o.tags LIKE "%${el}%" THEN ${i + 10}`
+      )
+      .join(' ');
+    query.orderByRaw('CASE ' + selected + ' else 100  END');
   }
+
   addLocation('loc', selector.location, query);
   if (selector.opening)
     query.orderByRaw(
