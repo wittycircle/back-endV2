@@ -154,7 +154,7 @@ exports.cardProject = selector => {
     'nl.name as network',
     'p.picture as profile_picture',
     'p.uid as user_id',
-    'o.tags',
+    // 'o.tags',
     db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
     h.format_location
   ];
