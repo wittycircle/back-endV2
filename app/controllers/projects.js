@@ -84,6 +84,11 @@ exports.getProject = (req, res, next) => {
         r.forEach(e => {
           let ar = e.hasLiked.split(',');
           e.hasLiked = ar.indexOf(uid) != -1;
+          e.discussions.forEach(el =>
+            el.replies.forEach(
+              rep => (rep.hasLiked = rep.likes.indexOf(uid) != -1)
+            )
+          );
         });
       }
       res.send({ project: r[0] });
