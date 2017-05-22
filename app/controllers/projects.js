@@ -83,19 +83,7 @@ exports.getProject = (req, res, next) => {
       if (uid) {
         r.forEach(e => {
           let ar = e.hasLiked.split(',');
-          let nik = false;
-          ar.forEach(el => {
-            console.log('el', el);
-            if (el === uid) {
-              console.log('success', el, uid);
-              nik = true;
-            }
-          });
           e.hasLiked = ar.indexOf(uid) != -1;
-          console.log('ar', ar);
-          console.log('uid', uid);
-          console.log('e.hasLiked', e.hasLiked);
-          console.log('nik', nik);
         });
       }
       res.send({ project: r[0] });
