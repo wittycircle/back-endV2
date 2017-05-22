@@ -1,10 +1,10 @@
 const { db, TABLES } = require('./index'), h = require('./helper');
 
 exports.updateReplyDiscussion = (reply_id, uid, message) => {
-  return h.owner(TABLES.DISCUSSIONS_REPLIES, reply_id, uid).then(r => {
+  return h.owner(TABLES.DISCUSSION_MESSAGES, reply_id, uid).then(r => {
     if (!r.length) return 'Invalid discussion id';
     else {
-      return db(TABLES.DISCUSSIONS_REPLIES)
+      return db(TABLES.DISCUSSION_MESSAGES)
         .update({ message: message })
         .where({ id: reply_id });
     }
@@ -12,16 +12,16 @@ exports.updateReplyDiscussion = (reply_id, uid, message) => {
 };
 
 exports.removeReplyDiscussion = (reply_id, uid) => {
-  return h.owner(TABLES.DISCUSSIONS_REPLIES, reply_id, uid).then(r => {
+  return h.owner(TABLES.DISCUSSION_MESSAGES, reply_id, uid).then(r => {
     if (!r.length) return 'Invalid id';
     else {
-      return db(TABLES.DISCUSSIONS_REPLIES).del().where({ id: reply_id });
+      return db(TABLES.DISCUSSION_MESSAGES).del().where({ id: reply_id });
     }
   });
 };
 
 exports.likeReply = (reply_id, uid) => {
-  return h.exist(TABLES.DISCUSSIONS_REPLIES, reply_id).then(r => {
+  return h.exist(TABLES.DISCUSSION_MESSAGES, reply_id).then(r => {
     if (!r.length) return 'Invalid id';
     else {
       return db(TABLES.DISCUSSION_LIKES)
@@ -43,7 +43,7 @@ exports.likeReply = (reply_id, uid) => {
 };
 
 exports.unlikeReply = (reply_id, uid) => {
-  return h.owner(TABLES.DISCUSSIONS_REPLIES, reply_id, uid).then(r => {
+  return h.owner(TABLES.DISCUSSION_MESSAGES, reply_id, uid).then(r => {
     if (!r.length) return 'Invalid id';
     else {
       return db(TABLES.DISCUSSION_LIKES)

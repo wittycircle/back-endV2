@@ -86,9 +86,6 @@ exports.getProject = (req, res, next) => {
           e.hasLiked = ar.indexOf(uid) != -1;
         });
       }
-      r.forEach(e => {
-        console.log('rCONTROL', e.discussions[0].replies);
-      });
       res.send({ project: r[0] });
     })
     .catch(err => next(err));
