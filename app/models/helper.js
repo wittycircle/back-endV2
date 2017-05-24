@@ -1,5 +1,9 @@
 const { db, TABLES } = require('./index');
 
+//TODO:
+// Do a generic thing to find the location [set loc_id]
+//If not found, create it [like from searchProject where there is the google bla]
+
 const format_location = db.raw(`
 	CASE WHEN (loc.city IS NOT NULL)
 		THEN

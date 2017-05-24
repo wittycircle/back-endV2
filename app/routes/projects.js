@@ -36,6 +36,10 @@ router
   .delete(auth(AUTH.PRIVATE), projects.removeProject);
 
 router
+  .route('/projects/:id/location')
+  .put(auth(AUTH.PRIVATE), projects.updateProjectLocation);
+
+router
   .route('/projects/:id/openings')
   .get(projects.getProjectOpenings)
   .post(

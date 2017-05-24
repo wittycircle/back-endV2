@@ -23,12 +23,13 @@ exports.updateProject = (id, project_data) => {
 };
 
 exports.updateProjectLocation = (id, location) => {
+  console.log('ICI');
   return db(TABLES.LOCATION)
     .first('id')
     .where({ city: location.city })
-    .orWhere({ state: location.state })
-    .orWhere({ country: location.country })
-    .then(r => db(TABLES.PROJECTS).update({ loc_id: r }).where('id', id));
+    .orWhere({ state: location.state || '' })
+    .orWhere({ country: location.country || '' })
+    .then(r => db(TABLES.PROJECTS).update({ loc_id: r.id || 1 }).where('id', id));
 };
 
 exports.removeProject = id => {
