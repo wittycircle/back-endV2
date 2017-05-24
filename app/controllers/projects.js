@@ -1,5 +1,4 @@
 const project = require('../models/projects'),
-  // format = require('./format'),
   redis = require('ioredis')(require('../private').redis), //<= sale
   mailer = require('../services/mailer');
 _ = require('lodash');
@@ -10,11 +9,7 @@ const data = req => {
     user_id: req.user.id,
     title: req.body.title,
     category_id: req.body.category, //id and not a string (there is a table categories)
-    description: req.body.description,
-    about: req.body.about,
     status: req.body.status,
-    picture: req.body.picture,
-    video: req.body.video,
     project_visibility: req.body.public || 1,
     public_id: Math.floor(Math.random() * 90000 + 10000)
   };
@@ -82,7 +77,7 @@ exports.getProject = (req, res, next) => {
     .then(r => {
       if (uid) {
         r.forEach(e => {
-          let ar = e.hasLiked.split(',');
+          let ar = e.hasLiked ? e.hasLiked.split(',') : [];
           e.hasLiked = ar.indexOf(uid) != -1;
           e.discussions.forEach(el =>
             el.replies.forEach(

@@ -13,7 +13,7 @@ exports.createProject = (project_data, location) => {
     .orWhere({ state: location.state })
     .orWhere({ country: location.country })
     .then(r => {
-      project_data.loc_id = r;
+      project_data.loc_id = r ? r.id : 1;
       return db(TABLES.PROJECTS).insert(project_data);
     });
 };
