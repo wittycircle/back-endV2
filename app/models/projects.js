@@ -14,7 +14,7 @@ exports.createProject = (project_data, location) => {
 };
 
 exports.updateProject = (id, project_data, location_data) => {
-  h.setLocation(location_data).then(r => {
+  return h.setLocation(location_data).then(r => {
     project_data.loc_id = r.id;
     return db(TABLES.PROJECTS).update(project_data).where('id', id);
   });

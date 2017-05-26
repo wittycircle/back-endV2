@@ -68,16 +68,19 @@ const ranking = (user_id, points) => {
 };
 
 const setLocation = data => {
-  db(TABLES.LOCATION)
+  return db(TABLES.LOCATION)
     .first('id')
     .where({ city: data.city || '' })
     .orWhere({ country: data.country || '' })
     .orWhere({ state: data.state || '' })
     .orWhere({ lat: data.lat || '' })
-    .orWhere({ lng: data.long || '' })
+    .orWhere({ lng: data.lng || '' })
     .then(r => {
-      if (r.id) return r.id;
-      else {
+      if (r.id) {
+        console.log('ALREADY EXIST');
+        return r.id;
+      } else {
+        console.log('CREATING NEW ONE');
         return db(TABLES.LOCATION).insert({
           city: data.city,
           country: data.country,
@@ -155,6 +158,7 @@ h.owner = (table, id, uid) => db(table).select('id').where({ id, user_id: uid })
 h.admin = admin;
 h.format_location = format_location;
 h.getLocationId = getLocationId;
+h.setLocation = setLocation;
 
 h.fullname = db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName');
 h.spe_profile = cond =>
