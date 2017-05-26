@@ -42,7 +42,7 @@ module.exports.creation = Joi.object().keys({
 
 module.exports.update = Joi.object().keys({
   title: Joi.string().trim().allow(p_empty),
-  location: common.location.required(),
+  location: common.location,
   category: Joi.number().integer(),
   picture: Joi.string().trim().allow(p_empty),
   picture_card: Joi.string().trim().allow(p_empty),

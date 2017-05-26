@@ -14,7 +14,7 @@ const profile_update = Joi.object().keys({
   profile_picture: Joi.string().optional(),
   cover_picture: Joi.string().optional(),
   genre: Joi.string().optional(),
-  location: common.location.required(),
+  location: common.location,
   network: Joi.string().optional()
 });
 

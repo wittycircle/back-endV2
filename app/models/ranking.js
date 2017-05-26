@@ -14,10 +14,7 @@ const keys = {
  * @param {Number | Number[]} id - The user(s) id
  * @returns {Promise<Number> | Promise<Number[]>} - The rank(s)
  */
-exports.get = id =>
-  Array.isArray(id)
-    ? redis.multi(id.map(i => ['zrank', keys.ranks, i])).exec()
-    : redis.zrank(keys.ranks, i);
+exports.get = id => redis.zrevrank(keys.ranks, i).then(r => r + 1);
 
 /**
  * Set the points of one user
