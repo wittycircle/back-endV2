@@ -44,8 +44,10 @@ exports.getProfile = (req, res, next) => {
 };
 
 exports.updateProfile = (req, res, next) => {
+  const location = req.body.location;
+  delete req.body.location;
   profiles
-    .updateProfile(req.body.profile, { id: req.params.id })
+    .updateProfile(req.body, location, { id: req.params.id })
     .then(r => {
       if (r) {
         req.broadcastEvent('profile_update', { id: req.params.id });

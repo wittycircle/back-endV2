@@ -33,8 +33,11 @@ exports.getProfileBy = by => {
   });
 };
 
-exports.updateProfile = (stuff, cnd) => {
-  return db(TABLES.PROFILES).update(stuff).where(cnd);
+exports.updateProfile = (stuff, location, cnd) => {
+  return h.setLocation(location).then(r => {
+    stuff.loc_id = r.id;
+    return db(TABLES.PROFILES).update(stuff).where(cnd);
+  });
 };
 
 // ------------------ Follow ------------------
