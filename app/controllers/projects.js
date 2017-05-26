@@ -25,10 +25,14 @@ const data = req => {
 };
 
 exports.createProject = (req, res, next) => {
+  console.log(req.body);
   data(req).then(([d, location]) => {
+    console.log('d', d);
+    console.log('location', location);
     project
       .createProject(d, location)
       .then(r => {
+        console.log('r', r);
         mailer.new_project({ uid: req.user.id, public_id: d.public_id });
         req.broadcastEvent('project_creation', { id: r, from: req.user.id });
         res.send({ id: d.public_id });

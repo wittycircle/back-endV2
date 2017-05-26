@@ -8,7 +8,7 @@ const { db, TABLES } = require('./index'),
 exports.createProject = (project_data, location) => {
   let x = [];
   return h.setLocation(location).then(r => {
-    project_data.loc_id = r ? r.id : 1;
+    project_data.loc_id = r.id;
     return db(TABLES.PROJECTS).insert(project_data);
   });
 };
