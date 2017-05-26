@@ -35,7 +35,7 @@ exports.getProfileBy = by => {
 
 exports.updateProfile = (stuff, location, cnd) => {
   return h.setLocation(location).then(r => {
-    stuff.loc_id = r.id;
+    stuff.loc_id = r[0];
     return db(TABLES.PROFILES).update(stuff).where(cnd);
   });
 };

@@ -68,6 +68,9 @@ const ranking = (user_id, points) => {
 };
 
 const setLocation = data => {
+  if (!data) {
+    return [1];
+  }
   return db(TABLES.LOCATION)
     .first('id')
     .where({ city: data.city || '' })
@@ -77,10 +80,10 @@ const setLocation = data => {
     .orWhere({ lng: data.lng || '' })
     .then(r => {
       if (r.id) {
-        console.log('ALREADY EXIST');
-        return r.id;
+        console.log('ALREADY EXIST', data);
+        return [r.id];
       } else {
-        console.log('CREATING NEW ONE');
+        console.log('CREATING NEW ONE', data);
         return db(TABLES.LOCATION).insert({
           city: data.city,
           country: data.country,

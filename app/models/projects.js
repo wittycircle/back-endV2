@@ -6,16 +6,19 @@ const { db, TABLES } = require('./index'),
 // ------------------ Projects [main methods] ------------------
 
 exports.createProject = (project_data, location) => {
-  let x = [];
+  console.log('CREATING');
   return h.setLocation(location).then(r => {
-    project_data.loc_id = r.id;
+    console.log('LOCATION SET');
+    console.log('r', r);
+    project_data.loc_id = r[0];
+    console.log(project_data);
     return db(TABLES.PROJECTS).insert(project_data);
   });
 };
 
 exports.updateProject = (id, project_data, location_data) => {
   return h.setLocation(location_data).then(r => {
-    project_data.loc_id = r.id;
+    project_data.loc_id = r[0];
     return db(TABLES.PROJECTS).update(project_data).where('id', id);
   });
 };
