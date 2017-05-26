@@ -10,8 +10,8 @@ module.exports.location = Joi.object()
     country: Joi.string().trim().min(1).max(64).optional(),
     city: Joi.string().trim().min(1).max(64).optional(),
     state: Joi.string().trim().min(1).max(64).optional(),
-    lat: Joi.float().optional(),
-    lng: Joi.float().optional()
+    lat: Joi.number().optional(),
+    lng: Joi.number().optional()
   })
   .or('country', 'city', 'state');
 
