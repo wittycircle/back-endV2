@@ -52,11 +52,7 @@ const getFromBody = b => {
   if (b.logo) project_data.logo = b.logo;
   if (b.project_visibility)
     project_data.project_visibility = b.project_visibility;
-  let loc_data = {
-    city: b.city || '',
-    state: b.state || '',
-    country: b.country || ''
-  };
+  let loc_data = b.location;
   return [project_data, loc_data];
 };
 

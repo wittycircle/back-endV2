@@ -72,3 +72,9 @@ exports.TABLES = {
   VIEWS: 'views',
   profile_ranking: 'profile_ranking'
 };
+
+// Redis stuff
+
+const ioredis = require('ioredis');
+const redis = ioredis(config.redis);
+exports.redis = redis;

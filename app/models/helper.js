@@ -67,19 +67,23 @@ const ranking = (user_id, points) => {
   // });
 };
 
-const setLocation = () => {
+const setLocation = data => {
   db(TABLES.LOCATION)
     .first('id')
     .where({ city: data.city || '' })
     .orWhere({ country: data.country || '' })
     .orWhere({ state: data.state || '' })
+    .orWhere({ lat: data.lat || '' })
+    .orWhere({ lng: data.long || '' })
     .then(r => {
       if (r.id) return r.id;
       else {
         return db(TABLES.LOCATION).insert({
           city: data.city,
           country: data.country,
-          state: data.state
+          state: data.state,
+          lat: data.latitude,
+          lng: data.longitude
         });
       }
     });

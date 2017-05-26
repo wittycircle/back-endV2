@@ -7,15 +7,10 @@ const { db, TABLES } = require('./index'),
 
 exports.createProject = (project_data, location) => {
   let x = [];
-  return db(TABLES.LOCATION)
-    .first('id')
-    .where({ city: location.city })
-    .orWhere({ state: location.state })
-    .orWhere({ country: location.country })
-    .then(r => {
-      project_data.loc_id = r ? r.id : 1;
-      return db(TABLES.PROJECTS).insert(project_data);
-    });
+  return h.setLocation(location).then(r => {
+    project_data.loc_id = r ? r.id : 1;
+    return db(TABLES.PROJECTS).insert(project_data);
+  });
 };
 
 exports.updateProject = (id, project_data, location_data) => {
