@@ -68,31 +68,32 @@ const ranking = (user_id, points) => {
 };
 
 const setLocation = data => {
+  console.log('data', data);
   if (!data) {
     return [1];
   }
-  return db(TABLES.LOCATION)
-    .first('id')
-    .where({ city: data.city || '' })
-    .orWhere({ country: data.country || '' })
-    .orWhere({ state: data.state || '' })
-    .orWhere({ lat: data.lat || '' })
-    .orWhere({ lng: data.lng || '' })
-    .then(r => {
-      if (r.id) {
-        console.log('ALREADY EXIST', data);
-        return [r.id];
-      } else {
-        console.log('CREATING NEW ONE', data);
-        return db(TABLES.LOCATION).insert({
-          city: data.city,
-          country: data.country,
-          state: data.state,
-          lat: data.latitude,
-          lng: data.longitude
-        });
-      }
-    });
+
+  const query = db(TABLES.LOCATION).first('id').where({ city: data.city });
+  if (data.state) query.orWhere({ state: data.state });
+  if (data.country) query.orWhere({ country: data.country });
+  if (data.lat) query.orWhere({ lat: data.lat });
+  if (data.lng) query.orWhere({ lng: data.lng });
+
+  return query.then(r => {
+    if (r.id) {
+      console.log('ALREADY EXIST', data, r);
+      return [r.id];
+    } else {
+      console.log('CREATING NEW ONE', data);
+      return db(TABLES.LOCATION).insert({
+        city: data.city,
+        country: data.country,
+        state: data.state,
+        lat: data.latitude,
+        lng: data.longitude
+      });
+    }
+  });
 };
 
 const format_location = db.raw(`

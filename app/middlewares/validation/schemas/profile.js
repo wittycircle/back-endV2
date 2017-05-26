@@ -18,9 +18,10 @@ const profile_update = Joi.object().keys({
   network: Joi.string().optional()
 });
 
-exports.update = Joi.object().keys({
-  profile: profile_update
-});
+exports.update = profile_update;
+// exports.update = Joi.object().keys({
+//   profile: profile_update
+// });
 
 exports.location = Joi.object().keys({
   location: common.location.required()
