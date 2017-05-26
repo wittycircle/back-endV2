@@ -63,3 +63,7 @@ exports.addInvitationNik = (req, res, next) => {
         })
         .catch(err => next(err));
 };
+
+exports.fromGmail = (req, res, next) => {
+		
+};
