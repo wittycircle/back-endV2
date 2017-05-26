@@ -37,11 +37,34 @@ exports.createProject = (req, res, next) => {
   });
 };
 
+const getFromBody = b => {
+  let project_data = {};
+  if (b.user_id) project_data.user_id = b.user_id;
+  if (b.category_id) project_data.category_id = b.category_id;
+  if (b.status) project_data.status = b.status;
+  if (b.title) project_data.title = b.title;
+  if (b.description) project_data.description = b.description;
+  if (b.about) project_data.about = b.about;
+  if (b.picture) project_data.picture = b.picture;
+  if (b.video) project_data.video = b.video;
+  if (b.link) project_data.link = b.link;
+  if (b.app) project_data.app = b.app;
+  if (b.logo) project_data.logo = b.logo;
+  if (b.project_visibility)
+    project_data.project_visibility = b.project_visibility;
+  let loc_data = {
+    city: b.city || '',
+    state: b.state || '',
+    country: b.country || ''
+  };
+  return [project_data, loc_data];
+};
+
 exports.updateProject = (req, res, next) => {
+  const [project_data, location_data] = getFromBody(req.body);
   req.body.category_id = req.body.category;
-  delete req.body.category;
   project
-    .updateProject(req.params.id, req.body)
+    .updateProject(req.params.id, project_data, location_data)
     .then(r => {
       req.broadcastEvent('project_update', {
         id: req.params.id,

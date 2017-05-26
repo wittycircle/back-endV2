@@ -218,6 +218,11 @@ const second_import = (db, old, h) => {
     old('rank_of_the_day').select(['user_id', 'rank']).then(r => {
       r = h.transform(r, ['users']);
       return db.batchInsert('ranks', r);
+    }),
+    // ------------------ rank_history ------------------
+    old('profile_ranking').select('*').then(r => {
+      r = h.transform(r, ['users']);
+      return db.batchInsert('rank_history', r);
     })
   ]); //promise_all
 };

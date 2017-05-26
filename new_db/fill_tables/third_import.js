@@ -1,4 +1,80 @@
 const third_import = (db, old, h) => {
+  const subInfoProfiles = id => {
+    const views = old
+      .countDistinct('id as value')
+      .where('user_notif_id', id)
+      .where('type_notif', 'view')
+      .from('notification_list'),
+      started_projects = old
+        .distinct(db.raw('count(id) * 200'))
+        .where('user_id', id)
+        .from('projects'),
+      invitation = old
+        .distinct(db.raw('count(id) * 500'))
+        .where('user_id', id)
+        .where('status', 'registed')
+        .from('invitation'),
+      project_feedback = old
+        .distinct(db.raw('count(id) * 15'))
+        .where('user_id', id)
+        .from('project_users'),
+      project_contrib = old
+        .distinct(db.raw('count(id) * 100'))
+        .where('user_id', id)
+        .from('project_users'),
+      following = old
+        .countDistinct('id')
+        .where('user_id', id)
+        .from('user_followers'),
+      follower = old
+        .distinct(db.raw('count(id) * 2'))
+        .where('follow_user_id', id)
+        .from('user_followers'),
+      upvoted_project = old
+        .distinct(db.raw('count(id) * 2'))
+        .where('user_id', id)
+        .from('project_users'),
+      messages = old
+        .distinct(db.raw('count(id) * 2'))
+        .where('to_user_id', id)
+        .from('old_messages'),
+      profile_skills = old
+        .distinct(db.raw('250'))
+        .where('user_id', id)
+        .from('user_skills'),
+      profile_interests = old
+        .distinct(db.raw('250'))
+        .where('user_id', id)
+        .from('user_interests'),
+      profile_experiences = old
+        .distinct(db.raw('250'))
+        .where('user_id', id)
+        .from('user_experiences'),
+      profile_description = old
+        .distinct(db.raw('250'))
+        .whereRaw('description IS NOT NULL')
+        .andWhere('u.id', id)
+        .from('profiles as p')
+        .join('users as u', 'u.profile_id', 'p.id');
+    const test = [
+      started_projects,
+      invitation,
+      project_feedback,
+      project_contrib,
+      following,
+      follower,
+      upvoted_project,
+      messages,
+      profile_skills,
+      profile_interests,
+      profile_experiences,
+      profile_description
+    ];
+
+    return views
+      .union(test)
+      .then(r => r.map(e => e.value).reduce((e, a) => e + a + 300));
+  };
   return Promise.all([
     // ------------------ user_socials ------------------
     old('profiles as p')
@@ -75,7 +151,19 @@ const third_import = (db, old, h) => {
       .then(r => {
         r = h.transform(r, ['users']);
         return db.batchInsert('article_messages', r);
-      })
+      }),
+    // ------------------ rank_points ------------------
+    // SALE
+    old('users').select('id as user_id').orderBy('id').then(r => {
+      r = h.transform(r, ['users']);
+      return Promise.all(
+        r.map(e =>
+          subInfoProfiles(e.user_id).then(score => {
+            return { user_id: e.user_id, points: score };
+          })
+        )
+      ).then(result => db.batchInsert('rank_points', result));
+    })
   ]); //promise_all
 };
 

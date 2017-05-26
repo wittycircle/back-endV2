@@ -210,13 +210,13 @@ const secondary_tables = db =>
       t.foreign('room_id').references('rooms.id').onDelete('cascade');
       t.foreign('user_id').references('users.id').onDelete('cascade');
     }),
-    // ------------------ room_status ------------------
+    // ------------------ rooms_status ------------------
     db.schema.createTableIfNotExists('room_status', function(t) {
       t.increments();
       t.integer('user_id').unsigned().notNullable();
       t.integer('room_id').unsigned().notNullable();
       t.boolean('mail_sent').defaultTo(0);
-      t.boolean('read').defaultTo(0);
+      t.boolean('read').defaultTo;
       t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
       t.charset('utf8');
       //			*** relations ***
@@ -269,7 +269,31 @@ const secondary_tables = db =>
       t.integer('rank').unsigned().notNullable();
       //			*** relations ***
       t.foreign('user_id').references('users.id').onDelete('cascade');
+    }),
+    // ------------------ rank_history ------------------
+    db.schema.createTableIfNotExists('rank_history', function(t) {
+      t.increments();
+      t.integer('user_id').unsigned().notNullable();
+      t.integer('points').unsigned().notNullable();
+      t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+      t.charset('utf8');
+      //			*** relations ***
+      t.foreign('user_id').references('users.id').onDelete('cascade');
+    }),
+    // ------------------ rank_points ------------------
+    db.schema.createTableIfNotExists('rank_points', function(t) {
+      t.increments();
+      t.integer('user_id').unsigned().notNullable();
+      t.integer('points').unsigned().notNullable();
+      t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
+      t.charset('utf8');
+      //			*** relations ***
+      t.foreign('user_id').references('users.id').onDelete('cascade');
     })
   ]);
 
 module.exports = secondary_tables;
+
+// TODO
+// Find a good way to insert data
+// No need to recuperate old data ?
