@@ -13,6 +13,9 @@ router.route('/projects')
     .get(projects.getProjects)
     .post(auth(AUTH.PRIVATE), validate(schemas.project.creation), projects.createProject);
 
+router.route('/projects/import')
+    .post(projects.createProjectFromExternal);
+
 router.route('/projects/search')
     .post(auth(AUTH.PUBLIC), validate(schemas.search.project), search.searchProject)
     
