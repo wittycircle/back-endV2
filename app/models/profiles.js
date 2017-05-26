@@ -19,6 +19,7 @@ exports.getProfileBy = by => {
   let query = db(h.spe_profile(by))
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
     .leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
+    .leftJoin(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
     .leftJoin(ifo, 'ifo.followed', 'p.uid')
     .first(
       'rank',

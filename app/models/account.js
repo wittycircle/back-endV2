@@ -160,7 +160,7 @@ exports.register = (data, token) => {
       email: data.email,
       password: data.password,
       username: data.username,
-      inviteId: `${data.first_name.replace(/ /g, '')}${data.last_name.replace(/ /g, '')}_W${+Math.floor(Math.random() * 10000 + 1)}`
+      invite_link: `${data.first_name.replace(/ /g, '')}${data.last_name.replace(/ /g, '')}_W${+Math.floor(Math.random() * 10000 + 1)}`
     };
 
   return Promise.all([
