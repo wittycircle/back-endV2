@@ -9,7 +9,11 @@ const { db, TABLES } = require('./index'),
   h = require('./helper');
 
 exports.getProfiles = () => h.loc_profile;
+/*
+TODO :
+Do the thing to get description and stuff and if empty, add points to rank
 
+*/
 exports.getProfileBy = by => {
   const ifo = db
     .distinct('followed', 'user_id')
@@ -24,6 +28,7 @@ exports.getProfileBy = by => {
     .first(
       'rank',
       'p.*',
+      'nl.name',
       db.raw('GROUP_CONCAT(ifo.user_id) as foli'),
       h.format_location
     );

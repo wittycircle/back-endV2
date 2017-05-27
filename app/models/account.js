@@ -61,7 +61,7 @@ const social_helper = {
   }
 };
 
-const chooseOrigin = origin => {
+const chooseOrigin = (origin, helper) => {
   let ret = {};
   if (origin == 'facebook') {
     ret.facebook_id = helper.profile.facebook_id;
@@ -76,11 +76,13 @@ const chooseOrigin = origin => {
 
 const verifyUser = email => {
   return db(TABLES.INVITATION)
-    .select('mail_to')
+    .select('user_id')
     .where('mail_to', email)
     .then(r => {
-      if (r.length)
+      if (r.length) {
+        req.broadcastEvent('add_points', { user_id: r[0].user_id, points: 500 });
         return db(TABLES.INVITATION).update('status', 1).where('mail_to', email);
+      }
       return null;
     });
 };
@@ -90,7 +92,7 @@ const newUser = (helper, origin) => {
     first_name: helper.profile.first_name,
     last_name: helper.profile.last_name
   },
-    socialInsert = chooseOrigin(origin);
+    socialInsert = chooseOrigin(origin, helper);
 
   return db(TABLES.USERS).insert(helper.user).then(([id]) => {
     socialInsert.user_id = id;
@@ -108,7 +110,7 @@ const newUser = (helper, origin) => {
 };
 
 const modifyUser = (helper, origin, user) => {
-  let u_obj = chooseOrigin(origin);
+  let u_obj = chooseOrigin(origin, helper);
 
   return db(TABLES.USER_SOCIALS)
     .insert(u_obj)
@@ -175,6 +177,9 @@ exports.register = (data, token) => {
         return Promise.all([
           db(TABLES.PROFILES).insert(profile_data),
           permission(user[0]),
+          verifyUser(data.email),
+          db(TABLES.RANK).insert({ user_id: user[0].id, rank: 0 }),
+          db(TABLES.RANK_POINTS),
           db(TABLES.ACCOUNT_VALIDATION).insert({
             email: data.email,
             token: token

@@ -135,6 +135,7 @@ const h = {
     'p.first_name',
     'p.last_name',
     'u.username',
+    'u.invite_link',
     db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
     'p.picture',
     'p.about',

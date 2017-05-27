@@ -32,6 +32,7 @@ exports.getProfile = (req, res, next) => {
     .then(profile => {
       if (req.user && req.user.id) {
         profile.hasLiked = has_liked(profile.foli, req.user.id);
+        req.broadcastEvent('add_points', { id: req.user.id, points: 1 });
         req.broadcastEvent('profile_view', {
           from: req.user.id,
           id: req.params.id
@@ -85,6 +86,8 @@ exports.followProfile = (req, res, next) => {
           id: req.params.id,
           value: -1
         });
+        req.broadcastEvent('add_points', { user_id: req.params.id, points: -2 });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: -1 });
         res.send({ success: true, type: 'Unlike' });
       } else {
         req.broadcastEvent('mailer_follow_profile', {
@@ -96,6 +99,8 @@ exports.followProfile = (req, res, next) => {
           id: req.params.id,
           value: 1
         });
+        req.broadcastEvent('add_points', { user_id: req.params.id, points: 2 });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: 1 });
         res.send({ success: true, type: 'Like' });
       }
     })

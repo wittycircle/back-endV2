@@ -204,11 +204,6 @@ const subInfoProfiles = id => {
       .where('user_id', id)
       .where('status', 1)
       .from(TABLES.INVITATION),
-    project_feedback = db
-      .countDistinct('id')
-      .distinct(name('project_feedback'))
-      .where('user_id', id)
-      .from(TABLES.PROJECT_MEMBERS),
     project_contrib = db
       .countDistinct('id')
       .distinct(name('project_contribution'))

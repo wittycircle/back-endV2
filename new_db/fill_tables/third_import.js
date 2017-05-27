@@ -17,11 +17,7 @@ const third_import = (db, old, h) => {
       project_feedback = old
         .distinct(db.raw('count(id) * 15'))
         .where('user_id', id)
-        .from('project_users'),
-      project_contrib = old
-        .distinct(db.raw('count(id) * 100'))
-        .where('user_id', id)
-        .from('project_users'),
+        .from('project_discussion'),
       following = old
         .countDistinct('id')
         .where('user_id', id)
@@ -73,7 +69,7 @@ const third_import = (db, old, h) => {
 
     return views
       .union(test)
-      .then(r => r.map(e => e.value).reduce((e, a) => e + a + 300));
+      .then(r => r.map(e => e.value).reduce((e, a) => e + a));
   };
   return Promise.all([
     // ------------------ user_socials ------------------
@@ -159,7 +155,7 @@ const third_import = (db, old, h) => {
       return Promise.all(
         r.map(e =>
           subInfoProfiles(e.user_id).then(score => {
-            return { user_id: e.user_id, points: score };
+            return { user_id: e.user_id, points: score + 300 };
           })
         )
       ).then(result => db.batchInsert('rank_points', result));

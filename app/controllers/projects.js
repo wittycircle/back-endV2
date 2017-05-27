@@ -30,8 +30,8 @@ exports.createProject = (req, res, next) => {
       .createProject(d, location)
       .then(r => {
         console.log('r', r);
-        // mailer.new_project({ uid: req.user.id, public_id: d.public_id });
-        // req.broadcastEvent('project_creation', { id: r, from: req.user.id });
+        req.broadcastEvent('project_creation', { id: r, from: req.user.id });
+        req.broadcastEvent('add_points', { id: req.user.id, points: 200 });
         res.send({ id: d.public_id });
       })
       .catch(err => next(['Invalid information', err]));
@@ -85,6 +85,7 @@ exports.removeProject = (req, res, next) => {
   project
     .removeProject(req.params.id)
     .then(r => {
+      req.broadcastEvent('add_points', { id: req.user.id, points: -200 });
       res.send({ success: true });
     })
     .catch(err => next([err, 'Invalid id']));
@@ -129,6 +130,7 @@ exports.createProjectDiscussion = (req, res, next) => {
           id: req.params.id,
           discussion: r[0]
         });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: 15 });
         res.send({ id: r[0] });
       }
     })
@@ -226,9 +228,9 @@ exports.likeProject = (req, res, next) => {
           value: -1,
           from: req.user.id
         });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: -2 });
         res.send({ success: true, type: 'Unlike' });
       } else {
-        // mailer.upvote_project({user_id: req.user.id, project_id: req.params.id})
         req.broadcastEvent('follow_project', {
           user_id: req.user.id,
           project_id: req.params.id
@@ -238,6 +240,7 @@ exports.likeProject = (req, res, next) => {
           value: 1,
           from: req.user.id
         });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: 2 });
         res.send({ success: true, type: 'Like' });
       }
     })

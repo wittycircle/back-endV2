@@ -60,6 +60,7 @@ exports.TABLES = {
   //            ***    MISC    ***
   CATEGORIES: 'categories',
   RANK: 'ranks',
+  RANK_POINTS: 'rank_points',
   SCORE: 'rank_points',
   INVITATION: 'invitations',
   SKILLS: 'skills',
