@@ -42,8 +42,8 @@ const secondary_tables = db =>
     db.schema.createTableIfNotExists('profiles', function(t) {
       t.increments();
       t.integer('user_id').unsigned().notNullable();
-      t.integer('loc_id').unsigned().notNullable();
-      t.integer('network_id').unsigned().notNullable();
+      t.integer('loc_id').unsigned().defaultTo(1);
+      t.integer('network_id').unsigned().defaultTo(0);
       t.string('first_name', 128).notNullable();
       t.string('last_name', 128).notNullable();
       t.string('picture', 128).notNullable();

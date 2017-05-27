@@ -156,7 +156,8 @@ const permission = id => {
 exports.register = (data, token) => {
   let profile_data = {
     first_name: data.first_name,
-    last_name: data.last_name
+    last_name: data.last_name,
+    loc_id: 1
   },
     user_data = {
       email: data.email,
@@ -173,7 +174,9 @@ exports.register = (data, token) => {
       return r.length ? 'Email already taken' : 'username already taken';
     } else {
       return db(TABLES.USERS).insert(user_data).then(user => {
-        profile_data.user_id = user[0].id;
+        console.log('user', user);
+        profile_data.user_id = user[0];
+        console.log('profile_data', profile_data);
         return Promise.all([
           db(TABLES.PROFILES).insert(profile_data),
           permission(user[0]),
