@@ -157,7 +157,8 @@ exports.register = (data, token) => {
   let profile_data = {
     first_name: data.first_name,
     last_name: data.last_name,
-    loc_id: 1
+    loc_id: 1,
+    network_id: 1
   },
     user_data = {
       email: data.email,
@@ -181,7 +182,7 @@ exports.register = (data, token) => {
           db(TABLES.PROFILES).insert(profile_data),
           permission(user[0]),
           verifyUser(data.email),
-          db(TABLES.RANK).insert({ user_id: user[0].id, rank: 0 }),
+          db(TABLES.RANK).insert({ user_id: user[0], rank: 0 }),
           db(TABLES.RANK_POINTS),
           db(TABLES.ACCOUNT_VALIDATION).insert({
             email: data.email,
