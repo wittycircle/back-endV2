@@ -56,7 +56,6 @@ const third_import = (db, old, h) => {
       started_projects,
       invitation,
       project_feedback,
-      project_contrib,
       following,
       follower,
       upvoted_project,
