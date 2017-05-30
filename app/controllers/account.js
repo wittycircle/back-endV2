@@ -50,6 +50,7 @@ exports.register = (req, res, next) => {
             token: token,
             email: req.body.account.email
           });
+          console.log('r', r);
           req.broadcastEvent('user_register', { id: r[0].id });
           res.send({ success: true }).status(200);
         }
