@@ -38,8 +38,10 @@ const getInterests = (db, old) => {
   let old_interests = old('interests').select('id', 'name');
   return Promise.all([new_interests, old_interests]).then(([nr, or]) => {
     or.forEach(e => {
-      let x = nr.find(n => n.name == e.name).id;
-      interests[e.id] = x;
+      e.name = e.name.replace(/^[\s]+|[^ |^\w]|\s+$/g, '');
+      let x = nr.find(n => n.name === e.name);
+
+      interests[e.id] = x && x.id ? x.id : 1;
     });
     return interests;
   });

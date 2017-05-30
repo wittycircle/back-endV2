@@ -33,7 +33,21 @@ const first_import = (db, old) => {
       .distinct(['name', db.raw('MAX(priority) as priority')])
       .groupBy('name')
       .then(r => {
-        return db.batchInsert('interests', r);
+        let flags = [];
+        let ret = r
+          .map(item => {
+            item.name = item.name.replace(/^[\s]+|[^ |^\w]|\s+$/g, '');
+            return item;
+          })
+          .filter(e => {
+            if (flags[e.name] || e.name === 'RC cars') {
+              console.log('e.name', e.name);
+              return false;
+            }
+            flags[e.name] = true;
+            return e;
+          });
+        return db.batchInsert('interests', ret);
       }),
     // ------------------ article_tags ------------------
     old('article_tags').select(['name']).then(r => {
