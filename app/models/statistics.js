@@ -204,42 +204,42 @@ const subInfoProfiles = id => {
       .where('user_id', id)
       .where('status', 1)
       .from(TABLES.INVITATION),
-    project_contrib = db
+    project_feedback = db
       .countDistinct('id')
-      .distinct(name('project_contribution'))
+      .distinct(name('project_feedback'))
       .where('user_id', id)
-      .from(TABLES.PROJECT_MEMBERS),
-    following = db
-      .countDistinct('id')
-      .distinct(name('following'))
-      .where('user_id', id)
-      .from(TABLES.USER_FOLLOWERS),
-    follower = db
-      .countDistinct('id')
-      .distinct(name('followers'))
-      .where('followed', id)
-      .from(TABLES.USER_FOLLOWERS),
-    upvoted_project = db
-      .countDistinct('id')
-      .distinct(name('upvoted_project'))
-      .where('user_id', id)
-      .from(TABLES.PROJECT_MEMBERS),
-    views = db
-      .countDistinct('id')
-      .distinct(name('views'))
-      .where('viewed', id)
-      .from(TABLES.VIEWS),
-    messages = db(TABLES.MESSAGES + ' as m')
-      .join(TABLES.ROOM_MEMBERS + ' as rm', 'rm.room_id', 'm.room_id')
-      .where('rm.user_id', id)
-      .andWhere('m.user_id', '<>', id)
-      .countDistinct('m.message')
-      .distinct(name('messages'));
+      .from(TABLES.DISCUSSION_MESSAGES);
+  (project_contrib = db
+    .countDistinct('id')
+    .distinct(name('project_contribution'))
+    .where('user_id', id)
+    .from(TABLES.PROJECT_MEMBERS)), (following = db
+    .countDistinct('id')
+    .distinct(name('following'))
+    .where('user_id', id)
+    .from(TABLES.USER_FOLLOWERS)), (follower = db
+    .countDistinct('id')
+    .distinct(name('followers'))
+    .where('followed', id)
+    .from(TABLES.USER_FOLLOWERS)), (upvoted_project = db
+    .countDistinct('id')
+    .distinct(name('upvoted_project'))
+    .where('user_id', id)
+    .from(TABLES.PROJECT_MEMBERS)), (views = db
+    .countDistinct('id')
+    .distinct(name('views'))
+    .where('viewed', id)
+    .from(TABLES.VIEWS)), (messages = db(TABLES.MESSAGES + ' as m')
+    .join(TABLES.ROOM_MEMBERS + ' as rm', 'rm.room_id', 'm.room_id')
+    .where('rm.user_id', id)
+    .andWhere('m.user_id', '<>', id)
+    .countDistinct('m.message')
+    .distinct(name('messages')));
 
   let test = [
     started_projects,
     invitation,
-    // project_feedback,
+    project_feedback,
     project_contrib,
     following,
     follower,
