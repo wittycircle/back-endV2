@@ -80,6 +80,7 @@ exports.addInterest = (req, res, next) => {
   user
     .addInterest(req.params.id, req.body.name)
     .then(r => {
+      console.log('r', r);
       res.send({ interests: r.map(e => e.name) });
     })
     .catch(err => next([err, 'Invalid id']));

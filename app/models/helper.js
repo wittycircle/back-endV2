@@ -70,7 +70,7 @@ const ranking = (user_id, points) => {
 const setLocation = data => {
   console.log('data', data);
   if (!data) {
-    return [1];
+    return new Promise((ok, ko) => ok(['nolocation']));
   }
 
   const query = db(TABLES.LOCATION).first('id').where({ city: data.city });

@@ -239,7 +239,7 @@ const subInfoProfiles = id => {
   let test = [
     started_projects,
     invitation,
-    project_feedback,
+    // project_feedback,
     project_contrib,
     following,
     follower,
