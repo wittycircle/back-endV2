@@ -7,6 +7,9 @@
 const config = require('../private'),
     knex = require('knex')(config.database);
 
+const ioredis = require('ioredis');
+const redis = ioredis(config.redis);
+
 // if (process.env.DEBUG === true)
 // knex.on('query', (query) => console.log('SQL %s', query.sql));
 
@@ -89,13 +92,4 @@ profile_ranking: 'profile_ranking',
 // witty_profile_pictures: 'witty_profile_pictures',
 };
 
-
-
-
-
-
-
-
-
-
-
+exports.redis = redis;
