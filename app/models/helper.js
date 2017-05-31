@@ -80,7 +80,7 @@ const setLocation = data => {
   if (data.lng) query.orWhere({ lng: data.lng });
 
   return query.then(r => {
-    if (r.id) {
+    if (r && r.id) {
       // console.log('ALREADY EXIST', data, r);
       return [r.id];
     } else {
@@ -95,18 +95,19 @@ const setLocation = data => {
     }
   });
 };
+// CASE WHEN (loc.city IS NOT NULL)
+// THEN
+//     CASE WHEN (loc.state IS NOT NULL)
+//     THEN CONCAT(loc.city, ', ', loc.state)
+//     WHEN (loc.country IS NOT NULL)
+//     THEN CONCAT(loc.city, ', ', loc.country)
+// ELSE ' '
+// END
+// ELSE ' '
+// END as location
 
 const format_location = db.raw(`
-	CASE WHEN (loc.city IS NOT NULL)
-		THEN
-			CASE WHEN (loc.state != NULL)
-				THEN CONCAT(loc.city, ', ', loc.state)
-			WHEN (loc.country IS NOT NULL)
-				THEN CONCAT(loc.city, ', ', loc.country)
-				ELSE ' '
-			END
-		ELSE ' '
-	END as location
+CONCAT(loc.city, ",", loc.state, loc.country) as location
 `);
 
 const getLocationId = data =>

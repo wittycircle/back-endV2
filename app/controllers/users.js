@@ -137,10 +137,13 @@ exports.removeExperience = (req, res, next) => {
 };
 
 exports.updateExperience = (req, res, next) => {
+  const location = req.body.location;
+  delete req.body.location;
+
   if (!req.user || req.params.id != req.user.id)
     return next(['Bad id', 'Ressource does not belong to you!']);
   user
-    .updateExperience(req.params.id, req.body)
+    .updateExperience(req.params.id, req.body, location)
     .then(r => {
       if (r) res.send({ success: true });
       else res.send({ success: false });
