@@ -54,11 +54,22 @@ const first_import = require('./first_import'),
 /*
 */
 
+// const fill_location = (db, old) => {
+//   location_list = require('./data/location_data');
+//   if (location_list) {
+//     return db.batchInsert('location', location_list);
+//   }
+// };
+
 const fill_location = (db, old) => {
-  location_list = require('./data/location_data');
-  if (location_list) {
-    return db.batchInsert('location', location_list);
-  }
+  const selection = ['city', 'state', 'country'];
+  return old('profiles')
+    .distinct(selection)
+    .whereRaw('city IS NOT NULL')
+    .union(old('projects').distinct(selection).whereRaw('city IS NOT NULL'))
+    .then(r => {
+      return db.batchInsert('location', r);
+    });
 };
 
 const fill_tables = (db, old) => {

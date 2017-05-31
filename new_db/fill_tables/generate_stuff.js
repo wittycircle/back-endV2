@@ -1,6 +1,5 @@
-const _ = require('lodash'),
-  user_list = require('./data/users_data'),
-  location_list = require('./data/location_data');
+const _ = require('lodash'), user_list = require('./data/users_data');
+// location_list = require('./data/location_data');
 
 const getUsers = (db, old) => {
   let users = {};

@@ -14,7 +14,7 @@ const secondary_tables = db =>
       t.string('title', 512).notNullable();
       t.string('description', 512).notNullable();
       t.text('about');
-      t.string('picture', 128).notNullable();
+      t.string('picture', 256).notNullable();
       t.string('video', 128);
       t.string('link');
       t.string('app');
@@ -46,7 +46,7 @@ const secondary_tables = db =>
       t.integer('network_id').unsigned().defaultTo(0);
       t.string('first_name', 128).notNullable();
       t.string('last_name', 128).notNullable();
-      t.string('picture', 128).notNullable();
+      t.string('picture', 256).notNullable();
       t.string('cover_picture', 128).notNullable();
       t.text('description');
       t.string('about', 128);
