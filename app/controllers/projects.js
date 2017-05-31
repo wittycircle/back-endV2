@@ -113,6 +113,52 @@ exports.getProject = (req, res, next) => {
 };
 
 // ------------------ Discussions ------------------
+
+const dataSpe = req => {
+  let r = {
+    user_id: req.body.from,
+    title: req.body.title,
+    category_id: req.body.category, //id and not a string (there is a table categories)
+    description: req.body.description,
+    about: req.body.about,
+    status: req.body.status,
+    picture: req.body.picture,
+    video: req.body.video,
+    project_visibility: req.body.public || 1,
+    public_id: Math.floor(Math.random() * 90000 + 10000)
+  };
+  return redis.smembers('project_public_id').then(p => {
+    while (1) {
+      let x = p.filter(e => e == r.public_id);
+      if (x.length) {
+        r.public_id = Math.floor(Math.random() * 90000 + 10000);
+      } else break;
+    }
+    if (req.body.location) {
+      r.country = req.body.location.country;
+      r.city = req.body.location.city;
+      r.state = req.body.location.state;
+    }
+    return r;
+  });
+};
+
+exports.createProjectFromExternal = (req, res, next) => {
+  if (req.get('x-api-token') != 'LaChaussetteDesGensTriggerants') {
+    return res.send({ success: false });
+  }
+  dataSpe(req).then(d => {
+    project
+      .createProject(d, req.body.members, req.body.openings, req.body.discussions)
+      .then(r => {
+        if (typeof r === 'string') {
+          return next([r, 'Invalid informations']);
+        } else res.send({ id: d.public_id });
+      })
+      .catch(err => next(err));
+  });
+};
+
 exports.createProjectDiscussion = (req, res, next) => {
   const data = {
     project_id: req.params.id,

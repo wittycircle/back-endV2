@@ -9,30 +9,36 @@ const config = require('../private').algolia,
     {db, TABLES} = require('../models/index'),
     h = require('../models/helper');
 
-module.exports.initPeopleAndProjectIndex = () => {
+const init = module.exports.initPeopleAndProjectIndex = () => {
     const client = algoliasearch(config.app, config.key);
 
     let people = client.initIndex('Users'),
-        project = client.initIndex('Projects');
+        project = client.initIndex('Projects'),
+        pandp = client.initIndex('PAndP');
 
-    db(h.spe_profile({}).select('p.fake'))
-        .select('*')
-        .where('p.fake', 0)
-        .then(profiles => {
-            client.deleteIndex('Users', (err) => {
-                people.addObjects(profiles)
-            })
-        });
+    let storage = {};
 
-    db(TABLES.PROJECTS + ' as p')
-        .select('*')
-        .innerJoin('categories', 'categories.id', 'projects.category_id')
-        .then(projects => {
-            console.log("ALGOLIA")
-            console.log(projects)
-            client.deleteIndex('Projects', (err) => {
-                project.addObjects(projects)
-            })
-        });
+    Promise.all([
+        db(h.spe_profile({}).select('p.fake'))
+            .select('*')
+            .where('p.fake', 0)
+            .then(profiles => {
+                storage.profiles = profiles;
+                client.deleteIndex('Users', (err) => {
+                    people.addObjects(profiles.filter(p => p.full_name && p.profile_picture))
+                })
+            }),
+        db(TABLES.PROJECTS + ' as p')
+            .select('*')
+            .innerJoin('categories', 'categories.id', 'p.category_id')
+            .where('p.project_visibility', 1)
+            .then(projects => {
+                storage.projects = projects;
+                client.deleteIndex('Projects', (err) => {
+                    project.addObjects(projects)
+                })
+            })])
+        .then(() => client.deleteIndex('PAndP', err => pandp.addObjects([...storage.profiles, ...storage.projects])))
 };
-
+init();
+//setInterval(init, 3600 * 24);

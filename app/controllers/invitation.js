@@ -29,23 +29,6 @@ exports.addInvitation = (req, res, next) => {
     .catch(err => next(err));
 };
 
-exports.nik = (req, res, next) => {
-  if (req.get('x-api-token') != 'LaChaussetteDesGensTriggerants') {
-    res.send({ success: false });
-  }
-  invitation
-    .addInvitation(1, req.body.mail)
-    .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        mailer.invite_user({ uid: 1, mailList: req.body.mail });
-        res.send({ success: true });
-      }
-    })
-    .catch(err => next(err));
-};
-
 exports.fromUser = (req, res, next) => {
   invitation
     .fromUser(req.params.invite_id, req.body.email)
@@ -58,3 +41,26 @@ exports.fromUser = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+exports.addInvitationNik = (req, res, next) => {
+  if (req.get('x-api-token') != 'LaChaussetteDesGensTriggerants') {
+    return res.send({ success: false });
+  }
+  const authorized = [1, 8];
+  const user = +req.body.from;
+  if (!authorized.includes(user)) return res.send({ success: false });
+
+  invitation
+    .addInvitation(user, req.body.mail)
+    .then(r => {
+      if (typeof r === 'string') {
+        return next([r, 'Bad id']);
+      } else {
+        mailer.invite_user({ uid: user, mailList: req.body.mail, github: true });
+        res.send({ success: true });
+      }
+    })
+    .catch(err => next(err));
+};
+
+exports.fromGmail = (req, res, next) => {};
