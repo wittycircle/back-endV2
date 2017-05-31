@@ -105,9 +105,9 @@ const setLocation = data => {
 // END
 // ELSE ' '
 // END as location
-
+// const format_location = ['loc.city', 'loc.state', 'loc.country'];
 const format_location = db.raw(`
-CONCAT(loc.city, ",", loc.state, loc.country) as location
+CONCAT(loc.city, ",", loc.state, ",", loc.country) as location
 `);
 
 const getLocationId = data =>
