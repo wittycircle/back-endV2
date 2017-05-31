@@ -1,5 +1,4 @@
 const special_config = {
-<<<<<<< HEAD
   client: 'mysql',
   connection: process.env.DATABASE_URL || {
     host: '127.0.0.1',
@@ -11,19 +10,6 @@ const special_config = {
     min: 0,
     max: 1
   }
-=======
-    client: 'mysql',
-    connection: process.env.DATABASE_URL || {
-        host: '127.0.0.1',
-        user: 'root',
-        password: '14725803',
-        database: '', //The one for test
-    },
-    pool: {
-        min: 0,
-        max: 1
-    }
->>>>>>> db1ea4e17e3c6d3001ec4f7dec329aaf9b74990c
 };
 
 special_config.connection.database = process.argv[2];
@@ -80,7 +66,6 @@ const create_db = () => {
     });
 };
 
-<<<<<<< HEAD
 create_db().catch(err => {
   if (err.code === 'ER_ACCESS_DENIED_ERROR') {
     console.log('Bad password');
@@ -93,18 +78,11 @@ create_db().catch(err => {
     console.error(err);
   }
 });
-=======
- create_db()
- .then(console.log("Success"))
- .catch(err => console.error(err))
 
-
- /*	**************************************************************
+/*	**************************************************************
 	'users'
 	'categories'
 	'projects'
 	'profiles'
 	'social_profiles'
  	************************************************************** */
- 
->>>>>>> db1ea4e17e3c6d3001ec4f7dec329aaf9b74990c
