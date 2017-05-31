@@ -51,7 +51,7 @@ const social_helper = {
                 google_url: data.url,
                 first_name: data.name.givenName,
                 last_name: data.name.familyName,
-                profile_picture: data.image.url
+                profile_picture: data.image.url.substring(0, data.image.url.indexOf("sz=") - 1) + "sz=200"
             },
             user: {
                 email: data.emails[0].value,

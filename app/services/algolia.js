@@ -25,7 +25,8 @@ const init = module.exports.initPeopleAndProjectIndex = () => {
             .then(profiles => {
                 storage.profiles = profiles;
                 client.deleteIndex('Users', (err) => {
-                    people.addObjects(profiles)
+		    console.log(profiles);
+                    people.addObjects(profiles.filter(p => p.fullName && p.profile_picture))
                 })
             }),
         db(TABLES.PROJECTS + ' as p')
