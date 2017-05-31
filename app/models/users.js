@@ -208,7 +208,7 @@ exports.removeExperience = (uid, data) => {
   return db(TABLES.USER_EXPERIENCES).del().where({ user_id: uid, id: data });
 };
 
-exports.updateExperience = (uid, data) => {
+exports.updateExperience = (uid, data, location) => {
   eid = data.id;
   return Promise.all([
     h.exist(TABLES.USERS, uid),
@@ -225,16 +225,10 @@ exports.updateExperience = (uid, data) => {
       date_to: data.date_to,
       description: data.description
     };
-    return h
-      .getLocationId({
-        city: data.city,
-        state: data.state,
-        country: data.country
-      })
-      .then(r => {
-        user_data.loc_id = r.id || 1;
-        return db(TABLES.USER_EXPERIENCES).update(user_data).where('id', eid);
-      });
+    return h.setLocation(location).then(r => {
+      if (r[0] != 'nolocation') user_data.loc_id = r[0];
+      return db(TABLES.USER_EXPERIENCES).update(user_data).where('id', eid);
+    });
   });
 };
 
