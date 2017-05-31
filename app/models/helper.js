@@ -68,7 +68,7 @@ const ranking = (user_id, points) => {
 };
 
 const setLocation = data => {
-  console.log('data', data);
+  // console.log('data', data);
   if (!data) {
     return new Promise((ok, ko) => ok(['nolocation']));
   }
@@ -81,10 +81,10 @@ const setLocation = data => {
 
   return query.then(r => {
     if (r.id) {
-      console.log('ALREADY EXIST', data, r);
+      // console.log('ALREADY EXIST', data, r);
       return [r.id];
     } else {
-      console.log('CREATING NEW ONE', data);
+      // console.log('CREATING NEW ONE', data);
       return db(TABLES.LOCATION).insert({
         city: data.city,
         country: data.country,

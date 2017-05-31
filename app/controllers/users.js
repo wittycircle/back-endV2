@@ -113,10 +113,12 @@ exports.getExperiences = (req, res, next) => {
 };
 
 exports.addExperience = (req, res, next) => {
+  const location = req.body.location;
+  delete req.body.location;
   if (!req.user || req.params.id != req.user.id)
     return next(['Bad id', 'Ressource does not belong to you!']);
   user
-    .addExperience(req.params.id, req.body)
+    .addExperience(req.params.id, req.body, location)
     .then(r => {
       res.send({ success: true });
     })

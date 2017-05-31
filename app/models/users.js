@@ -189,7 +189,7 @@ exports.getExperiences = uid => {
     .orderByRaw(sort + ' , date_to, date_from ASC');
 };
 
-exports.addExperience = (uid, data) => {
+exports.addExperience = (uid, data, location) => {
   let user_data = {
     user_id: uid,
     title: data.title,
@@ -198,16 +198,10 @@ exports.addExperience = (uid, data) => {
     date_to: data.date_to,
     description: data.description
   };
-  return h
-    .getLocationId({
-      city: data.city,
-      state: data.state,
-      country: data.country
-    })
-    .then(r => {
-      user_data.loc_id = r.id || 1;
-      return db(TABLES.USER_EXPERIENCES).insert(user_data);
-    });
+  return h.setLocation(location).then(r => {
+    if (r[0] != 'nolocation') user_data.loc_id = r[0];
+    return db(TABLES.USER_EXPERIENCES).insert(user_data);
+  });
 };
 
 exports.removeExperience = (uid, data) => {
