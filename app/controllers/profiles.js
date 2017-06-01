@@ -32,7 +32,6 @@ exports.getProfile = (req, res, next) => {
     .then(profile => {
       if (req.user && req.user.id) {
         profile.hasLiked = has_liked(profile.foli, req.user.id);
-        req.broadcastEvent('add_points', { user_id: req.user.id, points: 1 });
         req.broadcastEvent('profile_view', {
           from: req.user.id,
           id: req.params.id

@@ -1,83 +1,13 @@
 const { db, TABLES } = require('./index');
-
-//TODO:
-// Do a generic thing to find the location [set loc_id]
-//If not found, create it [like from searchProject where there is the google bla]
-
 //TODO
-/*
-Create ranking stuff [see statistics]
-Create tables for ranks
-
-Calculate Ranking daily or with sockets [SOCKET !!]
-
-ranks : {
-user_id:
-points:
-rank:
-creation_date:
-}
-
-rank_graph : {
-user_id:
-rank:
-creation_date:
-}
-
-Inserted everytimes ranking changes.
-
-user -> rank
-user -> points [put points in table users directly?]
-
-array sorted
-when user ranking change ->
-move up one or down one or stay in place.
-[low cost operation that happens kind of all the time and must be plugged everywhere]
-*/
-const getRanking = user_id => {
-  const score = db(TABLES.SCORE).select('points').where({ user_id });
-  const position = db(TABLES.SCORE).select('');
-  db(TABLES.SCORE).select([
-    'user_id',
-    'points',
-    db.raw(`SELECT COUNT(*) from score where points < ${score} as rank`)
-  ]);
-};
-
-const ranking = (user_id, points) => {
-  // const next_rank = db(TABLES.SCORE)
-  //   .select('user_id', 'rank', 'points')
-  //   .where({ user_id });
-  // db(TABLES.SCORE)
-  //   .first('rank', 'points')
-  //   .whereRaw(`rank = (${next_rank}) + 1`)
-  //   .then(n => {
-  //     if (n.points < points) {
-  //       return Promise.all([
-  //         db(TABLES.SCORE)
-  //           .update({ rank: n.rank - 1 })
-  //           .where({ user_id: n.user_id }),
-  //         db(TABLES.SCORE)
-  //           .update({ rank: n.rank, points: points })
-  //           .where({ user_id })
-  //       ]);
-  //     } else {
-  return db(TABLES.SCORE).update({ points }).where({ user_id });
-  //   }
-  // });
-};
-
+//Ranking problem [refresh your own profile]
+//show dantzer index socket server profile view redis publish line 124
 const setLocation = data => {
-  // console.log('data', data);
   if (!data) {
     return new Promise((ok, ko) => ok(['nolocation']));
   }
 
   const query = db(TABLES.LOCATION).first('id').where({ city: data.city });
-  if (data.state) query.orWhere({ state: data.state });
-  if (data.country) query.orWhere({ country: data.country });
-  if (data.lat) query.orWhere({ lat: data.lat });
-  if (data.lng) query.orWhere({ lng: data.lng });
 
   return query.then(r => {
     if (r && r.id) {
@@ -95,18 +25,7 @@ const setLocation = data => {
     }
   });
 };
-// CASE WHEN (loc.city IS NOT NULL)
-// THEN
-//     CASE WHEN (loc.state IS NOT NULL)
-//     THEN CONCAT(loc.city, ', ', loc.state)
-//     WHEN (loc.country IS NOT NULL)
-//     THEN CONCAT(loc.city, ', ', loc.country)
-// ELSE ' '
-// END
-// ELSE ' '
-// END as location
-// const format_location = ['loc.city', 'loc.state', 'loc.country'];
-// CONCAT(loc.city, ",", loc.state, ",", loc.country) as location
+
 const format_location = db.raw(`
   loc.city as city, loc.state as state, loc.country as country
 `);
