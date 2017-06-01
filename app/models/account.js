@@ -142,7 +142,7 @@ const modifyUser = (helper, origin, user) => {
 };
 
 exports.socialRegister = (data, origin) => {
-  social_helper[origin](data).then(helper => {
+  return social_helper[origin](data).then(helper => {
     return db(TABLES.USERS)
       .first(['id'])
       .where({ email: helper.user.email })

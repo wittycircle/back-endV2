@@ -52,7 +52,6 @@ module.exports = function(passport) {
           email: user.email
         };
       } else {
-        console.log('IN PASSPORT', profile, origin, user);
         return account.socialRegister(profile, origin).then(r => r);
       }
     }
