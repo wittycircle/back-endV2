@@ -202,7 +202,7 @@ exports.register = (data, token) => {
           permission(user[0]),
           verifyUser(data.email),
           db(TABLES.RANK).insert({ user_id: user[0], rank: 200 }),
-          db(TABLES.RANK_POINTS),
+          // db(TABLES.RANK_POINTS),
           db(TABLES.ACCOUNT_VALIDATION).insert({
             email: data.email,
             token: token

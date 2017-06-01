@@ -30,7 +30,7 @@ exports.createProject = (req, res, next) => {
       .createProject(d, location)
       .then(r => {
         console.log('r', r);
-        req.broadcastEvent('project_creation', { id: r, from: req.user.id });
+        req.broadcastEvent('project_creation', { id: r[0], from: req.user.id });
         req.broadcastEvent('add_points', { user_id: req.user.id, points: 200 });
         res.send({ id: d.public_id });
       })
