@@ -111,10 +111,10 @@ const newUser = (helper, origin) => {
     last_name: helper.profile.last_name
   },
     socialInsert = chooseOrigin(origin, helper);
-
   return db(TABLES.USERS).insert(helper.user).then(([id]) => {
     socialInsert.user_id = id;
     profileInsert.user_id = id;
+    console.log('socialInsert', socialInsert);
     return Promise.all([
       db(TABLES.USER_SOCIALS).insert(socialInsert),
       db(TABLES.PROFILES).insert(profileInsert)
@@ -129,9 +129,9 @@ const newUser = (helper, origin) => {
 
 const modifyUser = (helper, origin, user) => {
   let u_obj = chooseOrigin(origin, helper);
-
+  console.log('user', user);
   return db(TABLES.USER_SOCIALS)
-    .insert(u_obj)
+    .update(u_obj)
     .where({ user_id: user.id })
     .then(r => {
       return {
