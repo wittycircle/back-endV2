@@ -72,9 +72,9 @@ exports.cardProfile = selector => {
     'p.description',
     'nl.name as network',
     h.format_location,
-    'loc.city',
-    'loc.country',
-    'loc.state',
+    // 'loc.city',
+    // 'loc.country',
+    // 'loc.state',
     h.fullname,
     'u.username'
   ];
@@ -102,7 +102,10 @@ exports.cardProfile = selector => {
     'about',
     'description',
     'network',
-    'location',
+    // 'location'
+    'city',
+    'state',
+    'country',
     'follower',
     'following',
     'skills'
