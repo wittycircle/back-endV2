@@ -169,18 +169,12 @@ exports.postComment = (req, res, next) => {
   let data = {
     message: req.body.message,
     user_id: req.user.id,
-    aricle_id: req.params.id
+    article_id: req.params.id
   };
   articles
     .postComment(data)
-    .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        res.send({ success: true });
-      }
-    })
-    .catch(err => next(err));
+    .then(r => res.send({ success: true }))
+    .catch(err => next([err, 'bad id']));
 };
 
 exports.removeComment = (req, res, next) => {
