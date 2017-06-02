@@ -221,10 +221,10 @@ exports.createOpening = (req, res, next) => {
       req.broadcastEvent('opening_creation', {
         from: req.params.id,
         id: r[0],
-        tag: req.body.tags.split(',')[0],
+        tag: req.body.tags,
         what: data.status
       });
-      res.send({ id: r[0] });
+      res.send({ success: true });
     })
     .catch(err => next([err, 'Invalid project id']));
 };
@@ -232,16 +232,7 @@ exports.createOpening = (req, res, next) => {
 exports.getProjectOpenings = (req, res, next) => {
   project
     .getProjectOpenings(req.params.id)
-    .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        r.forEach(el => {
-          el.tags = _.split(el.tags, ',');
-        });
-        res.send({ openings: r });
-      }
-    })
+    .then(r => res.send({ openings: r }))
     .catch(err => next(err));
 };
 
