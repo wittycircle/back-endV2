@@ -3,10 +3,7 @@ const { db, TABLES } = require('./index'),
   h = require('./helper');
 
 exports.getInvitation = id => {
-  return db(TABLES.SHARE_INVITE + ' as i')
-    .select('*')
-    .where('invite_id', id)
-    .join(h.sub_profile, 'p.uid', 'i.user_id');
+  return h.spe_profile({ invite_link: id });
 };
 
 exports.addInvitation = (uid, mail) => {
@@ -22,15 +19,12 @@ exports.addInvitation = (uid, mail) => {
 };
 
 exports.fromUser = (id, email) => {
-  return db(TABLES.SHARE_INVITE)
-    .select('user_id')
-    .where('invite_id', id)
-    .then(r => {
-      if (!r.length) return 'Unknown invite';
-      return db(TABLES.INVITATION).insert({
-        user_id: r[0].user_id,
-        status: 'registed',
-        mail_to: email
-      });
+  return db(TABLES.USERS).select('id').where('invite_link', id).then(r => {
+    if (!r.length) return 'Unknown invite';
+    return db(TABLES.INVITATION).insert({
+      user_id: r[0].user_id,
+      status: 'registed',
+      mail_to: email
     });
+  });
 };
