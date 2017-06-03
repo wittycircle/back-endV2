@@ -56,7 +56,7 @@ exports.addInvitationNik = (req, res, next) => {
       if (typeof r === 'string') {
         return next([r, 'Bad id']);
       } else {
-        mailer.invite_user({ uid: user, mailList: req.body.mail, github: true });
+        mailer.invite_user({ uid: user, mailList: req.body.mail, category: 'github' });
         res.send({ success: true });
       }
     })

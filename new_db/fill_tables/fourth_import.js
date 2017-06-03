@@ -1,5 +1,6 @@
 const fourth_import = (db, old, h) => {
   return Promise.all([
+    console.log('fourth import'),
     // ------------------ discussion_messages ------------------
     old('project_discussion as d')
       .select(['d.id as discussion_id', 'user_id', 'message', 'creation_date'])
@@ -34,9 +35,10 @@ const fourth_import = (db, old, h) => {
       ])
       .where('tags', '<>', 0)
       .then(r => {
+        console.log('NIK SIMPRIME');
+
         r = h.transform(
           r.map(e => {
-            console.log('NIK SIMPRIME');
             let nik = (e.skill_id[0] = '['
               ? JSON.parse(e.skill_id)
               : e.skill_id.split(','));

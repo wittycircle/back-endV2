@@ -1,5 +1,6 @@
 const first_import = (db, old) => {
   return Promise.all([
+    console.log('first import'),
     // ------------------ users ------------------
     old('users as u')
       .select([
