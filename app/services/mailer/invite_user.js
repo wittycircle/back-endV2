@@ -4,15 +4,15 @@ const h = require('../../models/helper'); //NIK
 const {db, TABLES} = require('../../models/index');
 const _ = require('lodash');
 
-const send_mail = (data, sender, invite, github = false) => {
+const send_mail = (data, sender, invite, category = false) => {
     let mail = new helper.Mail();
     wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
     wm.content(mail)
     wm.reply(mail, "noreply@wittycircle.com");
     mail.setTemplateId(TEMPLATES.invite_user)
 
-    if (github)
-        mail.addCategory('github');
+    if (category)
+        mail.addCategory({ category });
 
     data.forEach((e, i) => {
         let pers = new helper.Personalization();
@@ -46,7 +46,7 @@ const invite_user = (args) => {
     let table_invite = db.batchInsert('invitation', x)
 
     return Promise.all([table_invite, request, invite])
-        .then(([x, sender, invite]) => send_mail(args.mailList, sender[0], invite.invite_id, args.github))
+        .then(([x, sender, invite]) => send_mail(args.mailList, sender[0], invite.invite_id, args.category))
 };//exports
 
 module.exports = invite_user;
