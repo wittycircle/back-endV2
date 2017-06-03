@@ -6,7 +6,6 @@ const _ = require('lodash');
 
 //TODO:
 //FINISH THIS [old_message]
-
 const new_message = () => {
   const p_uarray = [
     'p.id',
@@ -20,7 +19,7 @@ const new_message = () => {
     'p.about',
     'p.cover_picture',
     'p.description',
-    'p.network',
+    'n.name as network',
     h.format_location
   ];
 
@@ -29,6 +28,7 @@ const new_message = () => {
     .from(TABLES.USER_PROFILES + ' as p')
     .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+    .leftJoin(TABLES.NETWORKS_LIST + ' as n', 'n.id', 'p.network_id')
     .as('s');
 
   const receiver = db
@@ -36,22 +36,8 @@ const new_message = () => {
     .from(TABLES.USER_PROFILES + ' as p')
     .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+    .leftJoin(TABLES.NETWORKS_LIST + ' as n', 'n.id', 'p.network_id')
     .as('r');
-
-  const selection = [
-    'm.to_user_id',
-    'm.from_user_id',
-    'm.message',
-    'm.id',
-    'r.email',
-    'r.first_name as receiver',
-    's.first_name',
-    's.last_name',
-    's.city',
-    's.country',
-    's.state',
-    's.profile_picture'
-  ];
 
   let mail = new helper.Mail();
 
@@ -83,6 +69,35 @@ const new_message = () => {
     wm.send(mail);
     return null;
   };
+
+  const selection = ['m.message', db.raw('GROUP_CONCAT(rm.user_id)')];
+
+  return db
+    .select(selection)
+    .from(TABLES.ROOMS + ' as r')
+    .join(TABLES.MESSAGES + 'as m', 'm.room_id', 'r.id')
+    .join(TABLES.ROOM_STATUS + ' as rs', 'rs.room_id', 'r.id')
+    .join(TABLES.ROOM_MEMBERS + ' as rm')
+    .where('rs.read', 0)
+    .andWhere('rs.mail_sent', 0)
+    .whereRaw('rs.creation_date <= DATE_SUB(NOW(),INTERVAL 2 HOUR)')
+    .groupBy('r.id');
+
+  // old
+  const selection = [
+    'm.to_user_id',
+    'm.from_user_id',
+    'm.message',
+    'm.id',
+    'r.email',
+    'r.first_name as receiver',
+    's.first_name',
+    's.last_name',
+    's.city',
+    's.country',
+    's.state',
+    's.profile_picture'
+  ];
 
   return db
     .select(selection)

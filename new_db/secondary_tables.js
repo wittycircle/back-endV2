@@ -216,7 +216,7 @@ const secondary_tables = db =>
       t.integer('user_id').unsigned().notNullable();
       t.integer('room_id').unsigned().notNullable();
       t.boolean('mail_sent').defaultTo(0);
-      t.boolean('read').defaultTo;
+      t.boolean('read').defaultTo(0);
       t.timestamp('creation_date').defaultTo(db.raw('CURRENT_TIMESTAMP'));
       t.charset('utf8');
       //			*** relations ***

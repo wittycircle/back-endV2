@@ -131,9 +131,9 @@ module.exports.stuff = (db, old, h) => {
           e.project_id = h.projects[e.project_id];
         }
         if (t.indexOf('skills') !== -1) {
-          e.skill_id = h.skills[e.skill_id] || 1274;
+          e.skill_id = h.skills[e.skill_id] || 0;
         }
-        if (e.user_id !== 0) ret.push(e);
+        if (e.user_id !== 0 && e.skill_id !== 0) ret.push(e);
       });
       return ret;
     };
