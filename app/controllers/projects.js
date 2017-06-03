@@ -224,7 +224,7 @@ exports.createOpening = (req, res, next) => {
         tag: req.body.tags,
         what: data.status
       });
-      res.send({ success: true });
+      res.send({ id: r[0] });
     })
     .catch(err => next([err, 'Invalid project id']));
 };

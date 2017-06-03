@@ -26,7 +26,7 @@ exports.updateOpening = (id, data, tags) => {
 exports.deleteOpening = id => {
   return h.exist(TABLES.PROJECT_OPENINGS, id).then(r => {
     if (!r.length) {
-      return 'Could not update opening';
+      throw 'Could not remove opening';
     } else {
       return db(TABLES.PROJECT_OPENINGS).del().where('id', id);
     }

@@ -14,12 +14,6 @@ exports.updateOpening = (req, res, next) => {
 exports.deleteOpening = (req, res, next) => {
   opening
     .deleteOpening(req.params.opening_id)
-    .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        res.send({ success: true });
-      }
-    })
-    .catch(err => next(err));
+    .then(r => res.send({ success: true }))
+    .catch(err => next([err, 'Bad id']));
 };

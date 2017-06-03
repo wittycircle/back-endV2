@@ -219,7 +219,7 @@ exports.createOpening = (data, tags) => {
         skill_ids.forEach(e => {
           e.opening_id = id;
         });
-        return db(TABLES.OPENING_TAGS).insert(skill_ids);
+        return db(TABLES.OPENING_TAGS).insert(skill_ids).then(() => id);
       });
     }
   });
@@ -232,7 +232,7 @@ exports.getProjectOpenings = id => {
       'o.creation_date',
       'o.status',
       'o.description',
-      db.raw('GROUP_CONCAT(s.name) as skills')
+      db.raw('GROUP_CONCAT(s.name) as tags')
     )
     .from(TABLES.PROJECT_OPENINGS + ' as o')
     .join(TABLES.OPENING_TAGS + ' as t', 't.opening_id', 'o.id')
