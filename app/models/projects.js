@@ -235,8 +235,8 @@ exports.getProjectOpenings = id => {
       db.raw('GROUP_CONCAT(s.name) as tags')
     )
     .from(TABLES.PROJECT_OPENINGS + ' as o')
-    .join(TABLES.OPENING_TAGS + ' as t', 't.opening_id', 'o.id')
-    .join(TABLES.SKILLS + ' as s', 't.skill_id', 's.id')
+    .leftJoin(TABLES.OPENING_TAGS + ' as t', 't.opening_id', 'o.id')
+    .leftJoin(TABLES.SKILLS + ' as s', 't.skill_id', 's.id')
     .groupBy('o.id')
     .where({ project_id: id });
 };
