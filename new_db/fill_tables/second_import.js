@@ -1,5 +1,6 @@
 const second_import = (db, old, h) => {
   return Promise.all([
+    console.log('second import'),
     // ------------------ projects ------------------
     old('projects')
       .select([

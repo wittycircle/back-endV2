@@ -67,12 +67,6 @@ module.exports.moreStuff = (db, old, h) => {
     getMatchingId(db, old, 'projects'),
     getFromName(db, old, 'skills')
   ]).then(([projects, skills]) => {
-    let i = 0;
-    for (k in projects) {
-      if (i == 10) break;
-      console.log(k, projects[k]);
-      i += 1;
-    }
     h.projects = projects;
     // console.log(h.projects);
     h.skills = skills;

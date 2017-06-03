@@ -33,25 +33,22 @@ const fourth_import = (db, old, h) => {
         'tags as skill_id',
         old.raw(`"1" as priority`)
       ])
-      .where('tags', '<>', 0)
+      .where('tags', '<>', '0')
       .then(r => {
-        console.log('NIK SIMPRIME');
-
-        r = h.transform(
-          r.map(e => {
-            let nik = (e.skill_id[0] = '['
-              ? JSON.parse(e.skill_id)
-              : e.skill_id.split(','));
-            return nik.map(m => {
-              console.log('m', m);
-              return {
-                id: e.id,
-                skill_id: m
-              };
-            });
-          }),
-          ['skills']
-        );
+        console.log('NIK SIMPRIME', r);
+        let argh = r.map(e => {
+          let nik = e.skill_id[0] == '['
+            ? JSON.parse(e.skill_id)
+            : e.skill_id.split(',');
+          return nik.map(m => {
+            return {
+              opening_id: e.opening_id,
+              skill_id: m
+            };
+          });
+        });
+        console.log('argh', argh);
+        r = h.transform(argh, ['skills']);
         return db.batchInsert('opening_tags', r);
       }),
     // ------------------ opening_tags[bis] ------------------

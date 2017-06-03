@@ -42,7 +42,6 @@ const first_import = (db, old) => {
           })
           .filter(e => {
             if (flags[e.name] || e.name === 'RC cars') {
-              console.log('e.name', e.name);
               return false;
             }
             flags[e.name] = true;

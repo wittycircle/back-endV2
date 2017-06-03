@@ -71,6 +71,7 @@ const third_import = (db, old, h) => {
       .then(r => r.map(e => e.value).reduce((e, a) => e + a));
   };
   return Promise.all([
+    console.log('third import'),
     // ------------------ user_socials ------------------
     old('profiles as p')
       .join('users as u', 'u.profile_id', 'p.id')
