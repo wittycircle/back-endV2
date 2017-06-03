@@ -33,7 +33,9 @@ const fourth_import = (db, old, h) => {
         'tags as skill_id',
         old.raw(`"1" as priority`)
       ])
-      .where('tags', '<>', '0')
+      .whereRaw('tags IS NOT NULL')
+      .andWhere('tags', '<>', '0')
+      .andWhere('tags', '<>', '')
       .then(r => {
         console.log('NIK SIMPRIME', r);
         let argh = r.map(e => {
