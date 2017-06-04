@@ -37,19 +37,19 @@ const fourth_import = (db, old, h) => {
       .andWhere('tags', '<>', '0')
       .andWhere('tags', '<>', '')
       .then(r => {
-        console.log('NIK SIMPRIME', r);
-        let argh = r.map(e => {
-          let nik = e.skill_id[0] == '['
+        let argh = [];
+        r.forEach(e => {
+          let nd = e.skill_id[0] == '['
             ? JSON.parse(e.skill_id)
             : e.skill_id.split(',');
-          return nik.map(m => {
+          nd = nd.map(m => {
             return {
               opening_id: e.opening_id,
               skill_id: m
             };
           });
+          argh.push(...nd);
         });
-        console.log('argh', argh);
         r = h.transform(argh, ['skills']);
         return db.batchInsert('opening_tags', r);
       }),
