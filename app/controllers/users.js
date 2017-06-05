@@ -161,3 +161,14 @@ exports.getUserInvite = (req, res, next) => {
     })
     .catch(err => next([err, 'Invalid invite']));
 };
+
+// ------------------ SOCIAL INVITE ------------------
+
+exports.socialInvite = (req, res, next) => {
+  user
+    .socialInvite(req.params.id)
+    .then(r => {
+      res.send(r);
+    })
+    .catch(err => next[(err, 'invalid id')]);
+};
