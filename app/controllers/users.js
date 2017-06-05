@@ -170,5 +170,5 @@ exports.socialInvite = (req, res, next) => {
     .then(r => {
       res.send(r);
     })
-    .catch(err => next[(err, 'invalid id')]);
+    .catch(err => next([err, 'invalid id']));
 };
