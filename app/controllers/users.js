@@ -168,6 +168,7 @@ exports.socialInvite = (req, res, next) => {
   user
     .socialInvite(req.params.id)
     .then(r => {
+      if (!r) throw 'Unknown id';
       res.send(r);
     })
     .catch(err => next([err, 'invalid id']));
