@@ -54,19 +54,21 @@ const profile_views = args => {
     .count('v.user_id as vcount')
     .from('views as v')
     .join(TABLES.USERS + ' as u', 'v.viewed', 'u.id')
-    .join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
+    .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
     .join(wm.notif('profile_view'), 'n.user_id', 'v.viewed')
-    .having('vcount', '>=', 5)
-    .andWhere('mail_sent', 0)
+    // .having('vcount', '>=', 5)
+    // .andWhere('mail_sent', 0)
     .groupBy('v.viewed');
   let reqAll = notif =>
     db
       .distinct(h.p_uarray.concat([h.format_location]))
-      .from(TABLES.USER_PROFILES + ' as p')
+      .from(TABLES.PROFILES + ' as p')
+      .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
       .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
       .whereIn('u.id', notif);
 
   let setToOne = ids => db('views').update('mail_sent', 1).whereIn('viewed', ids);
+
   return request.then(array => {
     if (!array.length) {
       console.log('empty');
