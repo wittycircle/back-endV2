@@ -277,8 +277,8 @@ exports.getComments = id => {
 };
 
 exports.postComment = data => {
-  return h.exist(TABLES.ARTICLES, data.id).then(r => {
-    if (!r.length) return 'Article not found';
+  return h.exist(TABLES.ARTICLES, data.article_id).then(r => {
+    if (!r.length) throw 'Article not found';
     return db(TABLES.ARTICLE_MSG).insert(data);
   });
 };

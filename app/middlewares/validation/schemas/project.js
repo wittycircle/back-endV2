@@ -18,7 +18,7 @@ const opening = Joi.object().keys({
   skill: Joi.string().trim().allow(p_empty),
   status: Joi.string().trim().allow(p_status).required(),
   description: Joi.string().trim().allow(p_empty),
-  tags: Joi.string().trim().allow(p_empty)
+  tags: Joi.array().items(Joi.string().trim())
 });
 
 module.exports.opening = opening;

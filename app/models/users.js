@@ -237,3 +237,9 @@ exports.updateExperience = (uid, data, location) => {
 exports.getUserInvite = id => {
   return db(TABLES.USERS).first('invite_link').where('id', id);
 };
+
+// ------------------ SOCIAL INVITE ------------------
+
+exports.socialInvite = id => {
+  return db(TABLES.USER_SOCIALS).first('invite_google').where('user_id', id);
+};

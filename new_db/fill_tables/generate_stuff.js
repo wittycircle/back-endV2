@@ -65,14 +65,8 @@ const getFromUpperName = (db, old, table, value = 'name') => {
 module.exports.moreStuff = (db, old, h) => {
   return Promise.all([
     getMatchingId(db, old, 'projects'),
-    getFromName(db, old, 'skills')
+    getFromUpperName(db, old, 'skills')
   ]).then(([projects, skills]) => {
-    let i = 0;
-    for (k in projects) {
-      if (i == 10) break;
-      console.log(k, projects[k]);
-      i += 1;
-    }
     h.projects = projects;
     // console.log(h.projects);
     h.skills = skills;
@@ -131,9 +125,10 @@ module.exports.stuff = (db, old, h) => {
           e.project_id = h.projects[e.project_id];
         }
         if (t.indexOf('skills') !== -1) {
-          e.skill_id = h.skills[e.skill_id] || 1274;
+          if (!e.skill_id) e.skill_id = '';
+          e.skill_id = h.skills[e.skill_id.toUpperCase()] || 0;
         }
-        if (e.user_id !== 0) ret.push(e);
+        if (e.user_id !== 0 && e.skill_id !== 0) ret.push(e);
       });
       return ret;
     };
