@@ -25,10 +25,10 @@ const send_mail = (data, token) => {
 			"*|EMAIL|*": e.email || '',
 			"*|FURL|*": wm.url(`password/reset/${token}`),
 		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
+		// console.log(sub)
+		// console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
+		wm.to(pers, e.email);
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	}); //foreach

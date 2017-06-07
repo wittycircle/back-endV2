@@ -11,6 +11,8 @@ const _ = require('lodash');
 // };
 
 const send_mail = (message, discussion, sender) => {
+	if (!message || !discussion || !discussion.length || !sender)
+		return null;
 	let	mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
 	wm.content(mail)
@@ -29,10 +31,10 @@ const send_mail = (message, discussion, sender) => {
 			"*|MAIL|*": e.email,
 
 		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
+		// console.log(sub)
+		// console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
+		wm.to(pers, e.email);
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	}); //foreach
@@ -41,12 +43,13 @@ const send_mail = (message, discussion, sender) => {
 };
 	
 const reply_project = (args) => {
+	console.log("IN REPLY")
 	const sender = h.spe_profile({'u.id': args.from});
 
 	const discussion = db.select('u.email', 'p.title', 'p.public_id')
-						.from(TABLES.PROJECT_DISCUSSION + ' as d')
+						.from(TABLES.discussions + ' as d')
 						.join(TABLES.PROJECTS + ' as p', 'd.project_id', 'p.id')
-						.leftJoin(TABLES.PROJECT_DISCUSSION_REPLIES + ' as r', 'r.project_discussion_id', 'd.id')
+						.leftJoin(TABLES.discussions_REPLIES + ' as r', 'r.discussions_id', 'd.id')
 						.join(TABLES.USERS + ' as u', function() {
 							this.on('u.id', 'p.user_id')
 							.orOn('u.id', 'd.user_id')

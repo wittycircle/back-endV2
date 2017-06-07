@@ -8,4 +8,16 @@ app/private
 mochawesome-reports
 api-build
 *.rdb
-playground
+playgroundsendgrid.env
+sendgrid.env
+currentThings.txt
+dist
+stupid_db_test.js
+cmcr.sh
+db_modification/add_field_to_project.js
+prod_sendgrid.env
+test_chart
+nginx.conf
+.gitignore
+server.js
+new_db/nik.bash

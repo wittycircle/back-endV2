@@ -21,10 +21,10 @@ const send_mail = (sender, public_id) => {
 			"*|NEEDS|*": wm.url('meet'),
 			"MAIL": e.email,
 		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
+		// console.log(sub)
+		// console.log("\n-------------------------------------------------\n")
 		wm.subject(pers, subject);
-		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
+		wm.to(pers, e.email);
 		wm.substitutions(pers, sub)
 	    mail.addPersonalization(pers)
 	});
