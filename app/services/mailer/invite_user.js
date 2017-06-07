@@ -22,8 +22,7 @@ const send_mail = (data, sender, invite, category = false) => {
       '*|PIMG|*': sender.profile_picture,
       '*|FUNAME|*': sender.fullName,
       '*|FLOC|*': wm.location(sender),
-      '*|URL|*': wm.url(`/invite/${invite}`),
-      MAIL: e
+      '*|URL|*': wm.url(`/invite/${invite}`)
     };
     wm.subject(pers, subject);
     wm.to(pers, e);

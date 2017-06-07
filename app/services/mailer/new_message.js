@@ -4,8 +4,6 @@ const { db, TABLES } = require('../../models/index');
 const h = require('../../models/helper');
 const _ = require('lodash');
 
-//TODO:
-//FINISH THIS [old_message]
 const new_message = () => {
   let mail = new helper.Mail();
 
