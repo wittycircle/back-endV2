@@ -24,7 +24,7 @@ exports.InviteFriendsFromGoogle = (req, res, next) => {
       req.broadcastEvent('add_points', { user_id: req.user.id, points: 2000 });
       return db('user_socials')
         .update('invite_google', 1)
-        .where('user_id', args.uid);
+        .where('user_id', req.user.id);
     })
     .then(() => res.send({ success: true }));
 };
