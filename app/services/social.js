@@ -59,10 +59,10 @@ exports.getLinkedinProfileInfo = profileUrl => {
         json: true,
         body: false
     };
-    const query = `https://phantombuster.com/api/v1/agent/1031/launch?output=result-object&argument=${{profile: profileUrl}.toString()}&saveArgument=false`;
-    console.log(query);
+    const profile   = '{ "profile":"' + profileUrl.toString() + '"}';
+    const query     = `https://phantombuster.com/api/v1/agent/1031/launch?output=first-result-object&argument=${profile}&saveArgument=false`;
     return got(query, options)
-        .then(response => response.body)
+        .then(response => response.body.data.resultObject)
 };
 
 exports.gmailContactsCampaign = token =>
