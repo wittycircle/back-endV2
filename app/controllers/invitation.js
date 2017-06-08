@@ -15,8 +15,12 @@ exports.addInvitation = (req, res, next) => {
   invitation
     .addInvitation(req.user.id, req.body.mail)
     .then(r => {
-      mailer.invite_user({ uid: req.user.id, mailList: req.body.mail });
-      res.send({ success: true });
+      if (typeof r === 'string') {
+        res.send({ success: true, status: r });
+      } else {
+        mailer.invite_user({ uid: req.user.id, mailList: req.body.mail });
+        res.send({ success: true });
+      }
     })
     .catch(err => next([err, 'bad id']));
 };
