@@ -22,7 +22,7 @@ const send_mail = (s, u, data) => {
 		let sub = {
 			"*|MESSAGE|*": u.message,
 			"*|FNAME|*": s.first_name,
-			"*|PIMG|*": s.profile_picture,
+			"*|PIMG|*": s.picture,
 			"*|FUNAME|*": s.fullName,
 			"*|FDESC|*": s.description,
 			"*|URL|*": wm.url(`welcome/${u.url_name}/${u.token}`),

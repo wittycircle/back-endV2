@@ -23,7 +23,7 @@ const send_mail = (message, discussion, sender) => {
     let sub = {
       '*|FNAME|*': sender.first_name,
       '*|FDESC|*': wm.truncate(message),
-      '*|FIMG|*': sender.profile_picture,
+      '*|FIMG|*': sender.picture,
       '*|FURL|*': wm.url(`/project/${e.public_id}/${e.title}/feedback`),
       '*|FUNAME|*': sender.fullName,
       '*|FPROJECT|*': e.title,

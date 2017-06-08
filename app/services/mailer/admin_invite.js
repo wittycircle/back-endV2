@@ -17,7 +17,7 @@ const send_mail = (email, sender, token) => {
   let sub = {
     '*|FNAME|*': sender.first_name,
     '*|FLNAME|*': sender.last_name,
-    '*|PIMG|*': sender.profile_picture,
+    '*|PIMG|*': sender.picture,
     '*|FUNAME|*': sender.fullName,
     '*|FLOC|*': wm.location(sender),
     '*|URL|*': wm.url(`/invite/projects/${token}`),

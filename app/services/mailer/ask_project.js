@@ -56,7 +56,7 @@ return Promise.all([fromUser, fromProject])
 			'*|FPROJECT|*' : p.title,
 			// '*|FMTITLE|*': args.title,
 			'*|FDESC|*': args.message,
-			'*|FIMG|*': u.profile_picture,
+			'*|FIMG|*': u.picture,
 			'*|FURL|*': wm.url(`project/${p.public_id}/${p.title}/feedback`),
 			'*|EMAIL|*':  p.email
 			};

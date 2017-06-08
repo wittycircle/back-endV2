@@ -44,7 +44,7 @@ return Promise.all([fromUser, fromProject, toUsers])
 				 "*|FNAME|*" : t.first_name,
 				 "*|FFNAME|*": f.first_name,
 				 "*|FLNAME|*": f.last_name,
-				 "*|FIMG|*": f.profile_picture,
+				 "*|FIMG|*": f.picture,
 				 "*|FDESC|*":  wm.truncate(f.description),
 				 "*|FLOC|*": wm.location(f),
 				 "*|FURL|*": wm.url(f.username),

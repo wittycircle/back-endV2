@@ -23,7 +23,7 @@ const send_mail = (follower, followed) => {
 			"*|FNAME|*": followed.first_name,
 			"*|FFNAME|*": follower.first_name,
 			"*|FLNAME|*": follower.last_name,
-			"*|FIMG|*": follower.profile_picture,
+			"*|FIMG|*": follower.picture,
 			"*|FLOC|*": follower.location,
 			"*|FDESC|*": wm.truncate(follower.description) || ' ',
 			"*|FURL|*": wm.url(`${follower.username}`),
