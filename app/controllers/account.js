@@ -48,8 +48,9 @@ exports.register = (req, res, next) => {
           email: req.body.account.email
         });
         if (verify) {
+          console.log('verify', verify);
           req.broadcastEvent('add_points', {
-            user_id: r[0].user_id,
+            user_id: verify[0].user_id,
             points: 500
           });
         }

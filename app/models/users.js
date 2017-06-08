@@ -139,7 +139,6 @@ exports.getProjectFollow = uid => {
 // ------------------ INTERESTS ------------------
 
 getInterest = exports.getInterests = uid => {
-  console.log('ET LA');
   return db
     .distinct('i.name', 'i.priority')
     .from(TABLES.USER_INTERESTS + ' as ui')

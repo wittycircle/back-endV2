@@ -90,7 +90,7 @@ exports.InviteFriendsFromGoogle = (req, res, next) => {
       mailer.invite_user({ uid: req.user.id, mailList, category: 'gmail' })
     )
     .then(() => {
-      req.broadcastEvent('add_points', { user_id: req.user.id, points: 2000 });
+      req.broadcastEvent('add_points', { user_id: req.user.id, points: 500 });
       return db('user_socials')
         .update('invite_google', 1)
         .where('user_id', req.user.id);

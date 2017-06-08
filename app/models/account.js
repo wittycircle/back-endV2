@@ -193,20 +193,19 @@ exports.register = (data, token) => {
       throw r.length ? 'Email already taken' : 'username already taken';
     } else {
       return db(TABLES.USERS).insert(user_data).then(user => {
-        console.log('user', user);
         profile_data.user_id = user[0];
-        console.log('profile_data', profile_data);
         return Promise.all([
           db(TABLES.PROFILES).insert(profile_data),
           permission(user[0]),
           verifyUser(data.email),
-          db(TABLES.RANK).insert({ user_id: user[0], rank: 200 }),
-          // db(TABLES.RANK_POINTS),
+          db(TABLES.RANK).insert({ user_id: user[0], rank: user[0] }),
+          db(TABLES.RANK_POINTS).insert({ user_id: user[0], points: 300 }),
           db(TABLES.ACCOUNT_VALIDATION).insert({
             email: data.email,
             token: token
           })
         ]).then(allR => {
+          console.log('allR', allR);
           return db(TABLES.USERS)
             .select('id')
             .where('id', user[0])
