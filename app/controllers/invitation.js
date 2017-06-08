@@ -6,40 +6,37 @@ exports.getInvitation = (req, res, next) => {
   invitation
     .getInvitation(req.params.invite_id)
     .then(r => {
-      if (!r || !r.length || typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        res.send({ informations: r });
-      }
+      res.send({ informations: r });
     })
-    .catch(err => next(err));
+    .catch(err => next([err, 'bad id']));
 };
 
 exports.addInvitation = (req, res, next) => {
   invitation
     .addInvitation(req.user.id, req.body.mail)
     .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        mailer.invite_user({ uid: req.user.id, mailList: req.body.mail });
-        res.send({ success: true });
-      }
+      mailer.invite_user({ uid: req.user.id, mailList: req.body.mail });
+      res.send({ success: true });
     })
-    .catch(err => next(err));
+    .catch(err => next([err, 'bad id']));
 };
+
+this.addInvitation(
+  {
+    user: { id: 1 },
+    body: { mail: ['sequoyaonycroitNIKNINKNI@wittycircle.com'] }
+  },
+  { send: console.log },
+  console.log
+);
 
 exports.fromUser = (req, res, next) => {
   invitation
     .fromUser(req.params.invite_id, req.body.email)
     .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        res.send({ success: true });
-      }
+      res.send({ success: true });
     })
-    .catch(err => next(err));
+    .catch(err => next([err, 'bad id']));
 };
 
 exports.addInvitationNik = (req, res, next) => {
@@ -56,7 +53,11 @@ exports.addInvitationNik = (req, res, next) => {
       if (typeof r === 'string') {
         return next([r, 'Bad id']);
       } else {
-        mailer.invite_user({ uid: user, mailList: req.body.mail, category: 'github' });
+        mailer.invite_user({
+          uid: user,
+          mailList: req.body.mail,
+          category: 'github'
+        });
         res.send({ success: true });
       }
     })

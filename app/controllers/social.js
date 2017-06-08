@@ -6,6 +6,7 @@ const social = require('../services/social');
 const mailer = require('../services/mailer');
 const profiles = require('../models/profiles');
 const users = require('../models/users');
+const { db, TABLES } = require('../models');
 const { addSkill } = require('../models/skills');
 const _ = require('lodash');
 
