@@ -17,16 +17,19 @@ const verifyInvite = (exports.verifyInvite = mails => {
 });
 
 exports.addInvitation = (uid, mails) => {
-  return h.exist(TABLES.USERS, uid).then(r => {
-    if (!r.length) throw 'Unknown user';
-    return verifyInvite(mails).then(verifiedEmails => {
-      if (!verifiedEmails.length) throw 'All emails already invited';
-      let x = verifiedEmails.map(e => {
-        return { user_id: uid, mail_to: e };
+  return h
+    .exist(TABLES.USERS, uid)
+    .then(r => {
+      if (!r.length) throw 'Unknown user';
+      return verifyInvite(mails).then(verifiedEmails => {
+        if (!verifiedEmails.length) throw 'All emails already invited';
+        let x = verifiedEmails.map(e => {
+          return { user_id: uid, mail_to: e };
+        });
+        return db.batchInsert(TABLES.INVITATION, x);
       });
-      return db.batchInsert(TABLES.INVITATION, x);
-    });
-  });
+    })
+    .catch(err => next([err, '[information]']));
 };
 
 exports.fromUser = (id, mails) => {
