@@ -98,7 +98,6 @@ const verifyUser = email => {
     .where('mail_to', email)
     .then(r => {
       if (r.length) {
-        req.broadcastEvent('add_points', { user_id: r[0].user_id, points: 500 });
         return db(TABLES.INVITATION).update('status', 1).where('mail_to', email);
       }
       return null;
@@ -191,7 +190,7 @@ exports.register = (data, token) => {
     h.exist(TABLES.USERS, data.username, 'username')
   ]).then(([r, r2]) => {
     if (r.length || r2.length) {
-      return r.length ? 'Email already taken' : 'username already taken';
+      throw r.length ? 'Email already taken' : 'username already taken';
     } else {
       return db(TABLES.USERS).insert(user_data).then(user => {
         console.log('user', user);
@@ -207,7 +206,12 @@ exports.register = (data, token) => {
             email: data.email,
             token: token
           })
-        ]).then(() => db(TABLES.USERS).select('id').where('id', user[0]));
+        ]).then(allR => {
+          return db(TABLES.USERS)
+            .select('id')
+            .where('id', user[0])
+            .then(r => [r, allR[1]]);
+        });
       });
     }
   });

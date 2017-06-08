@@ -41,21 +41,22 @@ exports.register = (req, res, next) => {
   const token = crypto.randomBytes(20).toString('hex');
   checkRegisterData(req.body.account).then(data => {
     account
-      .register(data, token)
-      .then(r => {
-        if (typeof r === 'string') {
-          return next([r, 'Bad info [email or password]']);
-        } else {
-          mailer.validate_account({
-            token: token,
-            email: req.body.account.email
+      .register(data, token, req)
+      .then(([r, verify]) => {
+        mailer.validate_account({
+          token: token,
+          email: req.body.account.email
+        });
+        if (verify) {
+          req.broadcastEvent('add_points', {
+            user_id: r[0].user_id,
+            points: 500
           });
-          console.log('r', r);
-          req.broadcastEvent('user_register', { id: r[0].id });
-          res.send({ success: true }).status(200);
         }
+        req.broadcastEvent('user_register', { id: r[0].id });
+        res.send({ success: true }).status(200);
       })
-      .catch(err => next(err));
+      .catch(err => next([err, 'Bad info']));
   });
 };
 
