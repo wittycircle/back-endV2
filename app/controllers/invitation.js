@@ -21,15 +21,6 @@ exports.addInvitation = (req, res, next) => {
     .catch(err => next([err, 'bad id']));
 };
 
-this.addInvitation(
-  {
-    user: { id: 1 },
-    body: { mail: ['sequoyaonycroitNIKNINKNI@wittycircle.com'] }
-  },
-  { send: console.log },
-  console.log
-);
-
 exports.fromUser = (req, res, next) => {
   invitation
     .fromUser(req.params.invite_id, req.body.email)
