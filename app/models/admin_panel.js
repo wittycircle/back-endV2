@@ -28,10 +28,10 @@ exports.projectsInvite = uid => {
 exports.inviteProjects = (uid, project_id, token) => {
   return h.admin(TABLES.PROJECTS, project_id, uid).then(([r, r1]) => {
     if (!r.length || !r1.length)
-      return !r.length ? 'Bad project id' : 'Not an admin';
-    return db(TABLES.PROJECT_INVITE)
-      .insert({ project_id, token })
-      .catch(err => 'Duplicate : Already exist');
+      throw !r.length ? 'Bad project id' : 'Not an admin';
+    return db(TABLES.PROJECT_INVITE).insert({ project_id, token }).catch(err => {
+      throw 'Duplicate : Already exist';
+    });
   });
 };
 

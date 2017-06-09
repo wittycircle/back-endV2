@@ -1,5 +1,5 @@
 const panel = require('../models/admin_panel'),
-  // mailer = require('../services/mailer'),
+  mailer = require('../services/mailer'),
   crypto = require('crypto'),
   _ = require('lodash');
 
@@ -22,17 +22,12 @@ exports.inviteProjects = (req, res, next) => {
   panel
     .inviteProjects(req.user.id, req.body.id, token)
     .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        mailer.stuff({
-          email: req.body.email,
-          id: req.body.id,
-          token: token,
-          name: req.body.name
-        });
-        res.send({ success: true });
-      }
+      mailer.admin_invite({
+        uid: req.user.id,
+        email: req.body.email,
+        token: token
+      });
+      res.send({ success: true });
     })
     .catch(err => next(err));
 };

@@ -54,7 +54,8 @@ const social_helper = {
         },
         user: {
           email: data.emails[0].value,
-          username: _.replace(data.displayName, ' ', '.')
+          username: _.replace(data.displayName, ' ', '.'),
+          invite_link: `${data.first_name.replace(/ /g, '')}${data.last_name.replace(/ /g, '')}_W${+Math.floor(Math.random() * 10000 + 1)}`
         }
       };
     }),
@@ -110,13 +111,17 @@ const newUser = (helper, origin) => {
     last_name: helper.profile.last_name
   },
     socialInsert = chooseOrigin(origin, helper);
+
   return db(TABLES.USERS).insert(helper.user).then(([id]) => {
     socialInsert.user_id = id;
     profileInsert.user_id = id;
     console.log('socialInsert', socialInsert);
     return Promise.all([
       db(TABLES.USER_SOCIALS).insert(socialInsert),
-      db(TABLES.PROFILES).insert(profileInsert)
+      db(TABLES.PROFILES).insert(profileInsert),
+      verifyUser(data.email),
+      db(TABLES.RANK).insert({ user_id: id, rank: id }),
+      db(TABLES.RANK_POINTS).insert({ user_id: id, points: 300 })
     ]).then(r => {
       return {
         id: id,
