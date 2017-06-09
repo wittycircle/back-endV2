@@ -225,7 +225,7 @@ const subInfoProfiles = id => {
     .countDistinct('id')
     .distinct(name('upvoted_project'))
     .where('user_id', id)
-    .from(TABLES.PROJECT_MEMBERS)), (views = db
+    .from(TABLES.PROJECT_LIKES)), (views = db
     .countDistinct('id')
     .distinct(name('views'))
     .where('viewed', id)
