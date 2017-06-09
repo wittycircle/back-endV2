@@ -48,7 +48,7 @@ const reply_project = args => {
     .select('u.email', 'p.title', 'p.public_id')
     .from(TABLES.DISCUSSIONS + ' as d')
     .join(TABLES.PROJECTS + ' as p', 'd.project_id', 'p.id')
-    .leftJoin(TABLES.DISCUSSIONS_REPLIES + ' as r', 'r.discussions_id', 'd.id')
+    .leftJoin(TABLES.DISCUSSION_MESSAGES + ' as r', 'r.discussion_id', 'd.id')
     .join(TABLES.USERS + ' as u', function() {
       this.on('u.id', 'p.user_id')
         .orOn('u.id', 'd.user_id')

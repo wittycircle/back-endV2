@@ -1,7 +1,7 @@
-const {wm, TEMPLATES} = require('./wittymail');
+const { wm, TEMPLATES } = require('./wittymail');
 const helper = require('sendgrid').mail;
 const h = require('../../models/helper'); //NIK
-const {db, TABLES} = require('../../models/index');
+const { db, TABLES } = require('../../models/index');
 const _ = require('lodash');
 
 // const args = {
@@ -10,45 +10,46 @@ const _ = require('lodash');
 // };
 
 const send_mail = (s, u, data) => {
-	let	mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', `${s.fullName} via Wittycircle`);
-	wm.content(mail)
-	wm.reply(mail, "noreply@wittycircle.com");
-	mail.setTemplateId(TEMPLATES.uc_invitation)
-	
-	data.forEach((e, i) => {
-		let pers = new helper.Personalization();
-		let subject = "Wittycircle is now open to the " + u.url_name + " community"
-		let sub = {
-			"*|MESSAGE|*": u.message,
-			"*|FNAME|*": s.first_name,
-			"*|PIMG|*": s.picture,
-			"*|FUNAME|*": s.fullName,
-			"*|FDESC|*": s.description,
-			"*|URL|*": wm.url(`welcome/${u.url_name}/${u.token}`),
-			"*|FNETWORK|*": u.url_name,
+  let mail = new helper.Mail();
+  wm.from(mail, 'noreply@wittycircle.com', `${s.fullName} via Wittycircle`);
+  wm.content(mail);
+  wm.reply(mail, 'noreply@wittycircle.com');
+  mail.setTemplateId(TEMPLATES.uc_invitation);
 
-		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
-		wm.subject(pers, subject);
-		wm.to(pers, e);
-		wm.substitutions(pers, sub)
-	    mail.addPersonalization(pers)
-	}); //foreach
-	wm.send(mail); 
-	return null;
+  data.forEach((e, i) => {
+    let pers = new helper.Personalization();
+    let subject = 'Wittycircle is now open to the ' + u.url + ' community';
+    let sub = {
+      '*|MESSAGE|*': u.message,
+      '*|FNAME|*': s.first_name,
+      '*|PIMG|*': s.picture,
+      '*|FUNAME|*': s.fullName,
+      '*|FDESC|*': s.description,
+      '*|URL|*': wm.url(`welcome/${u.url}/${u.token}`),
+      '*|FNETWORK|*': u.url
+    };
+    console.log(sub);
+    console.log('\n-------------------------------------------------\n');
+    wm.subject(pers, subject);
+    wm.to(pers, e);
+    wm.substitutions(pers, sub);
+    mail.addPersonalization(pers);
+  }); //foreach
+  wm.send(mail);
+  return null;
 };
-	
-const uc_invitation = (args) => {
-	const sender = h.spe_profile({'u.id': args.id }).select('u.email')
 
-	const university = db('invite_university as iu').first('message', 'token', 'url_name')
-						.join(TABLES.NETWORKS + ' as n', 'n.name', 'iu.university')
-						.where('sender', args.id)
+const uc_invitation = args => {
+  const sender = h.spe_profile({ 'u.id': args.id }).select('u.email');
 
-	return Promise.all([sender, university])
-	.then(([sender, university]) => send_mail(sender[0], university, args.emails))
-};//exports
+  const university = db('partnerships_invite as iu')
+    .first('message', 'token', 'url')
+    .join(TABLES.NETWORKS + ' as n', 'n.id', 'iu.partnership_id')
+    .where('sender', args.id);
 
-module.exports = uc_invitation
+  return Promise.all([sender, university]).then(([sender, university]) =>
+    send_mail(sender[0], university, args.emails)
+  );
+}; //exports
+
+module.exports = uc_invitation;
