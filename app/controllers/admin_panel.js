@@ -7,14 +7,10 @@ exports.projectsInvite = (req, res, next) => {
   panel
     .projectsInvite(req.user.id)
     .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Bad id']);
-      } else {
-        r.forEach(e => (e.created_by = e.user_id == 1 ? 'Quentin' : 'Olivier'));
-        res.send({ project_list: r });
-      }
+      r.forEach(e => (e.created_by = e.user_id == 1 ? 'Quentin' : 'Olivier'));
+      res.send({ project_list: r });
     })
-    .catch(err => next(err));
+    .catch(err => next([err, 'bad id']));
 };
 
 exports.inviteProjects = (req, res, next) => {
@@ -29,18 +25,14 @@ exports.inviteProjects = (req, res, next) => {
       });
       res.send({ success: true });
     })
-    .catch(err => next(err));
+    .catch(err => next([err, 'Unable to invite']));
 };
 
 exports.updateCreator = (req, res, next) => {
   panel
     .updateCreator(req.user.id, req.params.token)
     .then(r => {
-      if (typeof r === 'string') {
-        return next([r, 'Could not set as creator']);
-      } else {
-        res.send({ success: true });
-      }
+      res.send({ success: true });
     })
-    .catch(err => next(err));
+    .catch(err => next([err, 'Unable to set as creator']));
 };

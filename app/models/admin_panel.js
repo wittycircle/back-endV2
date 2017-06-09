@@ -4,7 +4,7 @@ const { db, TABLES } = require('./index'),
 
 exports.projectsInvite = uid => {
   return h.admin(TABLES.USERS, uid, uid).then(r => {
-    if (!r.length) return 'Admin only';
+    if (!r.length) throw 'Admin only';
     let sent = db.raw('IF (pi.accepted IS NOT NULL, true, false) as sent');
     return db(TABLES.PROJECTS + ' as p')
       .select([
@@ -40,7 +40,7 @@ exports.updateCreator = (uid, token) => {
     .first('project_id')
     .where('token', token)
     .then(r => {
-      if (!r) return 'Invalid token';
+      if (!r) throw 'Invalid token';
       console.log(r);
       return Promise.all([
         db(TABLES.PROJECTS).update('user_id', uid).where('id', r.project_id),
