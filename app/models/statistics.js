@@ -136,8 +136,8 @@ npra = exports.networkProjectAbout = name => {
       .from(TABLES.PROJECTS + ' as pr')
       .join(h.sub_profile, 'pr.user_id', 'p.uid')
       .join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
-      .join(TABLES.NETWORKS_LIST + ' as l', 'l.id', 'p.network_id')
-      .whereRaw(`l.name LIKE "%${name}%"`)
+      .join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+      .whereRaw(`nl.name LIKE "%${name}%"`)
       .groupBy('c.name')
       .orderByRaw('count DESC');
   });
@@ -177,8 +177,8 @@ nprf = exports.networkProjectFollow = name => {
       .from(TABLES.PROJECTS + ' as pr')
       .join(h.sub_profile, 'pr.user_id', 'p.uid')
       .join(TABLES.PROJECT_LIKES + ' as l', 'l.project_id', 'pr.id')
-      .join(TABLES.NETWORKS_LIST + ' as l', 'l.id', 'p.network_id')
-      .whereRaw(`l.name LIKE "%${name}%"`)
+      .join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+      .whereRaw(`nl.name LIKE "%${name}%"`)
       .groupBy('pr.id')
       .orderByRaw('count DESC');
   });
@@ -208,33 +208,38 @@ const subInfoProfiles = id => {
       .countDistinct('id')
       .distinct(name('project_feedback'))
       .where('user_id', id)
-      .from(TABLES.DISCUSSION_MESSAGES);
-  (project_contrib = db
-    .countDistinct('id')
-    .distinct(name('project_contribution'))
-    .where('user_id', id)
-    .from(TABLES.PROJECT_MEMBERS)), (following = db
-    .countDistinct('id')
-    .distinct(name('following'))
-    .where('user_id', id)
-    .from(TABLES.USER_FOLLOWERS)), (follower = db
-    .countDistinct('id')
-    .distinct(name('followers'))
-    .where('followed', id)
-    .from(TABLES.USER_FOLLOWERS)), (upvoted_project = db
-    .countDistinct('id')
-    .distinct(name('upvoted_project'))
-    .where('user_id', id)
-    .from(TABLES.PROJECT_LIKES)), (views = db
-    .countDistinct('id')
-    .distinct(name('views'))
-    .where('viewed', id)
-    .from(TABLES.VIEWS)), (messages = db(TABLES.MESSAGES + ' as m')
-    .join(TABLES.ROOM_MEMBERS + ' as rm', 'rm.room_id', 'm.room_id')
-    .where('rm.user_id', id)
-    .andWhere('m.user_id', '<>', id)
-    .countDistinct('m.message')
-    .distinct(name('messages')));
+      .from(TABLES.DISCUSSION_MESSAGES),
+    project_contrib = db
+      .countDistinct('id')
+      .distinct(name('project_contribution'))
+      .where('user_id', id)
+      .from(TABLES.PROJECT_MEMBERS),
+    following = db
+      .countDistinct('id')
+      .distinct(name('following'))
+      .where('user_id', id)
+      .from(TABLES.USER_FOLLOWERS),
+    follower = db
+      .countDistinct('id')
+      .distinct(name('followers'))
+      .where('followed', id)
+      .from(TABLES.USER_FOLLOWERS),
+    upvoted_project = db
+      .countDistinct('id')
+      .distinct(name('upvoted_projects'))
+      .where('user_id', id)
+      .from(TABLES.PROJECT_LIKES),
+    views = db
+      .countDistinct('id')
+      .distinct(name('views'))
+      .where('viewed', id)
+      .from(TABLES.VIEWS),
+    messages = db(TABLES.MESSAGES + ' as m')
+      .join(TABLES.ROOM_MEMBERS + ' as rm', 'rm.room_id', 'm.room_id')
+      .where('rm.user_id', id)
+      .andWhere('m.user_id', '<>', id)
+      .countDistinct('m.message')
+      .distinct(name('messages'));
 
   let test = [
     started_projects,
