@@ -77,7 +77,7 @@ module.exports.stuff = (db, old, h) => {
   return Promise.all([
     getMatchingId(db, old, 'users'),
     getFromUpperName(db, old, 'location', 'city'),
-    getFromName(db, old, 'networks_list'),
+    getFromUpperName(db, old, 'networks_list'),
     getInterests(db, old),
     getFromName(db, old, 'partnerships'),
     getFromName(db, old, 'rooms')
@@ -108,7 +108,21 @@ module.exports.stuff = (db, old, h) => {
           else e.loc_id = h.location[e.loc_id.toUpperCase()] || 1;
         }
         if (t.indexOf('networks') !== -1) {
-          e.network_id = h.networks[e.network_id] || 1;
+          e.network_id.replace('_', ' ');
+          console.log('network_id', e.network_id);
+          for (k in h.networks) {
+            if (new RegExp(`.*${e.network_id}.*`, 'i').test(k)) {
+              console.log('SUCCESS !!', k, e.network_id);
+              e.network_id = h.networks[k];
+              break;
+            }
+          }
+          console.log('ID OF NETWORK', e.network_id);
+          if (typeof e.network_id === 'string') {
+            console.log('FAILED FAILED e.network_id', e.network_id);
+            e.network_id = 21;
+          }
+          // e.network_id = h.networks[e.network_id] || 20;
         }
         if (t.indexOf('interests') !== -1) {
           e.interest_id = h.interests[e.interest_id] || 1;

@@ -106,15 +106,16 @@ ni = exports.networkInterests = name => {
 //			*** Projects ***
 npr = exports.networkProjects = name => {
   let test = db(TABLES.NETWORKS_INFO + ' as f')
-    .join(TABLES.LOCATION + ' as loc')
-    .join(TABLES.NETWORKS + ' as n', 'f.network_id', 'n.id')
-    .select('city', 'state', 'country', 'f.*', 'n.name')
+    .join(TABLES.LOCATION + ' as loc', 'loc.id', 'f.loc_id')
+    .join(TABLES.NETWORKS_LIST + ' as n', 'f.network_id', 'n.id')
+    .distinct('loc.city', 'loc.state', 'loc.country', 'f.*', 'n.name')
     .where('n.name', name);
 
+  console.log('TEST', test.toString());
   return h.exist(TABLES.NETWORKS_LIST, name, 'name').then(r => {
     if (!r.length) return 'error';
     return db(TABLES.PROJECTS + ' as pr')
-      .count('pr.id as projects_count')
+      .countDistinct('pr.id as projects_count')
       .join(h.sub_profile, 'p.uid', 'pr.user_id')
       .join(TABLES.NETWORKS_LIST + ' as l', 'l.id', 'p.network_id')
       .whereRaw(`l.name LIKE "%${name}%"`)
