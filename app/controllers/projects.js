@@ -261,7 +261,7 @@ exports.likeProject = (req, res, next) => {
           value: -1,
           from: req.user.id
         });
-        req.broadcastEvent('add_points', { user_id: req.user.id, points: -2 });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: -15 });
         res.send({ success: true, type: 'Unlike' });
       } else {
         req.broadcastEvent('follow_project', {
@@ -273,7 +273,7 @@ exports.likeProject = (req, res, next) => {
           value: 1,
           from: req.user.id
         });
-        req.broadcastEvent('add_points', { user_id: req.user.id, points: 2 });
+        req.broadcastEvent('add_points', { user_id: req.user.id, points: 15 });
         res.send({ success: true, type: 'Like' });
       }
     })

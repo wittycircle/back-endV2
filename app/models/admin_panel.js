@@ -10,6 +10,7 @@ exports.projectsInvite = uid => {
       .select([
         'p.id',
         'user_id',
+        'username as creator',
         'title',
         h.format_location,
         'picture',
@@ -18,9 +19,11 @@ exports.projectsInvite = uid => {
         'public_id',
         sent
       ])
+      .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
       .leftJoin(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
       .leftJoin(TABLES.PROJECT_INVITE + ' as pi', 'pi.project_id', 'p.id')
-      .whereIn('user_id', [1, 9])
+      .where('u.moderator', 1)
+      .whereIn('u.id', [1, 9])
       .whereRaw('title <> "wittycircle"');
   });
 };
@@ -29,9 +32,7 @@ exports.inviteProjects = (uid, project_id, token) => {
   return h.admin(TABLES.PROJECTS, project_id, uid).then(([r, r1]) => {
     if (!r.length || !r1.length)
       throw !r.length ? 'Bad project id' : 'Not an admin';
-    return db(TABLES.PROJECT_INVITE).insert({ project_id, token }).catch(err => {
-      throw 'Duplicate : Already exist';
-    });
+    return db(TABLES.PROJECT_INVITE).insert({ project_id, token });
   });
 };
 
