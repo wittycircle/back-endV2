@@ -6,7 +6,7 @@ const social = require('../services/social');
 const mailer = require('../services/mailer');
 const profiles = require('../models/profiles');
 const users = require('../models/users');
-const { db, TABLES } = require('../models');
+const { db, redis, TABLES } = require('../models');
 const { addSkill } = require('../models/skills');
 const _ = require('lodash');
 
@@ -22,6 +22,8 @@ const addSkillsToUser = id => skills =>
 // '–' linkedin stuff
 const DATE_RANGE_SEPARATOR = '–';
 const Joi = require('joi');
+const moment = require('moment');
+const parseDate = rawDate => rawDate ? moment(Date.parse(rawDate)).format() : moment().format();
 
 const experienceSchema = Joi.object().keys({
   company: Joi.string().required(),
@@ -31,40 +33,44 @@ const experienceSchema = Joi.object().keys({
   description: Joi.string()
 });
 
+const buildExperiences = experiences => experiences
+  .map(({ title, company, dateRange, description, location }) => {
+    const [date_from, date_to] = dateRange.split(DATE_RANGE_SEPARATOR);
+    const [city, country] = location.split(',');
+
+    return [
+      {
+        title,
+        company,
+        date_from: parseDate(date_from),
+        date_to: _.lowerCase(date_to) === 'present'
+          ? parseDate()
+          : parseDate(date_to),
+        description
+      },
+      {
+        city,
+        country
+      }
+    ];
+  })
+  .filter(([experience]) => {
+    const result = Joi.validate(experience, experienceSchema);
+    return result.error === null;
+  });
+
 exports.updateProfileFromLinkedin = (req, res, next) => {
   const { profile } = req.body;
 
   social
     .getLinkedinProfileInfo(profile)
+    .then(p => {
+      redis.set(`linkedin:${req.user.id}`, JSON.stringify(p));
+      return p;
+    })
     .then(({ skills, summary, experiences }) =>
       Promise.all([
-        addExperienceToUser(req.user.id)(
-          experiences
-            .map(({ title, company, dateRange, description, location }) => {
-              const [date_from, date_to] = dateRange.split(DATE_RANGE_SEPARATOR);
-              const [city, country] = location.split(',');
-
-              return [
-                {
-                  title,
-                  company,
-                  date_from: Date.parse(date_from),
-                  date_to: _.lowerCase(date_to) === 'present'
-                    ? Date.now()
-                    : Date.parse(date_to),
-                  description
-                },
-                {
-                  city,
-                  country
-                }
-              ];
-            })
-            .filter(([experience]) => {
-              const result = Joi.validate(experience, experienceSchema);
-              return result.error === null;
-            })
-        ),
+        addExperienceToUser(req.user.id)(buildExperiences(experiences)),
         addSkillsToUser(req.user.id)(skills),
         profiles.updateProfile(
           {
@@ -77,8 +83,11 @@ exports.updateProfileFromLinkedin = (req, res, next) => {
         )
       ])
     )
-    .then(results => res.send({ success: true }))
-    .catch(error => res.send({ success: false }));
+    .then(results => res.send({ success: process.env.NODE_ENV === 'development' ? results : true }))
+    .catch(error => {
+      console.log(error);
+      res.send({ success: false })
+    });
 };
 
 exports.InviteFriendsFromGoogle = (req, res, next) => {
