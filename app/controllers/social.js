@@ -15,7 +15,10 @@ const addExperienceToUser = id => experiences =>
     users.addExperience(id, experience, location)
   );
 const addSkillsToUser = id => skills =>
-  Promise.all(skills.map(skill => addSkill(_.lowerCase(skill))));
+  Promise.all(skills.map(skill => addSkill(_.lowerCase(skill))))
+    .then(skills => _.flattenDeep(skills))
+    .then(skills => skills.map(skill => users.addUserSkill(skill, id)))
+    .then(skillPromise => Promise.all(skillPromise));
 
 //Differences
 // '-' standard ascii
