@@ -49,7 +49,7 @@ exports.updateProfile = (stuff, location, cnd) => {
 
 // ------------------ Follow ------------------
 exports.getProfileFollowers = (cond, cond2, p_id) => {
-  return h.exist(TABLES.PROFILES, p_id).then(r => {
+  return h.exist(TABLES.PROFILES, p_id, 'user_id').then(r => {
     if (!r.length) throw 'Bad profile id';
     else {
       return db
