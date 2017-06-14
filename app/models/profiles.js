@@ -33,7 +33,7 @@ exports.getProfileBy = by => {
       h.format_location
     );
 
-  return h.exist(TABLES.PROFILES, by['p.user_id']).then(r => {
+  return h.exist(TABLES.PROFILES, by['p.user_id'], 'user_id').then(r => {
     if (!r.length) throw 'Bad id';
     else return query;
   });
