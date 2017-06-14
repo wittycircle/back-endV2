@@ -15,7 +15,10 @@ const addExperienceToUser = id => experiences =>
     users.addExperience(id, experience, location)
   );
 const addSkillsToUser = id => skills =>
-  Promise.all(skills.map(skill => addSkill(_.lowerCase(skill))));
+  Promise.all(skills.map(skill => addSkill(_.lowerCase(skill))))
+    .then(skills => _.flattenDeep(skills))
+    .then(skills => skills.map(skill => users.addUserSkill(skill, id)))
+    .then(skillPromise => Promise.all(skillPromise));
 
 //Differences
 // '-' standard ascii
@@ -23,7 +26,8 @@ const addSkillsToUser = id => skills =>
 const DATE_RANGE_SEPARATOR = '–';
 const Joi = require('joi');
 const moment = require('moment');
-const parseDate = rawDate => rawDate ? moment(Date.parse(rawDate)).format() : moment().format();
+const parseDate = rawDate =>
+  rawDate ? moment(Date.parse(rawDate)).format() : moment().format();
 
 const experienceSchema = Joi.object().keys({
   company: Joi.string().required(),
@@ -33,31 +37,32 @@ const experienceSchema = Joi.object().keys({
   description: Joi.string()
 });
 
-const buildExperiences = experiences => experiences
-  .map(({ title, company, dateRange, description, location }) => {
-    const [date_from, date_to] = dateRange.split(DATE_RANGE_SEPARATOR);
-    const [city, country] = location.split(',');
+const buildExperiences = experiences =>
+  experiences
+    .map(({ title, company, dateRange, description, location }) => {
+      const [date_from, date_to] = dateRange.split(DATE_RANGE_SEPARATOR);
+      const [city, country] = location.split(',');
 
-    return [
-      {
-        title,
-        company,
-        date_from: parseDate(date_from),
-        date_to: _.lowerCase(date_to) === 'present'
-          ? parseDate()
-          : parseDate(date_to),
-        description
-      },
-      {
-        city,
-        country
-      }
-    ];
-  })
-  .filter(([experience]) => {
-    const result = Joi.validate(experience, experienceSchema);
-    return result.error === null;
-  });
+      return [
+        {
+          title,
+          company,
+          date_from: parseDate(date_from),
+          date_to: _.lowerCase(date_to) === 'present'
+            ? parseDate()
+            : parseDate(date_to),
+          description
+        },
+        {
+          city,
+          country
+        }
+      ];
+    })
+    .filter(([experience]) => {
+      const result = Joi.validate(experience, experienceSchema);
+      return result.error === null;
+    });
 
 exports.updateProfileFromLinkedin = (req, res, next) => {
   const { profile } = req.body;
@@ -83,10 +88,14 @@ exports.updateProfileFromLinkedin = (req, res, next) => {
         )
       ])
     )
-    .then(results => res.send({ success: process.env.NODE_ENV === 'development' ? results : true }))
+    .then(results =>
+      res.send({
+        success: process.env.NODE_ENV === 'development' ? results : true
+      })
+    )
     .catch(error => {
       console.log(error);
-      res.send({ success: false })
+      res.send({ success: false });
     });
 };
 

@@ -28,7 +28,7 @@ exports.getProfiles = (req, res, next) => {
 
 exports.getProfile = (req, res, next) => {
   profiles
-    .getProfileBy({ 'p.id': req.params.id })
+    .getProfileBy({ 'p.user_id': req.params.id })
     .then(profile => {
       if (req.user && req.user.id) {
         profile.hasLiked = has_liked(profile.foli, req.user.id);
@@ -47,7 +47,7 @@ exports.updateProfile = (req, res, next) => {
   const location = req.body.location;
   delete req.body.location;
   profiles
-    .updateProfile(req.body, location, { id: req.params.id })
+    .updateProfile(req.body, location, { user_id: req.params.id })
     .then(r => {
       if (r) {
         req.broadcastEvent('profile_update', { id: req.params.id });

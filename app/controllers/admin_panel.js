@@ -25,7 +25,12 @@ exports.inviteProjects = (req, res, next) => {
       });
       res.send({ success: true });
     })
-    .catch(err => next([err, 'Unable to invite']));
+    .catch(err =>
+      next([
+        err.code ? 'Duplicate, project_id already invited' : err,
+        'Unable to invite'
+      ])
+    );
 };
 
 exports.updateCreator = (req, res, next) => {

@@ -24,8 +24,8 @@ const send_mail = (email, sender, token) => {
     '*|FLOC|*': wm.location(sender),
     '*|URL|*': wm.url(`/invite/projects/${token}`)
   };
-  // console.log(sub);
-  // console.log('\n-------------------------------------------------\n');
+  console.log(sub);
+  console.log('\n-------------------------------------------------\n');
   wm.subject(pers, subject);
   wm.to(pers, email);
   wm.substitutions(pers, sub);
@@ -35,9 +35,14 @@ const send_mail = (email, sender, token) => {
   return null;
 };
 const admin_invite = args => {
-  let request = h.spe_profile({ 'u.id': args.uid });
+  if (!args || !args.length) {
+    console.log('NO LUC');
+    throw 'INVALID !';
+  } else {
+    let request = h.spe_profile({ 'u.id': args.uid });
 
-  return request.then(x => send_mail(args.email, x, args.token));
+    return request.then(x => send_mail(args.email, x, args.token));
+  }
 }; //exports
 
 module.exports = admin_invite;

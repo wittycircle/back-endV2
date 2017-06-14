@@ -33,13 +33,14 @@ exports.getProfileBy = by => {
       h.format_location
     );
 
-  return h.exist(TABLES.PROFILES, by['p.id']).then(r => {
+  return h.exist(TABLES.PROFILES, by['p.user_id'], 'user_id').then(r => {
     if (!r.length) throw 'Bad id';
     else return query;
   });
 };
 
 exports.updateProfile = (stuff, location, cnd) => {
+  console.log('stuff', stuff);
   return h.setLocation(location).then(r => {
     if (r[0] != 'nolocation') stuff.loc_id = r[0];
     return db(TABLES.PROFILES).update(stuff).where(cnd);
