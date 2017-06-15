@@ -55,7 +55,7 @@ const social_helper = {
         user: {
           email: data.emails[0].value,
           username: _.replace(data.displayName, ' ', '.'),
-          invite_link: `${data.first_name.replace(/ /g, '')}${data.last_name.replace(/ /g, '')}_W${+Math.floor(Math.random() * 10000 + 1)}`
+          invite_link: `${data.name.givenName.replace(/ /g, '')}${data.name.familyName.replace(/ /g, '')}_W${+Math.floor(Math.random() * 10000 + 1)}`
         }
       };
     }),
