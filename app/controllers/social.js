@@ -34,14 +34,14 @@ const experienceSchema = Joi.object().keys({
   date_from: Joi.date().required(),
   date_to: Joi.date().required(),
   title: Joi.string().required(),
-  description: Joi.string()
+  description: Joi.string().allow('')
 });
 
 const buildExperiences = experiences =>
   experiences
     .map(({ title, company, dateRange, description, location }) => {
       const [date_from, date_to] = dateRange.split(DATE_RANGE_SEPARATOR);
-      const [city, country] = location.split(',');
+      const [city, country = 'United States'] = location.split(',');
 
       return [
         {
@@ -61,6 +61,7 @@ const buildExperiences = experiences =>
     })
     .filter(([experience]) => {
       const result = Joi.validate(experience, experienceSchema);
+      console.log(result.error);
       return result.error === null;
     });
 
