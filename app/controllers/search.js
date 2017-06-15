@@ -91,7 +91,6 @@ exports.searchProject = (req, res, next) => {
     .orderByRaw(`${order_by} ${query.sort.reverse ? 'desc' : 'asc'}`)
     .offset(paginate.offset)
     .limit(paginate.limit);
-  console.log('ici', nik.toString());
   nik
     .then(results => {
       if (!_.isEmpty(results)) {
