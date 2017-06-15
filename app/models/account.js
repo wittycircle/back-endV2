@@ -108,7 +108,8 @@ const verifyUser = email => {
 const newUser = (helper, origin) => {
   const profileInsert = {
     first_name: helper.profile.first_name,
-    last_name: helper.profile.last_name
+    last_name: helper.profile.last_name,
+    network_id: 1
   },
     socialInsert = chooseOrigin(origin, helper);
 
@@ -146,6 +147,7 @@ const modifyUser = (helper, origin, user) => {
 };
 
 exports.socialRegister = (data, origin) => {
+  console.log('DATA SOCIAL REGISTER', data);
   return social_helper[origin](data).then(helper => {
     return db(TABLES.USERS)
       .first(['id'])
