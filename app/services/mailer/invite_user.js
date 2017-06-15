@@ -44,7 +44,7 @@ const invite_user = args => {
     let x = [];
     verifiedEmails.map(e => x.push({ user_id: args.uid, invite_email: e }));
 
-    let table_invite = db.batchInsert('invitation', x);
+    let table_invite = db.batchInsert('invitations', x);
 
     return Promise.all([
       table_invite,
