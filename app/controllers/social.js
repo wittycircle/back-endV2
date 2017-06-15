@@ -34,7 +34,7 @@ const experienceSchema = Joi.object().keys({
   date_from: Joi.date().required(),
   date_to: Joi.date().required(),
   title: Joi.string().required(),
-  description: Joi.string()
+  description: Joi.string().allow('')
 });
 
 const buildExperiences = experiences =>
@@ -61,6 +61,7 @@ const buildExperiences = experiences =>
     })
     .filter(([experience]) => {
       const result = Joi.validate(experience, experienceSchema);
+      console.log(result.error);
       return result.error === null;
     });
 
