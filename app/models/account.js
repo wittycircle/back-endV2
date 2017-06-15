@@ -119,7 +119,7 @@ const newUser = (helper, origin) => {
     return Promise.all([
       db(TABLES.USER_SOCIALS).insert(socialInsert),
       db(TABLES.PROFILES).insert(profileInsert),
-      verifyUser(data.email),
+      verifyUser(helper.user.email),
       db(TABLES.RANK).insert({ user_id: id, rank: id }),
       db(TABLES.RANK_POINTS).insert({ user_id: id, points: 300 })
     ]).then(r => {
@@ -177,6 +177,7 @@ const permission = id => {
 };
 
 exports.register = (data, token) => {
+  console.log('data', data);
   let profile_data = {
     first_name: data.first_name,
     last_name: data.last_name,
