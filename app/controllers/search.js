@@ -54,9 +54,9 @@ exports.searchProfile = (req, res, next) => {
     .cardProfile(selector)
     .orderByRaw(
       `${order_by} ${query && query.sort && query.sort.reverse ? 'desc' : 'asc'}`
-    );
-  // if (paginate)
-  q.where(profile_lookup['id'], '>', paginate.offset).limit(paginate.limit);
+    )
+    .offset(paginate.offset)
+    .limit(paginate.limit);
   q
     .then(results => {
       if (!_.isEmpty(results))
@@ -86,11 +86,13 @@ exports.searchProject = (req, res, next) => {
     : query.sort.field == 'last_upvoted'
         ? 'MAX(pl.creation_date)'
         : project_lookup[query.sort.field];
-  search
+  let nik = search
     .cardProject(selector)
     .orderByRaw(`${order_by} ${query.sort.reverse ? 'desc' : 'asc'}`)
-    .where(project_lookup['id'], '>', paginate.offset)
-    .limit(paginate.limit)
+    .offset(paginate.offset)
+    .limit(paginate.limit);
+  console.log('ici', nik.toString());
+  nik
     .then(results => {
       if (!_.isEmpty(results)) {
         res.send({ projects: results });
