@@ -41,7 +41,7 @@ const buildExperiences = experiences =>
   experiences
     .map(({ title, company, dateRange, description, location }) => {
       const [date_from, date_to] = dateRange.split(DATE_RANGE_SEPARATOR);
-      const [city, country] = location.split(',') || [location,  'United States'];
+      const [city, country = 'United States'] = location.split(',');
 
       return [
         {
