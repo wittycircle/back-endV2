@@ -42,7 +42,7 @@ const user_follow = args => {
   const follower = h
     .spe_profile({ 'u.id': args.follower })
     .join(TABLES.LOCATION + 'as loc', 'loc.id', 'p.loc_id')
-    .select(h.format_location);
+    .select('p.*', h.format_location);
 
   // console.log(h.format_location)
   // console.log(follower.toString())
