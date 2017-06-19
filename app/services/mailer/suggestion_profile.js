@@ -10,7 +10,7 @@
 // 	wm.content(mail)
 // 	wm.reply(mail, "noreply@wittycircle.com");
 // 	mail.setTemplateId(TEMPLATES.suggestion_profile)
-	
+
 // 	data.forEach((e, i) => {
 // 		let pers = new helper.Personalization();
 // 		let subject = 'Reset password'
@@ -36,19 +36,18 @@
 // 		wm.substitutions(pers, sub)
 // 	    mail.addPersonalization(pers)
 // 	}); //foreach
-// 	wm.send(mail); 
+// 	wm.send(mail);
 // 	return null;
 // };
-	
+
 // const suggestion_profile = (args) => {
 // 	let user_profile = h.sub_profile.select('u.fake', 'p.city', 'p.country', 'p.state', 'u.email')
 
-
 // 	let selection = [
 // 		'pr.id', 'pr.title', 'pr.user_id as creator_id', 'pr.city', 'pr.country',
-// 		'p.email', 'p.uid', 
+// 		'p.email', 'p.uid',
 // 		 // 's.skill_name', 'o.skill', 'ot.tag'
-// 		// db.raw('GROUP_CONCAT(DISTINCT  p.email) as tabuid'), 
+// 		// db.raw('GROUP_CONCAT(DISTINCT  p.email) as tabuid'),
 // 		// db.raw('GROUP_CONCAT (DISTINCT p.fullName) as fullName'),
 // 		// db.raw('GROUP_CONCAT (DISTINCT s.skill_name ) as skills'),
 // 		 // 's.skill_name','ot.tag', 'o.skill'
@@ -71,7 +70,7 @@
 // 						this.on('p.uid', 's.user_id')
 // 					})
 // 					.where('project_visibility', 1)
-// 					.where('p.fake', 0)
+// 					.where('u.fake', 0)
 // 					// .where('p.about', 'join projects')
 // 					.orderByRaw('CASE ' + location + ' else 100 END')
 // 					// .limit(10)
