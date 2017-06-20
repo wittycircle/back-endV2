@@ -1,4 +1,5 @@
-const { db, TABLES } = require('./index'), h = require('./helper');
+const { db, TABLES } = require('./index'),
+  h = require('./helper');
 
 // ------------------ Main methods ------------------
 
@@ -180,12 +181,22 @@ exports.removeInterest = (uid, data) => {
 exports.getExperiences = uid => {
   let sort = `CASE WHEN date_to like "Present" THEN 1 ELSE 2 END`;
   return db
-    .select('e.*', h.format_location)
+    .select(
+      'e.user_id',
+      'e.loc_id',
+      'e.title',
+      'e.company',
+      'e.description',
+      'e.creation_date',
+      db.raw('IF(e.date_to = "Present", "Present", DATE(e.date_to)) as date_to'),
+      db.raw('DATE(e.date_from) as date_from'),
+      h.format_location
+    )
     .from(TABLES.USER_EXPERIENCES + ' as e')
     .join(TABLES.LOCATION + ' as loc', 'e.loc_id', 'loc.id')
     .join(TABLES.USERS + ' as u', 'u.id', 'e.user_id')
     .where('u.id', uid)
-    .orderByRaw(sort + ' , date_to, date_from ASC');
+    .orderByRaw(sort + ' , date_to DESC');
 };
 
 exports.addExperience = (uid, data, location) => {

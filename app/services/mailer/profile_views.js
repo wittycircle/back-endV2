@@ -106,7 +106,7 @@ const profile_views = args => {
       .distinct(
         h.p_uarray.concat([
           h.format_location,
-          db.raw('DATE_FORMAT(v.date, "%W %M %Y") as date'),
+          db.raw('DATE_FORMAT(v.date, "%W %d %M %r") as date'),
           db.raw('CONCAT(loc.city, ", ", loc.country) as location')
         ])
       )
@@ -130,18 +130,14 @@ const profile_views = args => {
     let ids = array.map(e => e.viewed);
     array.forEach((e, i) => {
       let notif = e.notif.split(',').splice(0, 7);
-      print(notif);
       x.push(
         reqAll(notif, e.viewed).then(x => {
-          print(x, 'stuff');
           return x;
         })
       );
     }); //foreach
     x.push(setToOne(ids).return());
     return Promise.all(x).then(bail => {
-      print(array);
-      // print(bail);
       send_mail(array, bail);
     });
   });
