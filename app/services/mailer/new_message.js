@@ -21,7 +21,7 @@ const new_message = () => {
           '*|FNAME|*': member.firstName,
           '*|FFNAME|*': e.first_name,
           '*|FLNAME|*': e.last_name,
-          '*|FIMG|*': e.picture,
+          '*|FIMG|*': wm.transform(e.picture),
           '*|FDESC|*': wm.truncate(e.message),
           '*|FLOC|*': wm.location(e),
           email: member.email
@@ -34,7 +34,7 @@ const new_message = () => {
         mail.addPersonalization(pers);
       });
     });
-    wm.send(mail);
+    wm.send(mail, 'new_message');
     return null;
   }; //sendmail
 

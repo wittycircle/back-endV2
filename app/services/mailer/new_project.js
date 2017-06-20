@@ -28,7 +28,7 @@ const send_mail = (sender, public_id) => {
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   });
-  wm.send(mail);
+  wm.send(mail, 'new_project');
   return null;
 };
 

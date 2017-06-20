@@ -20,7 +20,7 @@ const send_mail = (data, sender, invite, category = false) => {
     let sub = {
       '*|FNAME|*': sender.first_name,
       '*|FLNAME|*': sender.last_name,
-      '*|PIMG|*': sender.picture,
+      '*|PIMG|*': wm.transform(sender.picture),
       '*|FUNAME|*': sender.fullName,
       '*|FLOC|*': wm.location(sender),
       '*|URL|*': wm.url(`/invite/${invite}`),
@@ -31,7 +31,7 @@ const send_mail = (data, sender, invite, category = false) => {
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   });
-  wm.send(mail);
+  wm.send(mail, 'invite_user');
   return null;
 };
 // args{ mail: [], invite_id}

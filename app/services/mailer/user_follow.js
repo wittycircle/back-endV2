@@ -22,7 +22,7 @@ const send_mail = (follower, followed) => {
     '*|FNAME|*': followed.first_name,
     '*|FFNAME|*': follower.first_name,
     '*|FLNAME|*': follower.last_name,
-    '*|FIMG|*': follower.picture,
+    '*|FIMG|*': wm.transform(follower.picture),
     '*|FLOC|*': follower.location,
     '*|FDESC|*': wm.truncate(follower.description) || ' ',
     '*|FURL|*': wm.url(`${follower.username}`),
@@ -34,7 +34,7 @@ const send_mail = (follower, followed) => {
   wm.to(pers, followed.email);
   wm.substitutions(pers, sub);
   mail.addPersonalization(pers);
-  wm.send(mail);
+  wm.send(mail, 'user_follow');
   return null;
 };
 

@@ -23,7 +23,7 @@ const send_mail = (message, discussion, sender) => {
     let sub = {
       '*|FNAME|*': sender.first_name,
       '*|FDESC|*': wm.truncate(message),
-      '*|FIMG|*': sender.picture,
+      '*|FIMG|*': wm.transform(sender.picture),
       '*|FURL|*': wm.url(`/project/${e.public_id}/${e.title}/feedback`),
       '*|FUNAME|*': sender.fullName,
       '*|FPROJECT|*': e.title,
@@ -36,7 +36,7 @@ const send_mail = (message, discussion, sender) => {
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   }); //foreach
-  wm.send(mail);
+  wm.send(mail, 'reply_project');
   return null;
 };
 

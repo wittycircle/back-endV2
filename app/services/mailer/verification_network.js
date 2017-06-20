@@ -1,7 +1,7 @@
-const {wm, TEMPLATES} = require('./wittymail');
+const { wm, TEMPLATES } = require('./wittymail');
 const helper = require('sendgrid').mail;
 const h = require('../../models/helper');
-const {db, TABLES} = require('../../models/index');
+const { db, TABLES } = require('../../models/index');
 const _ = require('lodash');
 
 // const args = {
@@ -13,33 +13,33 @@ const _ = require('lodash');
 // };
 
 const send_mail = (data, name) => {
-	let	mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', "Wittycircle");
-	wm.content(mail)
-	wm.reply(mail, "noreply@wittycircle.com");
-	mail.setTemplateId(TEMPLATES.verification_network)
-	
-		let pers = new helper.Personalization();
-		let subject = `Please confirm you're part of the ${data.network} network`;
-		let sub = {
-			"*|FFNAME|*": name,
-			"*|NETWORK|*": data.network,
-			"*|LINK|*": wm.url(`network/validation/${data.token}`),
-		};
-		console.log(sub)
-		console.log("\n-------------------------------------------------\n")
-		wm.subject(pers, subject);
-		wm.to(pers, data.email);
-		wm.substitutions(pers, sub)
-	    mail.addPersonalization(pers)
-	wm.send(mail); 
-	return null;
+  let mail = new helper.Mail();
+  wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+  wm.content(mail);
+  wm.reply(mail, 'noreply@wittycircle.com');
+  mail.setTemplateId(TEMPLATES.verification_network);
+
+  let pers = new helper.Personalization();
+  let subject = `Please confirm you're part of the ${data.network} network`;
+  let sub = {
+    '*|FFNAME|*': name,
+    '*|NETWORK|*': data.network,
+    '*|LINK|*': wm.url(`network/validation/${data.token}`)
+  };
+  console.log(sub);
+  console.log('\n-------------------------------------------------\n');
+  wm.subject(pers, subject);
+  wm.to(pers, data.email);
+  wm.substitutions(pers, sub);
+  mail.addPersonalization(pers);
+  wm.send(mail, 'verification_network');
+  return null;
 };
-	
-const verification_network = (args) => {
-	const request = h.spe_profile({'u.id': args.user_id})
 
-	return request.then((r) => send_mail(args, r[0].first_name))
-};//exports
+const verification_network = args => {
+  const request = h.spe_profile({ 'u.id': args.user_id });
 
-module.exports = verification_network
+  return request.then(r => send_mail(args, r[0].first_name));
+}; //exports
+
+module.exports = verification_network;

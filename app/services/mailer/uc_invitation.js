@@ -22,7 +22,7 @@ const send_mail = (s, u, data) => {
     let sub = {
       '*|MESSAGE|*': u.message,
       '*|FNAME|*': s.first_name,
-      '*|PIMG|*': s.picture,
+      '*|PIMG|*': wm.transform(s.picture),
       '*|FUNAME|*': s.fullName,
       '*|FDESC|*': s.description,
       '*|URL|*': wm.url(`welcome/${u.url}/${u.token}`),
@@ -35,7 +35,7 @@ const send_mail = (s, u, data) => {
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   }); //foreach
-  wm.send(mail);
+  wm.send(mail, 'uc_invitation');
   return null;
 };
 

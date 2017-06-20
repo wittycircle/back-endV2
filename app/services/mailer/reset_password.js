@@ -31,7 +31,7 @@ const send_mail = (data, token) => {
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   }); //foreach
-  wm.send(mail);
+  wm.send(mail, 'reset_password');
   return null;
 };
 

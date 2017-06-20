@@ -19,7 +19,7 @@ const send_mail = (email, sender, token) => {
   let sub = {
     '*|FNAME|*': sender.first_name,
     '*|FLNAME|*': sender.last_name,
-    '*|PIMG|*': sender.picture,
+    '*|PIMG|*': wm.transform(sender.picture),
     '*|FUNAME|*': sender.fullName,
     '*|FLOC|*': wm.location(sender),
     '*|URL|*': wm.url(`/invite/projects/${token}`)
@@ -31,7 +31,7 @@ const send_mail = (email, sender, token) => {
   wm.substitutions(pers, sub);
   mail.addPersonalization(pers);
   // });
-  wm.send(mail);
+  wm.send(mail, 'admin_invite');
   return null;
 };
 const admin_invite = args => {

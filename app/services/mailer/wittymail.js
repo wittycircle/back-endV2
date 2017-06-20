@@ -19,7 +19,7 @@ const subject = (mail, pers, subject) => {
   mail.setSubject(subject), pers.setSubject(subject);
 };
 
-const send = mail => {
+const send = (mail, name = 'mail') => {
   sg = require('sendgrid')(config.sendgrid.key); //real
   // sg = require('sendgrid')(config.sequogrid.key); //test
 
@@ -30,6 +30,7 @@ const send = mail => {
   });
 
   sg.API(request, function(error, response) {
+    console.log('name', name);
     console.log(mail.toJSON().personalizations);
     console.log(response.statusCode);
     console.log(response.body);
@@ -65,6 +66,18 @@ wm.notif = type =>
     .where('notif_type', type)
     .andWhere('permission', 1)
     .as('n');
+
+wm.transform = url => {
+  if (url && url.indexOf('cloudinary') >= 0) {
+    let tab, i, parameter, url_ret;
+    tab = url.split('/');
+    i = tab.indexOf('upload');
+    parameter = 'w_200,h_200,c_fill,g_face';
+    tab.splice(i + 1, 0, parameter);
+    url_ret = tab.join('/');
+    return url_ret;
+  } else return url;
+};
 /*
 | profile_view   |
 | user_follow    |

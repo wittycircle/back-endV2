@@ -4,126 +4,6 @@ const h = require('../../models/helper');
 const { db, TABLES } = require('../../models/index');
 const _ = require('lodash');
 
-let toInsert = (name, location, date, url) => {
-  return;
-  `
-<table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto" width="350px">
-  <tbody>
-    <tr>
-      <td><span class="sg-image" data-imagelibrary="%7B%22width%22%3A36%2C%22height%22%3A36%2C%22alt_text%22%3A%22profile_picture%22%2C%22alignment%22%3A%22%22%2C%22border%22%3A0%2C%22src%22%3A%22https%3A//res.cloudinary.com/dqpkpmrgk/image/upload/w_36%2Ch_36%2Cc_fill%2Cg_face/v1493332197/rzxugrlqswu6veak8gqe.jpg%22%2C%22classes%22%3A%7B%22sg-image%22%3A1%7D%7D"><img alt="profile_picture" height="36" src="https://res.cloudinary.com/dqpkpmrgk/image/upload/w_36,h_36,c_fill,g_face/v1493332197/rzxugrlqswu6veak8gqe.jpg" style="width: 36px; height: 36px; border-radius: 50%" width="36" /></span></td>
-      <td><span>${name}</span><br />
-        <span>${location}</span><br />
-        <span>${date}</span></td>
-      <td><button style="padding: 3px 10px; background-color: #fff; border: 1px solid #222; border-radius: 4px">Follow</button></td>
-    </tr>
-  </tbody>
-</table>
-
-<table border="0" cellpadding="0" cellspacing="0" height="20px" style="min-width:100%;" width="100%">
-</table>
-`;
-};
-let sub = {
-  '*|SUBJECT|*': 'nik',
-  '*|FNAME|*': 'nik',
-  '*|RANK|*': 'nik',
-  '*|FURL2|*': 'learn how to improve your ranking'
-};
-
-// ---------------------- old stuff ----------------------
-const fillSub = (d, sub, i) => {
-  sub[`*|FFNAME${i}|*`] = d.first_name;
-  sub[`*|FLNAME${i}|*`] = d.last_name;
-  sub[`*|FIMG${i}|*`] = d.picture;
-  sub[`*|FLOC${i}|*`] = d.location;
-  sub[`*|FDESC${i}|*`] = wm.truncate(d.description);
-  sub[`*|FURL${i}|*`] = wm.url(d.username);
-};
-
-const send_mail = (data, bail) => {
-  let mail = new helper.Mail();
-  wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
-  wm.content(mail);
-  wm.reply(mail, 'noreply@wittycircle.com');
-  mail.setTemplateId(TEMPLATES.profile_views);
-
-  data.forEach((e, i) => {
-    let pers = new helper.Personalization();
-    let subject =
-      'You may have something special 🙈  *|NVIEW|* people recently visited your profile.';
-    let notif = e.notif.split(',');
-    let laString = '';
-    let nview = notif.length;
-    let sub = {
-      '*|FNAME|*': e.first_name,
-      '*|RANK|*': e.rank,
-      '*|NVIEW|*': nview.toString(),
-      '*|EMAIL|*': e.email
-    };
-    bail[i].forEach((b, j) => fillSub(b, sub, j + 1));
-    // console.log('\n-------------------------------------------------\n');
-    // console.log(sub);
-    wm.subject(pers, subject);
-    wm.to(pers, e.email);
-    wm.substitutions(pers, sub);
-    mail.addPersonalization(pers);
-  }); //foreach
-  // wm.send(mail);
-  return null;
-};
-
-const profile_views = args => {
-  const request = db
-    .distinct(
-      'v.viewed',
-      'u.email',
-      'r.rank',
-      'p.first_name',
-      'p.description',
-      db.raw('GROUP_CONCAT(distinct v.user_id) as notif')
-    )
-    .countDistinct('v.user_id as vcount')
-    .from('views as v')
-    .join(TABLES.USERS + ' as u', 'v.viewed', 'u.id')
-    .join(TABLES.RANK + ' as r', 'r.user_id', 'u.id')
-    .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
-    .join(wm.notif('profile_view'), 'n.user_id', 'v.viewed')
-    .having('vcount', '>=', 5)
-    .andWhere('mail_sent', 0)
-    .groupBy('v.viewed');
-
-  const reqAll = notif =>
-    db
-      .distinct(h.p_uarray.concat([h.format_location]))
-      .distinct(db.raw('CONCAT(loc.city, ", ", loc.country) as location'))
-      .from(TABLES.PROFILES + ' as p')
-      .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
-      .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
-      .whereIn('u.id', notif);
-
-  const setToOne = ids =>
-    db('views').update('mail_sent', 1).whereIn('viewed', ids);
-
-  return request.then(array => {
-    if (!array.length) {
-      console.log(request.toString());
-      console.log('empty');
-      return null;
-    }
-    let x = [];
-    let ids = array.map(e => e.viewed);
-    array.forEach((e, i) => {
-      let notif = e.notif.split(',');
-      x.push(reqAll(notif).then(x => x));
-    }); //foreach
-    x.push(setToOne(ids).return());
-    return Promise.all(x).then(bail => {
-      send_mail(array, bail);
-    });
-  });
-}; //exports
-
-module.exports = profile_views; /*
 let toInsert = (name, location, date, picture, url) => {
   return `
 <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto" width="350px">
@@ -171,7 +51,9 @@ const send_mail = (data, bail) => {
     let sub = {
       '*|FNAME|*': e.first_name,
       '*|RANK|*': `${e.rank}`,
-      '*||NEW_RANK|*': `${e.rank < 10 ? e.rank - 2 : e.rank - Math.random() * 10}`
+      '*||NEW_RANK|*': `${e.rank < 10
+        ? e.rank - 2
+        : e.rank - Math.random() * 10}`,
       '*|FURL2|*': wm.url('statistics'),
       '*|NVIEW|*': nview.toString(),
       '*|EMAIL|*': e.email
@@ -264,5 +146,3 @@ const profile_views = args => {
   });
 }; //exports // module.exports = profile_views;
 profile_views();
-*/
-//NEW

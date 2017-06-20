@@ -22,7 +22,7 @@ const send_mail = (data, sender, project) => {
     let pers = new helper.Personalization();
     let subject = sender.fullName + ' invited you to join Wittycircle';
     let sub = {
-      '*|PIMG|*': sender.picture,
+      '*|PIMG|*': wm.transform(sender.picture),
       '*|FUNAME|*': sender.fullName,
       '*|PTITLE|*': project.title,
       '*|FLOC|*': wm.location(sender),
@@ -36,7 +36,7 @@ const send_mail = (data, sender, project) => {
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   });
-  wm.send(mail);
+  wm.send(mail, 'invite_team');
   return null;
 };
 
