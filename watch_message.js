@@ -4,6 +4,7 @@ const { db, TABLES } = require('./app/models'),
 //Name of file not appropriate, more like setTimeout stuff misc
 let HALF_HOUR = 3600 * 500;
 let ONE_DAY = 3600 * 24 * 1000;
+let ONE_WEEK = ONE_DAY * 7;
 
 let updateRanking = () => {
   return db.raw(`delete from ranks;
@@ -13,6 +14,6 @@ let updateRanking = () => {
 
 module.exports = () => {
   setInterval(mailer.new_message, HALF_HOUR);
-  setInterval(mailer.profile_views, ONE_DAY);
+  setInterval(mailer.profile_views, ONE_WEEK);
   setInterval(updateRanking, HALF_HOUR);
 };
