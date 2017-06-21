@@ -13,6 +13,10 @@ const new_message = () => {
     wm.reply(mail, 'noreply@wittycircle.com');
     mail.setTemplateId(TEMPLATES.new_message);
 
+    if (!data.length) {
+      console.log('no new message');
+      return null;
+    }
     data.forEach((e, i) => {
       e.members.forEach(member => {
         let pers = new helper.Personalization();
@@ -107,8 +111,8 @@ const new_message = () => {
         .map(JSON.parse)
         .filter(member => member.user_id !== +e.sender);
     });
-    const status_ids = r.map(e => e.status_id);
     send_mail(r);
+    const status_ids = r.map(e => e.status_id);
     return db(TABLES.ROOM_STATUS)
       .update('mail_sent', 1)
       .whereIn('id', status_ids);
