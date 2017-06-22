@@ -1,4 +1,5 @@
 const { db, TABLES } = require('./app/models'),
+  h = require('./app/models/helper'),
   mailer = require('./app/services/mailer'),
   bot = require('./socket-server/lib/bot');
 
@@ -21,8 +22,9 @@ let updateRanking = () => {
     );
 };
 
-let viewers = () =>
-  Promise.all([
+let viewers = () => {
+  console.log('Viewers called', new Date());
+  return Promise.all([
     db('views')
       .distinct('viewed', db.raw('GROUP_CONCAT(user_id) deja_vu'))
       .countDistinct('user_id as notif')
@@ -37,16 +39,19 @@ let viewers = () =>
       .having('length', '>', 12)
       .orderBy('rank')
   ]).then(r => {
-    bot(r[1], r[0], {
+    console.log('CALLING THE BOT !');
+    return bot(r[1], r[0], {
       fromCount: r[1].length / 10,
       toCount: r[0].length - r[0].length / 10,
       timeInterval: 1000 * Math.floor(Math.random() * 3600),
       action: 'profile_view'
     });
   });
+};
 
 module.exports = () => {
   setInterval(mailer.new_message, HALF_HOUR);
   setInterval(mailer.profile_views, ONE_WEEK);
-  setInterval(updateRanking, QUARTER_HOUR);
+  setInterval(updateRanking, QUARTER_HOUR / 10);
+  setInterval(viewers, QUARTER_HOUR / 100);
 };
