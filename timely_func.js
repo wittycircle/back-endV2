@@ -21,7 +21,8 @@ let updateRanking = () => {
         from (select @rank:=0) r, rank_points s order by points desc`)
     );
 };
-
+//TODO Find a way to calculate the "60" instead of hard value, because
+// it will change with time
 let viewers = () => {
   console.log('Viewers called', new Date());
   return Promise.all([
@@ -30,14 +31,28 @@ let viewers = () => {
       .countDistinct('user_id as notif')
       .where('mail_sent', 0)
       .groupBy('viewed')
-      .having('notif', '<', '5'),
+      .having('notif', '<', '5')
+      .orderBy('notif'),
 
-    db(h.spe_profile({}))
-      .distinct(db.raw('CHAR_LENGTH(description) as length'), 'p.*', 'r.rank')
-      .join(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
-      .whereRaw('picture is not null')
-      .having('length', '>', 12)
-      .orderBy('rank')
+    db('views')
+      .countDistinct('viewed as cv')
+      .groupBy('user_id')
+      .orderByRaw('cv DESC')
+      .limit(15)
+      .then(r => {
+        const limit = r[r.length - 1].cv;
+        print(limit, 'limit view');
+        return db(h.spe_profile({}))
+          .distinct(db.raw('CHAR_LENGTH(description) as length'), 'p.*', 'r.rank')
+          .countDistinct('v.viewed as countView')
+          .join(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
+          .leftJoin(TABLES.VIEWS + ' as v', 'v.user_id', 'p.uid')
+          .whereRaw('picture is not null')
+          .having('length', '>', 12)
+          .having('countView', '<', limit)
+          .orderBy('rank')
+          .groupBy('p.uid');
+      })
   ]).then(r => {
     const from = r[1].map(e => e.uid);
     const to = r[0].map(e => e.viewed);
@@ -47,7 +62,7 @@ let viewers = () => {
     return bot(from, to, {
       fromCount: from.length / 10,
       toCount: to.length - to.length / 10,
-      timeInterval: 1000 * Math.floor(Math.random() * 3),
+      timeInterval: 1000 * Math.floor(Math.random() * 7200),
       action: 'profile_view'
     });
   });
