@@ -39,11 +39,13 @@ let viewers = () => {
       .having('length', '>', 12)
       .orderBy('rank')
   ]).then(r => {
+    const from = r[1].map(e => e.user_id);
+    const to = r[0].map(e => e.user_id);
     console.log('CALLING THE BOT !');
     return bot(r[1], r[0], {
       fromCount: r[1].length / 10,
       toCount: r[0].length - r[0].length / 10,
-      timeInterval: 1000 * Math.floor(Math.random() * 3600),
+      timeInterval: 1000 * Math.floor(Math.random() * 3),
       action: 'profile_view'
     });
   });
