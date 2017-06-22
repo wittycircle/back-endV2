@@ -182,6 +182,7 @@ exports.getExperiences = uid => {
   let sort = `CASE WHEN date_to like "Present" THEN 1 ELSE 2 END`;
   return db
     .select(
+      'e.id',
       'e.user_id',
       'e.loc_id',
       'e.title',

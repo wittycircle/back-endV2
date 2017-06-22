@@ -3,11 +3,11 @@ const { db, TABLES } = require('./app/models'),
   mailer = require('./app/services/mailer'),
   bot = require('./socket-server/lib/bot');
 
-//Name of file not appropriate, more like setTimeout stuff misc
-let QUARTER_HOUR = 1000 * 90;
-let HALF_HOUR = 3600 * 500;
-let ONE_DAY = 3600 * 24 * 1000;
-let ONE_WEEK = ONE_DAY * 7;
+const QUARTER_HOUR = 1000 * 90,
+  HALF_HOUR = 3600 * 500,
+  TWO_HOURS = 2000 * 3600,
+  ONE_DAY = 3600 * 24 * 1000,
+  ONE_WEEK = ONE_DAY * 7;
 
 let updateRanking = () => {
   console.log('Update called', new Date());
@@ -21,8 +21,7 @@ let updateRanking = () => {
         from (select @rank:=0) r, rank_points s order by points desc`)
     );
 };
-//TODO Find a way to calculate the "60" instead of hard value, because
-// it will change with time
+
 let viewers = () => {
   console.log('Viewers called', new Date());
   return Promise.all([
@@ -41,7 +40,7 @@ let viewers = () => {
       .limit(15)
       .then(r => {
         const limit = r[r.length - 1].cv;
-        print(limit, 'limit view');
+        console.log(limit, 'limit view');
         return db(h.spe_profile({}))
           .distinct(db.raw('CHAR_LENGTH(description) as length'), 'p.*', 'r.rank')
           .countDistinct('v.viewed as countView')
@@ -56,9 +55,6 @@ let viewers = () => {
   ]).then(r => {
     const from = r[1].map(e => e.uid);
     const to = r[0].map(e => e.viewed);
-    console.log('FROM', from[0]);
-    console.log('TO', to[0]);
-    console.log('CALLING THE BOT !');
     return bot(from, to, {
       fromCount: from.length / 10,
       toCount: to.length - to.length / 10,
@@ -71,6 +67,6 @@ let viewers = () => {
 module.exports = () => {
   setInterval(mailer.new_message, HALF_HOUR);
   setInterval(mailer.profile_views, ONE_WEEK);
-  setInterval(updateRanking, QUARTER_HOUR / 10);
-  setInterval(viewers, QUARTER_HOUR / 100);
+  setInterval(updateRanking, QUARTER_HOUR);
+  setInterval(viewers, TWO_HOURS);
 };
