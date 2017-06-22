@@ -39,12 +39,14 @@ let viewers = () => {
       .having('length', '>', 12)
       .orderBy('rank')
   ]).then(r => {
-    const from = r[1].map(e => e.user_id);
-    const to = r[0].map(e => e.user_id);
+    const from = r[1].map(e => e.uid);
+    const to = r[0].map(e => e.viewed);
+    console.log('FROM', from[0]);
+    console.log('TO', to[0]);
     console.log('CALLING THE BOT !');
-    return bot(r[1], r[0], {
-      fromCount: r[1].length / 10,
-      toCount: r[0].length - r[0].length / 10,
+    return bot(from, to, {
+      fromCount: from.length / 10,
+      toCount: to.length - to.length / 10,
       timeInterval: 1000 * Math.floor(Math.random() * 3),
       action: 'profile_view'
     });
