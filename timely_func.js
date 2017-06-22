@@ -3,10 +3,11 @@ const { db, TABLES } = require('./app/models'),
   mailer = require('./app/services/mailer'),
   bot = require('./socket-server/lib/bot');
 
-const QUARTER_HOUR = 1000 * 90,
-  HALF_HOUR = 3600 * 500,
-  TWO_HOURS = 2000 * 3600,
-  ONE_DAY = 3600 * 24 * 1000,
+const ONE_HOUR = 1000 * 3600,
+  QUARTER_HOUR = ONE_HOUR / 4,
+  HALF_HOUR = ONE_HOUR / 2,
+  TWO_HOURS = ONE_HOUR * 2,
+  ONE_DAY = ONE_HOUR * 24,
   ONE_WEEK = ONE_DAY * 7;
 
 let updateRanking = () => {
