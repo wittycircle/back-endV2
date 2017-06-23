@@ -121,10 +121,12 @@ exports.cardProfile = selector => {
 
   addLocation('p', selector.location, q);
   if (selector.skills) {
+    if (typeof selector.skills === 'string') selector.skills = [selector.skills];
     let selected = selector.skills
       .map(
         (el, i) =>
-          `WHEN sort.skills = "${el}" THEN ${i + 1} WHEN sort.skills LIKE "%${el}%" THEN ${i + 10}`
+          `WHEN sort.skills = "${el}" THEN ${i +
+            1} WHEN sort.skills LIKE "%${el}%" THEN ${i + 10}`
       )
       .join(' ');
     q.orderByRaw('CASE ' + selected + ' else 100  END');
@@ -218,7 +220,8 @@ exports.cardProject = selector => {
     let selected = selector.skills
       .map(
         (el, i) =>
-          `WHEN o.tags = "${el}" THEN ${i + 1} WHEN o.tags LIKE "%${el}%" THEN ${i + 10}`
+          `WHEN o.tags = "${el}" THEN ${i +
+            1} WHEN o.tags LIKE "%${el}%" THEN ${i + 10}`
       )
       .join(' ');
     query.orderByRaw('CASE ' + selected + ' else 100  END');
