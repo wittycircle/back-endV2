@@ -3,6 +3,8 @@ const { db, TABLES } = require('./app/models'),
   mailer = require('./app/services/mailer'),
   bot = require('./socket-server/lib/bot');
 
+const recentActivityBot = require('./socket-server/lib/bot/activities');
+
 //Name of file not appropriate, more like setTimeout stuff misc
 let QUARTER_HOUR = 1000 * 90;
 let HALF_HOUR = 3600 * 500;
@@ -58,4 +60,16 @@ module.exports = () => {
   setInterval(mailer.profile_views, ONE_WEEK);
   setInterval(updateRanking, QUARTER_HOUR / 10);
   setInterval(viewers, QUARTER_HOUR / 100);
+  setInterval(recentActivityBot({
+    minInterval: QUARTER_HOUR,
+    maxInterval: HALF_HOUR,
+    projectCount: 15,
+    userCount: 15,
+    viewOnFollow: true,
+    dontSave: false,
+    blacklist: {
+      projects: [],
+      users: []
+    }
+  }), ONE_DAY)
 };
