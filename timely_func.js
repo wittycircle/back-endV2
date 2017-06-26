@@ -65,9 +65,23 @@ let viewers = () => {
   });
 };
 
+const recentActivityBot = require('./socket-server/lib/bot/activities');
+
 module.exports = () => {
   setInterval(mailer.new_message, HALF_HOUR);
   setInterval(mailer.profile_views, ONE_WEEK);
   setInterval(updateRanking, QUARTER_HOUR);
   setInterval(viewers, TWO_HOURS);
+  setInterval(recentActivityBot({
+    minInterval: QUARTER_HOUR,
+    maxInterval: HALF_HOUR,
+    projectCount: 15,
+    userCount: 15,
+    viewOnFollow: true,
+    dontSave: false,
+    blacklist: {
+      projects: [],
+      users: []
+    }
+  }), ONE_DAY)
 };
