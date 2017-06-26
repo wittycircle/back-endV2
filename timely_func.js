@@ -72,7 +72,7 @@ module.exports = () => {
   setInterval(mailer.profile_views, ONE_WEEK);
   setInterval(updateRanking, QUARTER_HOUR);
   setInterval(viewers, TWO_HOURS);
-  setInterval(recentActivityBot({
+  setInterval(() => recentActivityBot({
     minInterval: QUARTER_HOUR,
     maxInterval: HALF_HOUR,
     projectCount: 15,
