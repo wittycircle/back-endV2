@@ -39,7 +39,10 @@ const admin_invite = args => {
     console.log('admin invite mail: no args');
     throw 'admin invite mail: no args';
   } else {
-    let request = h.spe_profile({ 'u.id': args.uid });
+    let request = h
+      .spe_profile({ 'u.id': args.uid })
+      .select(h.format_location)
+      .join('location as loc', 'loc.id', 'p.loc_id');
 
     return request.then(x => {
       console.log('x', x);
