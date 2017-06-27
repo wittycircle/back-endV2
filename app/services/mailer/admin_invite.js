@@ -41,7 +41,7 @@ const admin_invite = args => {
   } else {
     let request = h.spe_profile({ 'u.id': args.uid });
 
-    return request.then(x => send_mail(args.email, x, args.token));
+    return request.then(x => send_mail(args.email, x[0], args.token));
   }
 }; //exports
 
