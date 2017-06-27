@@ -35,9 +35,9 @@ const send_mail = (email, sender, token) => {
   return null;
 };
 const admin_invite = args => {
-  if (!args || !args.length) {
-    console.log('NO LUC');
-    throw 'INVALID !';
+  if (!args || !args.email || !args.token) {
+    console.log('admin invite mail: no args');
+    throw 'admin invite mail: no args';
   } else {
     let request = h.spe_profile({ 'u.id': args.uid });
 

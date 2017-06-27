@@ -100,6 +100,15 @@ h.loc_profile = db
   .from(h.sub_profile)
   .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id');
 
+h.jsonThing = o => {
+  let ret = '"{",';
+  for (k in o) {
+    ret += ` '"',   "${k}" , '":"',  ${o[k]},  '",'`;
+  }
+  ret = ret.substr(0, ret.length - 2) + `'"}"`;
+  return ret;
+};
+
 h.unix_time = (x, y) => db.raw(`UNIX_TIMESTAMP(${x} as ${y})`);
 
 module.exports = h;
