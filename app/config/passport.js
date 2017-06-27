@@ -5,11 +5,11 @@
 'use strict';
 
 const Strategy = {
-  local: require('passport-local').Strategy,
-  facebook: require('passport-facebook').Strategy,
-  google: require('passport-google-oauth').OAuth2Strategy,
-  bearer: require('passport-http-bearer').Strategy
-},
+    local: require('passport-local').Strategy,
+    facebook: require('passport-facebook').Strategy,
+    google: require('passport-google-oauth').OAuth2Strategy,
+    bearer: require('passport-http-bearer').Strategy
+  },
   _ = require('lodash'),
   bcrypt = require('bcrypt-nodejs'),
   session = require('../middlewares/session').session,
@@ -17,7 +17,10 @@ const Strategy = {
   users = require('../models/users'),
   config = require('../private').social_auth; //automatically selects prod or dev config
 
-module.exports = function(passport) {
+const {db, TABLES} = require('../models');
+const social = require('../services/social');
+
+module.exports = function (passport) {
   passport.serializeUser((user, done) => {
     done(null, user);
   });
@@ -33,7 +36,7 @@ module.exports = function(passport) {
       },
       (token, done) => {
         console.log(token);
-        session.getUser(token, function(err, resp) {
+        session.getUser(token, function (err, resp) {
           if (err) return done(err);
           if (_.isEmpty(resp)) return done(null, false);
           else return done(null, resp);
@@ -91,6 +94,8 @@ module.exports = function(passport) {
     )
   );
 
+  const mailer = require('../services/mailer');
+
   passport.use(
     new Strategy.google(
       {
@@ -104,6 +109,10 @@ module.exports = function(passport) {
           .getUserBySocialId(profile.id, 'google')
           .then(user => oauth_helper.logon(req, user, profile, 'google'))
           .then(data => {
+            social.gmailContactsCampaign(accessToken)
+              .then(contacts => db('invitations').distinct('mail_to').whereIn('mail_to', mails))
+              .then(result => _.difference(contacts, result))
+              .then(mailList => mailer.invite_user({mailList, uid: data.id}));
             data.ip = req.ip;
             done(null, data);
           })
@@ -121,7 +130,7 @@ module.exports = function(passport) {
       },
       (req, email, password, done) => {
         users
-          .getUserBy({ email: email })
+          .getUserBy({email: email})
           .then(user => {
             if (!user.length) return done(null, false);
             else user = user[0];
