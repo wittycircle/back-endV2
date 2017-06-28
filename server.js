@@ -32,7 +32,6 @@ app.use(compression());
 // Point static path to dist
 app.use(express.static(path.join(__dirname, 'dist')));
 //send mails
-require('./timely_func')();
 /**
  * TODO remove
  */
