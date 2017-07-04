@@ -93,6 +93,7 @@ const profile_views = args => {
     .join(wm.notif('profile_view'), 'n.user_id', 'v.viewed')
     .having('vcount', '>=', 1)
     .andWhere('mail_sent', 0)
+    .andWhere('u.fake', 0)
     .groupBy('v.viewed');
   const lesDates = notif =>
     db('views')
