@@ -24,7 +24,7 @@ exports.addInvitation = (uid, mails) => {
       let x = verifiedEmails.map(e => {
         return { user_id: uid, mail_to: e };
       });
-      return db.batchInsert(TABLES.INVITATION, x);
+      return true;
     });
   });
 };
