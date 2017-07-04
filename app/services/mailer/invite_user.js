@@ -28,6 +28,7 @@ const send_mail = (data, sender, invite, category = false) => {
     };
     wm.subject(pers, subject);
     wm.to(pers, e);
+    console.log('PERS', pers);
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   });
@@ -51,7 +52,7 @@ const invite_user = args => {
       request,
       invite
     ]).then(([x, sender, invite]) =>
-      send_mail(verifiedEmails, sender[0], invite.invite_id, args.category)
+      send_mail(verifiedEmails, sender[0], invite.invite_link, args.category)
     );
   });
 }; //exports
