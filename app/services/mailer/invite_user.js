@@ -39,14 +39,17 @@ const send_mail = (data, sender, invite, category = false) => {
 };
 // args{ mail: [], invite_id}
 const invite_user = args => {
-  console.log('INVITE USER FU CALLED');
   let request = h.spe_profile({ 'u.id': args.uid });
 
   let invite = db(TABLES.USERS).first('invite_link').where('id', args.uid);
 
   invitation.verifyInvite(args.mailList).then(verifiedEmails => {
+    if (!verifiedEmails || !verifiedEmails.length) {
+      console.log('All already invited, [verified emails is empty]');
+      return null;
+    }
     let x = [];
-    verifiedEmails.map(e => x.push({ user_id: args.uid, invite_email: e }));
+    verifiedEmails.map(e => x.push({ user_id: args.uid, mail_to: e }));
 
     let table_invite = db.batchInsert('invitations', x);
 
