@@ -6,6 +6,7 @@ const invitation = require('../../models/invitation');
 const _ = require('lodash');
 
 const send_mail = (data, sender, invite, category = false) => {
+  console.log('SEND MAIL CALLED');
   let mail = new helper.Mail();
   wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
   wm.content(mail);
@@ -15,6 +16,7 @@ const send_mail = (data, sender, invite, category = false) => {
   if (category) mail.addCategory({ category });
 
   data.forEach((e, i) => {
+    console.log('IN DATA FOREACH');
     let pers = new helper.Personalization();
     let subject = sender.fullName + ' invited you to join Wittycircle';
     let sub = {
@@ -37,6 +39,7 @@ const send_mail = (data, sender, invite, category = false) => {
 };
 // args{ mail: [], invite_id}
 const invite_user = args => {
+  console.log('INVITE USER FU CALLED');
   let request = h.spe_profile({ 'u.id': args.uid });
 
   let invite = db(TABLES.USERS).first('invite_link').where('id', args.uid);
