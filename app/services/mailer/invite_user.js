@@ -39,7 +39,17 @@ const send_mail = (data, sender, invite, category = false) => {
 };
 // args{ mail: [], invite_id}
 const invite_user = args => {
-  let request = h.spe_profile({ 'u.id': args.uid });
+  let request = db
+    .distinct(
+      h.p_uarray.concat([
+        h.format_location,
+        db.raw('DATE_FORMAT(v.date, "%W %d %M %r") as date'),
+        db.raw('CONCAT(loc.city, ", ", loc.country) as location')
+      ])
+    )
+    .from(TABLES.PROFILES + ' as p')
+    .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+    .join(TABLES.USERS + ' as u', 'u.id', 'p.user_id');
 
   let invite = db(TABLES.USERS).first('invite_link').where('id', args.uid);
 
