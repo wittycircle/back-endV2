@@ -1,0 +1,889 @@
+number	skill_id	name	category
+1208	107	Entrepreneurship	finance & management
+660	798	Programming	it web & mobile
+613	341	Communication	admin support
+496	306	Product Design	manufacture & engineering
+482	592	HTML	it web & mobile
+465	81	Analytics	finance & management
+441	492	CSS	it web & mobile
+428	1142	Web Development	design & multimedia
+383	619	Javascript	it web & mobile
+354	1010	Adobe Photoshop	design & multimedia
+320	862	Social Networking Development	it web & mobile
+277	1072	Graphic Design	design & multimedia
+268	168	Venture Capital	finance & management
+259	280	Lean	manufacture & engineering
+247	569	GitHub	it web & mobile
+244	59	SEO	sales & marketing
+239	777	Php	it web & mobile
+230	1059	E-learning	design & multimedia
+217	241	Computer Engineering	manufacture & engineering
+188	145	Project Management	finance & management
+182	162	Strategy & Business Development	finance & management
+178	631	jQuery	it web & mobile
+167	498	Data Engineering	it web & mobile
+158	19	Digital Marketing	sales & marketing
+150	1133	Video Production	design & multimedia
+145	42	Marketing	sales & marketing
+145	682	Mobile Programming	it web & mobile
+141	1277	Unix/Linux System Administrator	it web & mobile
+138	91	Business Development	finance & management
+137	43	Marketing Strategy	sales & marketing
+134	1074	Illustration	design & multimedia
+131	397	Angular.js	it web & mobile
+123	613	iOS	it web & mobile
+110	251	Electrical Engineering	manufacture & engineering
+109	92	Business Management	finance & management
+99	1044	Computer Graphics	design & multimedia
+99	99	Corporate Finance	finance & management
+88	797	Product Management	it web & mobile
+88	314	Robotics	manufacture & engineering
+87	1061	Fashion Design	design & multimedia
+78	1015	Animation	design & multimedia
+76	62	Social Media Marketing	sales & marketing
+74	1129	UX/UI Design	design & multimedia
+73	109	Financial Analysis	finance & management
+72	100	Corporate Strategy	finance & management
+65	159	Startups	finance & management
+65	800	Python	it web & mobile
+64	94	Business Plans	finance & management
+61	1027	Audio Production	design & multimedia
+59	89	Business Analysis	finance & management
+58	1183	English	writing and languages
+57	1085	Logo Design	design & multimedia
+56	98	Consulting	finance & management
+55	713	Node.js	it web & mobile
+54	56	Sales	sales & marketing
+50	132	Microsoft Excel	finance & management
+50	1194	French	writing and languages
+49	449	C++	it web & mobile
+48	24	Email Marketing	sales & marketing
+44	616	Java	it web & mobile
+43	129	Lean Startup	finance & management
+43	1127	User Experience Design	design & multimedia
+42	146	Project Planning	finance & management
+41	11	Branding	sales & marketing
+40	34	Growth Hacking	sales & marketing
+40	161	Strategic Planning	finance & management
+37	496	Data Analytics	it web & mobile
+37	535	Ecommerce	it web & mobile
+37	1141	Web Design	design & multimedia
+37	41	Market Research	sales & marketing
+36	26	Facebook Marketing	sales & marketing
+34	1005	Adobe Illustrator	design & multimedia
+34	5	Advertising Strategy	sales & marketing
+33	20	Direct Marketing	sales & marketing
+33	113	Financial Management	finance & management
+33	108	Event Management	finance & management
+32	358	Microsoft Office	admin support
+31	829	Ruby on Rails	it web & mobile
+31	136	Operations Management	finance & management
+31	1100	Photography	design & multimedia
+31	4	Advertising	sales & marketing
+29	655	Machine Learning	it web & mobile
+28	73	Accounting	finance & management
+28	50	Other - Sales and Marketing	sales & marketing
+28	64	Social Networking	sales & marketing
+28	116	Fundraising	finance & management
+28	29	Google adwords	sales & marketing
+28	1252	Spanish	writing and languages
+27	1088	Microsoft PowerPoint	design & multimedia
+27	144	Project Finance	finance & management
+26	861	Social Network & Community Development	it web & mobile
+26	74	Accounting & Control	finance & management
+26	112	Financial Forecasting	finance & management
+26	2	Account management	sales & marketing
+26	1007	Adobe InDesign	design & multimedia
+26	1160	Business	writing and languages
+25	18	CRM	sales & marketing
+24	54	Public Relations	sales & marketing
+24	135	Negotiation	finance & management
+23	873	SQL	it web & mobile
+23	105	Economics	finance & management
+23	180	Contract Law	legal
+23	1128	User Interface Design	design & multimedia
+23	6	Affiliate Marketing	sales & marketing
+22	30	Google analytics	sales & marketing
+22	88	Budgeting & Forecasting	finance & management
+22	287	Mathematics	manufacture & engineering
+22	49	Online Advertising	sales & marketing
+22	173	Business Law	legal
+22	114	Financial Reporting	finance & management
+22	432	Big Data	it web & mobile
+22	507	Data Science	it web & mobile
+21	1221	Microsoft Word	writing and languages
+21	1094	Music Composition	design & multimedia
+21	290	Mechanical Engineering	manufacture & engineering
+21	811	React.js	it web & mobile
+21	119	Human Resources	finance & management
+20	307	Project Scheduling	manufacture & engineering
+20	36	Internet Marketing	sales & marketing
+20	163	Supply Chain Management	finance & management
+20	17	Corporate Brand Identity	sales & marketing
+20	55	Public Speaking	sales & marketing
+19	227	Biotechnology	manufacture & engineering
+18	7	Analytics	sales & marketing
+18	1045	Concept Design	design & multimedia
+18	160	Statistics	finance & management
+18	115	Financial Statements	finance & management
+18	350	Event Planning	admin support
+16	86	Auditing	finance & management
+16	1093	Music	design & multimedia
+16	111	Financial Engineering	finance & management
+16	395	Android	it web & mobile
+16	865	Software Development	it web & mobile
+16	467	Cloud Computing	it web & mobile
+16	796	Product Lifecycle Management	it web & mobile
+16	695	MySQL Programming	it web & mobile
+16	828	Ruby	it web & mobile
+15	123	Investment Banking	finance & management
+15	1132	Video Editing	design & multimedia
+15	58	SEM	sales & marketing
+15	686	MongoDB	it web & mobile
+15	101	Cost Analysis	finance & management
+15	364	Research	admin support
+14	183	Corporate Law	legal
+14	1195	German	writing and languages
+14	154	Risk Management	finance & management
+14	568	Git	it web & mobile
+14	961	WordPress	it web & mobile
+14	191	International Law	legal
+14	564	Game Development	it web & mobile
+13	69	Web Analytics	sales & marketing
+13	10	Brand Ambassador	sales & marketing
+13	419	Artificial Intelligence	it web & mobile
+13	309	Rapid Prototyping	manufacture & engineering
+13	1099	Photo Editing	design & multimedia
+13	1152	Article Writing	writing and languages
+13	1156	Blogging	writing and languages
+13	1297	start ups	unknown
+13	443	Business Software	it web & mobile
+12	390	Algorithm Development	it web & mobile
+12	830	Saas Marketing and sales automation	it web & mobile
+12	320	Software Engineering	manufacture & engineering
+12	33	Google+ Marketing	sales & marketing
+12	1070	Game	design & multimedia
+12	273	Industrial Engineering	manufacture & engineering
+12	985	3D Modeling & CAD	design & multimedia
+12	886	Symfony	it web & mobile
+12	131	M&A	finance & management
+12	1054	Digital Photography	design & multimedia
+11	537	Econometrics	it web & mobile
+11	448	C#	it web & mobile
+11	137	Organizational Behavior	finance & management
+11	913	VBA	it web & mobile
+11	345	Customer Service	admin support
+11	90	Business Angels	finance & management
+11	143	Program Management	finance & management
+11	277	Internet & Communications	manufacture & engineering
+11	67	Twitter Marketing	sales & marketing
+11	317	Scientific Research	manufacture & engineering
+11	207	3D Printing	manufacture & engineering
+11	1106	Print Design	design & multimedia
+11	651	Linux	it web & mobile
+10	1060	Fashion	design & multimedia
+10	617	Java EE	it web & mobile
+10	304	Physics	manufacture & engineering
+10	1278	management	unknown
+10	169	Venture Financing	finance & management
+10	504	Data Modeling	it web & mobile
+10	1203	Italian	writing and languages
+10	141	Personal Finance	finance & management
+10	174	Civil Law	legal
+10	3	Ad planning & buying	sales & marketing
+10	986	3D Modelling	design & multimedia
+10	27	Freelance Marketing	sales & marketing
+10	190	Intellectual Property	legal
+10	1173	Copywriting	writing and languages
+10	282	Logistics & Shipping	manufacture & engineering
+9	941	Web Programming	it web & mobile
+9	994	Adobe Creative Suite	design & multimedia
+9	544	Express.js	it web & mobile
+9	804	R	it web & mobile
+9	1012	Adobe Photoshop Lightroom	design & multimedia
+9	1155	Blog Writing	writing and languages
+9	1017	Architecture	design & multimedia
+9	37	Lead Generation	sales & marketing
+9	1171	Content Writing	writing and languages
+9	869	Software Testing	it web & mobile
+9	1140	Web Content Management	design & multimedia
+9	1022	Arts & Crafts	design & multimedia
+9	565	Game Programming	it web & mobile
+9	1174	Creative Writing	writing and languages
+8	1276	Haskell	it web & mobile
+8	937	Web Development	it web & mobile
+8	1300	strategy	unknown
+8	124	Investment Research	finance & management
+8	167	Valuation	finance & management
+8	1182	Editorial Writing	writing and languages
+8	57	Salesforce.com	sales & marketing
+8	285	Materials Engineering	manufacture & engineering
+8	863	Social Networks Building	it web & mobile
+8	46	Mobile Advertising	sales & marketing
+8	524	Django	it web & mobile
+8	175	Commercial	legal
+8	203	Tax Law	legal
+8	817	Relational Databases	it web & mobile
+8	1006	Adobe Illustrator CS	design & multimedia
+8	440	Bootstrap	it web & mobile
+8	844	ScrumWorks	it web & mobile
+8	478	Community	it web & mobile
+8	536	ecommerce solutions	it web & mobile
+8	68	Viral Marketing	sales & marketing
+8	1161	Business Writing	writing and languages
+8	1299	leadership	unknown
+8	911	Unix	it web & mobile
+7	1076	Interior Design	design & multimedia
+7	153	Recruitment	finance & management
+7	44	Media Relations	sales & marketing
+7	270	Human Sciences	manufacture & engineering
+7	321	SolidWorks	manufacture & engineering
+7	21	Display Ads	sales & marketing
+7	254	Electronic Engineering	manufacture & engineering
+7	375	Writing	admin support
+7	12	Broadcast Advertising	sales & marketing
+7	984	3D Design	design & multimedia
+7	1135	Videography	design & multimedia
+7	694	MySQL Administration	it web & mobile
+7	63	Social Media Optimization SMO	sales & marketing
+7	866	Software Engineering	it web & mobile
+7	313	Rhinoceros 3D	manufacture & engineering
+7	130	Legal	finance & management
+7	1206	Journalism	writing and languages
+7	52	Pitching	sales & marketing
+7	1172	Copy Editing	writing and languages
+7	987	3D Rendering	design & multimedia
+7	85	Asset Management	finance & management
+7	338	Business Process Outsourcing	admin support
+7	512	Database	it web & mobile
+6	1344	e commerce	unknown
+6	1233	Proofreading	writing and languages
+6	370	Travel Planning	admin support
+6	354	Internet Research	admin support
+6	1144	Wireframes	design & multimedia
+6	393	Amazon Web Services	it web & mobile
+6	1314	social media	unknown
+6	125	IT	finance & management
+6	1115	Sketching	design & multimedia
+6	503	Data Mining	it web & mobile
+6	226	Biology	manufacture & engineering
+6	288	Mechanical Design	manufacture & engineering
+6	361	Office Management	admin support
+6	272	Industrial Design	manufacture & engineering
+6	102	Crowdfunding	finance & management
+6	710	Network Security	it web & mobile
+6	256	Electronics	manufacture & engineering
+6	201	Real Estate Law	legal
+6	526	Docker	it web & mobile
+6	1263	Translation	writing and languages
+6	603	Information Management	it web & mobile
+6	1136	Visual Arts	design & multimedia
+6	1018	Art Direction	design & multimedia
+6	93	Business Mathematics	finance & management
+6	220	Arduino	manufacture & engineering
+6	16	Constant Contact	sales & marketing
+6	1270	Web Content	writing and languages
+6	1056	Drawing	design & multimedia
+6	679	Mobile App Testing	it web & mobile
+6	192	Legal Consulting	legal
+6	222	AutoCAD	manufacture & engineering
+6	446	C	it web & mobile
+5	408	Application Development	it web & mobile
+5	725	OpenGL	it web & mobile
+5	991	Adobe After Effects	design & multimedia
+5	481	Computer Architecture	it web & mobile
+5	237	Civil Engineering	manufacture & engineering
+5	210	3D Technology	manufacture & engineering
+5	372	Video Upload	admin support
+5	359	Microsoft Outlook	admin support
+5	1064	Final Cut Pro	design & multimedia
+5	490	CRM	it web & mobile
+5	951	Windows	it web & mobile
+5	1013	Adobe Premiere	design & multimedia
+5	1168	Chinese	writing and languages
+5	626	JIRA	it web & mobile
+5	1134	Video Publishing	design & multimedia
+5	1185	English Proofreading	writing and languages
+5	240	Computational science	manufacture & engineering
+5	347	Email	admin support
+5	188	Insurance	legal
+5	1306	product marketing	unknown
+5	78	Acquisitions	finance & management
+5	404	API	it web & mobile
+5	497	Data Cleansing	it web & mobile
+5	39	Loyalty Marketing	sales & marketing
+5	405	App Store	it web & mobile
+5	715	Object Oriented PHP	it web & mobile
+5	1298	growth strategies	unknown
+5	1211	Legal Writing	writing and languages
+5	1008	Adobe InDesign CS	design & multimedia
+5	387	AJAX	it web & mobile
+4	152	Recruiter	finance & management
+4	1162	Business writing	writing and languages
+4	969	XML	it web & mobile
+4	1287	power point	unknown
+4	1181	Editing	writing and languages
+4	411	Application Lifecycle Management	it web & mobile
+4	9	Bing Ads	sales & marketing
+4	1011	Adobe Photoshop CS	design & multimedia
+4	253	Electronic Design	manufacture & engineering
+4	890	TCP/IP	it web & mobile
+4	656	Magento	it web & mobile
+4	342	Computer Skills	admin support
+4	789	PostgreSQL Programming	it web & mobile
+4	1279	java script	unknown
+4	199	Patent Law	legal
+4	833	SAP	it web & mobile
+4	549	Facebook Development	it web & mobile
+4	255	electronic systems	manufacture & engineering
+4	808	Rails	it web & mobile
+4	346	Data Entry	admin support
+4	1304	business strategy	unknown
+4	1281	my sql	unknown
+4	376	.NET	it web & mobile
+4	324	Telecommunications Engineering	manufacture & engineering
+4	103	Data Interpretation	finance & management
+4	1170	Communications	writing and languages
+4	258	Engineering Design	manufacture & engineering
+4	1035	Building Architecture	design & multimedia
+4	1103	Presentation Design	design & multimedia
+4	611	Internet Security	it web & mobile
+4	934	Wearables Technology	it web & mobile
+4	53	Print Advertising	sales & marketing
+4	1364	team management	unknown
+4	246	Digital Electronics	manufacture & engineering
+4	164	Tax	finance & management
+4	181	Contracts	legal
+4	846	Security & Control	it web & mobile
+4	871	Spring	it web & mobile
+4	717	Objective-C	it web & mobile
+4	368	Time Management	admin support
+4	1024	Audio Design	design & multimedia
+4	680	Mobile Development Framework	it web & mobile
+4	1333	mobile devices	unknown
+4	235	Chemical Engineering	manufacture & engineering
+3	193	Legal Research	legal
+3	223	Autodesk	manufacture & engineering
+3	1355	new business development	unknown
+3	654	Mac OSX	it web & mobile
+3	1367	product development	unknown
+3	284	Manufacturing Design	manufacture & engineering
+3	1092	Motion Graphics	design & multimedia
+3	1220	Medical Writing	writing and languages
+3	704	Network Design	it web & mobile
+3	803	QA Testing	it web & mobile
+3	195	Licensing	legal
+3	110	Financial Communication	finance & management
+3	1234	Proposal Writing	writing and languages
+3	514	Database Programming	it web & mobile
+3	788	PostgreSQL Administration	it web & mobile
+3	1368	user experience	unknown
+3	1196	Ghostwriting	writing and languages
+3	705	Network Engineering	it web & mobile
+3	197	Medical Law	legal
+3	874	SQL Programming	it web & mobile
+3	238	Clean Technology	manufacture & engineering
+3	486	Core Java	it web & mobile
+3	212	Adaptive Algorithms	manufacture & engineering
+3	155	Sage 50 Accounting	finance & management
+3	943	Web Services Development	it web & mobile
+3	982	3D	design & multimedia
+3	271	Imaging	manufacture & engineering
+3	893	Test Automation	it web & mobile
+3	22	eBay	sales & marketing
+3	1096	Other - Multimedia	design & multimedia
+3	396	Android SDK	it web & mobile
+3	864	Socket.io	it web & mobile
+3	1116	SketchUp	design & multimedia
+3	879	Stata	it web & mobile
+3	1242	Sales Writing	writing and languages
+3	894	Test automation framework	it web & mobile
+3	924	Visual Basic	it web & mobile
+3	1224	Norwegian	writing and languages
+3	428	Backbone.js	it web & mobile
+3	1317	saa s	unknown
+3	753	Oracle PL/SQL	it web & mobile
+3	840	Scala	it web & mobile
+3	142	PMP	finance & management
+3	257	Embedded Systems	manufacture & engineering
+3	51	Pinterest Marketing	sales & marketing
+3	1362	mobile applications	unknown
+3	574	Google Go	it web & mobile
+3	1264	Travel Writing	writing and languages
+3	1053	Digital Painting	design & multimedia
+3	218	Architecture	manufacture & engineering
+3	1123	Technical Writing	design & multimedia
+3	1319	strategic partnerships	unknown
+3	575	Google Maps	it web & mobile
+3	842	Scalable transaction processing	it web & mobile
+3	15	Classifieds Posting	sales & marketing
+3	676	Microsoft SQL Server Programming	it web & mobile
+3	1208	Korean	writing and languages
+3	298	Operating Systems	manufacture & engineering
+3	106	Enterprise Resource Planning	finance & management
+3	1126	Typography	design & multimedia
+3	714	NoSQL	it web & mobile
+3	1320	enterprise software	unknown
+3	332	Wireless	manufacture & engineering
+3	509	Data Structures	it web & mobile
+3	903	Twitter Development	it web & mobile
+3	28	Google AdSense	sales & marketing
+3	1375	business intelligence	unknown
+3	1231	Press Releases	writing and languages
+3	40	MailChimp	sales & marketing
+3	1285	angular js	unknown
+3	511	Data Warehousing	it web & mobile
+3	702	Network Administration	it web & mobile
+3	165	Tax Preparation	finance & management
+3	262	Genetic Engineering	manufacture & engineering
+3	1286	node js	unknown
+3	1180	eBooks	writing and languages
+3	1075	Infographics	design & multimedia
+3	583	Grunt.js	it web & mobile
+3	97	Compliance	finance & management
+2	208	3D Scanning	manufacture & engineering
+2	703	Network Analysis	it web & mobile
+2	801	QA Engineering	it web & mobile
+2	303	Petroleum Engineering	manufacture & engineering
+2	1310	international development	unknown
+2	872	SPSS	it web & mobile
+2	500	Data Ingestion	it web & mobile
+2	166	Technical Recruiter	finance & management
+2	1025	Audio Editing	design & multimedia
+2	263	Geographic Information Systems	manufacture & engineering
+2	319	SketchUp Pro	manufacture & engineering
+2	340	Call Center Skills	admin support
+2	1253	Speech Writing	writing and languages
+2	1143	Web Publishing	design & multimedia
+2	584	Gulp.js	it web & mobile
+2	31	Google webmaster central	sales & marketing
+2	70	Website Analytics	sales & marketing
+2	1164	Cartography & Maps	writing and languages
+2	501	Data Interchange	it web & mobile
+2	224	Autodesk Inventor	manufacture & engineering
+2	888	System Programming	it web & mobile
+2	1079	Label & Package Design	design & multimedia
+2	184	Employment Law	legal
+2	585	Hadoop	it web & mobile
+2	1301	data analysis	unknown
+2	32	Google Website Optimizer	sales & marketing
+2	1062	Fashion Modeling	design & multimedia
+2	618	Java ME	it web & mobile
+2	942	Web Server	it web & mobile
+2	976	YouTube Development	it web & mobile
+2	1237	Resume Writing	writing and languages
+2	831	Salesforce.com Development	it web & mobile
+2	451	CakePHP	it web & mobile
+2	1081	Landing Pages	design & multimedia
+2	1336	pre sales	unknown
+2	920	Virtual Machine	it web & mobile
+2	1222	Newsletters	writing and languages
+2	1380	mobile marketing	unknown
+2	1315	microsoft power point	unknown
+2	1326	integration	unknown
+2	126	ITIL	finance & management
+2	1241	Sales Letters	writing and languages
+2	1358	negociations	unknown
+2	1292	strategie	unknown
+2	1184	English Grammar	writing and languages
+2	1082	Landscape Design	design & multimedia
+2	1337	professional services	unknown
+2	140	Personal Development	finance & management
+2	186	Family Law	legal
+2	215	Analog Electronics	manufacture & engineering
+2	1223	Non-Fiction Writing	writing and languages
+2	709	Network Programming	it web & mobile
+2	422	ASP.NET MVC	it web & mobile
+2	1065	Final Cut Pro X	design & multimedia
+2	747	Oracle Hyperion	it web & mobile
+2	570	Google AdWords Development	it web & mobile
+2	1293	strategie marketing	unknown
+2	1083	Lightwave 3D	design & multimedia
+2	793	Prestashop	it web & mobile
+2	1349	microsoft windows	unknown
+2	1169	Communication	writing and languages
+2	630	Joomla!	it web & mobile
+2	880	Statistical Computing	it web & mobile
+2	1032	Blender	design & multimedia
+2	1294	gestion de projet	unknown
+2	665	Microsoft Access Administration	it web & mobile
+2	1204	Japanese	writing and languages
+2	926	Voice Communications	it web & mobile
+2	1118	Sound Design	design & multimedia
+2	711	Networking & Information Systems	it web & mobile
+2	1282	express js	unknown
+2	816	Regression Testing	it web & mobile
+2	1329	telecommunications	unknown
+2	1244	Script Writing	writing and languages
+2	274	Instrumentation	manufacture & engineering
+2	841	Scalable analytics	it web & mobile
+2	14	Bulk Marketing	sales & marketing
+2	666	Microsoft Access Programming	it web & mobile
+2	530	Drupal	it web & mobile
+2	189	Insurance Law	legal
+2	1283	objective c	unknown
+2	434	Bitcoin	it web & mobile
+2	1137	Voice Acting	design & multimedia
+2	179	Contract	legal
+2	473	CodeIgniter	it web & mobile
+2	534	Eclipse	it web & mobile
+2	66	Telemarketing	sales & marketing
+2	1398	b 2 b	unknown
+2	204	Trade Law	legal
+2	366	Technical Support	admin support
+2	1352	team building	unknown
+2	1284	mongo db	unknown
+2	80	Adobe Analytics	finance & management
+2	820	REST	it web & mobile
+2	1390	facebook	unknown
+2	316	Scientific Computation	manufacture & engineering
+2	118	Hospitality	finance & management
+2	776	PhoneGap	it web & mobile
+2	1036	Business Card Design	design & multimedia
+2	1189	Fiction Writing	writing and languages
+2	677	Microsoft Visual Studio	it web & mobile
+2	1342	business alliances	unknown
+2	300	Other - Design	manufacture & engineering
+2	870	Sphinx	it web & mobile
+2	935	Web Application Framework	it web & mobile
+2	966	Xcode	it web & mobile
+2	260	Finite Element Analysis	manufacture & engineering
+2	821	Reverse Engineering	it web & mobile
+2	133	Microsoft Project	finance & management
+2	233	CATIA	manufacture & engineering
+2	1453	vente	unknown
+2	580	Graph Databases	it web & mobile
+2	1191	Financial Writing	writing and languages
+2	1090	Microsoft Sharepoint	design & multimedia
+2	351	General Office Skills	admin support
+2	406	App Usability Analysis	it web & mobile
+2	614	iPhone SDK	it web & mobile
+2	301	Other - Manufacturing	manufacture & engineering
+2	318	Sewing	manufacture & engineering
+2	1322	go to market strategy	unknown
+2	990	Adobe Acrobat	design & multimedia
+2	780	PL/SQL	it web & mobile
+2	1366	competitive analysis	unknown
+1	1214	Lyric Writing	writing and languages
+1	1109	PSD to HTML	design & multimedia
+1	352	Help & Support	admin support
+1	1433	social business	unknown
+1	1009	Adobe LiveCycle Designer	design & multimedia
+1	1465	teamwork	unknown
+1	1377	analysis	unknown
+1	1401	flexible working	unknown
+1	1444	fast learner	unknown
+1	566	Geographic Information Systems	it web & mobile
+1	1175	Creative writing	writing and languages
+1	1412	in design	unknown
+1	1323	vo ip	unknown
+1	681	Mobile Operating System	it web & mobile
+1	1423	enterprise 2 0	unknown
+1	1334	solution selling	unknown
+1	513	Database Administration	it web & mobile
+1	236	Circuit Design	manufacture & engineering
+1	785	Polymer	it web & mobile
+1	1455	company set up	unknown
+1	1043	Commercials	design & multimedia
+1	912	VB.NET	it web & mobile
+1	209	3D Systems	manufacture & engineering
+1	1111	Raster Graphics Editor	design & multimedia
+1	1434	mobile internet	unknown
+1	1345	firewalls	unknown
+1	540	Embedded System	it web & mobile
+1	252	Electrical Manufacture	manufacture & engineering
+1	1466	cascading style sheets css	unknown
+1	1378	mobile product development	unknown
+1	1402	search engine optimization seo	unknown
+1	1312	field artillery survey	unknown
+1	1324	network architecture	unknown
+1	970	XSLT	it web & mobile
+1	1131	Vector Graphics Editor	design & multimedia
+1	732	Oracle Agile	it web & mobile
+1	371	Typing	admin support
+1	1445	customer relationship management crm	unknown
+1	1356	communication marketing	unknown
+1	1026	Audio Engineering	design & multimedia
+1	567	Geolocation	it web & mobile
+1	267	Geospatial	manufacture & engineering
+1	1289	francais	unknown
+1	87	Bookkeeping	finance & management
+1	1176	Croatian	writing and languages
+1	1413	marketing event planning	unknown
+1	1424	digital strategy	unknown
+1	1335	v mware	unknown
+1	1254	Sports Writing	writing and languages
+1	1456	asia pacific	unknown
+1	484	Content Management System	it web & mobile
+1	1113	Sencha Architect	design & multimedia
+1	1435	relations clients	unknown
+1	1346	mac os x server	unknown
+1	1165	Catalan	writing and languages
+1	413	Application Server	it web & mobile
+1	1467	informatique decisionnelle	unknown
+1	1379	mobile technology	unknown
+1	1403	highly motivated self starter	unknown
+1	1325	data center	unknown
+1	502	Data Logistics	it web & mobile
+1	225	AutoDesk Revit	manufacture & engineering
+1	739	Oracle E-Business Suite	it web & mobile
+1	1446	pro active leader	unknown
+1	1357	gestion dequipe	unknown
+1	1291	entrepreneuriat	unknown
+1	1414	sculpture	unknown
+1	684	Modeling Language	it web & mobile
+1	1425	digital media	unknown
+1	139	Payroll	finance & management
+1	995	Adobe CS	design & multimedia
+1	517	Debugging	it web & mobile
+1	1255	Swedish	writing and languages
+1	1146	Academic Writing	writing and languages
+1	1457	japanese culture	unknown
+1	1369	user interface	unknown
+1	185	Environmental Law	legal
+1	1393	database admin	unknown
+1	1302	management consulting	unknown
+1	1198	Greek	writing and languages
+1	707	Network Monitoring	it web & mobile
+1	1436	bto b	unknown
+1	1347	open gl	unknown
+1	546	Ext GWT	it web & mobile
+1	1167	Children's Writing	writing and languages
+1	805	R-Hadoop	it web & mobile
+1	1468	secteur pharmaceutique	unknown
+1	1404	adaptable to changes	unknown
+1	876	SQLite Programming	it web & mobile
+1	741	Oracle Financials Applications	it web & mobile
+1	373	Virtual Assistant	admin support
+1	1447	self motivated	unknown
+1	1028	Autodesk Maya	design & multimedia
+1	464	CISSP Certified Information Systems Security Professional	it web & mobile
+1	658	Mail Transfer Agent	it web & mobile
+1	322	Stratasys	manufacture & engineering
+1	1415	swift	unknown
+1	1426	social tv	unknown
+1	996	Adobe Dreamweaver	design & multimedia
+1	518	Delphi	it web & mobile
+1	239	Climate Sciences	manufacture & engineering
+1	1259	Technical Writing	writing and languages
+1	1151	Article Rewriting	writing and languages
+1	792	Predictive Analytics	it web & mobile
+1	1458	cross cultural management	unknown
+1	1370	automation	unknown
+1	1049	Cover Design	design & multimedia
+1	593	humanâ€“computer interaction	it web & mobile
+1	1394	slideshare	unknown
+1	1303	education	unknown
+1	921	Virtualization	it web & mobile
+1	1201	Hungarian	writing and languages
+1	1437	relation build	unknown
+1	1348	html 5	unknown
+1	1280	j query	unknown
+1	75	AccountMate	finance & management
+1	1469	mergers acquisitions	unknown
+1	1381	startup consulting	unknown
+1	200	Privacy	legal
+1	1405	multicultural	unknown
+1	1316	networking	unknown
+1	1416	http	unknown
+1	1327	net	unknown
+1	127	Job Costing	finance & management
+1	983	3D Animation	design & multimedia
+1	1448	face to face presentations	unknown
+1	1359	reseaux sociaux	unknown
+1	1031	Banner Ads	design & multimedia
+1	839	SAS Business Analytics	it web & mobile
+1	466	Clojure	it web & mobile
+1	661	Manual Test Execution	it web & mobile
+1	323	Structural Engineering	manufacture & engineering
+1	23	Eloqua	sales & marketing
+1	693	MySpace Development	it web & mobile
+1	1427	tv	unknown
+1	1338	channel partners	unknown
+1	997	Adobe Dreamweaver CS	design & multimedia
+1	1261	Telugu	writing and languages
+1	1459	strategic marketing	unknown
+1	1371	r d	unknown
+1	187	Immigration Law	legal
+1	1050	Covers & Packaging	design & multimedia
+1	599	Ice Cream Sandwich	it web & mobile
+1	1395	international marketing	unknown
+1	959	WinJS	it web & mobile
+1	216	ANSYS	manufacture & engineering
+1	35	In-Game Advertising	sales & marketing
+1	1117	Sony Vegas	design & multimedia
+1	363	Personal Assistant	admin support
+1	1438	business relationship management	unknown
+1	551	FileMaker	it web & mobile
+1	76	Accounts Payable	finance & management
+1	1470	financial modeling	unknown
+1	1382	promotions	unknown
+1	311	Regulation	manufacture & engineering
+1	1406	tweet deck	unknown
+1	1417	affinity	unknown
+1	1328	managed services	unknown
+1	505	Data Protection	it web & mobile
+1	229	Broadcast Engineering	manufacture & engineering
+1	1243	Screenwriting	writing and languages
+1	1449	phone communication	unknown
+1	1360	service client	unknown
+1	571	Google App Engine	it web & mobile
+1	895	Testopia	it web & mobile
+1	1186	English Punctuation	writing and languages
+1	13	Brochures	sales & marketing
+1	1428	web marketing	unknown
+1	1339	os x	unknown
+1	1003	Adobe FrameMaker	design & multimedia
+1	399	Apache	it web & mobile
+1	1460	coding experience	unknown
+1	1372	i os development	unknown
+1	1052	Desktop Publishing	design & multimedia
+1	291	Mechatronics	manufacture & engineering
+1	1396	database management	unknown
+1	1305	training	unknown
+1	495	D3.js	it web & mobile
+1	884	Sybase Programming	it web & mobile
+1	960	Wix	it web & mobile
+1	217	ArchiCAD	manufacture & engineering
+1	1225	Online Writing	writing and languages
+1	1439	key account relationship building	unknown
+1	1350	redis	unknown
+1	557	FourSquare Development	it web & mobile
+1	77	Accounts Receivable	finance & management
+1	1471	private equity	unknown
+1	1383	technology evangelist	unknown
+1	202	Records Management	legal
+1	1071	GIMP	design & multimedia
+1	1407	international business	unknown
+1	1318	security	unknown
+1	1418	flask	unknown
+1	230	Building Information Modeling	manufacture & engineering
+1	764	Oracle Transportation Management	it web & mobile
+1	377	.NET for Web	it web & mobile
+1	1450	grands comptes	unknown
+1	1034	Brochure Design	design & multimedia
+1	1295	strategie commerciale	unknown
+1	472	Cocoa	it web & mobile
+1	900	Transaction Processing	it web & mobile
+1	1187	English Spelling	writing and languages
+1	1086	Maya	design & multimedia
+1	325	Textile Engineering	manufacture & engineering
+1	1101	Poster Design	design & multimedia
+1	348	Email Etiquette	admin support
+1	1429	television	unknown
+1	1340	mac	unknown
+1	242	Computer-Aided Design	manufacture & engineering
+1	400	Apache Kafka	it web & mobile
+1	1461	web applications	unknown
+1	1373	team leadership	unknown
+1	609	Integrated Development Environment	it web & mobile
+1	295	Nanotechnology	manufacture & engineering
+1	1397	hootsuite	unknown
+1	867	Software framework	it web & mobile
+1	932	Vulnerability Assessment	it web & mobile
+1	1228	Poetry	writing and languages
+1	365	Schedule	admin support
+1	1440	sales management	unknown
+1	1351	open cl	unknown
+1	561	FTP	it web & mobile
+1	1472	portfolio management	unknown
+1	1388	amazon ec 2	unknown
+1	633	JSON	it web & mobile
+1	1408	community outreach	unknown
+1	326	USB Electronics	manufacture & engineering
+1	1419	web 2 0	unknown
+1	1330	ip	unknown
+1	508	Data Storage	it web & mobile
+1	231	CAD/CAM/CAE	manufacture & engineering
+1	1246	Short Stories	writing and languages
+1	775	Perl	it web & mobile
+1	379	ActionScript	it web & mobile
+1	1451	gestion de la relation client crm	unknown
+1	1363	pay per click ppc	unknown
+1	1296	k 12 education	unknown
+1	901	Twig	it web & mobile
+1	1188	Feature Writing	writing and languages
+1	697	Natural Language Processing	it web & mobile
+1	349	Email Handling	admin support
+1	1430	sports	unknown
+1	1341	i os	unknown
+1	243	Construction Monitoring	manufacture & engineering
+1	1268	User Guides	writing and languages
+1	1157	Book Writing	writing and languages
+1	1462	matlab	unknown
+1	1374	vas	unknown
+1	1307	west africa	unknown
+1	887	System Analysis	it web & mobile
+1	964	Xamarin	it web & mobile
+1	1230	Portuguese	writing and languages
+1	1441	key account acquisition retention	unknown
+1	1021	Artlantis Studio	design & multimedia
+1	562	Full-text Search Engines	it web & mobile
+1	259	Fiber Optics	manufacture & engineering
+1	1473	due diligence	unknown
+1	1073	Icon Design	design & multimedia
+1	644	Learning Management System	it web & mobile
+1	1409	nonprofits	unknown
+1	1420	online marketing	unknown
+1	1331	demand generation	unknown
+1	232	CAM	manufacture & engineering
+1	1247	Simplified Chinese	writing and languages
+1	381	ADO.NET	it web & mobile
+1	1452	contract negotiation	unknown
+1	578	Google Web Toolkit	it web & mobile
+1	279	Kaizen	manufacture & engineering
+1	475	ColdFusion	it web & mobile
+1	1089	Microsoft Publisher	design & multimedia
+1	1209	LaTeX	writing and languages
+1	1105	Prezi	design & multimedia
+1	698	Neo4j	it web & mobile
+1	1431	open source	unknown
+1	799	Prototype Javascript Framework	it web & mobile
+1	1463	algorithms	unknown
+1	1399	online research	unknown
+1	1308	yoruba	unknown
+1	205	Trademark	legal
+1	221	Astrophysics	manufacture & engineering
+1	367	Telephone Handling	admin support
+1	1442	key account development	unknown
+1	1353	budgets	unknown
+1	1474	finance	unknown
+1	1391	word press	unknown
+1	649	LinkedIn Development	it web & mobile
+1	1410	photoshop	unknown
+1	1321	system architecture	unknown
+1	335	Administrative Research	admin support
+1	1421	social software	unknown
+1	1332	tcp ip	unknown
+1	988	3Ds Max	design & multimedia
+1	1251	Software Documentation	writing and languages
+1	384	Adobe Flex	it web & mobile
+1	1365	google adwords professional	unknown
+1	1040	Cartoon	design & multimedia
+1	96	Cognos	finance & management
+1	909	Underscore.js	it web & mobile
+1	1432	gambling	unknown
+1	1343	partner management	unknown
+1	248	Digital Signal Processing	manufacture & engineering
+1	1273	Word Processing	writing and languages
+1	1464	computer science	unknown
+1	1376	business planning	unknown
+1	1400	online community management	unknown
+1	1309	formation	unknown
+1	936	Web Components	it web & mobile
+1	968	XHTML	it web & mobile
+1	499	Data Entry System	it web & mobile
+1	1232	Product Descriptions	writing and languages
+1	1443	bto bto c	unknown
+1	1354	change management	unknown
+1	1475	fixed income	unknown
+1	1392	intuitiveness	unknown
+1	1411	volunteer management	unknown
+1	122	Inventory Management	finance & management
+1	1422	community management	unknown
+1	1454	vente de solutions	unknown
+1	182	Copyright	legal
+1	1042	Cinema D	design & multimedia
+1	848	Security Engineering	it web & mobile
+1	479	Compiler	it web & mobile
+1	1091	Microsoft Visio	design & multimedia
