@@ -15,6 +15,8 @@ const send_mail = (data, token) => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId(TEMPLATES.reset_password);
+  const category = new helper.Category('reset_password');
+  mail.addCategory(category);
 
   data.forEach((e, i) => {
     let pers = new helper.Personalization();

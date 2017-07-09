@@ -15,6 +15,8 @@ const send_mail = (follower, followed) => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId(TEMPLATES.user_follow);
+  const category = new helper.Category('user_follow');
+  mail.addCategory(category);
 
   let pers = new helper.Personalization();
   let subject = '*|FFNAME|*  *|FLNAME|* is now following you';

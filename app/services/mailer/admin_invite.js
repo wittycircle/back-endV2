@@ -13,6 +13,8 @@ const send_mail = (email, sender, token) => {
   wm.content(mail);
   wm.reply(mail, from);
   mail.setTemplateId(TEMPLATES.invite_user);
+  const category = new helper.Category('admin_invite');
+  mail.addCategory(category);
 
   let pers = new helper.Personalization();
   let subject = sender.fullName + ' invited you to join Wittycircle';

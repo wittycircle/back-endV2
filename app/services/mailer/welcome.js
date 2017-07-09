@@ -15,6 +15,8 @@ const send_mail = (email, data) => {
   wm.content(mail);
   wm.reply(mail, 'quentin@wittycircle.com');
   mail.setTemplateId(TEMPLATES.welcome);
+  const category = new helper.Category('welcome');
+  mail.addCategory(category);
 
   let pers = new helper.Personalization();
   let subject = 'Welcome to Wittycircle';

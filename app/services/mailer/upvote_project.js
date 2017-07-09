@@ -18,6 +18,8 @@ const upvote_project = args => {
     .where('id', args.project_id);
 
   common_array = ['u.id', 'u.email', 'p.first_name'];
+  const category = new helper.Category('upvote_project');
+  mail.addCategory(category);
 
   const toUsers = db
     .select(common_array)

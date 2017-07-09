@@ -17,6 +17,8 @@ const send_mail = (data, sender, project) => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId(TEMPLATES.invite_team);
+  const category = new helper.Category('invite_team');
+  mail.addCategory(category);
 
   data.forEach((e, i) => {
     let pers = new helper.Personalization();

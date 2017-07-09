@@ -14,6 +14,10 @@ const send_mail = (data, sender, invite, category = false) => {
   mail.setTemplateId(TEMPLATES.invite_user);
 
   if (category) mail.addCategory({ category });
+  else {
+    const otherCategory = new helper.Category('admin_invite');
+    mail.addCategory(otherCategory);
+  }
 
   data.forEach((e, i) => {
     console.log('IN DATA FOREACH');

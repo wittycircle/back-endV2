@@ -13,6 +13,9 @@ const new_message = () => {
     wm.reply(mail, 'noreply@wittycircle.com');
     mail.setTemplateId(TEMPLATES.new_message);
 
+    const category = new helper.Category('new_message');
+    mail.addCategory(category);
+
     if (!data.length) {
       console.log('no new message');
       return null;

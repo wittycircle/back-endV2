@@ -9,6 +9,8 @@ const send_mail = data => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId(TEMPLATES.validate_account);
+  const category = new helper.Category('validate_account');
+  mail.addCategory(category);
 
   let pers = new helper.Personalization();
   let subject = 'Validate your Wittycircle account';
