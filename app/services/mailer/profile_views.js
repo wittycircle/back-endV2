@@ -57,7 +57,7 @@ const send_mail = (data, bail) => {
     let sub = {
       '*|FNAME|*': e.first_name,
       '*|RANK|*': `${e.rank}`,
-      '*|NEW_RANK|*': `${newRank}`,
+      '*|NEW_RANK|*': `${Math.floor(newRank)}`,
       '*|FURL2|*': wm.url('statistics'),
       '*|NVIEW|*': nview.toString(),
       '*|EMAIL|*': e.email
