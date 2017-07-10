@@ -25,16 +25,20 @@ let updateRanking = () => {
 
 let viewers = () => {
   console.log('Viewers called', new Date());
+  const subViewers = db('views')
+    .select('*')
+    .whereRaw('creation_date BETWEEN CURDATE() - INTERVAL 7 DAY AND CURDATE()')
+    .andWhere('v.mail_sent', 0)
+    .as('v');
+
   return Promise.all([
     db('users as u')
-      .leftJoin('views as v', 'u.id', 'v.viewed')
+      .leftJoin(subViewers, 'u.id', 'v.viewed')
       .distinct('u.id', db.raw('GROUP_CONCAT(v.user_id) deja_vu'))
       .countDistinct('v.user_id as notif')
-      .where('mail_sent', 0)
       .groupBy('u.id')
       .having('notif', '<', '5')
       .orderBy('notif'),
-
     db('views')
       .countDistinct('viewed as cv')
       .groupBy('user_id')
