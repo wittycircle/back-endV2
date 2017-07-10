@@ -26,11 +26,12 @@ let updateRanking = () => {
 let viewers = () => {
   console.log('Viewers called', new Date());
   return Promise.all([
-    db('views')
-      .distinct('viewed', db.raw('GROUP_CONCAT(user_id) deja_vu'))
-      .countDistinct('user_id as notif')
+    db('users as u')
+      .leftJoin('views as v', 'u.id', 'v.viewed')
+      .distinct('u.id', db.raw('GROUP_CONCAT(v.user_id) deja_vu'))
+      .countDistinct('v.user_id as notif')
       .where('mail_sent', 0)
-      .groupBy('viewed')
+      .groupBy('u.id')
       .having('notif', '<', '5')
       .orderBy('notif'),
 
