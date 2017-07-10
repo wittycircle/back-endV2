@@ -16,6 +16,9 @@ const send_mail = (message, discussion, sender) => {
   wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
+
+  const category = new helper.Category('reply_project');
+  mail.addCategory(category);
   mail.setTemplateId(TEMPLATES.reply_project);
   discussion.forEach((e, i) => {
     let pers = new helper.Personalization();

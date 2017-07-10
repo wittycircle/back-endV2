@@ -16,6 +16,9 @@ args: {
 const ask_project = args => {
   let mail = new helper.Mail();
 
+  const category = new helper.Category('ask_project');
+  mail.addCategory(category);
+
   const fromUser = h.spe_profile({ 'u.id': args.user_id });
 
   common_array = ['u.id', 'u.email', 'pr.title', 'pr.public_id'];

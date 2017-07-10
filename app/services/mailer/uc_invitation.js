@@ -15,6 +15,8 @@ const send_mail = (s, u, data) => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId(TEMPLATES.uc_invitation);
+  const category = new helper.Category('uc_invitation');
+  mail.addCategory(category);
 
   data.forEach((e, i) => {
     let pers = new helper.Personalization();

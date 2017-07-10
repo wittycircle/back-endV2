@@ -41,6 +41,8 @@ const send_mail = (data, bail) => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId('1d3396dd-12c4-469f-8bfc-8c4a564ea2d3');
+  const category = new helper.Category('profile_views');
+  mail.addCategory(category);
 
   data.forEach((e, i) => {
     let pers = new helper.Personalization();

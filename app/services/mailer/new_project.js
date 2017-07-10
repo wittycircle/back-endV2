@@ -10,6 +10,8 @@ const send_mail = (sender, public_id) => {
   wm.content(mail);
   wm.reply(mail, 'quentin@wittycircle.com');
   mail.setTemplateId(TEMPLATES.new_project);
+  const category = new helper.Category('new_project');
+  mail.addCategory(category);
 
   sender.forEach((e, i) => {
     let pers = new helper.Personalization();

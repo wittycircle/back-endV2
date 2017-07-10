@@ -18,6 +18,8 @@ const send_mail = (data, name) => {
   wm.content(mail);
   wm.reply(mail, 'noreply@wittycircle.com');
   mail.setTemplateId(TEMPLATES.verification_network);
+  const category = new helper.Category('verification_network');
+  mail.addCategory(category);
 
   let pers = new helper.Personalization();
   let subject = `Please confirm you're part of the ${data.network} network`;
