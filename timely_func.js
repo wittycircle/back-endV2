@@ -25,7 +25,7 @@ let updateRanking = () => {
 
 let viewers = () => {
   console.log('Viewers called', new Date());
-  const subViewers = db('views')
+  const subViewers = db('views as v')
     .select('*')
     .whereRaw('creation_date BETWEEN CURDATE() - INTERVAL 7 DAY AND CURDATE()')
     .andWhere('v.mail_sent', 0)
