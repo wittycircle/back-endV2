@@ -40,9 +40,17 @@ exports.getProfileBy = by => {
 };
 
 exports.updateProfile = (stuff, location, cnd) => {
+  let x = [];
   console.log('stuff', stuff);
-  return h.setLocation(location).then(r => {
-    if (r[0] != 'nolocation') stuff.loc_id = r[0];
+  return Promise.all([
+    h.setLocation(location),
+    db(NETWORKS_LIST).first('id').where('name', stuff.network || '')
+  ]).then(([loc, net]) => {
+    if (loc[0] != 'nolocation') stuff.loc_id = loc[0];
+    if (net && net.id) {
+      stuff.network_id = net.id;
+      delete stuff.network;
+    }
     return db(TABLES.PROFILES).update(stuff).where(cnd);
   });
 };
