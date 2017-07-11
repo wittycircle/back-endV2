@@ -60,7 +60,7 @@ const ask_project = args => {
           // '*|FMTITLE|*': args.title,
           '*|FDESC|*': args.message,
           '*|FIMG|*': u.picture,
-          '*|FURL|*': wm.url(`project/${p.public_id}/${p.title}/feedback`),
+          '*|FURL|*': wm.url(`project/${p.public_id}/${p.title}`),
           '*|EMAIL|*': p.email
         };
         // console.log(sub)
