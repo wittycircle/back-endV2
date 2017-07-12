@@ -4,9 +4,9 @@ const { db, TABLES } = require('./index'),
   _ = require('lodash'),
   h = require('./helper');
 // ------------------ Little helpers ------------------
-exports.checkUsername = username => {
+const checkUsername = (exports.checkUsername = username => {
   return db(TABLES.USERS).select('username').whereIn('username', username);
-};
+});
 
 // ------------------ Main methods ------------------
 exports.activate = token => {
@@ -40,10 +40,25 @@ const upload = url =>
       gravity: 'face'
     })
   );
+//
+// return account.checkUsername(a_username).then(r => {
+//   if (r.length === a_username.length) {
+//     nd.username =
+//       nd.first_name +
+//       '.' +
+//       nd.last_name +
+//       Math.floor(Math.random() * 10000 + 1);
+//   } else {
+//     let nr = r.map(v => v.username);
+//     nd.username = _.differenceWith(a_username, nr, _.isEqual)[0];
+//   }
+//   return nd;
+// });
 
 const social_helper = {
   facebook: data =>
     upload(data.photos[0].value).then(result => {
+      // return account.checkUsername(data.displayName)
       return {
         profile: {
           facebook_id: data.id,
@@ -110,6 +125,30 @@ const verifyUser = email => {
     });
 };
 
+const getGoodUsername = nd => {
+  let a_username = [];
+  for (let i = nd.first_name.length; i > 0; i--) {
+    a_username.push(nd.first_name.slice(0, i) + '.' + nd.last_name);
+  }
+  for (let i = nd.last_name.length - 1; i > 0; i--) {
+    a_username.push(nd.first_name + '.' + nd.last_name.slice(0, i));
+  }
+
+  return account.checkUsername(a_username).then(r => {
+    if (r.length === a_username.length) {
+      nd.username =
+        nd.first_name +
+        '.' +
+        nd.last_name +
+        Math.floor(Math.random() * 10000 + 1);
+    } else {
+      let nr = r.map(v => v.username);
+      nd.username = _.differenceWith(a_username, nr, _.isEqual)[0];
+    }
+    return nd;
+  });
+};
+
 const newUser = (helper, origin) => {
   const profileInsert = {
     first_name: helper.profile.first_name,
@@ -118,25 +157,24 @@ const newUser = (helper, origin) => {
   },
     socialInsert = chooseOrigin(origin, helper);
 
-  return db(TABLES.USERS).insert(helper.user).then(([id]) => {
-    socialInsert.user_id = id;
-    profileInsert.user_id = id;
-    console.log('socialInsert', socialInsert);
-    return Promise.all([
-      db(TABLES.USER_SOCIALS).insert(socialInsert),
-      db(TABLES.PROFILES).insert(profileInsert),
-      verifyUser(helper.user.email),
-      db(TABLES.RANK).insert({ user_id: id, rank: id }),
-      db(TABLES.RANK_POINTS).insert({ user_id: id, points: 300 }),
-      db(TABLES.ACCOUNT_VALIDATION).insert({
-        email: helper.user.email,
-        token: token
-      })
-    ]).then(r => {
-      return {
-        id: id,
-        email: helper.user.email
-      };
+  return getGoodUsername(profileInsert).then(resName => {
+    helper.user.username = resName.username;
+    return db(TABLES.USERS).insert(helper.user).then(([id]) => {
+      socialInsert.user_id = id;
+      profileInsert.user_id = id;
+      console.log('socialInsert', socialInsert);
+      return Promise.all([
+        db(TABLES.USER_SOCIALS).insert(socialInsert),
+        db(TABLES.PROFILES).insert(profileInsert),
+        verifyUser(helper.user.email),
+        db(TABLES.RANK).insert({ user_id: id, rank: id }),
+        db(TABLES.RANK_POINTS).insert({ user_id: id, points: 300 })
+      ]).then(r => {
+        return {
+          id: id,
+          email: helper.user.email
+        };
+      });
     });
   });
 };

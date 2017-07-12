@@ -41,7 +41,7 @@ exports.register = (req, res, next) => {
   const token = crypto.randomBytes(20).toString('hex');
   checkRegisterData(req.body.account).then(data => {
     account
-      .register(data, token, req)
+      .register(data, token)
       .then(([r, verify]) => {
         mailer.validate_account({
           token: token,
