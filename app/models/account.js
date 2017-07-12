@@ -216,9 +216,9 @@ exports.register = (data, token) => {
         profile_data.user_id = user[0];
         return Promise.all([
           db(TABLES.PROFILES).insert(profile_data),
+          verifyUser(data.email),
           permission(user[0]),
           db(TABLES.USER_SOCIALS).insert({ user_id: user[0] }),
-          verifyUser(data.email),
           db(TABLES.RANK).insert({ user_id: user[0], rank: user[0] }),
           db(TABLES.RANK_POINTS).insert({ user_id: user[0], points: 300 }),
           db(TABLES.ACCOUNT_VALIDATION).insert({
