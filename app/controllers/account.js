@@ -47,6 +47,8 @@ exports.register = (req, res, next) => {
           token: token,
           email: req.body.account.email
         });
+        mailer.welcome({ email: r[0].email });
+
         if (verify) {
           console.log('verify', verify);
           req.broadcastEvent('add_points', {
@@ -68,7 +70,6 @@ exports.activate = (req, res, next) => {
       if (typeof r === 'string') {
         return next([r, 'Bad token']);
       } else {
-        mailer.welcome({ email: r[0].email });
         res.send({ success: true });
       }
     })
