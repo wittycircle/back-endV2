@@ -126,6 +126,7 @@ const newUser = (helper, origin) => {
     socialInsert.user_id = id;
     profileInsert.user_id = id;
     console.log('socialInsert', socialInsert);
+    console.log('profileInsert', profileInsert);
     return Promise.all([
       db(TABLES.USER_SOCIALS).insert(socialInsert),
       db(TABLES.PROFILES).insert(profileInsert),
