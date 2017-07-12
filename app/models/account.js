@@ -113,30 +113,6 @@ const verifyUser = email => {
     });
 };
 
-// const getGoodUsername = nd => {
-//   let a_username = [];
-//   for (let i = nd.first_name.length; i > 0; i--) {
-//     a_username.push(nd.first_name.slice(0, i) + '.' + nd.last_name);
-//   }
-//   for (let i = nd.last_name.length - 1; i > 0; i--) {
-//     a_username.push(nd.first_name + '.' + nd.last_name.slice(0, i));
-//   }
-//
-//   return checkUsername(a_username).then(r => {
-//     if (r.length === a_username.length) {
-//       nd.username =
-//         nd.first_name +
-//         '.' +
-//         nd.last_name +
-//         Math.floor(Math.random() * 10000 + 1);
-//     } else {
-//       let nr = r.map(v => v.username);
-//       nd.username = _.differenceWith(a_username, nr, _.isEqual)[0];
-//     }
-//     return nd;
-//   });
-// };
-
 const newUser = (helper, origin) => {
   const profileInsert = {
     first_name: helper.profile.first_name,
