@@ -51,7 +51,7 @@ const social_helper = {
           facebook_url: data.profileUrl,
           first_name: data.name.givenName,
           last_name: data.name.familyName,
-          profile_picture: result
+          picture: result
         },
         user: {
           email: data.emails[0].value,
@@ -76,7 +76,7 @@ const social_helper = {
           google_url: data.url,
           first_name: data.name.givenName,
           last_name: data.name.familyName,
-          profile_picture: result
+          picture: result
         },
         user: {
           email: data.emails[0].value,
