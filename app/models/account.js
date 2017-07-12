@@ -237,21 +237,16 @@ exports.register = (data, token) => {
   });
 };
 
-exports.resetPassword = (token, email, password) => {
-  return Promise.all([
-    db(TABLES.USERS).first('id').where({ email: email }),
-    db(TABLES.RESET_PASSWORDS).first('id').where({ email: email, token: token })
-  ]).then(([r, r1]) => {
-    if (!r) {
-      throw 'bad email';
-    } else if (!r1) {
-      throw 'bad token';
-    } else {
-      return db(TABLES.USERS)
-        .update({ password: password })
-        .where({ email: email });
-    }
-  });
+exports.resetPassword = (token, password) => {
+  return db(TABLES.RESET_PASSWORDS)
+    .first('id')
+    .where({ token: token })
+    .then(r => {
+      if (!r) throw 'bad token';
+      else {
+        return db(TABLES.USERS).update({ password }).where('id', r.id);
+      }
+    });
 };
 
 exports.recoverPassword = (email, token) => {
