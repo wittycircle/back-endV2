@@ -116,9 +116,9 @@ module.exports = function(passport) {
                 contacts = contacts || [];
                 return db('invitations')
                   .distinct('mail_to')
-                  .whereIn('mail_to', contacts);
+                  .whereIn('mail_to', contacts)
+                  .then(result => _.difference(contacts, result));
               })
-              .then(result => _.difference(contacts, result))
               .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
             data.ip = req.ip;
             return done(null, data);
