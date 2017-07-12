@@ -129,7 +129,7 @@ const newUser = (helper, origin) => {
       db(TABLES.RANK).insert({ user_id: id, rank: id }),
       db(TABLES.RANK_POINTS).insert({ user_id: id, points: 300 }),
       db(TABLES.ACCOUNT_VALIDATION).insert({
-        email: data.email,
+        email: helper.user.email,
         token: token
       })
     ]).then(r => {
