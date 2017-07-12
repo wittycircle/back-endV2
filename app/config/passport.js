@@ -109,17 +109,17 @@ module.exports = function(passport) {
           .getUserBySocialId(profile.id, 'google')
           .then(user => oauth_helper.logon(req, user, profile, 'google'))
           .then(data => {
-            social
-              .gmailContactsCampaign(accessToken)
-              .then(contacts =>
-                db('invitations')
-                  .distinct('mail_to')
-                  .whereIn('mail_to', contacts || [])
-              )
-              .then(result => _.difference(contacts, result))
-              .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
             data.ip = req.ip;
-            done(null, data);
+            return done(null, data);
+            // social
+            //   .gmailContactsCampaign(accessToken)
+            //   .then(contacts =>
+            //     db('invitations')
+            //       .distinct('mail_to')
+            //       .whereIn('mail_to', contacts || [''])
+            //   )
+            //   .then(result => _.difference(contacts, result))
+            //   .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
           })
           .catch(err => done(err));
       }
