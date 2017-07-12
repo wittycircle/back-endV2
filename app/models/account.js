@@ -134,7 +134,7 @@ const getGoodUsername = nd => {
     a_username.push(nd.first_name + '.' + nd.last_name.slice(0, i));
   }
 
-  return account.checkUsername(a_username).then(r => {
+  return checkUsername(a_username).then(r => {
     if (r.length === a_username.length) {
       nd.username =
         nd.first_name +
