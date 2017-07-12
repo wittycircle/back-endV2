@@ -297,11 +297,17 @@ exports.unlikeProject = (req, res, next) => {
 // ------------------ INVITATION ------------------
 
 exports.inviteTeam = (req, res, next) => {
+  const token = crypto.randomBytes(20).toString('hex');
+
   project
-    .inviteTeam(req.user.id, req.params.id, req.body.id)
+    .inviteTeam(req.user.id, req.params.id, req.body.id, token)
     .then(r => {
       res.send({ success: true });
-      // mailer.invite_user //toset
+      mailer.invite_team({
+        uid: req.user.id,
+        token: token,
+        mailList: req.body.email
+      });
     })
     .catch(err => next([err, 'Bad id']));
 };
@@ -322,4 +328,13 @@ exports.deleteInvite = (req, res, next) => {
       res.send({ success: true });
     })
     .catch(err => next([err, 'Bad id']));
+};
+
+exports.acceptInvite = (req, res, next) => {
+  project
+    .acceptInvite(req.user.id, req.params.token)
+    .then(r => {
+      res.send({ success: true });
+    })
+    .catch(err => next([err, r]));
 };

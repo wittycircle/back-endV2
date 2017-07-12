@@ -64,8 +64,12 @@ router
 
 router
   .route('/projects/:id/invite')
+  .get(projects.getInvite)
   .post(auth(AUTH.PRIVATE), projects.inviteTeam)
-  .delete(auth(AUTH.PRIVATE), projects.deleteInvite) //id will be project_members id and not project_id
-  .get(projects.getInvite);
+  .delete(auth(AUTH.PRIVATE), projects.deleteInvite); //id will be project_members id and not project_id
+
+router
+  .route('projects/invite/:token')
+  .get(auth(AUTH.PRIVATE), projects.acceptInvite);
 
 module.exports = router;

@@ -91,6 +91,6 @@ const recentActivityBot = require('./socket-server/lib/bot/activities');
           users: []
         }
       }),
-    ONE_DAY
+    TWO_HOURS * 4
   );
 })();

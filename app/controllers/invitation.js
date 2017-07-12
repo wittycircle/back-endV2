@@ -34,6 +34,7 @@ exports.fromUser = (req, res, next) => {
     .catch(err => next([err, 'bad id']));
 };
 
+//new incoming kreator
 exports.addInvitationNik = (req, res, next) => {
   if (req.get('x-api-token') != 'LaChaussetteDesGensTriggerants') {
     return res.send({ success: false });

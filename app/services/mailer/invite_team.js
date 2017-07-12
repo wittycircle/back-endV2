@@ -11,7 +11,7 @@ args{
 }
 */
 
-const send_mail = (data, sender, project) => {
+const send_mail = (data, sender, project, token) => {
   let mail = new helper.Mail();
   wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
   wm.content(mail);
@@ -22,13 +22,13 @@ const send_mail = (data, sender, project) => {
 
   data.forEach((e, i) => {
     let pers = new helper.Personalization();
-    let subject = sender.fullName + ' invited you to join Wittycircle';
+    let subject = `${sender.fullName} invited you to join ${project.title} on Wittycircle`;
     let sub = {
       '*|PIMG|*': wm.transform(sender.picture),
       '*|FUNAME|*': sender.fullName,
       '*|PTITLE|*': project.title,
       '*|FLOC|*': wm.location(sender),
-      '*|PURL|*': wm.url(`project/${project.public_id}/${project.title}`),
+      '*|PURL|*': wm.url(`projects/invite/${token}}`),
       MAIL: e
     };
     console.log(sub);
@@ -44,7 +44,7 @@ const send_mail = (data, sender, project) => {
 
 const invite_team = args => {
   let project = db(TABLES.PROJECTS + ' as pr')
-    .first('title', 'public_id')
+    .first('title', 'public_id', 'id')
     .join(TABLES.USERS + ' as u', 'u.id', 'pr.user_id')
     .where({ 'u.id': args.uid });
 
@@ -58,7 +58,7 @@ const invite_team = args => {
 
     return Promise.all([table_invite, sender, project])
       .then(([x, sender, project]) =>
-        send_mail(verifiedEmails, sender[0], project)
+        send_mail(verifiedEmails, sender[0], project, args.token)
       )
       .catch(console.error);
   });

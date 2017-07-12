@@ -280,11 +280,12 @@ exports.updateProjectNetwork = (info, cond) => {
 };
 
 // ------------------ INVITE ------------------
-exports.inviteTeam = (uid, project_id, user_id) => {
+exports.inviteTeam = (uid, project_id, user_id, token) => {
   let o = {
     project_id: project_id,
     user_id: user_id,
-    invited_by: uid
+    invited_by: uid,
+    token: token
   };
   return h.exist(TABLES.PROJECTS, project_id).then(r => {
     if (!r.length) throw 'Could not match project';
@@ -308,7 +309,8 @@ exports.getInvite = project_id => {
         'invited_by',
         'accepted',
         'p.picture',
-        'p.fullName'
+        'p.fullName',
+        'm.token'
       ])
       .join(h.sub_profile, 'p.uid', 'm.user_id')
       .where('project_id', project_id);
@@ -324,4 +326,8 @@ exports.deleteInvite = (uid, invite_id) => {
         throw "Ressource does not exist, or you didn't invite that person";
       return db(TABLES.PROJECT_MEMBERS).del().where({ id: invite_id });
     });
+};
+
+exports.acceptInvite = (uid, token) => {
+  return db(TABLES.PROJECT_MEMBERS).update('accepted', 1).where('token', token);
 };
