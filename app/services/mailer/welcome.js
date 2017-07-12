@@ -37,7 +37,7 @@ const welcome = args => {
   const request = db
     .first('p.first_name as username')
     .from(TABLES.USERS + ' as u')
-    .join(TABLES.USER_PROFILES + ' as p', 'u.id', 'p.user_id')
+    .join(TABLES.PROFILES + ' as p', 'u.id', 'p.user_id')
     .where('u.email', args.email);
 
   return request.then(username => send_mail(args.email, username.username));

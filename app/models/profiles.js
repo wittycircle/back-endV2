@@ -44,7 +44,7 @@ exports.updateProfile = (stuff, location, cnd) => {
   console.log('stuff', stuff);
   return Promise.all([
     h.setLocation(location),
-    db(NETWORKS_LIST).first('id').where('name', stuff.network || '')
+    db(TABLES.NETWORKS_LIST).first('id').where('name', stuff.network || '')
   ]).then(([loc, net]) => {
     if (loc[0] != 'nolocation') stuff.loc_id = loc[0];
     if (net && net.id) {
