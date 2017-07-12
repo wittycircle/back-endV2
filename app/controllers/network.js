@@ -1,6 +1,6 @@
 const network = require('../models/network'),
   crypto = require('crypto'),
-  // mailer = require('../services/mailer'),
+  mailer = require('../services/mailer'),
   _ = require('lodash');
 
 const allowed =
