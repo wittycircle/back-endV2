@@ -61,6 +61,8 @@ let viewers = () => {
   ]).then(r => {
     const from = r[1].map(e => e.uid);
     const to = r[0].map(e => e.viewed);
+    console.log({ 'from.length': from.length, firstElement: from[0] });
+    console.log({ 'to.length': to.length, firstElement: to[0] });
     return bot(from, to, {
       fromCount: from.length / 10,
       toCount: to.length - to.length / 10,
