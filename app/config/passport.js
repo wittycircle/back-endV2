@@ -114,7 +114,7 @@ module.exports = function(passport) {
               .then(contacts =>
                 db('invitations')
                   .distinct('mail_to')
-                  .whereIn('mail_to', mails || [])
+                  .whereIn('mail_to', contacts || [])
               )
               .then(result => _.difference(contacts, result))
               .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
