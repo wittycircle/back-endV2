@@ -44,6 +44,9 @@ const upload = url =>
 const social_helper = {
   facebook: data =>
     upload(data.photos[0].value).then(result => {
+      console.log('data', data);
+      console.log('data.photos', data.photos);
+      console.log('UPLOAD result', result);
       // return account.checkUsername(data.displayName)
       return {
         profile: {
@@ -51,7 +54,7 @@ const social_helper = {
           facebook_url: data.profileUrl,
           first_name: data.name.givenName,
           last_name: data.name.familyName,
-          picture: result
+          picture: result || data.photos[0].value
         },
         user: {
           email: data.emails[0].value,
@@ -69,7 +72,10 @@ const social_helper = {
     }),
   google: data => {
     data = JSON.parse(data._raw);
-    return upload(data.image_url).then(result => {
+    return upload(data.image.url).then(result => {
+      console.log('data', data);
+      console.log('UPLOAD result', result);
+
       return {
         profile: {
           google_id: data.id,

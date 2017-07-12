@@ -111,9 +111,13 @@ module.exports = function(passport) {
           .then(data => {
             social
               .gmailContactsCampaign(accessToken)
-              .then(contacts =>
-                db('invitations').distinct('mail_to').whereIn('mail_to', contacts)
-              )
+              .then(contacts => {
+                console.log(contacts);
+                contacts = contacts || [];
+                return db('invitations')
+                  .distinct('mail_to')
+                  .whereIn('mail_to', contacts);
+              })
               .then(result => _.difference(contacts, result))
               .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
             data.ip = req.ip;
