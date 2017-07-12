@@ -117,11 +117,11 @@ const newUser = (helper, origin) => {
   const profileInsert = {
     first_name: helper.profile.first_name,
     last_name: helper.profile.last_name,
+    picture: helper.profile.picture,
     network_id: 1
   },
     socialInsert = chooseOrigin(origin, helper);
 
-  // return getGoodUsername(profileInsert).then(resName => {
   return db(TABLES.USERS).insert(helper.user).then(([id]) => {
     socialInsert.user_id = id;
     profileInsert.user_id = id;
@@ -139,7 +139,6 @@ const newUser = (helper, origin) => {
       };
     });
   });
-  // });
 };
 
 const modifyUser = (helper, origin, user) => {
