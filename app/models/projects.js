@@ -83,7 +83,7 @@ exports.getProject = (id, uid) => {
     'pr.about',
     'pr.video',
     'c.name as category',
-    'p.id as profile_id',
+    'p.uid as profile_id',
     'pr.public_id',
     'pr.project_visibility',
     'pr.link',
