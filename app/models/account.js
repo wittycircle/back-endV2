@@ -48,7 +48,7 @@ const {URL, URLSearchParams} = require('url');
 const wrapUrl = (rawUrl, params) => {
   const url = new URL(rawUrl);
   url.search = new URLSearchParams(Object.assign({}, url.search, params));
-  return url;
+  return url.toString();
 };
 
 const social_helper = {
