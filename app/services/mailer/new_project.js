@@ -18,8 +18,8 @@ const send_mail = (sender, public_id) => {
     let subject = 'Your project on Wittycircle';
     let sub = {
       '*|FNAME|*': e.first_name,
-      '*|BASICS|*': wm.url(`project/${public_id}/update/basics`),
-      '*|STORY|*': wm.url(`project/${public_id}/update/story`),
+      '*|BASICS|*': wm.url(`project//update?id=${public_id}`),
+      '*|STORY|*': wm.url(`project//update?id=${public_id}`),
       '*|NEEDS|*': wm.url('meet'),
       MAIL: e.email
     };

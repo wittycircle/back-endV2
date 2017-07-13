@@ -3,24 +3,17 @@ const helper = require('sendgrid').mail;
 const h = require('../../models/helper');
 const { db, TABLES } = require('../../models/index');
 const _ = require('lodash');
+
 let toInsertToo = (name, location, date, picture, url) => {
   return `
   <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto" width="350px">
-<tbody>
-<tr>
-<td><span class="sg-image" data-imagelibrary="%7B%22width%22%3A36%2C%22height%22%3A36%2C%22alt_text%22%3A%22profile_picture%22%2C%22alignment%22%3A%22%22%2C%22border%22%3A0%2C%22src%22%3A%22https%3A//res.cloudinary.com/dqpkpmrgk/image/upload/w_36%2Ch_36%2Cc_fill%2Cg_face/v1493332197/rzxugrlqswu6veak8gqe.jpg%22%2C%22classes%22%3A%7B%22sg-image%22%3A1%7D%7D"><img alt="profile_picture" height="36"
-src=${picture} style="width: 36px; height: 36px; border-radius: 50%" width="36" /></span></td>
-<td>
-<div style="width: 200px; margin: 0 auto;">
-<div><span style="font-family: Helvetica; word-break: break-word;">${name}</span><br />
-<span style="color:#545454;"><span style="font-size:12px; font-family: Helvetica;">${location}</span></span>&nbsp;</div>
-<div><span style="color:#a0a0a0;"><span style="font-size:10px; font-family: Helvetica">${date}</span></span></div>
-</div>
-</td>
-<td><span style="color:#D3D3D3;"><a href=${url}><button style="padding: 3px 10px; background-color: #fff; border: 1px solid #545454; border-radius: 4px; font-family: Helvetica">Follow</button></a></span></td>
-</tr>
-</tbody>
-</table>
+<tbody> <tr> <td><span class="sg-image" data-imagelibrary="%7B%22width%22%3A%2240%22%2C%22height%22%3A%2240%22%2C%22alt_text%22%3A%22profile_picture%22%2C%22alignment%22%3A%22%22%2C%22border%22%3A0%2C%22src%22%3A%22https%3A//res.cloudinary.com/dqpkpmrgk/image/upload/w_40%2Ch_40%2Cc_fill%2Cg_face/v1493332197/rzxugrlqswu6veak8gqe.jpg%22%2C%22classes%22%3A%7B%22sg-image%22%3A1%7D%2C%22link%22%3A%22%22%7D"><img alt="profile_picture" height="40"
+   src=${picture} style="width: 40px; height: 40px; border-radius: 50%;" width="40" /></span></td>
+  <td> <div style="width: 200px; margin: 0 auto;"> <div><span style="font-family: Helvetica; word-break: break-word;">${name}</span><br />
+  <span style="color:#545454;"><span style="font-size:12px; font-family: Helvetica; position: relative; bottom: 2px;">
+  ${location}</span></span>&nbsp;</div> <div><span style="color:#a0a0a0;"><span style="font-size:10px; font-family: Helvetica; position: relative; bottom: 4px;">
+  ${date}</span></span></div> </div> </td> <td><span><a href=${url}><button style="padding: 3px 10px; background-color: #fff; border: 1px solid #545454; border-radius: 4px; font-family: Helvetica; font-size: 14px;">Follow</button></a></span></td>
+</tr> </tbody> </table> <br></br>
   `;
 };
 
@@ -43,7 +36,7 @@ const send_mail = (data, bail) => {
   mail.setTemplateId('1d3396dd-12c4-469f-8bfc-8c4a564ea2d3');
   const category = new helper.Category('profile_views');
   mail.addCategory(category);
-
+  data = data.splice(0, 1);
   data.forEach((e, i) => {
     let pers = new helper.Personalization();
     let subject =
@@ -69,7 +62,7 @@ const send_mail = (data, bail) => {
     // console.log('\n-------------------------------------------------\n');
     // console.log(sub);
     wm.subject(pers, subject);
-    wm.to(pers, e.email);
+    wm.to(pers, `jayho@wittycircle.com` /*e.email*/);
     wm.substitutions(pers, sub);
     mail.addPersonalization(pers);
   }); //foreach
@@ -94,7 +87,7 @@ const profile_views = args => {
     .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
     .join(wm.notif('profile_view'), 'n.user_id', 'v.viewed')
     .having('vcount', '>=', 1)
-    .andWhere('mail_sent', 0)
+    // .andWhere('mail_sent', 0)
     .andWhere('u.fake', 0)
     .groupBy('v.viewed');
   const lesDates = notif =>
@@ -145,4 +138,5 @@ const profile_views = args => {
     });
   });
 }; //exports
+profile_views();
 module.exports = profile_views;

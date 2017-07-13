@@ -47,7 +47,7 @@ exports.register = (req, res, next) => {
           token: token,
           email: req.body.account.email
         });
-        mailer.welcome({ email: r[0].email });
+        mailer.welcome({ email: req.body.account.email });
 
         if (verify) {
           console.log('verify', verify);

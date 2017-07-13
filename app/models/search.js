@@ -224,7 +224,7 @@ exports.cardProject = selector => {
             1} WHEN o.tags LIKE "%${el}%" THEN ${i + 10}`
       )
       .join(' ');
-    query.orderByRaw('CASE ' + selected + ' else 100  END');
+    query.orderByRaw('CASE ' + selected + ' else 100 END');
   }
 
   addLocation('loc', selector.location, query);
@@ -238,6 +238,7 @@ exports.cardProject = selector => {
     query.orderByRaw(
       'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
     );
+  console.log('query.toString', query.toString());
   return query;
 };
 

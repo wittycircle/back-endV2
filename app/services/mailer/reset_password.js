@@ -24,7 +24,7 @@ const send_mail = (data, token) => {
     let sub = {
       '*|ffname|*': e.first_name || '',
       '*|EMAIL|*': e.email || '',
-      '*|FURL|*': wm.url(`password/reset/${token}`)
+      '*|FURL|*': wm.url(`reset/password/${token}`)
     };
     // console.log(sub)
     // console.log("\n-------------------------------------------------\n")

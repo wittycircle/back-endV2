@@ -28,7 +28,7 @@ const send_mail = (data, sender, project, token) => {
       '*|FUNAME|*': sender.fullName,
       '*|PTITLE|*': project.title,
       '*|FLOC|*': wm.location(sender),
-      '*|PURL|*': wm.url(`projects/invite/${token}}`),
+      '*|PURL|*': wm.url(`projects/invite/members/${token}}`),
       MAIL: e
     };
     console.log(sub);
