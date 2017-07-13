@@ -43,15 +43,8 @@ const upload = url => {
   );
 };
 
-let {URL, URLSearchParams} = require('url');
-if (typeof URL === 'undefined' || typeof URLSearchParams === 'undefined') {
-  let {URL, URLSearchParams} = require('url-polyfill');
-}
-
 const wrapUrl = (rawUrl, params) => {
-  const url = new URL(rawUrl);
-  url.search = new URLSearchParams(Object.assign({}, url.search, params));
-  return url.toString();
+  return rawUrl
 };
 
 const social_helper = {
