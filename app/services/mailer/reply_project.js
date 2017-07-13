@@ -47,17 +47,24 @@ const reply_project = args => {
   console.log('IN REPLY');
   const sender = h.spe_profile({ 'u.id': args.from });
 
+  const members = db(TABLES.PROJECT_MEMBERS)
+    .select('*')
+    .where('accepted', 1)
+    .as('pm');
+
   const discussion = db
-    .select('u.email', 'p.title', 'p.public_id')
+    .distinct('u.email', 'p.title', 'p.public_id')
     .from(TABLES.DISCUSSIONS + ' as d')
     .join(TABLES.PROJECTS + ' as p', 'd.project_id', 'p.id')
+    .leftJoin(members, 'pm.project_id', 'p.id')
     .leftJoin(TABLES.DISCUSSION_MESSAGES + ' as r', 'r.discussion_id', 'd.id')
     .join(TABLES.USERS + ' as u', function() {
       this.on('u.id', 'p.user_id')
         .orOn('u.id', 'd.user_id')
+        .orOn('u.id', 'pm.user_id')
         .orOn('u.id', 'r.user_id');
     })
-    .join(wm.notif('reply_project'), 'n.user_id', 'u.id')
+    .leftJoin(wm.notif('reply_project'), 'n.user_id', 'u.id')
     .whereRaw(`u.id <> ${args.from}`)
     .andWhere('d.id', args.id);
 
