@@ -43,9 +43,17 @@ const upload = url => {
   );
 };
 
+const {URL, URLSearchParams} = require('url');
+
+const wrapUrl = (rawUrl, params) => {
+  const url = new URL(rawUrl);
+  url.search = new URLSearchParams(Object.assign({}, url.search, params));
+  return url.toString();
+};
+
 const social_helper = {
   facebook: data =>
-    upload(data.photos[0].value).then(result => {
+    upload(wrapUrl(data.photos[0].value, {width: 200, height: 200})).then(result => {
       console.log('data', data);
       console.log('data.photos', data.photos);
       console.log('UPLOAD result', result);
@@ -74,7 +82,7 @@ const social_helper = {
     }),
   google: data => {
     data = JSON.parse(data._raw);
-    return upload(data.image.url).then(result => {
+    return upload(wrapUrl(data.image.url), {sz: 200}).then(result => {
       console.log('data', data);
       console.log('UPLOAD result', result);
 
