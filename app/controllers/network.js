@@ -84,6 +84,7 @@ exports.createNewNetwork = (req, res, next) => {
 };
 
 exports.sendVerifyNetwork = (req, res, next) => {
+  console.log('sendverifynetwork called');
   let data = {
     token: crypto.randomBytes(40).toString('hex'),
     email: req.body.email,
