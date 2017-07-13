@@ -30,7 +30,7 @@ const ask_project = args => {
       this.on('l.project_id', 'pr.id');
       this.orOn('pr.user_id', 'u.id');
     })
-    .join(wm.notif('ask_project'), 'n.user_id', 'u.id')
+    .leftJoin(wm.notif('ask_project'), 'n.user_id', 'u.id')
     .where('pr.id', args.project_id)
     .union(function() {
       this.select(common_array)

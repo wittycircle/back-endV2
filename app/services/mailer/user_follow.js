@@ -55,7 +55,7 @@ const user_follow = args => {
   const following = h
     .spe_profile({ 'u.id': args.following })
     .select('u.email')
-    .join(wm.notif('user_follow'), 'n.user_id', 'u.id');
+    .leftJoin(wm.notif('user_follow'), 'n.user_id', 'u.id');
 
   return Promise.all([follower, following]).then(([follower, following]) => {
     if (following.length) return send_mail(follower[0], following[0]);
