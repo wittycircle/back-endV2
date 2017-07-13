@@ -43,8 +43,12 @@ const upload = url => {
   );
 };
 
-const wrapUrl = (rawUrl, params) => {
-  return rawUrl
+const queryString = require('query-string');
+
+const wrapUrl = (rawUrl, opts) => {
+  const query = queryString.parse(rawUrl.match(/\?(.*)/));
+  const search = queryString.stringify(Object.assign({}, query, opts));
+  return rawUrl.replace(/\?(.*)/, `?${search}`);
 };
 
 const social_helper = {
