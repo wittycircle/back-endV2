@@ -85,8 +85,8 @@ exports.sendVerifyNetwork = data => {
       .whereRaw(`name like ${data.network}`)
       .then(nr => {
         data.network_id = nr.id || 1;
+        return db(TABLES.NETWORK_VERIFICATION).insert(data);
       });
-    return db(TABLES.NETWORK_VERIFICATION).insert(data);
   });
 };
 

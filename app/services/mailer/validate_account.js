@@ -15,7 +15,7 @@ const send_mail = data => {
   let pers = new helper.Personalization();
   let subject = 'Validate your Wittycircle account';
   let sub = {
-    '*|LINK|*': wm.url('/validation/account/:token'),
+    '*|LINK|*': wm.url(`/validation/account/${token}`),
     '*|EMAIL|*': data.email
   };
   // console.log(sub)
