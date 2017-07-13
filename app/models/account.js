@@ -30,8 +30,9 @@ const cloudinary = require('cloudinary');
 const config = require('../private');
 cloudinary.config(config.cloudinary);
 
-const upload = url =>
-  new Promise(resolve =>
+const upload = url => {
+  const newUrl = url.split('sz=') + 200;
+  return new Promise(resolve =>
     cloudinary.uploader.upload(url, result => resolve(result.secure_url), {
       width: 200,
       height: 200,
@@ -40,6 +41,7 @@ const upload = url =>
       gravity: 'face'
     })
   );
+};
 
 const social_helper = {
   facebook: data =>

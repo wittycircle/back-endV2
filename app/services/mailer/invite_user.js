@@ -47,7 +47,6 @@ const invite_user = args => {
     .distinct(
       h.p_uarray.concat([
         h.format_location,
-        db.raw('DATE_FORMAT(v.date, "%W %d %M %r") as date'),
         db.raw('CONCAT(loc.city, ", ", loc.country) as location')
       ])
     )
