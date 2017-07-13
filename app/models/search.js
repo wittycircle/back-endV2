@@ -238,7 +238,6 @@ exports.cardProject = selector => {
     query.orderByRaw(
       'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
     );
-  console.log('query.toString', query.toString());
   return query;
 };
 
