@@ -15,7 +15,7 @@ const send_mail = (data, sender, invite, category = false) => {
 
   if (category) mail.addCategory({ category });
   else {
-    const otherCategory = new helper.Category('admin_invite');
+    const otherCategory = new helper.Category('invite_user');
     mail.addCategory(otherCategory);
   }
 

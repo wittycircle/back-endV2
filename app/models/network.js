@@ -80,6 +80,12 @@ exports.createNewNetwork = (uid, data) => {
 exports.sendVerifyNetwork = data => {
   return h.exist(TABLES.USERS, data.user_id).then(r => {
     if (!r.length) throw 'Invalid user_id';
+    return db('networks_list as nl')
+      .first('id')
+      .whereRaw(`name like ${data.network}`)
+      .then(nr => {
+        data.network_id = nr.id || 1;
+      });
     return db(TABLES.NETWORK_VERIFICATION).insert(data);
   });
 };
