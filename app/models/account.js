@@ -43,7 +43,10 @@ const upload = url => {
   );
 };
 
-const {URL, URLSearchParams} = require('url');
+let {URL, URLSearchParams} = require('url');
+if (typeof URL === 'undefined' || typeof URLSearchParams === 'undefined') {
+  let {URL, URLSearchParams} = require('url-polyfill');
+}
 
 const wrapUrl = (rawUrl, params) => {
   const url = new URL(rawUrl);
