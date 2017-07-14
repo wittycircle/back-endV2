@@ -34,7 +34,7 @@ let viewers = () => {
   return Promise.all([
     db('users as u')
       .leftJoin(subViewers, 'u.id', 'v.viewed')
-      .distinct('u.id', db.raw('GROUP_CONCAT(v.user_id) deja_vu'))
+      .distinct('u.id', db.raw('GROUP_CONCAT(distinct v.user_id) deja_vu'))
       .countDistinct('v.user_id as notif')
       .groupBy('u.id')
       .having('notif', '<', '5')
