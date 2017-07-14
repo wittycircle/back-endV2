@@ -78,7 +78,7 @@ exports.createNewNetwork = (uid, data) => {
 };
 
 exports.sendVerifyNetwork = data => {
-  const dataInsert = {
+  let dataInsert = {
     token: data.token,
     user_id: data.user_id
   };
@@ -89,31 +89,28 @@ exports.sendVerifyNetwork = data => {
       .whereRaw(`name like ${data.network}`)
       .then(nr => {
         dataInsert.network_id = nr.id || 1;
-        return db(TABLES.NETWORK_VERIFICATION).insert(data);
+        return db(TABLES.NETWORK_VERIFICATION).insert(dataInsert);
       });
   });
 };
 
 exports.validateNetwork = token => {
-  return db(TABLES.NETWORK_VERIFICATION)
-    .first()
-    .where('token', token)
-    .then(network => {
-      if (!network || !network.id) {
-        throw 'Bad token';
-      } else console.log(` network : \n ${network}`);
-      return db(TABLES.USERS)
-        .first('profile_id')
-        .where('id', network.user_id)
-        .then(profile =>
-          db(TABLES.PROFILES)
-            .update('network', network.network)
-            .where('id', profile.profile_id)
-        )
-        .then(() =>
-          db(TABLES.NETWORK_VERIFICATION)
-            .update('verification', 1)
-            .where('token', token)
-        );
-    });
+  const nik = db(TABLES.NETWORK_VERIFICATION).first('*').where('token', token);
+
+  return nik.then(network => {
+    console.log('network', network);
+    if (!network || !network.id) {
+      throw 'Bad token';
+    } else {
+      return Promise.all([
+        db(TABLES.PROFILES)
+          .update('network_id', network.network_id)
+          .where('user_id', network.user_id),
+
+        db(TABLES.NETWORK_VERIFICATION)
+          .update('verification', 1)
+          .where('token', token)
+      ]);
+    }
+  });
 };
