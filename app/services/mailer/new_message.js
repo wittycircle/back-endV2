@@ -84,13 +84,7 @@ const new_message = () => {
     sender_id,
     members,
     'r.id as roomId',
-    'rs.id as status_id',
-    's.first_name',
-    's.last_name',
-    's.city',
-    's.country',
-    's.state',
-    's.picture'
+    'rs.id as status_id'
   ];
   let q = db
     .distinct(selection)
@@ -100,14 +94,16 @@ const new_message = () => {
     .join(TABLES.ROOM_MEMBERS + ' as rm', 'rm.room_id', 'r.id')
     .join(TABLES.USERS + ' as u', 'u.id', 'rm.user_id')
     .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
-    .join(sender, 's.uid', 'm.user_id')
     .where('rs.read', 0)
     .andWhere('rs.mail_sent', 0)
     .whereRaw('rs.creation_date <= DATE_SUB(NOW(),INTERVAL 2 HOUR)')
     .groupBy('r.id')
-    .limit(5);
+    .limit(5)
+    .as('enroule');
   //
-  q.then(r => {
+  const qq = db(q).join(sender, 's.uid', 'enroule.sender').select('*');
+
+  qq.then(r => {
     r.forEach(e => {
       e.members = e.members
         .split('|')
