@@ -265,7 +265,7 @@ exports.likeProject = (req, res, next) => {
         req.broadcastEvent('add_points', { user_id: req.user.id, points: -15 });
         res.send({ success: true, type: 'Unlike' });
       } else {
-        req.broadcastEvent('follow_project', {
+        req.broadcastEvent('mailer_follow_project', {
           user_id: req.user.id,
           project_id: req.params.id
         });
