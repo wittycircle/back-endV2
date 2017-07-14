@@ -74,13 +74,13 @@ exports.updateProfileFromLinkedin = (req, res, next) => {
       redis.set(`linkedin:${req.user.id}`, JSON.stringify(p));
       return p;
     })
-    .then(({ skills, summary, experiences }) =>
+    .then(({skills, summary, tagLine, experiences}) =>
       Promise.all([
         addExperienceToUser(req.user.id)(buildExperiences(experiences)),
         addSkillsToUser(req.user.id)(skills),
         profiles.updateProfile(
           {
-            description: summary
+            description: summary | tagLine
           },
           undefined, //location
           {
