@@ -78,7 +78,7 @@ exports.activate = (req, res, next) => {
 exports.resetPassword = (req, res, next) => {
   const password = bcrypt.hashSync(req.body.password);
   account
-    .resetPassword(req.params.token, req.body.email, password)
+    .resetPassword(req.params.token, password)
     .then(r => {
       res.send({ success: true });
     })
