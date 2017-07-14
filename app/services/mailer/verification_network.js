@@ -26,7 +26,7 @@ const send_mail = (data, name) => {
   let sub = {
     '*|FFNAME|*': name,
     '*|NETWORK|*': data.network,
-    '*|LINK|*': wm.url(`network/validation/${data.token}`)
+    '*|LINK|*': wm.url(`validation/network/${data.token}`)
   };
   console.log(sub);
   console.log('\n-------------------------------------------------\n');
