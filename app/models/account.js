@@ -53,7 +53,9 @@ const wrapUrl = (rawUrl, opts) => {
 
 const social_helper = {
   facebook: data =>
-    upload(wrapUrl(data.photos[0].value, {width: 200, height: 200})).then(result => {
+    upload(
+      wrapUrl(data.photos[0].value, { width: 200, height: 200 })
+    ).then(result => {
       console.log('data', data);
       console.log('data.photos', data.photos);
       console.log('UPLOAD result', result);
@@ -82,7 +84,7 @@ const social_helper = {
     }),
   google: data => {
     data = JSON.parse(data._raw);
-    return upload(wrapUrl(data.image.url), {sz: 200}).then(result => {
+    return upload(wrapUrl(data.image.url), { sz: 200 }).then(result => {
       console.log('data', data);
       console.log('UPLOAD result', result);
 
