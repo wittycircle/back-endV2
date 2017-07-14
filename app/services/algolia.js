@@ -20,7 +20,8 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 
   Promise.all([
     db(h.spe_profile({ 'u.fake': 0 }).select('u.fake'))
-      .select('*')
+      .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+      .select('p.*', h.format_location)
       .then(profiles => {
         storage.profiles = profiles;
         client.deleteIndex('Users', err => {
