@@ -95,22 +95,22 @@ exports.sendVerifyNetwork = data => {
 };
 
 exports.validateNetwork = token => {
-  const nik = db(TABLES.NETWORK_VERIFICATION).first('*').where('token', token);
+  return db(TABLES.NETWORK_VERIFICATION)
+    .first('*')
+    .where('token', token)
+    .then(network => {
+      if (!network || !network.id) {
+        throw 'Bad token';
+      } else {
+        return Promise.all([
+          db(TABLES.PROFILES)
+            .update('network_id', network.network_id)
+            .where('user_id', network.user_id),
 
-  return nik.then(network => {
-    console.log('network', network);
-    if (!network || !network.id) {
-      throw 'Bad token';
-    } else {
-      return Promise.all([
-        db(TABLES.PROFILES)
-          .update('network_id', network.network_id)
-          .where('user_id', network.user_id),
-
-        db(TABLES.NETWORK_VERIFICATION)
-          .update('verification', 1)
-          .where('token', token)
-      ]);
-    }
-  });
+          db(TABLES.NETWORK_VERIFICATION)
+            .update('verification', 1)
+            .where('token', token)
+        ]);
+      }
+    });
 };

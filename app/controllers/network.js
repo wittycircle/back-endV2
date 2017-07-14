@@ -104,7 +104,6 @@ exports.validateNetwork = (req, res, next) => {
   network
     .validateNetwork(req.params.token.trim())
     .then(r => {
-      console.log('r', r);
       res.send({ success: true });
     })
     .catch(err => next([err, 'Invalid request']));
