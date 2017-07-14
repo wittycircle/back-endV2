@@ -32,6 +32,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "prerender-node": "^2.7.1",
+    "query-string": "^4.3.4",
     "redis": "^2.6.5",
     "redis-sessions": "^1.1.0",
     "satelize": "^0.2.0",

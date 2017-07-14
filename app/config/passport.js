@@ -82,6 +82,7 @@ module.exports = function(passport) {
         ]
       },
       (req, accessToken, refreshToken, profile, done) => {
+	  profile.accessToken = accessToken; // ici je passe accessToken au profile
         users
           .getUserBySocialId(profile.id, 'facebook')
           .then(user => oauth_helper.logon(req, user, profile, 'facebook'))
