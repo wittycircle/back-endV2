@@ -16,7 +16,7 @@ router
 
 router
   .route('/networks/join/:token')
-  .post(/*auth(AUTH.PRIVATE),*/ network.validateNetwork);
+  .post(auth(AUTH.PRIVATE), network.validateNetwork);
 //token is validation enough ?
 
 router.route('/networks/admin/:token').get(network.getFromToken);

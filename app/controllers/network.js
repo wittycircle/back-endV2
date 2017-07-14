@@ -89,7 +89,7 @@ exports.sendVerifyNetwork = (req, res, next) => {
     token: crypto.randomBytes(40).toString('hex'),
     email: req.body.email,
     network: req.body.network,
-    user_id: 1 //req.user.id
+    user_id: req.user.id
   };
   network
     .sendVerifyNetwork(data)
