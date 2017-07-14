@@ -273,7 +273,7 @@ exports.resetPassword = (token, password) => {
     .then(r => {
       if (!r) throw 'bad token';
       else {
-        return db(TABLES.USERS).update({ password }).where('id', r.id);
+        return db(TABLES.USERS).update({ password }).where('id', r.user_id);
       }
     });
 };
