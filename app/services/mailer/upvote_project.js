@@ -22,7 +22,7 @@ const upvote_project = args => {
   const toUsers = db
     .select(common_array)
     .from(TABLES.USERS + ' as u')
-    .join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
+    .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
     .join(TABLES.PROJECTS + ' as pr', 'pr.user_id', 'u.id')
     .leftJoin(wm.notif('follow_project'), 'n.user_id', 'u.id')
     .where('pr.id', args.project_id);
