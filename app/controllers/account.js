@@ -50,7 +50,6 @@ exports.register = (req, res, next) => {
         mailer.welcome({ email: req.body.account.email });
 
         if (verify) {
-          console.log('verify', verify);
           req.broadcastEvent('add_points', {
             user_id: verify[0],
             points: 500
