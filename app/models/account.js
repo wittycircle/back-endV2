@@ -268,7 +268,7 @@ exports.register = (data, token) => {
 
 exports.resetPassword = (token, password) => {
   return db(TABLES.RESET_PASSWORDS)
-    .first('id')
+    .first('user_id')
     .where({ token: token })
     .then(r => {
       if (!r) throw 'bad token';
