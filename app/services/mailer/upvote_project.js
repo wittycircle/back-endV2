@@ -18,13 +18,11 @@ const upvote_project = args => {
     .where('id', args.project_id);
 
   common_array = ['u.id', 'u.email', 'p.first_name'];
-  const category = new helper.Category('upvote_project');
-  mail.addCategory(category);
 
   const toUsers = db
     .select(common_array)
     .from(TABLES.USERS + ' as u')
-    .join(TABLES.USER_PROFILES + ' as p', 'p.user_id', 'u.id')
+    .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
     .join(TABLES.PROJECTS + ' as pr', 'pr.user_id', 'u.id')
     .leftJoin(wm.notif('follow_project'), 'n.user_id', 'u.id')
     .where('pr.id', args.project_id);
@@ -36,6 +34,9 @@ const upvote_project = args => {
       console.log('T ', t);
       let mail = new helper.Mail(),
         pers = new helper.Personalization();
+
+      const category = new helper.Category('upvote_project');
+      mail.addCategory(category);
       wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
       wm.content(mail);
       wm.reply(mail, 'noreply@wittycircle.com');

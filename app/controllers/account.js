@@ -50,7 +50,6 @@ exports.register = (req, res, next) => {
         mailer.welcome({ email: req.body.account.email });
 
         if (verify) {
-          console.log('verify', verify);
           req.broadcastEvent('add_points', {
             user_id: verify[0],
             points: 500
@@ -79,7 +78,7 @@ exports.activate = (req, res, next) => {
 exports.resetPassword = (req, res, next) => {
   const password = bcrypt.hashSync(req.body.password);
   account
-    .resetPassword(req.params.token, req.body.email, password)
+    .resetPassword(req.params.token, password)
     .then(r => {
       res.send({ success: true });
     })

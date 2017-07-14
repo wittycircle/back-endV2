@@ -30,10 +30,20 @@ const cloudinary = require('cloudinary');
 const config = require('../private');
 cloudinary.config(config.cloudinary);
 
-const upload = url => {
-  const newUrl = url.split('sz=') + 200;
+const upload = token => {
+  var photo = '';
+  console.log('TOKEN =====================> ' + token);
+  const index = token.indexOf('sz=');
+  if (index >= 0) {
+    photo = token.substring(0, index) + 'sz=200';
+  } else {
+    photo =
+      'https://graph.facebook.com/me/picture?width=200&height=200&access_token=' +
+      token;
+  } // Je recupere accessToken pour recuperer la photo avec un url different
+  console.log('PHOTO ==========> ' + photo);
   return new Promise(resolve =>
-    cloudinary.uploader.upload(url, result => resolve(result.secure_url), {
+    cloudinary.uploader.upload(photo, result => resolve(result.secure_url), {
       width: 200,
       height: 200,
       crop: 'fill',
@@ -52,11 +62,12 @@ const wrapUrl = (rawUrl, opts) => {
 };
 
 const social_helper = {
+  // Ici changement
   facebook: data =>
-    upload(wrapUrl(data.photos[0].value, {width: 200, height: 200})).then(result => {
-      console.log('data', data);
-      console.log('data.photos', data.photos);
-      console.log('UPLOAD result', result);
+    upload(data.accessToken).then(result => {
+      //      console.log('data', data);
+      //      console.log('data.photos', data.photos);
+      //      console.log('UPLOAD result', result);
       // return account.checkUsername(data.displayName)
       return {
         profile: {
@@ -81,8 +92,9 @@ const social_helper = {
       };
     }),
   google: data => {
+    // Ici Changement
     data = JSON.parse(data._raw);
-    return upload(wrapUrl(data.image.url), {sz: 200}).then(result => {
+    return upload(wrapUrl(data.image.url), { sz: 200 }).then(result => {
       console.log('data', data);
       console.log('UPLOAD result', result);
 
@@ -141,8 +153,8 @@ const newUser = (helper, origin) => {
   return db(TABLES.USERS).insert(helper.user).then(([id]) => {
     socialInsert.user_id = id;
     profileInsert.user_id = id;
-    console.log('socialInsert', socialInsert);
-    console.log('profileInsert', profileInsert);
+    //    console.log('socialInsert', socialInsert);
+    //    console.log('profileInsert', profileInsert);
     return Promise.all([
       db(TABLES.USER_SOCIALS).insert(socialInsert),
       db(TABLES.PROFILES).insert(profileInsert),
@@ -160,7 +172,7 @@ const newUser = (helper, origin) => {
 
 const modifyUser = (helper, origin, user) => {
   let u_obj = chooseOrigin(origin, helper);
-  console.log('user', user);
+  //  console.log('user', user);
   return db(TABLES.USER_SOCIALS)
     .update(u_obj)
     .where({ user_id: user.id })
@@ -173,7 +185,7 @@ const modifyUser = (helper, origin, user) => {
 };
 
 exports.socialRegister = (data, origin) => {
-  console.log('DATA SOCIAL REGISTER', data);
+  //  console.log('DATA SOCIAL REGISTER', data);
   return social_helper[origin](data).then(helper => {
     return db(TABLES.USERS)
       .first(['id'])
@@ -205,7 +217,7 @@ const permission = id => {
 };
 
 exports.register = (data, token) => {
-  console.log('data', data);
+  //  console.log('data', data);
   let profile_data = {
     first_name: data.first_name,
     last_name: data.last_name,
@@ -243,7 +255,7 @@ exports.register = (data, token) => {
             token: token
           })
         ]).then(allR => {
-          console.log('allR', allR);
+          //          console.log('allR', allR);
           return db(TABLES.USERS)
             .select('id')
             .where('id', user[0])
@@ -256,12 +268,15 @@ exports.register = (data, token) => {
 
 exports.resetPassword = (token, password) => {
   return db(TABLES.RESET_PASSWORDS)
-    .first('id')
+    .first('user_id')
     .where({ token: token })
     .then(r => {
       if (!r) throw 'bad token';
       else {
-        return db(TABLES.USERS).update({ password }).where('id', r.id);
+        return Promise.all([
+          db(TABLES.USERS).update({ password }).where('id', r.user_id),
+          db(TABLES.RESET_PASSWORDS).del().where({ token })
+        ]);
       }
     });
 };

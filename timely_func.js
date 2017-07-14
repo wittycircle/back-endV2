@@ -34,7 +34,7 @@ let viewers = () => {
   return Promise.all([
     db('users as u')
       .leftJoin(subViewers, 'u.id', 'v.viewed')
-      .distinct('u.id', db.raw('GROUP_CONCAT(v.user_id) deja_vu'))
+      .distinct('u.id', db.raw('GROUP_CONCAT(distinct v.user_id) deja_vu'))
       .countDistinct('v.user_id as notif')
       .groupBy('u.id')
       .having('notif', '<', '5')
@@ -60,7 +60,7 @@ let viewers = () => {
       })
   ]).then(r => {
     const from = r[1].map(e => e.uid);
-    const to = r[0].map(e => e.viewed);
+    const to = r[0].map(e => e.id);
     console.log({ 'from.length': from.length, firstElement: from[0] });
     console.log({ 'to.length': to.length, firstElement: to[0] });
     return bot(from, to, {

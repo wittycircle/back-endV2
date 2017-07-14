@@ -97,12 +97,12 @@ exports.sendVerifyNetwork = (req, res, next) => {
       mailer.verification_network(data);
       res.send({ success: true });
     })
-    .catch(err => next([err, 'bad email']));
+    .catch(err => next([err, err]));
 };
 
 exports.validateNetwork = (req, res, next) => {
   network
-    .validateNetwork(req.params.token)
+    .validateNetwork(req.params.token.trim())
     .then(r => {
       res.send({ success: true });
     })
