@@ -83,10 +83,10 @@ exports.sendVerifyNetwork = data => {
     user_id: data.user_id
   };
   return h.exist(TABLES.USERS, data.user_id).then(r => {
-    if (!r.length) throw 'Invalid user_id';
+     if (!r.length) throw 'Invalid user_id';
     return db('networks_list as nl')
       .first('id')
-      .whereRaw(`name like ${data.network}`)
+      .whereRaw("name like '%" + data.network +"%'") // Typo, modify by Jay 07/17/2017
       .then(nr => {
         dataInsert.network_id = nr.id || 1;
         return db(TABLES.NETWORK_VERIFICATION).insert(dataInsert);
