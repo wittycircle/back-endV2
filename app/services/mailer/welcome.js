@@ -9,7 +9,7 @@ args: {
 }
 */
 
-const send_mail = (email, data) => {
+const send_mail = (email, data, token) => {
   let mail = new helper.Mail();
   wm.from(mail, 'quentin@wittycircle.com', 'Quentin Verriere');
   wm.content(mail);
@@ -21,7 +21,8 @@ const send_mail = (email, data) => {
   let pers = new helper.Personalization();
   let subject = 'Welcome to Wittycircle';
   let sub = {
-    '*|FNAME|*': data
+    '*|FNAME|*': data,
+    '*|LINK|*': wm.url(`/validation/account/${data.token}`)
   };
   // console.log(sub)
   // console.log("\n-------------------------------------------------\n")
@@ -40,7 +41,9 @@ const welcome = args => {
     .join(TABLES.PROFILES + ' as p', 'u.id', 'p.user_id')
     .where('u.email', args.email);
 
-  return request.then(username => send_mail(args.email, username.username));
+  return request.then(username =>
+    send_mail(args.email, username.username, args.token)
+  );
 }; //exports
 
 module.exports = welcome;
