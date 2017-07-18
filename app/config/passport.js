@@ -3,6 +3,7 @@
  */
 
 'use strict';
+const mailer = require('../services/mailer');
 
 const Strategy = {
   local: require('passport-local').Strategy,
@@ -55,6 +56,7 @@ module.exports = function(passport) {
           email: user.email
         };
       } else {
+        mailer.welcome({ email: user.email, token: 'social' });
         return account.socialRegister(profile, origin).then(r => r);
       }
     }
@@ -82,7 +84,7 @@ module.exports = function(passport) {
         ]
       },
       (req, accessToken, refreshToken, profile, done) => {
-	  profile.accessToken = accessToken; // ici je passe accessToken au profile
+        profile.accessToken = accessToken; // ici je passe accessToken au profile
         users
           .getUserBySocialId(profile.id, 'facebook')
           .then(user => oauth_helper.logon(req, user, profile, 'facebook'))
@@ -94,8 +96,6 @@ module.exports = function(passport) {
       }
     )
   );
-
-  const mailer = require('../services/mailer');
 
   passport.use(
     new Strategy.google(

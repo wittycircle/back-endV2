@@ -128,7 +128,8 @@ module.exports.TEMPLATES = {
   // validation-network: ,
   verification_network: '9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
   profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
-  welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553'
+  welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553',
+  welcomeGmail: 'db22f7ec-1af2-4bc9-b700-03f8ac068861'
 };
 
 /*
