@@ -5,8 +5,8 @@
 const { redis } = require('../models');
 
 const keys = {
-  ranks: 'ranking',
-  userRank: id => `user:${id}:points`
+	ranks: 'ranking',
+	userRank: id => `user:${id}:points`
 };
 
 /**
@@ -32,4 +32,4 @@ exports.set = (id, score) => redis.zadd(keys.ranks, score, id);
 exports.incr = (id, quantity) => redis.zincrby(keys.ranks, quantity, id);
 
 exports.getPointHistory = (id, from, to = -1) =>
-  redis.zrange(keys.userRank(id), from, to === -1 ? Date.now() : to);
+	redis.zrange(keys.userRank(id), from, to === -1 ? Date.now() : to);

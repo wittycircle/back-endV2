@@ -5,9 +5,9 @@
 'use strict';
 
 const express = require('express'),
-    router = express.Router(),
-    {auth, AUTH} = require('../services/auth'),
-    upload = require('../controllers/upload');
+		router = express.Router(),
+		{auth, AUTH} = require('../services/auth'),
+		upload = require('../controllers/upload');
 
 router.post('/upload/project/cover', auth(AUTH.PRIVATE), upload.uploadProjectCover);
 router.post('/upload/project/cover_card', auth(AUTH.PRIVATE), upload.uploadProjectCard);

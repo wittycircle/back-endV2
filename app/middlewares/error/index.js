@@ -9,13 +9,13 @@
  */
 
 const _ = require('lodash'),
-    pretty = require('prettyjson');
+		pretty = require('prettyjson');
 
 const create_error = (name, description) => {
-    return {
-        error: name,
-        description: description
-    }
+		return {
+				error: name,
+				description: description
+		}
 };
 
 /**
@@ -44,25 +44,25 @@ const create_error = (name, description) => {
  */
 
 exports.error = (err, req, res, next) => {
-    if (_.isArray(err))
-        res.status(404).send(create_error(err[0], err[1]));
-    else if (typeof err.error === 'string')
-        res.status(404).send(create_error('resource.not.found', err.error));
-    else if (typeof err.code !== 'undefined') {
-        if (typeof err.sqlState !== 'undefined') {
-            res.status(500).send({success: false});
-            console.error(err)
-            // console.error(pretty.render(JSON.parse(err)));
-        }
-        else if (typeof err.error !== 'undefined' || typeof err.error_description !== 'undefined')
-            res.status(err.code).send(err);
-        else {
-            res.status(err.code).send({success: false});
-            console.error(err);
-        }
-    }
-    else {
-        res.send(err).status(400);
-        console.error(err);
-    }
+		if (_.isArray(err))
+				res.status(404).send(create_error(err[0], err[1]));
+		else if (typeof err.error === 'string')
+				res.status(404).send(create_error('resource.not.found', err.error));
+		else if (typeof err.code !== 'undefined') {
+				if (typeof err.sqlState !== 'undefined') {
+						res.status(500).send({success: false});
+						console.error(err)
+						// console.error(pretty.render(JSON.parse(err)));
+				}
+				else if (typeof err.error !== 'undefined' || typeof err.error_description !== 'undefined')
+						res.status(err.code).send(err);
+				else {
+						res.status(err.code).send({success: false});
+						console.error(err);
+				}
+		}
+		else {
+				res.send(err).status(400);
+				console.error(err);
+		}
 };

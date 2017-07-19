@@ -10,18 +10,18 @@
  * @param data
  */
 exports.promisify = (fn, data) => {
-    return new Promise((resolve, reject) => {
-        if (typeof fn !== 'function') reject('fn must be a function');
-        if (typeof data === 'undefined') {
-            fn((err, res) => {
-                if (err) reject(err);
-                else resolve(res);
-            });
-        } else {
-            fn(data, (err, res) => {
-                if (err) reject(err);
-                else resolve(res);
-            })
-        }
-    })
+	return new Promise((resolve, reject) => {
+		if (typeof fn !== 'function') reject('fn must be a function');
+		if (typeof data === 'undefined') {
+			fn((err, res) => {
+					if (err) reject(err);
+					else resolve(res);
+			});
+		} else {
+			fn(data, (err, res) => {
+					if (err) reject(err);
+					else resolve(res);
+			})
+		}
+	})
 };

@@ -7,35 +7,35 @@
 //     .filter(filt);
 
 const files = [
-  'ask_project',
-  'invite_team',
-  'invite_user',
-  'new_message',
-  'new_project',
-  'profile_views',
-  'reply_project',
-  'reset_password',
-  'suggestion_profile',
-  'uc_invitation',
-  'upvote_project',
-  'user_follow',
-  'validate_account',
-  'verification_network',
-  'welcome',
-  'admin_invite'
+	'ask_project',
+	'invite_team',
+	'invite_user',
+	'new_message',
+	'new_project',
+	'profile_views',
+	'reply_project',
+	'reset_password',
+	'suggestion_profile',
+	'uc_invitation',
+	'upvote_project',
+	'user_follow',
+	'validate_account',
+	'verification_network',
+	'welcome',
+	'admin_invite'
 ];
 
 let mails = {};
 
 if (process.env.NODE_ENV === 'development') {
-  files.forEach(e => {
-    mails[e] = args => console.log(`no [ ${e} ] mail, dev environment`);
-  });
+	files.forEach(e => {
+		mails[e] = args => console.log(`no [ ${e} ] mail, dev environment`);
+	});
 } else {
-  // ------------------ PROD ENVIRONMENT ------------------
-  files.forEach(e => {
-    mails[e] = args => require(`./${e}`)(args);
-  });
+	// ------------------ PROD ENVIRONMENT ------------------
+	files.forEach(e => {
+		mails[e] = args => require(`./${e}`)(args);
+	});
 }
 
 // ------------------ DEV ENVIRONMENT ------------------

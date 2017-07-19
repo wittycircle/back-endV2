@@ -1,6 +1,6 @@
 const express = require('express'),
-    router = express.Router(),
-    skills = require('../controllers/skills');
+		router = express.Router(),
+		skills = require('../controllers/skills');
 
 router.route('/skills')
 	.get(skills.getSkillList)

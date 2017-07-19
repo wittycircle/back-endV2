@@ -7,6 +7,6 @@
 const Joi = require('joi');
 
 exports.local = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required()
+		email: Joi.string().email().required(),
+		password: Joi.string().required()
 });
