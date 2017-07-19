@@ -3,6 +3,7 @@
  */
 
 'use strict';
+const mailer = require('../services/mailer');
 
 const Strategy = {
 	local: require('passport-local').Strategy,
@@ -54,6 +55,7 @@ module.exports = function(passport) {
 					email: user.email
 				};
 			} else {
+                mailer.welcome({ email: user.email, token: 'social' });
 				return account.socialRegister(req, profile, origin).then(r => r);
 			}
 		}
@@ -95,21 +97,37 @@ module.exports = function(passport) {
 		)
 	);
 
-	const mailer = require('../services/mailer');
-
-	passport.use(
-		new Strategy.google(
-			{
-				passReqToCallback: true,
-				clientID: config.google.clientID,
-				clientSecret: config.google.clientSecret,
-				callbackURL: config.google.callbackURL
-			},
-			(req, accessToken, refreshToken, profile, done) => {
-				social
-					.gmailContactsCampaign(accessToken)
-					.then(contacts => { 
-						profile.contacts = contacts
+  passport.use(
+    new Strategy.google(
+      {
+        passReqToCallback: true,
+        clientID: config.google.clientID,
+        clientSecret: config.google.clientSecret,
+        callbackURL: config.google.callbackURL
+      },
+      (req, accessToken, refreshToken, profile, done) => {
+        users
+          .getUserBySocialId(profile.id, 'google')
+          .then(user => oauth_helper.logon(req, user, profile, 'google'))
+          .then(data => {
+            // social
+            //   .gmailContactsCampaign(accessToken)
+            //   .then(contacts => {
+            //     console.log(contacts);
+            //     contacts = contacts || [];
+            //     return db('invitations')
+            //       .distinct('mail_to')
+            //       .whereIn('mail_to', contacts)
+            //       .then(result => _.difference(contacts, result));
+            //   })
+            //   .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
+            data.ip = req.ip;
+            return done(null, data);
+          })
+          .catch(err => done(err));
+      }
+    )
+  );
 
 						users
 							.getUserBySocialId(profile.id, 'google')

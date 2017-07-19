@@ -43,11 +43,11 @@ exports.register = (req, res, next) => {
 		account
 			.register(data, token)
 			.then(([r, verify]) => {
-				mailer.validate_account({
+				/*mailer.validate_account({
 					token: token,
 					email: req.body.account.email
-				});
-				mailer.welcome({ email: req.body.account.email });
+				});*/
+                  mailer.welcome({ email: req.body.account.email, token: token });
 
 				if (verify) {
 					req.broadcastEvent('add_points', {
