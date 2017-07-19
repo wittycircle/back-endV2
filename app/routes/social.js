@@ -8,10 +8,10 @@ const social = require('../controllers/social');
 const { auth, AUTH } = require('../services/auth');
 
 router.route('/social/linkedin')
-    .post(auth(AUTH.PRIVATE), social.updateProfileFromLinkedin);
+		.post(auth(AUTH.PRIVATE), social.updateProfileFromLinkedin);
 
 router.route('/social/google')
-    .post(auth(AUTH.PRIVATE), social.InviteFriendsFromGoogle);
+		.post(auth(AUTH.PRIVATE), social.InviteFriendsFromGoogle);
 
 
 module.exports = router;

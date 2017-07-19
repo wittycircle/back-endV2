@@ -12,61 +12,61 @@ args: {
 */
 
 const upvote_project = args => {
-  const fromUser = h.spe_profile({ 'u.id': args.user_id });
-  const fromProject = db(TABLES.PROJECTS)
-    .first('title')
-    .where('id', args.project_id);
+	const fromUser = h.spe_profile({ 'u.id': args.user_id });
+	const fromProject = db(TABLES.PROJECTS)
+		.first('title')
+		.where('id', args.project_id);
 
-  common_array = ['u.id', 'u.email', 'p.first_name'];
+	common_array = ['u.id', 'u.email', 'p.first_name'];
 
-  const toUsers = db
-    .select(common_array)
-    .from(TABLES.USERS + ' as u')
-    .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
-    .join(TABLES.PROJECTS + ' as pr', 'pr.user_id', 'u.id')
-    .leftJoin(wm.notif('follow_project'), 'n.user_id', 'u.id')
-    .where('pr.id', args.project_id);
+	const toUsers = db
+		.select(common_array)
+		.from(TABLES.USERS + ' as u')
+		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
+		.join(TABLES.PROJECTS + ' as pr', 'pr.user_id', 'u.id')
+		.leftJoin(wm.notif('follow_project'), 'n.user_id', 'u.id')
+		.where('pr.id', args.project_id);
 
-  return Promise.all([fromUser, fromProject, toUsers])
-    .then(([[f], p, [t]]) => {
-      console.log('F ', f);
-      console.log('P ', p);
-      console.log('T ', t);
-      let mail = new helper.Mail(),
-        pers = new helper.Personalization();
+	return Promise.all([fromUser, fromProject, toUsers])
+		.then(([[f], p, [t]]) => {
+			console.log('F ', f);
+			console.log('P ', p);
+			console.log('T ', t);
+			let mail = new helper.Mail(),
+				pers = new helper.Personalization();
 
-      const category = new helper.Category('upvote_project');
-      mail.addCategory(category);
-      wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
-      wm.content(mail);
-      wm.reply(mail, 'noreply@wittycircle.com');
-      mail.setTemplateId(TEMPLATES.upvote_project);
-      // t.forEach(t => {
-      let subject = '*|FFNAME|* *|FLNAME|* upvoted *|FTITLE|*';
-      let sub = {
-        '*|FNAME|*': t.first_name,
-        '*|FFNAME|*': f.first_name,
-        '*|FLNAME|*': f.last_name,
-        '*|FIMG|*': wm.transform(f.picture),
-        '*|FDESC|*': wm.truncate(f.description),
-        '*|FLOC|*': wm.location(f),
-        '*|FURL|*': wm.url(f.username),
-        '*|FTITLE|*': p.title
-      };
-      // console.log(sub)
-      // console.log("\n*|-------------------------------\n")
-      // console.log(f)
-      wm.to(pers, t.email);
-      wm.substitutions(pers, sub);
-      wm.subject(pers, subject);
-      mail.addPersonalization(pers);
+			const category = new helper.Category('upvote_project');
+			mail.addCategory(category);
+			wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+			wm.content(mail);
+			wm.reply(mail, 'noreply@wittycircle.com');
+			mail.setTemplateId(TEMPLATES.upvote_project);
+			// t.forEach(t => {
+			let subject = '*|FFNAME|* *|FLNAME|* upvoted *|FTITLE|*';
+			let sub = {
+				'*|FNAME|*': t.first_name,
+				'*|FFNAME|*': f.first_name,
+				'*|FLNAME|*': f.last_name,
+				'*|FIMG|*': wm.transform(f.picture),
+				'*|FDESC|*': wm.truncate(f.description),
+				'*|FLOC|*': wm.location(f),
+				'*|FURL|*': wm.url(f.username),
+				'*|FTITLE|*': p.title
+			};
+			// console.log(sub)
+			// console.log("\n*|-------------------------------\n")
+			// console.log(f)
+			wm.to(pers, t.email);
+			wm.substitutions(pers, sub);
+			wm.subject(pers, subject);
+			mail.addPersonalization(pers);
 
-      // })//foreach
+			// })//foreach
 
-      wm.send(mail, 'upvote_project');
-      return null;
-    })
-    .catch(console.error); //then
+			wm.send(mail, 'upvote_project');
+			return null;
+		})
+		.catch(console.error); //then
 }; //exports
 module.exports = upvote_project;
 

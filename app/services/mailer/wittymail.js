@@ -4,42 +4,42 @@ const config = require('../../private');
 const _ = require('lodash');
 
 const subst = (pers, obj) => {
-  for (let key in obj) {
-    pers.addSubstitution(new helper.Substitution(key, obj[key]));
-  }
+	for (let key in obj) {
+		pers.addSubstitution(new helper.Substitution(key, obj[key]));
+	}
 };
 
 const sect = (section, obj) => {
-  for (let key in obj) {
-    section.addSubstitution(new helper.Substitution(key, obj[key]));
-  }
+	for (let key in obj) {
+		section.addSubstitution(new helper.Substitution(key, obj[key]));
+	}
 };
 
 const subject = (mail, pers, subject) => {
-  mail.setSubject(subject), pers.setSubject(subject);
+	mail.setSubject(subject), pers.setSubject(subject);
 };
 
 const send = (mail, name = 'mail') => {
-  sg = require('sendgrid')(config.sendgrid.key); //real
-  // sg = require('sendgrid')(config.sequogrid.key); //test
+	sg = require('sendgrid')(config.sendgrid.key); //real
+	// sg = require('sendgrid')(config.sequogrid.key); //test
 
-  const request = sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/mail/send',
-    body: mail.toJSON()
-  });
+	const request = sg.emptyRequest({
+		method: 'POST',
+		path: '/v3/mail/send',
+		body: mail.toJSON()
+	});
 
-  sg.API(request, function(error, response) {
-    console.log('name', name);
-    console.log(mail.toJSON().personalizations);
-    console.log(response.statusCode);
-    console.log(response.body);
-    console.log(response.headers);
-  });
+	sg.API(request, function(error, response) {
+		console.log('name', name);
+		console.log(mail.toJSON().personalizations);
+		console.log(response.statusCode);
+		console.log(response.body);
+		console.log(response.headers);
+	});
 };
 
 const wm = {
-  content: mail => mail.addContent(new helper.Content('text/html', '<p></p>'))
+	content: mail => mail.addContent(new helper.Content('text/html', '<p></p>'))
 };
 
 wm.bcc = (pers, arr) => arr.map(r => pers.addBcc(new helper.Email(r)));
@@ -47,36 +47,36 @@ wm.from = (mail, email, name) => mail.setFrom(new helper.Email(email, name));
 wm.to = (pers, email, name) => pers.addTo(new helper.Email(email, name));
 wm.reply = (mail, email, name) => mail.setReplyTo(new helper.Email(email, name));
 wm.subject = (pers, subject) => {
-  pers.setSubject(subject);
+	pers.setSubject(subject);
 };
 wm.substitutions = subst;
 wm.section = sect;
 wm.send = send;
 wm.truncate = x => _.truncate(x, { length: 76, separator: ' ' });
 wm.location = e =>
-  e.city + ', ' + (e.country ? e.country : e.state ? e.state : '');
+	e.city + ', ' + (e.country ? e.country : e.state ? e.state : '');
 wm.url = spec =>
-  `https://www.wittycircle.com${spec[0] === '/' ? '' : '/'}${spec}`;
+	`https://www.wittycircle.com${spec[0] === '/' ? '' : '/'}${spec}`;
 
 // ------------------ db stuff ------------------
 wm.notif = type =>
-  db
-    .select('user_id')
-    .from(TABLES.NOTIF_PERM + ' as n')
-    .where('notif_type', type)
-    .andWhere('permission', 1)
-    .as('n');
+	db
+		.select('user_id')
+		.from(TABLES.NOTIF_PERM + ' as n')
+		.where('notif_type', type)
+		.andWhere('permission', 1)
+		.as('n');
 
 wm.transform = url => {
-  if (url && url.indexOf('cloudinary') >= 0) {
-    let tab, i, parameter, url_ret;
-    tab = url.split('/');
-    i = tab.indexOf('upload');
-    parameter = 'w_200,h_200,c_fill,g_face';
-    tab.splice(i + 1, 0, parameter);
-    url_ret = tab.join('/');
-    return url_ret;
-  } else return url;
+	if (url && url.indexOf('cloudinary') >= 0) {
+		let tab, i, parameter, url_ret;
+		tab = url.split('/');
+		i = tab.indexOf('upload');
+		parameter = 'w_200,h_200,c_fill,g_face';
+		tab.splice(i + 1, 0, parameter);
+		url_ret = tab.join('/');
+		return url_ret;
+	} else return url;
 };
 /*
 | profile_view   |
@@ -112,23 +112,23 @@ module.exports.wm = wm;
 // WITTY ACCOUNT
 
 module.exports.TEMPLATES = {
-  ask_project: '7eaa5daa-b30a-42a1-9e60-7b2b8082db2c',
-  upvote_project: 'fa4a9f30-0e19-4cbb-beb1-1f2609712da7',
-  invite_user: 'f77ff311-9f03-4283-8d1f-774c35d9b091',
-  invite_team: '49ba0c57-40e0-4cd5-89aa-f097b045fcd2',
-  new_message: '95f7509c-280e-42d0-8049-3959deed6261',
-  new_project: 'f6dad873-a71e-4051-9cce-fdfc4f49affc',
-  reply_project: '74de27df-bd29-43cf-9ff0-71a7384cb1cf',
-  reset_password: '4b0e4c39-1227-4c28-8536-b09b8f19e07b',
-  // suggestion_profile: ,
-  // suggestion_project: ,
-  uc_invitation: '7f8e9ed4-7b0a-412d-837e-6f88ad9cce5c',
-  user_follow: '082dea23-81c0-454a-9e60-ceff09d1bcdf',
-  validate_account: '61e506e0-18b4-4bae-825c-33c2aa3bf450',
-  // validation-network: ,
-  verification_network: '9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
-  profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
-  welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553'
+	ask_project: '7eaa5daa-b30a-42a1-9e60-7b2b8082db2c',
+	upvote_project: 'fa4a9f30-0e19-4cbb-beb1-1f2609712da7',
+	invite_user: 'f77ff311-9f03-4283-8d1f-774c35d9b091',
+	invite_team: '49ba0c57-40e0-4cd5-89aa-f097b045fcd2',
+	new_message: '95f7509c-280e-42d0-8049-3959deed6261',
+	new_project: 'f6dad873-a71e-4051-9cce-fdfc4f49affc',
+	reply_project: '74de27df-bd29-43cf-9ff0-71a7384cb1cf',
+	reset_password: '4b0e4c39-1227-4c28-8536-b09b8f19e07b',
+	// suggestion_profile: ,
+	// suggestion_project: ,
+	uc_invitation: '7f8e9ed4-7b0a-412d-837e-6f88ad9cce5c',
+	user_follow: '082dea23-81c0-454a-9e60-ceff09d1bcdf',
+	validate_account: '61e506e0-18b4-4bae-825c-33c2aa3bf450',
+	// validation-network: ,
+	verification_network: '9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
+	profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
+	welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553'
 };
 
 /*

@@ -1,8 +1,8 @@
 const express = require('express'),
-    router = express.Router(),
-    openings = require('../controllers/openings'),
-    {validate, validateParam, schemas} = require('../middlewares/validation'),
-    {auth, AUTH} = require('../services/auth');
+		router = express.Router(),
+		openings = require('../controllers/openings'),
+		{validate, validateParam, schemas} = require('../middlewares/validation'),
+		{auth, AUTH} = require('../services/auth');
 
 router.param('opening_id', validateParam(schemas.params.id));
 

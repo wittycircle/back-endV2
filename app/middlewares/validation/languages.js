@@ -5,7 +5,7 @@
 'use strict';
 
 exports.errors = {
-    root: 'value',
-    key: '"{{!key}}"',
+		root: 'value',
+		key: '"{{!key}}"',
 
 };
