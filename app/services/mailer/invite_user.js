@@ -5,6 +5,22 @@ const { db, TABLES } = require('../../models/index');
 const invitation = require('../../models/invitation');
 const _ = require('lodash');
 
+const updateInvitation = (uid, mails) => {
+	const parseMails = mails && mails[0] ? mails : JSON.parse(mails);
+	return db(TABLES.INVITATION)
+		.whereIn('mail_to', parseMails)
+		.del()
+		.then(r => {
+			let newArray = []
+			parseMails.forEach(mail => {
+				newArray.push({ user_id: uid, mail_to: mail });
+			});
+			if (newArray.length) 
+				return db.batchInsert('invitations', newArray)
+					.then(r => parseMails);
+		})
+}
+
 const send_mail = (data, sender, invite, category = false) => {
 	console.log('SEND MAIL CALLED');
 	let mail = new helper.Mail();
@@ -20,7 +36,6 @@ const send_mail = (data, sender, invite, category = false) => {
 	}
 
 	data.forEach((e, i) => {
-		console.log('IN DATA FOREACH');
 		let pers = new helper.Personalization();
 		let subject = sender.fullName + ' invited you to join Wittycircle';
 		let sub = {
@@ -34,7 +49,7 @@ const send_mail = (data, sender, invite, category = false) => {
 		};
 		wm.subject(pers, subject);
 		wm.to(pers, e);
-		console.log('PERS', pers);
+		// console.log('PERS', pers);
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 	});
@@ -42,6 +57,16 @@ const send_mail = (data, sender, invite, category = false) => {
 	return null;
 };
 // args{ mail: [], invite_id}
+
+const deleteGmailContacts = uid => {
+	db(TABLES.GMAILCONTACTS)
+		.where('user_id', uid)
+		.del()
+		.then( r => {
+			console.log('All mails have been deleted !');
+		})
+}
+
 const invite_user = args => {
 	let request = db
 		.distinct(
@@ -52,28 +77,37 @@ const invite_user = args => {
 		)
 		.from(TABLES.PROFILES + ' as p')
 		.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
-		.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id');
+		.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
+		.where('p.user_id', args.uid)
 
 	let invite = db(TABLES.USERS).first('invite_link').where('id', args.uid);
 
-	invitation.verifyInvite(args.mailList).then(verifiedEmails => {
-		if (!verifiedEmails || !verifiedEmails.length) {
-			console.log('All already invited, [verified emails is empty]');
-			return null;
-		}
-		let x = [];
-		verifiedEmails.map(e => x.push({ user_id: args.uid, mail_to: e }));
-
-		let table_invite = db.batchInsert('invitations', x);
-
-		return Promise.all([
-			table_invite,
-			request,
-			invite
-		]).then(([x, sender, invite]) =>
-			send_mail(verifiedEmails, sender[0], invite.invite_link, args.category)
-		);
-	});
+	if (args.checked) {
+		updateInvitation(args.uid, JSON.stringify(args.mailList)).then( emails => {
+			return Promise.all([
+				request,
+				invite
+			]).then(([sender, invite]) => {
+				deleteGmailContacts(args.uid);
+				send_mail(emails, sender[0], invite.invite_link, 'gmail_auth')
+			});
+		});
+	} else {
+		invitation.verifyInvite(args.mailList).then(verifiedEmails => {
+			if (!verifiedEmails || !verifiedEmails.length) {
+				console.log('All already invited, [verified emails is empty]');
+				return null;
+			}
+			updateInvitation(args.uid, verifiedEmails).then( emails => {
+				return Promise.all([
+					request,
+					invite
+				]).then(([sender, invite]) =>
+					send_mail(emails, sender[0], invite.invite_link, args.category)
+				);
+			})
+		});
+	}
 }; //exports
 
 module.exports = invite_user;

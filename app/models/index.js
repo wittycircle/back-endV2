@@ -65,6 +65,7 @@ exports.TABLES = {
 	INVITATION: 'invitations',
 	SKILLS: 'skills',
 	LOCATION: 'location',
+	GMAILCONTACTS: 'gmail_auth_contacts',
 	//            ***   Notifications    ***
 	NOTIF_PERM: 'notification_permission',
 	NOTIF_LIST: 'notification_list',

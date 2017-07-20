@@ -10,6 +10,8 @@ router.param('invite_id', validateParam(schemas.params.name));
 
 router.route('/invite/campaign').post(invitation.addInvitationNik);
 
+router.route('/invite/signup/google').get(auth(AUTH.PRIVATE), invitation.googleAuthInvitation);
+
 router
 	.route('/invite/:invite_id')
 	.get(invitation.getInvitation)

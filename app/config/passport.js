@@ -5,18 +5,19 @@
 'use strict';
 const mailer = require('../services/mailer');
 
-const Strategy = {
-	local: require('passport-local').Strategy,
+const Strategy 	= {
+	local 	: require('passport-local').Strategy,
 	facebook: require('passport-facebook').Strategy,
-	google: require('passport-google-oauth').OAuth2Strategy,
-	bearer: require('passport-http-bearer').Strategy
+	google 	: require('passport-google-oauth').OAuth2Strategy,
+	bearer 	: require('passport-http-bearer').Strategy
 },
-	_ = require('lodash'),
-	bcrypt = require('bcrypt-nodejs'),
-	session = require('../middlewares/session').session,
-	account = require('../models/account'),
-	users = require('../models/users'),
-	config = require('../private').social_auth; //automatically selects prod or dev config
+	_ 			= require('lodash'),
+	bcrypt 		= require('bcrypt-nodejs'),
+	session 	= require('../middlewares/session').session,
+	account 	= require('../models/account'),
+	users 		= require('../models/users'),
+	invitation 	= require('../models/invitation'),
+	config 		= require('../private').social_auth; //automatically selects prod or dev config
 
 const { db, TABLES } = require('../models');
 const social = require('../services/social');
@@ -97,61 +98,33 @@ module.exports = function(passport) {
 		)
 	);
 
-  passport.use(
-    new Strategy.google(
-      {
-        passReqToCallback: true,
-        clientID: config.google.clientID,
-        clientSecret: config.google.clientSecret,
-        callbackURL: config.google.callbackURL
-      },
-      (req, accessToken, refreshToken, profile, done) => {
-        users
-          .getUserBySocialId(profile.id, 'google')
-          .then(user => oauth_helper.logon(req, user, profile, 'google'))
-          .then(data => {
-            // social
-            //   .gmailContactsCampaign(accessToken)
-            //   .then(contacts => {
-            //     console.log(contacts);
-            //     contacts = contacts || [];
-            //     return db('invitations')
-            //       .distinct('mail_to')
-            //       .whereIn('mail_to', contacts)
-            //       .then(result => _.difference(contacts, result));
-            //   })
-            //   .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
-            data.ip = req.ip;
-            return done(null, data);
-          })
-          .catch(err => done(err));
-      }
-    )
-  );
+	passport.use(
+		new Strategy.google(
+		{
+			passReqToCallback: true,
+			clientID: config.google.clientID,
+			clientSecret: config.google.clientSecret,
+			callbackURL: config.google.callbackURL
+		},
+		(req, accessToken, refreshToken, profile, done) => {
 
-						users
-							.getUserBySocialId(profile.id, 'google')
-							.then(user => oauth_helper.logon(req, user, profile, 'google'))
-							.then(data => {
-								// social
-								// 	.gmailContactsCampaign(accessToken)
-								// 	.then(contacts => {
-								// 		console.log(contacts);
-										// contacts = contacts || [];
-										// return db('invitations')
-										// .distinct('mail_to')
-										// .whereIn('mail_to', contacts)
-										// .then(result => _.difference(contacts, result));
-									// })
-									// .then(mailList => mailer.invite_user({ mailList, uid: data.id }));
-								data.ip = req.ip;
-								return done(null, data);
-							})
-							.catch(err => done(err));
+			social.gmailContactsCampaign(accessToken)
+				.then(contacts => {
+					profile.contacts = contacts;
+					users
+						.getUserBySocialId(profile.id, 'google')
+						.then(user => oauth_helper.logon(req, user, profile, 'google'))
+						.then(data => {
+						    contacts = contacts || [];
+						    invitation.addGoogleContacts(data.id, contacts);
+							data.ip = req.ip;
+							return done(null, data);
 					})
-			}
-		)
-	);
+					.catch(err => done(err));
+			})
+			.catch(err => done(err));
+		}));
+
 
 	passport.use(
 		new Strategy.local(

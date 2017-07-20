@@ -60,4 +60,13 @@ exports.addInvitationNik = (req, res, next) => {
 		.catch(err => next(err));
 };
 
-exports.fromGmail = (req, res, next) => {};
+exports.googleAuthInvitation = (req, res, next) => {
+	invitation
+		.inviteFromGmailAuthContacts(req.user.id)
+		.then(r => {
+			if (r && r.length) {
+				mailer.invite_user({ uid: req.user.id, mailList: r, checked: true });
+				res.send({ success: true });
+			}
+		})
+};
