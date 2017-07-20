@@ -65,7 +65,7 @@ exports.addGoogleContacts = (uid, mails) => {
 		}
 	});
 	if (data.length) {
-		return db(TABLES.GMAILCONTACTS)
+		db(TABLES.GMAILCONTACTS)
 			.insert(data)
 			.then(r => console.log(r));
 	}
