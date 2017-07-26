@@ -18,8 +18,8 @@ const verifyInvite = (exports.verifyInvite = mails => {
 		});
 });
 
-const verifyUsers = () => {
-	return db.raw('SELECT `mail_to` FROM `gmail_auth_contacts` WHERE `mail_to` NOT IN (SELECT `email` FROM `users`)')
+const verifyUsers = uid => {
+	return db.raw('SELECT `mail_to` FROM `gmail_auth_contacts` WHERE `mail_to` NOT IN (SELECT `email` FROM `users`) AND user_id = ?', uid)
 		.then(r => {
 			const mails = r[0].map(a => a.mail_to);
 			return verifyInvite(mails);
@@ -74,6 +74,6 @@ exports.addGoogleContacts = (uid, mails) => {
 exports.inviteFromGmailAuthContacts = (uid) => {
 	return h.exist(TABLES.USERS, uid).then(r => {
 		if (!r.length) throw 'Unknown user';
-		return verifyUsers();
+		return verifyUsers(uid);
 	});
 }

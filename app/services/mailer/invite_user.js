@@ -6,7 +6,7 @@ const invitation = require('../../models/invitation');
 const _ = require('lodash');
 
 const updateInvitation = (uid, mails) => {
-	const parseMails = mails && mails[0] ? mails : JSON.parse(mails);
+	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
 	return db(TABLES.INVITATION)
 		.whereIn('mail_to', parseMails)
 		.del()
