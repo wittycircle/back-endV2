@@ -12,6 +12,7 @@ const updateInvitation = (uid, mails) => {
 		.del()
 		.then(r => {
 			let newArray = []
+			console.log('HELLO =====>' , parseMails);
 			parseMails.forEach(mail => {
 				newArray.push({ user_id: uid, mail_to: mail });
 			});
