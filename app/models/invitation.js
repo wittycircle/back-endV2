@@ -8,6 +8,8 @@ exports.getInvitation = id => {
 
 // DOUBLE CHECK 
 const verifyInvite = (exports.verifyInvite = mails => {
+	if (mails && !mails[0])
+		return []
 	return db(TABLES.INVITATION)
 		.distinct('mail_to')
 		.whereIn('mail_to', mails)
@@ -18,11 +20,13 @@ const verifyInvite = (exports.verifyInvite = mails => {
 		});
 });
 
-const verifyUsers = uid => {
-	return db.raw('SELECT `mail_to` FROM `gmail_auth_contacts` WHERE `mail_to` NOT IN (SELECT `email` FROM `users`) AND user_id = ?', uid)
-		.then(r => {
-			const mails = r[0].map(a => a.mail_to);
-			return verifyInvite(mails);
+const verifyUsers = mails => {
+	return db(TABLES.USERS)
+		.select('email')
+		.whereIn('email', mails)
+		.then(badMails => {
+			badMails = badMails.map(e => e.email);
+			return verifyInvite(_.difference(mails, badMails));
 		})
 }
 // END DOUBLE CHECK
@@ -30,12 +34,10 @@ const verifyUsers = uid => {
 exports.addInvitation = (uid, mails) => {
 	return h.exist(TABLES.USERS, uid).then(r => {
 		if (!r.length) throw 'Unknown user';
-		return verifyInvite(mails).then(verifiedEmails => {
+		return verifyUsers(mails).then(verifiedEmails => {
+			console.log(verifiedEmails);
 			if (!verifiedEmails.length) return 'All emails already invited';
-			let x = verifiedEmails.map(e => {
-				return { user_id: uid, mail_to: e };
-			});
-			return true;
+			return verifiedEmails;
 		});
 	});
 };
@@ -74,6 +76,11 @@ exports.addGoogleContacts = (uid, mails) => {
 exports.inviteFromGmailAuthContacts = (uid) => {
 	return h.exist(TABLES.USERS, uid).then(r => {
 		if (!r.length) throw 'Unknown user';
-		return verifyUsers(uid);
+		return db(TABLES.GMAILCONTACTS)
+			.select('mail_to')
+			.where('user_id', uid)
+			.then(r => {
+				return verifyUsers(r.map(e => e.mail_to));
+			})
 	});
 }

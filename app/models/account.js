@@ -94,6 +94,7 @@ const social_helper = {
 		// Ici Changement
 		data = JSON.parse(data._raw);
 		return upload(data.image.url).then(result => {
+			console.log(data.id);
 			return {
 				profile: {
 					google_id: data.id,

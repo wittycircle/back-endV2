@@ -18,7 +18,7 @@ exports.addInvitation = (req, res, next) => {
 			if (typeof r === 'string') {
 				res.send({ success: true, status: r });
 			} else {
-				mailer.invite_user({ uid: req.user.id, mailList: req.body.mail });
+				mailer.invite_user({ uid: req.user.id, mailList: r, type: 'invite_user' });
 				res.send({ success: true });
 			}
 		})
@@ -64,8 +64,8 @@ exports.googleAuthInvitation = (req, res, next) => {
 	invitation
 		.inviteFromGmailAuthContacts(req.user.id)
 		.then(r => {
-			if (r && r.length) {
-				mailer.invite_user({ uid: req.user.id, mailList: r, checked: true });
+			if (r.length) {
+				mailer.invite_user({ uid: req.user.id, mailList: r, type: 'gmail_auth' });
 				res.send({ success: true });
 			}
 		})

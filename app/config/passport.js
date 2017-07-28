@@ -47,7 +47,7 @@ module.exports = function(passport) {
 	);
 
 	const oauth_helper = {
-		logon: (req, user, profile, origin) => {
+		logon: (req, user, profile, origin, contacts) => {
 			if (user.length) {
 				user = user[0];
 				return {
@@ -57,7 +57,13 @@ module.exports = function(passport) {
 				};
 			} else {
                 mailer.welcome({ email: user.email, token: 'social' });
-				return account.socialRegister(req, profile, origin).then(r => r);
+				return account.socialRegister(req, profile, origin).then(r => {
+					if (origin === 'google') {
+						contacts = contacts || [];
+						invitation.addGoogleContacts(r.id, contacts);
+					}
+					return r;
+				});
 			}
 		}
 	};
@@ -88,7 +94,7 @@ module.exports = function(passport) {
 				profile.accessToken = accessToken; // ici je passe accessToken au profile
 				users
 					.getUserBySocialId(profile.id, 'facebook')
-					.then(user => oauth_helper.logon(req, user, profile, 'facebook'))
+					.then(user => oauth_helper.logon(req, user, profile, 'facebook', null))
 					.then(data => {
 						data.ip = req.ip;
 						done(null, data);
@@ -113,10 +119,8 @@ module.exports = function(passport) {
 					profile.contacts = contacts;
 					users
 						.getUserBySocialId(profile.id, 'google')
-						.then(user => oauth_helper.logon(req, user, profile, 'google'))
-						.then(data => {
-						    contacts = contacts || [];
-						    invitation.addGoogleContacts(data.id, contacts);
+						.then(user => oauth_helper.logon(req, user, profile, 'google', contacts))
+						.then(data => {						    
 							data.ip = req.ip;
 							return done(null, data);
 					})

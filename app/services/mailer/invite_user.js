@@ -7,12 +7,12 @@ const _ = require('lodash');
 
 const updateInvitation = (uid, mails) => {
 	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
+
 	return db(TABLES.INVITATION)
 		.whereIn('mail_to', parseMails)
 		.del()
 		.then(r => {
 			let newArray = []
-			console.log('HELLO =====>' , parseMails);
 			parseMails.forEach(mail => {
 				newArray.push({ user_id: uid, mail_to: mail });
 			});
@@ -83,32 +83,16 @@ const invite_user = args => {
 
 	let invite = db(TABLES.USERS).first('invite_link').where('id', args.uid);
 
-	if (args.checked) {
-		updateInvitation(args.uid, JSON.stringify(args.mailList)).then( emails => {
-			return Promise.all([
-				request,
-				invite
-			]).then(([sender, invite]) => {
+	updateInvitation(args.uid, JSON.stringify(args.mailList)).then( emails => {
+		return Promise.all([
+			request,
+			invite
+		]).then(([sender, invite]) => {
+			if (args.type === 'gmail_auth')
 				deleteGmailContacts(args.uid);
-				send_mail(emails, sender[0], invite.invite_link, 'gmail_auth')
-			});
+			send_mail(emails, sender[0], invite.invite_link, args.type)
 		});
-	} else {
-		invitation.verifyInvite(args.mailList).then(verifiedEmails => {
-			if (!verifiedEmails || !verifiedEmails.length) {
-				console.log('All already invited, [verified emails is empty]');
-				return null;
-			}
-			updateInvitation(args.uid, verifiedEmails).then( emails => {
-				return Promise.all([
-					request,
-					invite
-				]).then(([sender, invite]) =>
-					send_mail(emails, sender[0], invite.invite_link, args.category)
-				);
-			})
-		});
-	}
+	});
 }; //exports
 
 module.exports = invite_user;
