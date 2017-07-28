@@ -19,7 +19,7 @@ const verifyInvite = (exports.verifyInvite = mails => {
 });
 
 const verifyUsers = uid => {
-	return db.raw('SELECT `mail_to` FROM `gmail_auth_contacts` WHERE `mail_to` NOT IN (SELECT `email` FROM `users`)')
+	return db.raw('SELECT `mail_to` FROM `gmail_auth_contacts` WHERE `mail_to` NOT IN (SELECT `email` FROM `users`) AND user_id = ?', uid)
 		.then(r => {
 			const mails = r[0].map(a => a.mail_to);
 			return verifyInvite(mails);
