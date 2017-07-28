@@ -37,7 +37,7 @@ const delete_tables = () => {
     deleteTable('sub_skills')
   ]);
 };
-const create_tables = () => {
+const create_tables = skills => {
   return Promise.all([
     db.schema.hasTable('sub_skills').then(function(exists) {
       if (!exists) {
@@ -53,10 +53,12 @@ const create_tables = () => {
         console.log('SKILL DOES NOT EXIST');
         return createSkills;
       } else {
-        console.log('SKILL  EXIST');
+        console.log('SKILL  EXIST', skills.length);
         return db('skills')
           .del()
-          .then(() => db.raw('alter table skills AUTO_INCREMENT = 1'));
+          .whereNotIn(_.capitalize('name'), skills.map(e => _.capitalize(e.name)))
+          .then(print);
+        // .then(() => db.raw('alter table skills AUTO_INCREMENT = 1'));
         // return db.schema.dropTable('skills').then(() => createSkills);
       }
     })
@@ -88,7 +90,7 @@ const create_relation_tables = () => {
 const insert_data = (skills, sub_skills, relations) => {
   console.log('SHOULD INSERT THE DATA ', skills.length);
   return Promise.all([
-    db.batchInsert('skills', skills),
+    // db.batchInsert('skills', skills),
     db.batchInsert('sub_skills', sub_skills),
     db.batchInsert('skill_categories', relations)
   ]);
@@ -99,7 +101,7 @@ const subSkills = require('./subSkills');
 const relations = require('./relations');
 
 delete_tables()
-  .then(() => create_tables())
+  .then(() => create_tables(skills))
   .then(console.log('TABLES CREATED'))
   .then(() => create_relation_tables())
   .then(console.log('Done creating tables, will now import data'))
