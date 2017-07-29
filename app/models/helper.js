@@ -121,6 +121,29 @@ h.jsonThing = o => {
 
 h.unix_time = (x, y) => db.raw(`UNIX_TIMESTAMP(${x} as ${y})`);
 
+h.suggestSkills = db
+  .select([
+    's.id as id',
+    db.raw('GROUP_CONCAT(distinct c.id) as catId'),
+    's.name as name',
+    'c.name as catName',
+    db.raw('GROUP_CONCAT(distinct c.name) as catNames')
+  ])
+  .from(TABLES.SKILLS + ' as s')
+  .join(TABLES.SKILL_CAT + ' as sc', 's.id', 'sc.skill_id')
+  .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
+  .groupBy('s.id')
+  .as('s');
+
+h.expandedSkills = skillId => {
+  db
+    .distinct('s.id', 's.name', 'c.id', 'c.name')
+    .from(TABLES.SKILLS + ' as s')
+    .join(TABLES.SKILL_CAT + ' as sc', 's.id', 'sc.skill_id')
+    .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
+    .where('s.id', skillId);
+};
+
 h.magicSkills = selected =>
   db
     .select([
