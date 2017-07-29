@@ -29,6 +29,7 @@ exports.TABLES = {
 
 	//            ***    PROJECTS    ***
 	PROJECTS: 'projects',
+	PROJECT_PICTURES: 'project_pictures',
 	PROJECT_LIKES: 'project_followers',
 	DISCUSSIONS: 'discussions',
 	DISCUSSION_LIKES: 'discussion_likes',
