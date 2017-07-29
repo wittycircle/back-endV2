@@ -127,7 +127,6 @@ h.magicSkills = selected =>
       's.id as id',
       's.name as name',
       'c.name as catName',
-      // db.raw('GROUP_CONCAT(c.name) as catName'),
       db.raw(` (CASE ${selected}  else 100 END) as weight`)
     ])
     // .count('c.name as count')

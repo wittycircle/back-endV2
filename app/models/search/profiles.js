@@ -63,23 +63,6 @@ const ifo = db
 module.exports = selector => {
   console.log('SELECTOR', selector);
   // ---------  Main query -------
-  //
-  // let magicSkills = db
-  //   .select([
-  //     's.id as id',
-  //     's.name as name',
-  //     'c.name as catName',
-  //     // db.raw('GROUP_CONCAT(c.name) as catName'),
-  //     db.raw(` (CASE ${selector.cats}  else 100 END) as weight`)
-  //   ])
-  //   // .count('c.name as count')
-  //   .from(TABLES.SKILLS + ' as s')
-  //   .join(TABLES.SKILL_CAT + ' as sc', 's.id', 'sc.skill_id')
-  //   .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
-  //   // .groupBy('s.id')
-  //   // .orderBy('weight')
-  //   // .orderBy('count')
-  //   .as('s');
 
   const skills = db
     .select('user_id', 's.*')
@@ -132,13 +115,12 @@ module.exports = selector => {
     .groupBy('sort.id')
     .where('sort.rank', '>', '0'); //todo remove
 
-  console.log('QUER', q.toString());
   h.addLocation('p', selector.location, q);
 
   // ----------------------- SELECTORS -------------------------
   //TODO
-  //CA CA CHIE
   if (selector.skills) {
+    console.log('SHOULD NOT');
     q.whereRaw('weight IS NOT NULL');
     q.orderByRaw('sort.weight');
   }

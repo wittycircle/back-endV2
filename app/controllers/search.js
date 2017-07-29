@@ -59,14 +59,19 @@ exports.searchProfile = (req, res, next) => {
   search
     .getCategory(selector.skills || 'nope')
     .then(cats => {
-      selector.cats = selector.skills
-        .concat(cats.map(e => e.name))
-        .map(
-          (el, i) =>
-            ` WHEN s.name = "${el}" THEN ${i + 1} WHEN c.name = "${el}" THEN ${i +
-              10} `
-        )
-        .join(' ');
+      console.log('RET CAT', cats);
+      if (cats !== 'nope') {
+        selector.cats = selector.skills
+          .concat(cats.map(e => e.name))
+          .map(
+            (el, i) =>
+              ` WHEN s.name = "${el}" THEN ${i +
+                1} WHEN c.name = "${el}" THEN ${i + 10} `
+          )
+          .join(' ');
+      } else {
+        selector.cats = `WHEN s.name like "noNeedSkill" THEN 150 `;
+      }
       let q = search
         .cardProfile(selector)
         .orderByRaw(
@@ -106,16 +111,35 @@ exports.searchProject = (req, res, next) => {
     : query.sort.field == 'last_upvoted'
       ? 'MAX(pl.creation_date)'
       : project_lookup[query.sort.field];
-  let nik = search
-    .cardProject(selector)
-    .orderByRaw(`${order_by} ${query.sort.reverse ? 'desc' : 'asc'}`)
-    .offset(paginate.offset)
-    .limit(paginate.limit);
-  nik
-    .then(results => {
-      if (!_.isEmpty(results)) {
-        res.send({ projects: results });
-      } else next({ code: 404 });
+
+  search
+    .getCategory(selector.skills || 'nope')
+    .then(cats => {
+      console.log('RET CAT', cats);
+      if (cats !== 'nope') {
+        selector.cats = selector.skills
+          .concat(cats.map(e => e.name))
+          .map(
+            (el, i) =>
+              ` WHEN s.name = "${el}" THEN ${i +
+                1} WHEN c.name = "${el}" THEN ${i + 10} `
+          )
+          .join(' ');
+      } else {
+        selector.cats = `WHEN s.name like "noNeedSkill" THEN 150 `;
+      }
+
+      let q = search
+        .cardProject(selector)
+        .orderByRaw(`${order_by} ${query.sort.reverse ? 'desc' : 'asc'}`)
+        .offset(paginate.offset)
+        .limit(paginate.limit);
+
+      return q.then(results => {
+        if (!_.isEmpty(results)) {
+          res.send({ projects: results });
+        } else next({ code: 404 });
+      });
     })
     .catch(err => next(err));
 };

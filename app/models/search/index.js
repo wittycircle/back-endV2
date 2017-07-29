@@ -9,12 +9,15 @@ exports.cardProject = require('./projects');
 exports.cardProfile = require('./profiles');
 
 exports.getCategory = names => {
-  return db
-    .distinct('c.name')
-    .from(TABLES.SKILLS + ' as s')
-    .join(TABLES.SKILL_CAT + ' as sc', 'sc.skill_id', 's.id')
-    .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
-    .whereIn('s.name', names);
+  if (names === 'nope') return new Promise((res, rej) => res('nope'));
+  else {
+    return db
+      .distinct('c.name')
+      .from(TABLES.SKILLS + ' as s')
+      .join(TABLES.SKILL_CAT + ' as sc', 'sc.skill_id', 's.id')
+      .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
+      .whereIn('s.name', names);
+  }
 };
 
 // ------------------ DATA PROFILE SEARCH ---------------

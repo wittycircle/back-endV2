@@ -5,23 +5,28 @@ const { db, TABLES } = require('../index'),
 
 // ------------------ Project ------------------
 
-const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m')
-  .select('m.project_id', 'm.user_id')
-  .where('accepted', 1)
-  .as('m');
-
-const sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
-  .select([db.raw('GROUP_CONCAT(s.name) as tags'), 'o.status', 'o.project_id'])
-  .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
-  .leftJoin(TABLES.SKILLS + ' as s', 'ot.skill_id', 's.id')
-  .groupBy('o.id')
-  .as('o');
-
-const sub_category = db(TABLES.CATEGORIES + ' as c')
-  .select('c.id', 'c.name')
-  .as('c');
-
 module.exports = selector => {
+  const sub_members = db(TABLES.PROJECT_MEMBERS + ' as m')
+    .select('m.project_id', 'm.user_id')
+    .where('accepted', 1)
+    .as('m');
+
+  const sub_category = db(TABLES.CATEGORIES + ' as c')
+    .select('c.id', 'c.name')
+    .as('c');
+
+  const sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
+    .select([
+      db.raw('GROUP_CONCAT(s.name) as tags'),
+      'o.status',
+      'o.project_id',
+      'weight'
+    ])
+    .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
+    .leftJoin(h.magicSkills(selector.cats), 'ot.skill_id', 's.id')
+    .groupBy('o.id')
+    .as('o');
+
   let pr_array = [
     'pr.id',
     'pr.title',
@@ -71,14 +76,9 @@ module.exports = selector => {
     query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
 
   if (selector.skills) {
-    let selected = selector.skills
-      .map(
-        (el, i) =>
-          `WHEN o.tags = "${el}" THEN ${i +
-            1} WHEN o.tags LIKE "%${el}%" THEN ${i + 10}`
-      )
-      .join(' ');
-    query.orderByRaw('CASE ' + selected + ' else 100 END');
+    pr_array.push('weight');
+    query.whereRaw('weight IS NOT NULL');
+    query.orderByRaw('weight');
   }
 
   h.addLocation('loc', selector.location, query);
