@@ -118,9 +118,7 @@ module.exports = selector => {
   h.addLocation('p', selector.location, q);
 
   // ----------------------- SELECTORS -------------------------
-  //TODO
   if (selector.skills) {
-    console.log('SHOULD NOT');
     q.whereRaw('weight IS NOT NULL');
     q.orderByRaw('sort.weight');
   }

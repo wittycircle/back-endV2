@@ -76,6 +76,9 @@ exports.TABLES = {
   NOTIF_PERM: 'notification_permission',
   NOTIF_LIST: 'notification_list',
 
+  //            ***   Suggestions    ***
+  SUG_PROFILES: 'suggested_profiles',
+  SUG_PROJECTS: 'suggested_projects',
   //            *** FORGOTTEN TABLES ***
   INVITE_UNIVERSITY: 'invite_university',
   VIEWS: 'views',
