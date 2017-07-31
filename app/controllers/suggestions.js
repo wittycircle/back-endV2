@@ -8,10 +8,12 @@ exports.matchProfilesToProject = (req, res, next) => {
 };
 
 exports.matchProjectsToProfile = (req, res, next) => {
-  suggestions.matchProjectsToProfile(1).then(r => {
-    res.send(r);
-  });
-  // .catch(err => next([err, 'matchProjectsToProfile']));
+  suggestions
+    .matchProjectsToProfile(5526)
+    .then(r => {
+      res.send(r);
+    })
+    .catch(err => next([err, 'matchProjectsToProfile']));
 };
 
 exports.suggestProfiles = (req, res, next) => {
