@@ -4,7 +4,7 @@
 'use strict';
 
 const express = require('express'),
-		path = require('path');
+  path = require('path');
 
 let router = express.Router();
 
@@ -24,11 +24,11 @@ router.use('/api', require('./statistics'));
 router.use('/api', require('./invitation'));
 router.use('/api', require('./admin_panel'));
 router.use('/api', require('./social'));
-
+router.use('/api', require('./suggestions'));
 router.use(require('../middlewares/error').error);
 
 router.get('*', (req, res) => {
-		res.sendFile(path.join(__dirname, '../../dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../../dist', 'index.html'));
 });
 
 module.exports = router;
