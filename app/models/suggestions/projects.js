@@ -22,8 +22,8 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
       'p.user_id as creatorId',
       'p.picture',
       'p.description as projectDescription',
-      db.raw('GROUP_CONCAT(ot.skill_id) as skillId'),
-      db.raw('GROUP_CONCAT(s.name) as skillName'),
+      db.raw('GROUP_CONCAT(DISTINCT ot.skill_id) as skillId'),
+      db.raw('GROUP_CONCAT(DISTINCT s.name) as skillName'),
       'o.description as openingDescription'
     )
     .from(TABLES.PROJECTS + ' as p')
