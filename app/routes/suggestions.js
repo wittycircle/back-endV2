@@ -12,7 +12,7 @@ Get matching profiles from projectId
   }
 */
 router
-  .route('/matchProfilesToProject')
+  .route('/suggestions/profiles')
   .post(/*auth(AUTH.PUBLIC),*/ suggestions.matchProfilesToProject);
 
 /*
@@ -24,7 +24,7 @@ empty body, will use the req.user.id
 */
 
 router
-  .route('/matchProjectsToProfile')
+  .route('/suggestions/projects')
   .post(/*auth(AUTH.PUBLIC),*/ suggestions.matchProjectsToProfile);
 
 /*
