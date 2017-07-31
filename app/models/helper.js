@@ -121,35 +121,6 @@ h.jsonThing = o => {
 
 h.unix_time = (x, y) => db.raw(`UNIX_TIMESTAMP(${x} as ${y})`);
 
-h.suggestSkills = db
-  .select([
-    's.id as id',
-    's.name as name',
-    'c.name as catName',
-    db.raw('GROUP_CONCAT(distinct c.id) as catId'),
-    db.raw('GROUP_CONCAT(distinct c.name) as catNames')
-  ])
-  .from(TABLES.SKILLS + ' as s')
-  .join(TABLES.SKILL_CAT + ' as sc', 's.id', 'sc.skill_id')
-  .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
-  .groupBy('s.id')
-  .as('s');
-
-//skills = id array [1, 2, 3]
-// h.expandedSkills = skills => {
-//   return db
-//     .select(['s.id as id', 's.name as name', 'c.name as catName'])
-//     .from(TABLES.SKILL_CAT + ' as sc')
-//     .join(TABLES.SKILL_CAT + ' as cs', 'cs.sub_id', 'sc.sub_id')
-//     .join(TABLES.SUB_SKILLS + ' as c', 'c.id', 'sc.sub_id')
-//     .join(TABLES.SKILLS + ' as s', function() {
-//       this.on('s.id', 'sc.skill_id').orOn('s.id', 'cs.skill_id');
-//     })
-//     .whereIn('sc.skill_id', skills);
-//   // .groupBy('s.id')
-//   // .as('s')
-// };
-
 h.magicSkills = selected =>
   db
     .select([

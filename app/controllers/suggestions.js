@@ -3,20 +3,15 @@ const suggestions = require('../models/suggestions');
 exports.matchProfilesToProject = (req, res, next) => {
   suggestions
     .matchProfilesToProject(req.body.projectId)
-    .then(r => {
-      res.send(r);
-    })
+    .then(r => res.send(r))
     .catch(err => next([err, 'matchProfilesToProject']));
 };
 
 exports.matchProjectsToProfile = (req, res, next) => {
-  req.user = { id: 1 };
-  suggestions
-    .matchProjectsToProfile(req.user.id)
-    .then(r => {
-      return r;
-    })
-    .catch(err => next([err, 'matchProjectsToProfile']));
+  suggestions.matchProjectsToProfile(1).then(r => {
+    res.send(r);
+  });
+  // .catch(err => next([err, 'matchProjectsToProfile']));
 };
 
 exports.suggestProfiles = (req, res, next) => {
@@ -32,12 +27,3 @@ exports.suggestProjects = (req, res, next) => {
     .then(r => res.send(r))
     .catch(err => next([err, 'SuggestProfiles']));
 };
-
-// exports.matchProfilesToProject = (req, res, next) => {
-//   suggestions
-//     .bail(bail)
-//     .then(r => {
-//       return r;
-//     })
-//     .catch(err => next(err));
-// };
