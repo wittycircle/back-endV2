@@ -13,7 +13,7 @@ Get matching profiles from projectId
 */
 router
   .route('/matchProfilesToProject')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.matchProfilesToProject);
+  .post(auth(AUTH.PUBLIC), suggestions.matchProfilesToProject);
 
 /*
 Get matching projects from user
@@ -25,7 +25,7 @@ empty body, will use the req.user.id
 
 router
   .route('/matchProjectsToProfile')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.matchProjectsToProfile);
+  .post(auth(AUTH.PUBLIC), suggestions.matchProjectsToProfile);
 
 /*
 
@@ -42,7 +42,7 @@ profiles: [Number]
 */
 router
   .route('/suggestProfiles')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.suggestProfiles);
+  .post(auth(AUTH.PUBLIC), suggestions.suggestProfiles);
 
 /*
   body : {
@@ -53,7 +53,7 @@ router
 
 router
   .route('/suggestProjects')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.suggestProjects);
+  .post(auth(AUTH.PUBLIC), suggestions.suggestProjects);
 
 //  -------- Less useful / [useless (?)] routes --------
 
