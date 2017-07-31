@@ -42,7 +42,7 @@ profiles: [Number]
 */
 router
   .route('/suggestProfiles')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.suggestProfiles);
+  .post(auth(AUTH.PUBLIC), suggestions.suggestProfiles);
 
 /*
   body : {
@@ -53,7 +53,7 @@ router
 
 router
   .route('/suggestProjects')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.suggestProjects);
+  .post(auth(AUTH.PUBLIC), suggestions.suggestProjects);
 
 //  -------- Less useful / [useless (?)] routes --------
 

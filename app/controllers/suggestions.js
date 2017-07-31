@@ -9,7 +9,7 @@ exports.matchProfilesToProject = (req, res, next) => {
 
 exports.matchProjectsToProfile = (req, res, next) => {
   suggestions
-    .matchProjectsToProfile(5526)
+    .matchProjectsToProfile(req.body.userId)
     .then(r => {
       res.send(r);
     })
