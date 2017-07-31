@@ -32,7 +32,7 @@ module.exports.matchProfilesToProject = projectId => {
     sh.skillsFromProjectId(projectId),
     alreadySuggestedProfiles(projectId)
   ]).then(r => {
-    let neededSkills = r[0]; //.skillId.split(',');
+    let neededSkills = r[0].skillId.split(',');
     let alreadySugested = r[1];
     return getMatchingProfiles(neededSkills, alreadySugested).then(r => {
       if (!r.length || r.length < 5) {

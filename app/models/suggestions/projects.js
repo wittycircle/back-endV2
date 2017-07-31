@@ -15,21 +15,25 @@ module.exports.suggestProjects = (userId, projects) => {
 };
 
 const getMatchingProjects = (neededSkills, alreadySugested = []) => {
-  console.log('AKEL');
   let query = db
-    .select(
+    .distinct(
       'p.id',
       'p.title',
+      'p.user_id as creatorId',
+      'p.picture',
       'p.description as projectDescription',
       'ot.skill_id',
+      's.name as skillName',
       'o.description as openingDescription'
     )
     .from(TABLES.PROJECTS + ' as p')
     .join(TABLES.PROJECT_OPENINGS + ' as o', 'o.project_id', 'p.id')
     .join(TABLES.OPENING_TAGS + ' as ot', 'ot.opening_id', 'o.id')
+    .join(TABLES.SKILLS + ' as s', 's.id', 'ot.skill_id')
     .whereIn('ot.skill_id', neededSkills)
     .whereNotIn('p.id', alreadySugested)
-    .orderByRaw('LENGTH(o.description) desc');
+    .orderByRaw('LENGTH(o.description) desc')
+    .groupBy('p.id');
 
   return query;
 };
@@ -48,6 +52,9 @@ module.exports.matchProjectsToProfile = userId => {
       if (!r.length || r.length < 3) {
         return sh.expandedSkills(neededSkills).then(expandedNeeds => {
           return getMatchingProjects(expandedNeeds, alreadySugested);
+          // .then(rr => {
+          // return ([r, ])
+          // })
         });
       } else {
         return r;
