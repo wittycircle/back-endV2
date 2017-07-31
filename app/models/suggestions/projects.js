@@ -23,11 +23,13 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
       'p.picture',
       'p.description as projectDescription',
       'ot.skill_id',
+      's.name as skillName',
       'o.description as openingDescription'
     )
     .from(TABLES.PROJECTS + ' as p')
     .join(TABLES.PROJECT_OPENINGS + ' as o', 'o.project_id', 'p.id')
     .join(TABLES.OPENING_TAGS + ' as ot', 'ot.opening_id', 'o.id')
+    .join(TABLES.SKILLS + ' as s', 's.id', 'ot.skill_id')
     .whereIn('ot.skill_id', neededSkills)
     .whereNotIn('p.id', alreadySugested)
     .orderByRaw('LENGTH(o.description) desc');
