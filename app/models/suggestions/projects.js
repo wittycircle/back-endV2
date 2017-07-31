@@ -16,7 +16,7 @@ module.exports.suggestProjects = (userId, projects) => {
 
 const getMatchingProjects = (neededSkills, alreadySugested = []) => {
   let query = db
-    .select(
+    .distinct(
       'p.id',
       'p.title',
       'p.user_id as creatorId',
@@ -32,7 +32,8 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
     .join(TABLES.SKILLS + ' as s', 's.id', 'ot.skill_id')
     .whereIn('ot.skill_id', neededSkills)
     .whereNotIn('p.id', alreadySugested)
-    .orderByRaw('LENGTH(o.description) desc');
+    .orderByRaw('LENGTH(o.description) desc')
+    .groupBy('p.id');
 
   return query;
 };
