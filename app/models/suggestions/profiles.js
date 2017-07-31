@@ -16,12 +16,18 @@ module.exports.suggestProfiles = (projectId, profiles) => {
 
 const getMatchingProfiles = (neededSkills, alreadySugested = []) => {
   let query = db
-    .distinct('p.*', 'us.skill_id as skillId', 's.name as skillName')
+    .distinct(
+      'p.*',
+      db.raw('GROUP_CONCAT(distinct us.skill_id) as skillId'),
+      db.raw('GROUP_CONCAT(DISTINCT s.name) as skillName')
+    )
     .from(h.spe_profile({}))
     .join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.uid')
     .join(TABLES.SKILLS + ' as s', 's.id', 'us.skill_id')
     .whereIn('skill_id', neededSkills)
-    .whereNotIn('p.user_id', alreadySugested);
+    .whereNotIn('p.user_id', alreadySugested)
+    .groupBy('p.id')
+    .orderByRaw('RAND()');
 
   return query;
 };
