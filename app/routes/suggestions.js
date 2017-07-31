@@ -19,8 +19,9 @@ router
 Get matching projects from user
 [user must have skills, and Projects must have openings in those]
 
-empty body, will use the req.user.id
- [since the person must be logged in]
+body {
+userId: Number
+}
 */
 
 router

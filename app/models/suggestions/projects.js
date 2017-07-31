@@ -15,11 +15,12 @@ module.exports.suggestProjects = (userId, projects) => {
 };
 
 const getMatchingProjects = (neededSkills, alreadySugested = []) => {
-  console.log('AKEL');
   let query = db
     .select(
       'p.id',
       'p.title',
+      'p.user_id as creatorId',
+      'p.picture',
       'p.description as projectDescription',
       'ot.skill_id',
       'o.description as openingDescription'
@@ -48,6 +49,9 @@ module.exports.matchProjectsToProfile = userId => {
       if (!r.length || r.length < 3) {
         return sh.expandedSkills(neededSkills).then(expandedNeeds => {
           return getMatchingProjects(expandedNeeds, alreadySugested);
+          // .then(rr => {
+          // return ([r, ])
+          // })
         });
       } else {
         return r;
