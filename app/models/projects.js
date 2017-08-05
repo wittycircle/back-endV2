@@ -5,21 +5,37 @@ const { db, TABLES } = require('./index'),
 //will disapear in v3
 // ------------------ Projects [main methods] ------------------
 
+const udpateProjectPictures = (project_id, pictures) => {
+	return db(TABLES.PROJECT_PICTURES).where('project_id', project_id).del()
+		.then(r => {
+			let array = []
+			pictures.forEach(p => {
+				array.push({ project_id: project_id, picture: p });
+			});
+			return db(TABLES.PROJECT_PICTURES).insert(array);
+		})
+}
+
 exports.createProject = (project_data, location) => {
 	console.log('CREATING');
 	return h.setLocation(location).then(r => {
 		console.log('LOCATION SET');
-		console.log('r', r);
 		project_data.loc_id = r[0];
-		console.log(project_data);
-		return db(TABLES.PROJECTS).insert(project_data);
+		return db(TABLES.PROJECTS).insert(project_data).then(r => {
+			console.log(r);
+			return r
+		});
 	});
 };
 
-exports.updateProject = (id, project_data, location_data) => {
+exports.updateProject = (id, project_data, location_data, pictures) => {
+	// console.log(pictures);
 	return h.setLocation(location_data).then(r => {
 		project_data.loc_id = r[0];
-		return db(TABLES.PROJECTS).update(project_data).where('id', id);
+		return db(TABLES.PROJECTS).update(project_data).where('id', id)
+			.then(r =>
+				udpateProjectPictures(id, pictures)
+			);
 	});
 };
 
@@ -88,7 +104,9 @@ exports.getProject = (id, uid) => {
 		'pr.project_visibility',
 		'pr.link',
 		'pr.app',
-		'pr.logo'
+		'pr.logo',
+		'pr.1st_description',
+		'pr.2nd_description'
 	],
 		x = [];
 	if (uid) {
@@ -119,6 +137,11 @@ exports.getProject = (id, uid) => {
 			x.push(
 				getFollowerCount(el.id).then(rr => {
 					el.follower_count = rr[0].count;
+				})
+			);
+			x.push(
+				exports.getProjectPictures(el.id).then(rr => {
+					el.pictures = rr;
 				})
 			);
 		});
@@ -240,6 +263,19 @@ exports.getProjectOpenings = id => {
 		.groupBy('o.id')
 		.where({ project_id: id });
 };
+
+exports.getProjectPictures = id => {
+	return db(TABLES.PROJECT_PICTURES)
+		.select('picture')
+		.where('project_id', id)
+		.then(r => {
+			let array = [];
+			r.forEach(i => {
+				array.push(i.picture);
+			})
+			return array
+		});
+}
 
 // ------------------ Likes ------------------
 exports.getProjectLikes = project_id => {

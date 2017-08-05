@@ -47,13 +47,17 @@ exports.createProjectFromExternal = (req, res, next) => {
 
 const data = req => {
 	let r = {
-		user_id: req.user.id,
-		title: req.body.title,
-		category_id: req.body.category, //id and not a string (there is a table categories)
-		status: req.body.status,
-		project_visibility: req.body.public || 1,
-		public_id: Math.floor(Math.random() * 90000 + 10000)
+		'user_id' 			: req.user.id,
+		'title' 			: req.body.title,
+		'category_id' 		: req.body.category, //id and not a string (there is a table categories)
+		'status' 			: req.body.status,
+		'project_visibility': req.body.public || 1,
+		'description' 		: req.body.description,
+		'1st_description'	: req.body.desc_1,
+		'2nd_description'	: req.body.desc_2,
+		'public_id' 		: Math.floor(Math.random() * 90000 + 10000)
 	};
+	console.log(r);
 	return redis.smembers('project_public_id').then(public => {
 		while (1) {
 			let x = public.filter(e => e == r.public_id);
@@ -67,14 +71,14 @@ const data = req => {
 
 exports.createProject = (req, res, next) => {
 	data(req).then(([d, location]) => {
+
 		project
 			.createProject(d, location)
 			.then(r => {
-				console.log('r', r);
 				req.broadcastEvent('project_creation', { id: r[0], from: req.user.id });
 				req.broadcastEvent('add_points', { user_id: req.user.id, points: 200 });
 				mailer.new_project({ uid: req.user.id, public_id: d.public_id });
-				res.send({ id: d.public_id });
+				res.send({ id: r[0], public_id: d.public_id  });
 			})
 			.catch(err => next(['Invalid information', err]));
 	});
@@ -82,28 +86,30 @@ exports.createProject = (req, res, next) => {
 
 const getFromBody = b => {
 	let project_data = {};
-	if (b.user_id) project_data.user_id = b.user_id;
+	if (b.user_id) project_data.user_id			= b.user_id;
 	if (b.category_id) project_data.category_id = b.category_id;
-	if (b.status) project_data.status = b.status;
-	if (b.title) project_data.title = b.title;
+	if (b.status) project_data.status 			= b.status;
+	if (b.title) project_data.title 			= b.title;
 	if (b.description) project_data.description = b.description;
+	if (b.desc_1) project_data['1st_description'] = b.desc_1;
+	if (b.desc_2) project_data['2nd_description'] = b.desc_2;
 	if (b.about) project_data.about = b.about;
-	if (b.picture) project_data.picture = b.picture;
-	if (b.video) project_data.video = b.video;
-	if (b.link) project_data.link = b.link;
-	if (b.app) project_data.app = b.app;
-	if (b.logo) project_data.logo = b.logo;
+	// if (b.picture) project_data.picture = b.picture;
 	if (b.project_visibility)
 		project_data.project_visibility = b.project_visibility;
-	let loc_data = b.location;
-	return [project_data, loc_data];
+	let loc_data 		= b.location;
+	project_data.video 	= b.video;
+	project_data.app 	= b.app;
+	project_data.logo 	= b.logo;
+	project_data.link 	= b.link;
+	return [project_data, loc_data, b.pictures];
 };
 
 exports.updateProject = (req, res, next) => {
-	const [project_data, location_data] = getFromBody(req.body);
+	const [project_data, location_data, project_pictures] = getFromBody(req.body);
 	req.body.category_id = req.body.category;
 	project
-		.updateProject(req.params.id, project_data, location_data)
+		.updateProject(req.params.id, project_data, location_data, project_pictures)
 		.then(r => {
 			req.broadcastEvent('project_update', {
 				id: req.params.id,
