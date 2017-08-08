@@ -55,7 +55,7 @@ const ask_project = args => {
 			projects.forEach(p => {
 				let pers = new helper.Personalization();
 				let sub = {
-					'*|FNAME|*': u.first_name
+					'*|FNAME|*': u.first_name,
 					'*|FUNAME|*': u.fullName,
 					'*|FPROJECT|*': p.title,
 					// '*|FMTITLE|*': args.title,
