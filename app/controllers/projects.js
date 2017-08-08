@@ -94,7 +94,7 @@ const getFromBody = b => {
 	if (b.desc_1) project_data['1st_description'] = b.desc_1;
 	if (b.desc_2) project_data['2nd_description'] = b.desc_2;
 	if (b.about) project_data.about = b.about;
-	// if (b.picture) project_data.picture = b.picture;
+	if (b.picture) project_data.picture = b.picture;
 	if (b.project_visibility)
 		project_data.project_visibility = b.project_visibility;
 	let loc_data 		= b.location;
