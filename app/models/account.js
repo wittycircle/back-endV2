@@ -5,9 +5,38 @@ const { db, TABLES } = require('./index'),
 	h = require('./helper'),
 	socialServices = require('../controllers/social');
 // ------------------ Little helpers ------------------
+// const checkUsername = (exports.checkUsername = username => {
+// 	return db(TABLES.USERS).select('username').whereIn('username', username);
+// });
+
 const checkUsername = (exports.checkUsername = username => {
-	return db(TABLES.USERS).select('username').whereIn('username', username);
+	return db(TABLES.USERS)
+		.count('username as number')
+		.where('username', 'like', '%' + username + '%');
 });
+
+const checkInviteLink = (exports.checkInviteLink = invite_link => {
+	return db(TABLES.USERS)
+		.count('invite_link as number')
+		.where('invite_link', 'like', '%' + invite_link + '%');
+});
+
+const createUsernameAndInviteLink = (first, last) => {
+	let username 	= first.replace(/\s+/g, '') + '.' + last.replace(/\s+/g, '')
+	let invite_link = first.replace(/\s+/g, '') + last.replace(/\s+/g, '') + '_W'
+
+	return checkUsername(username)
+		.then(r => {
+			return checkInviteLink(invite_link)
+				.then(r2 => {
+					return {
+						username 	: username + r[0].number,
+						invite_link : invite_link + r2[0].number
+					}
+				})
+		});
+}
+
 
 // ------------------ Main methods ------------------
 exports.activate = token => {
@@ -68,53 +97,44 @@ const social_helper = {
 			//      console.log('data.photos', data.photos);
 			//      console.log('UPLOAD result', result);
 			// return account.checkUsername(data.displayName)
-			return {
-				profile: {
-					facebook_id: data.id,
-					facebook_url: data.profileUrl,
-					first_name: data.name.givenName,
-					last_name: data.name.familyName,
-					picture: result || data.photos[0].value
-				},
-				user: {
-					email: data.emails[0].value,
-					username:
-						_.replace(data.displayName, ' ', '.') +
-							Math.floor(Math.random() * 10000 + 1),
-					invite_link: `${data.name.givenName.replace(
-						/ /g,
-						''
-					)}${data.name.familyName.replace(/ /g, '')}_W${+Math.floor(
-						Math.random() * 10000 + 1
-					)}`
-				}
-			};
+			return createUsernameAndInviteLink(data.name.givenName, data.name.familyName).then(r => {
+				return {
+					profile: {
+						facebook_id 	: data.id,
+						facebook_url 	: data.profileUrl,
+						first_name 		: data.name.givenName,
+						last_name 		: data.name.familyName,
+						picture 		: result || data.photos[0].value
+					},
+					user: {
+						email 			: data.emails[0].value,
+						username 		: r.username,
+						invite_link 	: r.invite_link
+					}
+				};
+			});
 		}),
 	google: data => {
 		// Ici Changement
 		data = JSON.parse(data._raw);
 		return upload(data.image.url).then(result => {
-			console.log(data.id);
-			return {
-				profile: {
-					google_id: data.id,
-					google_url: data.url,
-					first_name: data.name.givenName,
-					last_name: data.name.familyName,
-					picture: result
-				},
-				user: {
-					email: data.emails[0].value,
-					username: _.replace(data.displayName, ' ', '.'),
-					// password: '',
-					invite_link: `${data.name.givenName.replace(
-						/ /g,
-						''
-					)}${data.name.familyName.replace(/ /g, '')}_W${+Math.floor(
-						Math.random() * 10000 + 1
-					)}`
-				}
-			};
+			return createUsernameAndInviteLink(data.name.givenName, data.name.familyName).then(r => {
+				return  {
+					profile: {
+						google_id 		: data.id,
+						google_url 		: data.url,
+						first_name 		: data.name.givenName,
+						last_name 		: data.name.familyName,
+						picture 		: result
+					},
+					user: {
+						email 			: data.emails[0].value,
+						username 		: r.username,
+						// password: '',
+						invite_link 	: r.invite_link
+					}
+				};
+			});
 		});
 	}
 };
@@ -235,12 +255,8 @@ exports.register = (data, token) => {
 			email: data.email,
 			password: data.password,
 			username: data.username,
-			invite_link: `${data.first_name.replace(/ /g, '')}${data.last_name.replace(
-				/ /g,
-				''
-			)}_W${+Math.floor(Math.random() * 10000 + 1)}`
+			invite_link: data.invite_link
 		};
-
 	return Promise.all([
 		h.exist(TABLES.USERS, data.email, 'email'),
 		h.exist(TABLES.USERS, data.username, 'username')

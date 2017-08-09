@@ -8,31 +8,30 @@ const account = require('../models/account'),
 const checkRegisterData = data => {
 	let nd = {
 		//new_data
-		username: null,
-		password: bcrypt.hashSync(data.password),
-		first_name: data.first_name.replace(/\s+/g, ''),
-		last_name: data.last_name.replace(/\s+/g, ''),
-		email: data.email
+		username 	: null,
+		password 	: bcrypt.hashSync(data.password),
+		first_name 	: data.first_name.replace(/\s+/g, ''),
+		last_name 	: data.last_name.replace(/\s+/g, ''),
+		email 		: data.email,
+		invite_link : null
 	};
-	let a_username = [];
-	for (let i = nd.first_name.length; i > 0; i--) {
-		a_username.push(nd.first_name.slice(0, i) + '.' + nd.last_name);
-	}
-	for (let i = nd.last_name.length - 1; i > 0; i--) {
-		a_username.push(nd.first_name + '.' + nd.last_name.slice(0, i));
-	}
+	// let a_username = [];
+	// for (let i = nd.first_name.length; i > 0; i--) {
+	// 	a_username.push(nd.first_name.slice(0, i) + '.' + nd.last_name);
+	// }
+	// for (let i = nd.last_name.length - 1; i > 0; i--) {
+	// 	a_username.push(nd.first_name + '.' + nd.last_name.slice(0, i));
+	// }
+	const a_username 	= nd.first_name + '.' + nd.last_name
+	const invite_link 	= nd.first_name + nd.last_name + '_W'
+
 	return account.checkUsername(a_username).then(r => {
-		if (r.length === a_username.length) {
-			nd.username =
-				nd.first_name +
-				'.' +
-				nd.last_name +
-				Math.floor(Math.random() * 10000 + 1);
-		} else {
-			let nr = r.map(v => v.username);
-			nd.username = _.differenceWith(a_username, nr, _.isEqual)[0];
-		}
-		return nd;
+		return account.checkInviteLink(invite_link).then(r2 => {
+			nd.username  	= a_username + r[0].number
+			nd.invite_link 	= invite_link + r2[0].number
+
+			return nd;
+		})
 	});
 };
 // ------------------ Main methods ------------------

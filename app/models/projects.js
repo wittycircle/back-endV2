@@ -122,6 +122,7 @@ exports.getProject = (id, uid) => {
 	req.where('pr.public_id', id);
 
 	return req.then(r => {
+		console.log(r);
 		r.forEach(el => {
 			x.push(
 				exports.getProjectDiscussion(el.id).then(rr => {
