@@ -43,7 +43,7 @@ exports.generateToken = (req, res, next) => {
 										ttl: 3600 * 24 * 365,
 										user: {
 												id: req.user.id,
-												moderator: mod,
+												moderator: mod.moderator,
 												profile_id: req.user.profile_id,
 												email: req.user.email
 										}
