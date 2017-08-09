@@ -111,10 +111,10 @@ exports.updateProject = (req, res, next) => {
 	project
 		.updateProject(req.params.id, project_data, location_data, project_pictures)
 		.then(r => {
-			req.broadcastEvent('project_update', {
-				id: req.params.id,
-				from: req.user.id
-			});
+			// req.broadcastEvent('project_update', {
+			// 	id: req.params.id,
+			// 	from: req.user.id
+			// }); //TODO: desactive for update project by admin
 			res.send({ success: true });
 		})
 		.catch(err => next(['Bad info', err]));
