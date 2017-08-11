@@ -20,6 +20,7 @@ exports.getProfiles = (req, res, next) => {
 	profiles
 		.getProfiles()
 		.then(profiles => {
+		    console.log(profiles);
 			if (_.isEmpty(profiles)) next({ code: 404 });
 			else res.send({ profiles: profiles });
 		})
