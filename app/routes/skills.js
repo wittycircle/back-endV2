@@ -5,4 +5,8 @@ const express = require('express'),
 router.route('/skills')
 	.get(skills.getSkillList)
 
+router.route('/skills/categories')
+	.get(skills.getSkillCategoriesList)
+	.post(skills.getSkillByCategory);
+
 module.exports = router

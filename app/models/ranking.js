@@ -14,6 +14,7 @@ const keys = {
  * @param {Number | Number[]} id - The user(s) id
  * @returns {Promise<Number> | Promise<Number[]>} - The rank(s)
  */
+// exports.get = id => redis.zrevrank(keys.ranks, i).then(r => r + 1);
 exports.get = id => redis.zrevrank(keys.ranks, i).then(r => r + 1);
 
 /**

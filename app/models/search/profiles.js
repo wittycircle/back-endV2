@@ -61,7 +61,6 @@ const ifo = db
 
 // ------------------ Profile ------------------
 module.exports = selector => {
-  console.log('SELECTOR', selector);
 
   // ---------  Main query -------
 
@@ -70,7 +69,6 @@ module.exports = selector => {
     .from(TABLES.USER_SKILLS + ' as us')
     .join(h.magicSkills(selector.cats), 'us.skill_id', 's.id')
     .as('s');
-    console.log(skills);
   const sortCardProfile = db
     .select([
       's.weight',

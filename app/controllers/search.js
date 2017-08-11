@@ -59,7 +59,6 @@ exports.searchProfile = (req, res, next) => {
   search
     .getCategory(selector.skills || 'nope')
     .then(cats => {
-      console.log('RET CAT LKJDklfjlsdkjklfjsdkfjkdslf', cats);
       if (cats !== 'nope') {
         selector.cats = selector.skills
           .concat(cats.map(e => e.name))
@@ -81,7 +80,6 @@ exports.searchProfile = (req, res, next) => {
         )
         .offset(paginate.offset)
         .limit(paginate.limit);
-	console.log(q.toString());
       return q.then(results => {
         if (!_.isEmpty(results))
           res.send({
@@ -115,7 +113,6 @@ exports.searchProject = (req, res, next) => {
   search
     .getCategory(selector.skills || 'nope')
     .then(cats => {
-      console.log('RET CAT', cats);
       if (cats !== 'nope') {
         selector.cats = selector.skills
           .concat(cats.map(e => e.name))
