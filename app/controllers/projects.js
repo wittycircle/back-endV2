@@ -77,7 +77,7 @@ exports.createProject = (req, res, next) => {
 			.then(r => {
 				req.broadcastEvent('project_creation', { id: r[0], from: req.user.id });
 				req.broadcastEvent('add_points', { user_id: req.user.id, points: 200 });
-				mailer.new_project({ uid: req.user.id, public_id: d.public_id });
+				mailer.new_project({ uid: req.user.id, public_id: d.public_id, title: d.title });
 				res.send({ id: r[0], public_id: d.public_id  });
 			})
 			.catch(err => next(['Invalid information', err]));
