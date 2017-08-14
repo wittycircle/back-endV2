@@ -12,6 +12,11 @@ args: {
 */
 
 const upvote_project = args => {
+    const userLocation = db
+	.select('city', 'state', 'country')
+	.from('location')
+	.where('id', db.select('loc_id').from('profiles').where('id', args.user_id))
+    
 	const fromUser = h.spe_profile({ 'u.id': args.user_id });
 	const fromProject = db(TABLES.PROJECTS)
 		.first('title')
@@ -27,8 +32,8 @@ const upvote_project = args => {
 		.leftJoin(wm.notif('follow_project'), 'n.user_id', 'u.id')
 		.where('pr.id', args.project_id);
 
-	return Promise.all([fromUser, fromProject, toUsers])
-		.then(([[f], p, [t]]) => {
+    return Promise.all([fromUser, fromProject, toUsers, userLocation])
+		.then(([[f], p, [t], [l]]) => {
 			console.log('F ', f);
 			console.log('P ', p);
 			console.log('T ', t);
@@ -49,7 +54,7 @@ const upvote_project = args => {
 				'*|FLNAME|*': f.last_name,
 				'*|FIMG|*': wm.transform(f.picture),
 				'*|FDESC|*': wm.truncate(f.description),
-				'*|FLOC|*': wm.location(f),
+				'*|FLOC|*': wm.location(l),
 				'*|FURL|*': wm.url(f.username),
 				'*|FTITLE|*': p.title
 			};
