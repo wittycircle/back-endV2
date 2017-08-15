@@ -4,7 +4,7 @@ const __ =require('lodash');
 const { escape } = require('lodash');
 
 exports.getList = () => {
-	return db.select('*').from(TABLES.SKILLS)
+	return db.select('*').from(TABLES.SKILLS).orderBy('priority', 'desc');
 };
 
 exports.getCategoryList = () => {
@@ -32,4 +32,5 @@ exports.getSkillsByCategoryId = (id) => {
 		.from(TABLES.SKILL_CAT + ' as sc')
 		.join(TABLES.SKILLS + ' as s', 's.id', '=', 'sc.skill_id')
 		.where('sub_id', id)
+		.orderBy('priority', 'desc')
 }
