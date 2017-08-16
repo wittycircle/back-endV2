@@ -67,6 +67,7 @@ const send_mail = (data, bail) => {
 		mail.addPersonalization(pers);
 	}); //foreach
 	wm.send(mail, 'profile_views');
+	console.log("DONE PROFILE VIEW !");
 	return null;
 };
 
