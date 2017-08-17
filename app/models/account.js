@@ -30,8 +30,8 @@ const createUsernameAndInviteLink = (first, last) => {
 			return checkInviteLink(invite_link)
 				.then(r2 => {
 					return {
-						username 	: username + r[0].number,
-						invite_link : invite_link + r2[0].number
+						username 	: r[0].number ? username + r[0].number : username,
+						invite_link : invite_link + (r2[0].number + 1)
 					}
 				})
 		});

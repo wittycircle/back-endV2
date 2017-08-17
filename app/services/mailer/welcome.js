@@ -23,7 +23,7 @@ const send_mail = (email, data, token) => {
   } else {
     sub = {
       '*|FNAME|*': data,
-      '*|LINK|*': wm.url(`/validation/account/${data.token}`)
+      '*|LINK|*': wm.url(`/validation/account/${token}`)
     };
     mail.setTemplateId(TEMPLATES.welcome);
   }

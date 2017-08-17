@@ -38,6 +38,8 @@ if (process.env.NODE_ENV === 'development') {
 	});
 }
 
+// mails['welcome'] = args => require('./welcome')(args);
+
 // ------------------ DEV ENVIRONMENT ------------------
 
 // files.forEach(e => {
