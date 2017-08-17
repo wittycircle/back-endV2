@@ -29,6 +29,7 @@ const fillSub = (d, sub, i) => {
 // ---------------------- old stuff ----------------------
 
 const send_mail = (data, bail) => {
+    console.log("I'M OK KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
 	let mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
 	wm.content(mail);
@@ -72,6 +73,7 @@ const send_mail = (data, bail) => {
 };
 
 const profile_views = args => {
+    console.log("I'M GOOD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	const request = db
 		.distinct(
 			'v.viewed',
