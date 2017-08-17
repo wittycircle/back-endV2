@@ -22,7 +22,7 @@ const send_mail = (data, token) => {
 		let pers = new helper.Personalization();
 		let subject = 'Reset password';
 		let sub = {
-			'*|ffname|*': e.first_name || '',
+			'*|FNAME|*': e.first_name || '',
 			'*|EMAIL|*': e.email || '',
 			'*|FURL|*': wm.url(`reset/password/${token}`)
 		};

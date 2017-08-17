@@ -24,8 +24,8 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 			.select('p.*', h.format_location)
 			.then(profiles => {
 				storage.profiles = profiles;
-				client.deleteIndex('Users', err => {
-					console.log(profiles);
+			    client.deleteIndex('Users', err => {
+				console.log(err);
 					people.addObjects(profiles.filter(p => p.fullName && p.picture));
 				});
 			}),
@@ -46,4 +46,4 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 	);
 });
 init();
-//setInterval(init, 3600 * 24);
+setInterval(init, 3600 * 6);
