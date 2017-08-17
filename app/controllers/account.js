@@ -27,8 +27,8 @@ const checkRegisterData = data => {
 
 	return account.checkUsername(a_username).then(r => {
 		return account.checkInviteLink(invite_link).then(r2 => {
-			nd.username  	= a_username + r[0].number
-			nd.invite_link 	= invite_link + r2[0].number
+			nd.username  	= r[0].number ? a_username + r[0].number : a_username
+			nd.invite_link 	= invite_link + (r2[0].number + 1)
 
 			return nd;
 		})

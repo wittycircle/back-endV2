@@ -4,6 +4,7 @@ const { db, TABLES } = require('../../models/index');
 const _ = require('lodash');
 
 const send_mail = data => {
+	console.log(data);
 	let mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
 	wm.content(mail);

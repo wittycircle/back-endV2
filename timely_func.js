@@ -73,7 +73,7 @@ let viewers = () => {
 };
 
 const recentActivityBot = require('./socket-server/lib/bot/activities');
-
+// mailer.profile_views();
 (() => {
   setInterval(mailer.new_message, HALF_HOUR);
   setInterval(mailer.profile_views, ONE_WEEK);
