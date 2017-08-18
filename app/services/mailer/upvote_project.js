@@ -42,9 +42,9 @@ const upvote_project = args => {
 
 			const category = new helper.Category('upvote_project');
 			mail.addCategory(category);
-			wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+			wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 			wm.content(mail);
-			wm.reply(mail, 'noreply@wittycircle.com');
+			wm.reply(mail, 'notifications@wittycircle.com');
 			mail.setTemplateId(TEMPLATES.upvote_project);
 			// t.forEach(t => {
 			let subject = '*|FFNAME|* *|FLNAME|* upvoted *|FTITLE|*';

@@ -11,16 +11,16 @@ const _ = require('lodash');
 
 const send_mail = (data, token) => {
 	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+	wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
+	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.reset_password);
 	const category = new helper.Category('reset_password');
 	mail.addCategory(category);
 
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = 'Reset password';
+		let subject = 'Reset your password';
 		let sub = {
 			'*|FNAME|*': e.first_name || '',
 			'*|EMAIL|*': e.email || '',

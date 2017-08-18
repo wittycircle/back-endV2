@@ -6,16 +6,16 @@ const _ = require('lodash');
 
 const send_mail = (sender, public_id, title) => {
 	let mail = new helper.Mail();
-	wm.from(mail, 'quentin@wittycircle.com', 'Quentin Verriere');
+	wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 	wm.content(mail);
-	wm.reply(mail, 'quentin@wittycircle.com');
+	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.new_project);
 	const category = new helper.Category('new_project');
 	mail.addCategory(category);
 
 	sender.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = 'Your project on Wittycircle';
+		let subject = "Your project is now live - What's should you do next?";
 		let sub = {
 			'*|FNAME|*' 	: e.first_name,
 			'*|PLINK|*' 	: wm.url(`project/${public_id}/${title}`),

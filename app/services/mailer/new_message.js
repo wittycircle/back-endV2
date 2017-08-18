@@ -8,9 +8,9 @@ const new_message = () => {
 	let mail = new helper.Mail();
 
 	const send_mail = data => {
-		wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+		wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 		wm.content(mail);
-		wm.reply(mail, 'noreply@wittycircle.com');
+		wm.reply(mail, 'notifications@wittycircle.com');
 		mail.setTemplateId(TEMPLATES.new_message);
 
 		const category = new helper.Category('new_message');
@@ -23,7 +23,7 @@ const new_message = () => {
 		data.forEach((e, i) => {
 			e.members.forEach(member => {
 				let pers = new helper.Personalization();
-				let subject = '*|FFNAME|*  *|FLNAME|* sent you a message';
+				let subject = '*|FFNAME|* *|FLNAME|* just sent you a new message';
 				let sub = {
 					'*|FNAME|*': member.firstName,
 					'*|FFNAME|*': e.first_name,

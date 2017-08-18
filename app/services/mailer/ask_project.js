@@ -44,10 +44,10 @@ const ask_project = args => {
 	return Promise.all([fromUser, fromProject])
 		.then(([users, projects]) => {
 			u = users[0];
-			let subject = '*|FNAME|* asked a question about *|FPROJECT|*';
-			wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+			let subject = '*|FUNAME|* just commented about *|FPROJECT|*';
+			wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 			wm.content(mail);
-			wm.reply(mail, 'noreply@wittycircle.com');
+			wm.reply(mail, 'notifications@wittycircle.com');
 			mail.setTemplateId(TEMPLATES.ask_project);
 			if (!projects.length) {
 				return;

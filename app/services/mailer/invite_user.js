@@ -25,9 +25,9 @@ const updateInvitation = (uid, mails) => {
 const send_mail = (data, sender, invite, category = false) => {
 	console.log('SEND MAIL CALLED');
 	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+	wm.from(mail, 'notifications@wittycircle.com', '*|FUNAME|* via Witty');
 	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
+	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.invite_user);
 
 	if (category) mail.addCategory({ category });
@@ -38,7 +38,7 @@ const send_mail = (data, sender, invite, category = false) => {
 
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = sender.fullName + ' invited you to join Wittycircle';
+		let subject = '*|FUNAME|* just sent you a private invite to join Witty';
 		let sub = {
 			'*|FNAME|*': sender.first_name,
 			'*|FLNAME|*': sender.last_name,

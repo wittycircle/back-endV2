@@ -14,9 +14,9 @@ const _ = require('lodash');
 
 const send_mail = (data, name) => {
 	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+	wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
+	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.verification_network);
 	const category = new helper.Category('verification_network');
 	mail.addCategory(category);
@@ -28,8 +28,8 @@ const send_mail = (data, name) => {
 		'*|NETWORK|*': data.network,
 		'*|LINK|*': wm.url(`validation/network/${data.token}`)
 	};
-	console.log(sub);
-	console.log('\n-------------------------------------------------\n');
+	// console.log(sub);
+	// console.log('\n-------------------------------------------------\n');
 	wm.subject(pers, subject);
 	wm.to(pers, data.email);
 	wm.substitutions(pers, sub);

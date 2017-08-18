@@ -30,9 +30,9 @@ const fillSub = (d, sub, i) => {
 
 const send_mail = (data, bail) => {
 	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+	wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
+	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId('b3a26bb4-6291-4a9f-9676-b97f74d52061');
 	const category = new helper.Category('profile_views');
 	mail.addCategory(category);
@@ -40,7 +40,7 @@ const send_mail = (data, bail) => {
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
 		let subject =
-			'You may have something special 🙈  *|NVIEW|* people recently visited your profile.';
+			'This week on Witty - *|NVIEW|* people recently visited your profile.';
 		let notif = e.notif.split(',');
 		let laString = '';
 		let nview = notif.length;

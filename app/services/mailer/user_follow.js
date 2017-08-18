@@ -11,15 +11,15 @@ const _ = require('lodash');
 
 const send_mail = (follower, followed) => {
 	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
+	wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
+	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.user_follow);
 	const category = new helper.Category('user_follow');
 	mail.addCategory(category);
 
 	let pers = new helper.Personalization();
-	let subject = '*|FFNAME|*  *|FLNAME|* is now following you';
+	let subject = '*|FFNAME|* *|FLNAME|* just started following you';
 	let sub = {
 		'*|FNAME|*': followed.first_name,
 		'*|FFNAME|*': follower.first_name,
@@ -30,8 +30,8 @@ const send_mail = (follower, followed) => {
 		'*|FURL|*': wm.url(`${follower.username}`),
 		'*|EMAIL|*': followed.email
 	};
-	console.log(sub);
-	console.log('\n-------------------------------------------------\n');
+	// console.log(sub);
+	// console.log('\n-------------------------------------------------\n');
 	wm.subject(pers, subject);
 	wm.to(pers, followed.email);
 	wm.substitutions(pers, sub);
