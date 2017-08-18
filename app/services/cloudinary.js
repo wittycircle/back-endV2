@@ -4,4 +4,17 @@
 
 'use strict';
 
-// http://cloudinary.com/documentation/node_integration#overview
+const cloudinary = require('cloudinary');
+const config = require('../private');
+cloudinary.config(config.cloudinary);
+
+exports.uploadProjectLogo = url => {
+	return new Promise(resolve =>
+		cloudinary.uploader.upload(url, result => resolve(result.secure_url), {
+			width: 200, 
+			height: 200, 
+			crop: "fill", 
+			format: "jpg"
+		})
+	);
+};

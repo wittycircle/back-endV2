@@ -25,6 +25,7 @@ router.use('/api', require('./invitation'));
 router.use('/api', require('./admin_panel'));
 router.use('/api', require('./social'));
 router.use('/api', require('./suggestions'));
+router.use('/api', require('./upload'));
 router.use(require('../middlewares/error').error);
 
 router.get('*', (req, res) => {

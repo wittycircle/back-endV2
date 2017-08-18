@@ -22,7 +22,7 @@ const send_mail = (data) => {
 			'*|FNAME|*': e.first_name,
 		};
 		wm.subject(pers, subject);
-		wm.to(pers, 'jayho@wittycircle.com' /* e.email */);
+		wm.to(pers, e.email /* e.email */);
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 
@@ -39,9 +39,7 @@ const feedback = () => {
 
 	return Promise.all([users])
 		.then( ([r]) => {
-			console.log(r);
-			return r
-			// send_mail(r)
+			send_mail(r)
 		})
 		.catch(console.error);
 }; //exports

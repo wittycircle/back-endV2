@@ -8,11 +8,11 @@ let toInsertToo = (name, location, date, picture, url) => {
 	return `
 	<table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto" width="350px">
 <tbody> <tr> <td><span class="sg-image" data-imagelibrary="%7B%22width%22%3A%2240%22%2C%22height%22%3A%2240%22%2C%22alt_text%22%3A%22profile_picture%22%2C%22alignment%22%3A%22%22%2C%22border%22%3A0%2C%22src%22%3A%22https%3A//res.cloudinary.com/dqpkpmrgk/image/upload/w_40%2Ch_40%2Cc_fill%2Cg_face/v1493332197/rzxugrlqswu6veak8gqe.jpg%22%2C%22classes%22%3A%7B%22sg-image%22%3A1%7D%2C%22link%22%3A%22%22%7D"><img height="40"
-	 src=${picture} style="width: 40px; height: 40px; border-radius: 50%;" width="40" /></span></td>
-	<td> <div style="width: 200px; margin: 0 auto;"> <div><span style="font-family: Helvetica; word-break: break-word;">${name}</span><br />
+	 src=${picture} style="width: 40px; height: 40px; border-radius: 50%; margin-left: 50px; margin-right: 25px" width="40" /></span></td>
+	<td> <div style="width: 250px; margin: 0 auto; text-align: left"> <div><span style="font-family: Helvetica; word-break: break-word;">${name}</span><br />
 	<span style="color:#545454;"><span style="font-size:12px; font-family: Helvetica; position: relative; bottom: 2px;">
-	${location}</span></span>&nbsp;</div> <div><span style="color:#a0a0a0;"><span style="font-size:10px; font-family: Helvetica; position: relative; bottom: 4px;">
-	${date}</span></span></div> </div> </td> <td><span ><a href="${url}" ><button style="padding: 3px 10px; background-color: #fff; border: 1px solid #545454; font-family: 'Helvetica'; border-radius: 4px; font-size: 14px; ">Follow</button></a></span></td>
+	<img style="width: 10px; margin-right: 5px" src="http://res.cloudinary.com/dqpkpmrgk/image/upload/v1458222562/Witty-icon/Signup/location-icon-gray.png" />${location}</span></span>&nbsp;</div> <div><span style="color:#a0a0a0;"><span style="font-size:10px; font-family: Helvetica; position: relative; bottom: 4px;">
+	${date}</span></span></div> </div> </td>
 </tr> </tbody> </table> <br></br>
 	`;
 };
@@ -39,11 +39,11 @@ const send_mail = (data, bail) => {
 
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject =
-			'This week on Witty - *|NVIEW|* people recently visited your profile.';
 		let notif = e.notif.split(',');
 		let laString = '';
 		let nview = notif.length;
+		let subject =
+			'This week on Witty - ' + bail[i][0].first_name + ' and ' + nview.toString() + ' others viewed your profile';
 		let newRank = e.rank == 1
 			? 1
 			: e.rank < 10 ? e.rank - 1 : e.rank - Math.random() * 10;
@@ -56,7 +56,7 @@ const send_mail = (data, bail) => {
 			'*|EMAIL|*': e.email
 		};
 		bail[i].forEach((b, j) => {
-			if (j < 4) laString += fillSub(b, sub, j + 1);
+			if (j < 3) laString += fillSub(b, sub, j + 1);
 		});
 		sub['*|TOUSLESBAILS|*'] = laString;
 		// console.log('\n-------------------------------------------------\n');
