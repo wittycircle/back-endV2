@@ -25,7 +25,7 @@ const updateInvitation = (uid, mails) => {
 const send_mail = (data, sender, invite, category = false) => {
 	console.log('SEND MAIL CALLED');
 	let mail = new helper.Mail();
-	wm.from(mail, 'notifications@wittycircle.com', '*|FUNAME|* via Witty');
+	wm.from(mail, 'notifications@wittycircle.com', sender.fullName + ' via Witty');
 	wm.content(mail);
 	wm.reply(mail, 'notifications@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.invite_user);
