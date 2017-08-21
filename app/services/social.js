@@ -65,7 +65,9 @@ exports.getLinkedinProfileInfo = profileUrl => {
 	};
 	const profile = '{ "profile":"' + profileUrl.toString() + '"}';
 	const query = `https://phantombuster.com/api/v1/agent/1031/launch?output=first-result-object&argument=${profile}&saveArgument=false`;
-	return got(query, options).then(response => response.body.data.resultObject);
+	return got(query, options).then(response => {
+		return response.body.data.resultObject
+	});
 };
 
 exports.gmailContactsCampaign = token =>
