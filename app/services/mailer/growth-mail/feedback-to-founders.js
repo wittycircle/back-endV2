@@ -14,7 +14,7 @@ const send_mail = (data) => {
 
 	const category = new helper.Category('feedback-to-founder');
 	mail.addCategory(category);
-	data = data.splice(0, 1);
+
 	data.forEach( (e) => {
 		let pers = new helper.Personalization();
 		let subject = 'Are you free this week, *|FNAME|*';
@@ -39,6 +39,7 @@ const feedback = () => {
 
 	return Promise.all([users])
 		.then( ([r]) => {
+		    console.log('SEND');
 			send_mail(r)
 		})
 		.catch(console.error);
