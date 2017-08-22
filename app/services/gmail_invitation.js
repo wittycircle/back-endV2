@@ -13,7 +13,7 @@ const sendInvitationToGmailContacts = () => {
 				.then( f => {
 					f = f.map(e => e.mail_to);
 					check.verifyUsers(f).then( checkMails => {
-						mailer.invite_user({ uid: r[index].user_id, mailList, category: 'gmail_auth' })
+						mailer.invite_user({ uid: r[index].user_id, checkMails, category: 'gmail_auth' })
 						return recursive(index + 1);
 					});
 				})
