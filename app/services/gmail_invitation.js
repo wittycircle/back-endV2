@@ -8,12 +8,12 @@ const sendInvitationToGmailContacts = () => {
 		function recursive(index) {
 			if (index < r.length) {
 				db('gmail_auth_contacts')
-				.select('mail_to')
+				.distinct('mail_to')
 				.where('user_id', r[index].user_id)
 				.then( f => {
 					f = f.map(e => e.mail_to);
-					check.verifyUsers(f).then( checkMails => {
-						mailer.invite_user({ uid: r[index].user_id, checkMails, category: 'gmail_auth' })
+					check.verifyUsers(f).then( mailList => {
+						mailer.invite_user({ uid: r[index].user_id, mailList, type: 'gmail_auth' })
 						return recursive(index + 1);
 					});
 				})

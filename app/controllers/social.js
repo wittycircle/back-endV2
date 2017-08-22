@@ -180,7 +180,7 @@ exports.InviteFriendsFromGoogle = (req, res, next) => {
 	.gmailContactsCampaign(token)
 	.then(mailList => {
 		check.verifyUsers(mailList).then( checkMails => {
-			mailer.invite_user({ uid: req.user.id, mailList, category: 'gmail' })
+			mailer.invite_user({ uid: req.user.id, mailList, type: 'gmail' })
 		});
 	})
 	.then(() => {

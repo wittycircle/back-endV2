@@ -13,7 +13,7 @@ const verifyInvite = (exports.verifyInvite = mails => {
 	return db(TABLES.INVITATION)
 		.distinct('mail_to')
 		.whereIn('mail_to', mails)
-		.andWhereRaw('creation_date > NOW() - INTERVAL 2 DAY')
+		.andWhereRaw('creation_date > NOW() - INTERVAL 2 WEEK')
 		.then(badMails => {
 			badMails = badMails.map(e => e.mail_to);
 			return _.difference(mails, badMails);
