@@ -6,7 +6,7 @@ const invitation = require('../../models/invitation');
 const _ = require('lodash');
 
 const updateInvitation = (uid, mails) => {
-	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
+ 	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
 
 	return db(TABLES.INVITATION)
 		.whereIn('mail_to', parseMails)
@@ -53,9 +53,10 @@ const send_mail = (data, sender, invite, category = false) => {
 
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
+		wm.send(mail, 'invite_user');
 	});
-	wm.send(mail, 'invite_user');
-	return null;
+	return null
+
 };
 // args{ mail: [], invite_id}
 
