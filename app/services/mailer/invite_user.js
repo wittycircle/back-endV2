@@ -50,7 +50,7 @@ const send_mail = (data, sender, invite, category = false) => {
 		};
 		wm.subject(pers, subject);
 		wm.to(pers, e);
-		// console.log('PERS', pers);
+
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 	});

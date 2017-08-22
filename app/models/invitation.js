@@ -13,14 +13,14 @@ const verifyInvite = (exports.verifyInvite = mails => {
 	return db(TABLES.INVITATION)
 		.distinct('mail_to')
 		.whereIn('mail_to', mails)
-		.andWhereRaw('creation_date > NOW() - INTERVAL 2 week')
+		.andWhereRaw('creation_date > NOW() - INTERVAL 2 DAY')
 		.then(badMails => {
 			badMails = badMails.map(e => e.mail_to);
 			return _.difference(mails, badMails);
 		});
 });
 
-const verifyUsers = mails => {
+const verifyUsers = (exports.verifyUsers = mails => {
 	return db(TABLES.USERS)
 		.select('email')
 		.whereIn('email', mails)
@@ -28,14 +28,13 @@ const verifyUsers = mails => {
 			badMails = badMails.map(e => e.email);
 			return verifyInvite(_.difference(mails, badMails));
 		})
-}
+});
 // END DOUBLE CHECK
 
 exports.addInvitation = (uid, mails) => {
 	return h.exist(TABLES.USERS, uid).then(r => {
 		if (!r.length) throw 'Unknown user';
 		return verifyUsers(mails).then(verifiedEmails => {
-			console.log(verifiedEmails);
 			if (!verifiedEmails.length) return 'All emails already invited';
 			return verifiedEmails;
 		});

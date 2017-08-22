@@ -3,6 +3,7 @@
 */
 
 const social 	= require('../services/social');
+const check 	= require('../models/invitation');
 const mailer 	= require('../services/mailer');
 const profiles 	= require('../models/profiles');
 const cProfiles = require('../controllers/profiles');
@@ -171,14 +172,17 @@ exports.updateProfileFromLinkedin = (req, res, next) => {
 };
 
 exports.InviteFriendsFromGoogle = (req, res, next) => {
-	let inviteOnlyOnce = db('user_socials').select('invite_google');
+	// let inviteOnlyOnce = db('user_socials').select('invite_google');
+
 	const { token } = req.body;
 
 	social
 	.gmailContactsCampaign(token)
-	.then(mailList =>
-		mailer.invite_user({ uid: req.user.id, mailList, category: 'gmail' })
-		)
+	.then(mailList => {
+		check.verifyUsers(mailList).then( checkMails => {
+			mailer.invite_user({ uid: req.user.id, mailList, category: 'gmail' })
+		});
+	})
 	.then(() => {
 		return db('user_socials')
 		.first('invite_google')
