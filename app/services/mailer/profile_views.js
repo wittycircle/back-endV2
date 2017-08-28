@@ -33,7 +33,7 @@ const send_mail = (data, bail) => {
 	wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 	wm.content(mail);
 	wm.reply(mail, 'notifications@wittycircle.com');
-	mail.setTemplateId('b3a26bb4-6291-4a9f-9676-b97f74d52061');
+	mail.setTemplateId(TEMPLATES.profile_views);
 	const category = new helper.Category('profile_views');
 	mail.addCategory(category);
 

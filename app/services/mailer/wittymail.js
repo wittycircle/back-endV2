@@ -127,7 +127,7 @@ module.exports.TEMPLATES = {
   validate_account: '61e506e0-18b4-4bae-825c-33c2aa3bf450',
   // validation-network: ,
   verification_network: '9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
-  profile_views: 'b3a26bb4-6291-4a9f-9676-b97f74d52061',
+  profile_views: '0280cdc2-c528-4bdc-ba3e-3b19a7a0f00d',
   welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553',
   welcomeGmail: 'db22f7ec-1af2-4bc9-b700-03f8ac068861',
   feedback: '36efd503-da42-40ab-9479-3fbe53846feb'
