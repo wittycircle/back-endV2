@@ -78,7 +78,7 @@ const recentActivityBot = require('./socket-server/lib/bot/activities');
     setInterval(mailer.new_message, HALF_HOUR);
     setInterval(mailer.profile_views, ONE_WEEK);
     setInterval(updateRanking, QUARTER_HOUR);
-    setInterval(viewers, QUARTER_HOUR);
+    setInterval(viewers, TWO_HOURS);
   // setInterval(
   //   () =>
   //     recentActivityBot({

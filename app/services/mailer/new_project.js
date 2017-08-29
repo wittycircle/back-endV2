@@ -15,7 +15,7 @@ const send_mail = (sender, public_id, title) => {
 
 	sender.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = "Your project is now live - What's should you do next?";
+		let subject = "Your project is now live - What's next?";
 		let sub = {
 			'*|FNAME|*' 	: e.first_name,
 			'*|PLINK|*' 	: wm.url(`project/${public_id}/${title}`),

@@ -130,7 +130,8 @@ module.exports.TEMPLATES = {
   profile_views: '0280cdc2-c528-4bdc-ba3e-3b19a7a0f00d',
   welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553',
   welcomeGmail: 'db22f7ec-1af2-4bc9-b700-03f8ac068861',
-  feedback: '36efd503-da42-40ab-9479-3fbe53846feb'
+  feedback: '36efd503-da42-40ab-9479-3fbe53846feb',
+  complete_profile: '05bdf2fe-b899-4ec5-8f0e-1940668e5939'
 };
 
 /*
