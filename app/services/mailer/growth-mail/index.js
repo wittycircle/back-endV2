@@ -22,7 +22,7 @@ const runTime = () => {
 	setInterval(complete_project(30), ONE_DAY * 30);
 
 	/* FEEDBACK */
-    setInterval(feedback, ONE_DAY * 3);
+    setInterval(feedback, ONE_DAY);
 };
 
 runTime();

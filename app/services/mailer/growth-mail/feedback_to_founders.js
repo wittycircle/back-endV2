@@ -35,7 +35,7 @@ const feedback = () => {
 	let users = db(TABLES.USERS + ' as u')
 		.select('u.id', 'email', 'p.first_name')
 		.join(TABLES.PROFILES + ' as p', 'u.id', 'p.user_id')
-		.whereRaw("date(u.creation_date) = curdate() - 2 && email not like '%witty.com%'")
+		.whereRaw("date(u.creation_date) = curdate() - 3 && email not like '%witty.com%'")
 
 	return Promise.all([users])
 		.then( ([r]) => {
