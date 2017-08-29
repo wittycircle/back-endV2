@@ -131,7 +131,8 @@ module.exports.TEMPLATES = {
   welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553',
   welcomeGmail: 'db22f7ec-1af2-4bc9-b700-03f8ac068861',
   feedback: '36efd503-da42-40ab-9479-3fbe53846feb',
-  complete_profile: '05bdf2fe-b899-4ec5-8f0e-1940668e5939'
+  complete_profile: '05bdf2fe-b899-4ec5-8f0e-1940668e5939',
+  complete_project: '7e6f6273-8b39-41bc-8972-7ee76d7e23fd'
 };
 
 /*

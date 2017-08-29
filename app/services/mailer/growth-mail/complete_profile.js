@@ -33,19 +33,18 @@ const send_mail = (data) => {
 	return null;
 };
 
-const completeProfile = () => {
+const completeProfile = (day) => {
 	let c_profile = db
 		.select('u.id',
 				'p.first_name',
 				'u.username', 
-				'u.email',
-				'u.creation_date')
+				'u.email')
 		.from(TABLES.USERS + ' as u')
 		.leftJoin(TABLES.USER_SKILLS + ' as us', 'u.id', 'us.user_id')
 		.leftJoin(TABLES.USER_EXPERIENCES + ' as ue', 'u.id', 'ue.user_id')
 		.innerJoin(TABLES.PROFILES + ' as p', 'u.id', 'p.user_id')
 		.where( function() { this.whereNull('us.user_id').orWhereNull('ue.user_id') })
-		.andWhereRaw('date(u.creation_date) = curdate() - interval 1 day')
+		.andWhereRaw(`date(u.creation_date) = curdate() - interval ${day} day`)
 		.groupBy('id');
 
 
