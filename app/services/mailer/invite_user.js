@@ -5,6 +5,28 @@ const { db, TABLES } = require('../../models/index');
 const invitation = require('../../models/invitation');
 const _ = require('lodash');
 
+const chunk = (array, callback) => {
+	let chunks 		= [],
+		tempArray 	= [];
+
+	const length 	= array.length
+
+	if (length > 1000) {
+		array.forEach( (e, i) => {
+			tempArray.push(e)
+			if (tempArray.length >= 1000) {
+				chunks.push(tempArray)
+				tempArray = []
+			}
+			if (i === length - 1) {
+				chunks.push(tempArray)
+				return callback(chunks);
+			}	
+		});
+	} else
+		return callback(array)
+}
+
 const updateInvitation = (uid, mails) => {
  	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
 
@@ -16,50 +38,11 @@ const updateInvitation = (uid, mails) => {
 			parseMails.forEach(mail => {
 				newArray.push({ user_id: uid, mail_to: mail });
 			});
-			if (newArray.length) 
+			if (newArray.length)
 				return db.batchInsert('invitations', newArray)
 					.then(r => parseMails);
 		})
 }
-
-const send_mail = (data, sender, invite, category = false) => {
-	console.log('SEND MAIL CALLED');
-	
-	let mail = new helper.Mail();
-	wm.from(mail, 'notifications@wittycircle.com', sender.fullName + ' via Witty');
-	wm.content(mail);
-	wm.reply(mail, 'notifications@wittycircle.com');
-	mail.setTemplateId(TEMPLATES.invite_user);
-
-	if (category) mail.addCategory({ category });
-	else {
-		const otherCategory = new helper.Category('invite_user');
-		mail.addCategory(otherCategory);
-	}
-
-	data.forEach((e, i) => {
-		let pers = new helper.Personalization();
-		let subject = '*|FUNAME|* just sent you a private invite to join Witty';
-		let sub = {
-			'*|FNAME|*': sender.first_name,
-			'*|FLNAME|*': sender.last_name,
-			'*|PIMG|*': wm.transform(sender.picture),
-			'*|FUNAME|*': sender.fullName,
-			'*|FLOC|*': wm.location(sender),
-			'*|URL|*': wm.url(`/invite/${invite}`),
-			MAIL: e
-		};
-		wm.subject(pers, subject);
-		wm.to(pers, e);
-
-		wm.substitutions(pers, sub);
-		mail.addPersonalization(pers);
-	});
-    wm.send(mail, 'invite_user');
-	return null
-
-};
-// args{ mail: [], invite_id}
 
 const deleteGmailContacts = uid => {
 	db(TABLES.GMAILCONTACTS)
@@ -69,6 +52,48 @@ const deleteGmailContacts = uid => {
 			console.log('All mails have been deleted !');
 		})
 }
+
+const send_mail = (data, sender, invite, category = false) => {
+	console.log('SEND MAIL CALLED');
+	
+	data.forEach( subArray => {
+		let mail = new helper.Mail();
+		wm.from(mail, 'notifications@wittycircle.com', sender.fullName + ' via Witty');
+		wm.content(mail);
+		wm.reply(mail, 'notifications@wittycircle.com');
+		mail.setTemplateId(TEMPLATES.invite_user);
+
+		if (category) mail.addCategory({ category });
+		else {
+			const otherCategory = new helper.Category('invite_user');
+			mail.addCategory(otherCategory);
+		}
+
+		subArray.forEach( (e, i) => {
+			let pers = new helper.Personalization();
+			let subject = '*|FUNAME|* just sent you a private invite to join Witty';
+			let sub = {
+				'*|FNAME|*': sender.first_name,
+				'*|FLNAME|*': sender.last_name,
+				'*|PIMG|*': wm.transform(sender.picture),
+				'*|FUNAME|*': sender.fullName,
+				'*|FLOC|*': wm.location(sender),
+				'*|URL|*': wm.url(`/invite/${invite}`),
+				MAIL: e
+			};
+			wm.subject(pers, subject);
+			wm.to(pers, e);
+
+			wm.substitutions(pers, sub);
+			mail.addPersonalization(pers);
+		});
+
+		wm.send(mail, 'invite_user');
+	});
+	return null
+
+};
+// args{ mail: [], invite_id}
 
 const invite_user = args => {
 	let request = db
@@ -92,7 +117,9 @@ const invite_user = args => {
 		]).then(([sender, invite]) => {
 			if (args.type === 'gmail_auth')
 				deleteGmailContacts(args.uid);
-			send_mail(emails, sender[0], invite.invite_link, args.type)
+			chunk(emails, emailsArray => {
+				send_mail(emailsArray, sender[0], invite.invite_link, args.type)
+			});
 		});
 	});
 }; //exports

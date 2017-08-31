@@ -76,7 +76,7 @@ exports.inviteFromGmailAuthContacts = (uid) => {
 	return h.exist(TABLES.USERS, uid).then(r => {
 		if (!r.length) throw 'Unknown user';
 		return db(TABLES.GMAILCONTACTS)
-			.select('mail_to')
+			.distinct('mail_to')
 			.where('user_id', uid)
 			.then(r => {
 				return verifyUsers(r.map(e => e.mail_to));
