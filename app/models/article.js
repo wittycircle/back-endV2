@@ -39,7 +39,7 @@ exports.createArticle = data => {
 		title: data.title,
 		text: data.text,
 		read_time: data.text.length / 400 + 1,
-		author_id: data.uid
+		user_id: data.uid
 	};
 	if (data.picture) i_data.picture = data.picture;
 
