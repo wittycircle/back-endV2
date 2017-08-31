@@ -53,8 +53,8 @@ const send_mail = (data, sender, invite, category = false) => {
 
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
-		wm.send(mail, 'invite_user');
 	});
+    wm.send(mail, 'invite_user');
 	return null
 
 };
