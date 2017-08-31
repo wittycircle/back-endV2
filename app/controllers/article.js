@@ -36,8 +36,8 @@ exports.getArticles = (req, res, next) => {
 							e.hasLiked = ar.indexOf(uid) != -1;
 						}
 
-						if (e.tags)
-							e.tags = e.tags.split(',')
+						// if (e.tags)
+						// 	e.tags = e.tags.split(',')
 					});
 				}
 				res.send({ articles: r });
