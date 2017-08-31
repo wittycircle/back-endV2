@@ -4,16 +4,21 @@ const h = require('../../models/helper'); //NIK
 const { db, TABLES } = require('../../models/index');
 const invitation = require('../../models/invitation');
 const _ = require('lodash');
-const emailCheck = require('email-check');
 
-const updateInvitation = (uid, mail) => {
- 	// const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
+const updateInvitation = (uid, mails) => {
+ 	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
+
 	return db(TABLES.INVITATION)
 		.where('mail_to', mail)
 		.del()
 		.then(r => {
-			return db('invitations').insert({ user_id: uid, mail_to: mail })
-				.then(r => parseMails);
+			let newArray = []
+			parseMails.forEach(mail => {
+				newArray.push({ user_id: uid, mail_to: mail });
+			});
+			if (newArray.length) 
+				return db.batchInsert('invitations', newArray)
+					.then(r => parseMails);
 		})
 }
 
@@ -32,30 +37,25 @@ const send_mail = (data, sender, invite, category = false) => {
 		mail.addCategory(otherCategory);
 	}
 
-	let pers = new helper.Personalization();
-	let subject = '*|FUNAME|* just sent you a private invite to join Witty';
-	let sub = {
-		'*|FNAME|*': sender.first_name,
-		'*|FLNAME|*': sender.last_name,
-		'*|PIMG|*': wm.transform(sender.picture),
-		'*|FUNAME|*': sender.fullName,
-		'*|FLOC|*': wm.location(sender),
-		'*|URL|*': wm.url(`/invite/${invite}`),
-		MAIL: ''
-	};
-
 	data.forEach((e, i) => {
-		verifyEmailExistance(e).then(r => {
-			console.log(r);
-		})
-		// sub.MAIL = e
-		// wm.subject(pers, subject);
-		// wm.to(pers, e);
+		let pers = new helper.Personalization();
+		let subject = '*|FUNAME|* just sent you a private invite to join Witty';
+		let sub = {
+			'*|FNAME|*': sender.first_name,
+			'*|FLNAME|*': sender.last_name,
+			'*|PIMG|*': wm.transform(sender.picture),
+			'*|FUNAME|*': sender.fullName,
+			'*|FLOC|*': wm.location(sender),
+			'*|URL|*': wm.url(`/invite/${invite}`),
+			MAIL: e
+		};
+		wm.subject(pers, subject);
+		wm.to(pers, e);
 
-		// wm.substitutions(pers, sub);
-		// mail.addPersonalization(pers);
-		// wm.send(mail, 'invite_user');
+		wm.substitutions(pers, sub);
+		mail.addPersonalization(pers);
 	});
+    wm.send(mail, 'invite_user');
 	return null
 
 };
@@ -92,9 +92,9 @@ const invite_user = args => {
 		]).then(([sender, invite]) => {
 			if (args.type === 'gmail_auth')
 				deleteGmailContacts(args.uid);
-			send_mail(args.mailList, sender[0], invite.invite_link, args.type)
+			send_mail(emails, sender[0], invite.invite_link, args.type)
 		});
-	// });
+	});
 }; //exports
 
 module.exports = invite_user;
