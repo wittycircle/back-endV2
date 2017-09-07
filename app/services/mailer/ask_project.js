@@ -19,7 +19,20 @@ const ask_project = args => {
 	const category = new helper.Category('ask_project');
 	mail.addCategory(category);
 
-	const fromUser = h.spe_profile({ 'u.id': args.user_id });
+	const user_skills = db
+		.select(
+			'p.user_id as user_id',
+			'nl.name as network',
+			h.format_location,
+			db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`))
+		.from(TABLES.PROFILES + ' as p')
+		.join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.user_id')
+		.join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+		.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+		.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
+		.where('us.user_id', args.user_id);
+
+	const fromUser = h.spe_profile({ 'u.id': args.user_id })
 
 	common_array = ['u.id', 'u.email', 'pr.title', 'pr.public_id'];
 
@@ -41,10 +54,10 @@ const ask_project = args => {
 				.where('m.project_id', args.project_id);
 		});
 
-	return Promise.all([fromUser, fromProject])
-		.then(([users, projects]) => {
+	return Promise.all([fromUser, user_skills, fromProject])
+		.then(([users, u_skills, projects]) => {
 			u = users[0];
-			let subject = '*|FUNAME|* just commented about *|FPROJECT|*';
+			let subject = '*|UFU_NAME|* just commented about *|PR_TITLE|*';
 			wm.from(mail, 'notifications@wittycircle.com', 'Witty');
 			wm.content(mail);
 			wm.reply(mail, 'notifications@wittycircle.com');
@@ -55,14 +68,16 @@ const ask_project = args => {
 			projects.forEach(p => {
 				let pers = new helper.Personalization();
 				let sub = {
-					'*|FNAME|*': u.first_name,
-					'*|FUNAME|*': u.fullName,
-					'*|FPROJECT|*': p.title,
-					// '*|FMTITLE|*': args.title,
-					'*|FDESC|*': args.message,
-					'*|FIMG|*': u.picture,
-					'*|FURL|*': wm.url(`project/${p.public_id}/${p.title}`),
-					'*|EMAIL|*': p.email
+					'*|UF_NAME|*' 		: u.first_name,
+					'*|UFU_NAME|*' 		: u.fullName,
+					'*|PR_TITLE|*' 		: p.title,
+					'*|U_DESC|*' 		: wm.truncate(u.description) || '',
+					'*|U_PICTURE|*' 	: u.picture,
+					'*|PR_URL|*' 		: wm.url(`project/${p.public_id}/${p.title}`),
+					'*|LOCATION_BLOC|*' : wm.location_bloc(wm.location(u_skills[0])),
+					'*|NETWORK_BLOC|*'	: wm.network_bloc(u_skills[0].network),
+					'*|SKILL_BLOC|*' 	: wm.skills_bloc(u_skills[0].skills),
+					'*|EMAIL|*' 		: p.email
 				};
 				// console.log(sub)
 				// console.log("\n")
@@ -71,7 +86,6 @@ const ask_project = args => {
 				wm.subject(pers, subject);
 				mail.addPersonalization(pers);
 			}); //foreach
-			// console.log("done")
 			wm.send(mail, 'ask_project');
 			return null;
 		})

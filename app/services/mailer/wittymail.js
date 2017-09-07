@@ -87,6 +87,50 @@ wm.transform = url => {
 | reply_project  |
 | new_message	 |
 */
+
+wm.skills_bloc = (skills) => {
+	
+	if (!skills)
+		return ''
+
+	let skillArray, skillObject;
+
+	skillArray 	= skills.split(',');
+	skillObject = { 
+		first 	: skillArray[0], 
+		second 	: skillArray[1], 
+		third 	: skillArray[2], 
+		fourth 	: skillArray[3], 
+		fifth 	: skillArray[4], 
+		more 	: skillArray[5] ? ('+' + (skillArray.length - 5) + ' more') : '' } 
+
+	let bloc = `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: OpenSans; font-weight: normal; font-size: 12px; color: #bec1c3;">${skillObject.first}</li>`;
+	if (skillObject.second)
+		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: OpenSans; font-weight: normal; font-size: 12px; color: #bec1c3;">${skillObject.second}</li>`
+	if (skillObject.third)
+		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: OpenSans; font-weight: normal; font-size: 12px; color: #bec1c3;">${skillObject.third}</li>`
+	if (skillObject.fourth)
+		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: OpenSans; font-weight: normal; font-size: 12px; color: #bec1c3;">${skillObject.fourth}</li>`
+	if (skillObject.fifth)
+		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: OpenSans; font-weight: normal; font-size: 12px; color: #bec1c3;">${skillObject.fifth}</li>`
+	if (skillObject.more)
+		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: OpenSans; font-weight: normal; font-size: 12px; color: #bec1c3;">${skillObject.more}</li>`
+	
+	return `<div class="skill-list" style="max-width: 400px; margin-top: 10px">${bloc}</div>`
+}
+
+wm.location_bloc = (location) => {
+	if (!location)
+		return ''
+	return `<span style=" margin-right: 20px; font-family: OpenSans; font-weight: semibold; font-size: 14px; color: #bec1c3;"><img style="width: 9px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/8b5975218013c94ed4ab5a52303771966218a241dca84fc6a49b3c7423e73222ae645cd8ea518428a0f316877b1d8b4f673a267aa85099a8bd1ba106c55a5e11.png" alt="location_icon"> ${location}</span>`
+}
+
+wm.network_bloc = (network) => {
+	if (!network)
+		return ''
+	return `<span style="font-family: OpenSans; font-weight: semibold; font-size: 14px; color: #bec1c3;"><img style="position: relative; top: 4px; width: 18px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/1aec59a57dbb4e1b0a44fc9e86cac3df64e6efd7e10ee4da72028febbfd1c0e45014bee1d9fbd12ac1e68ea485a50bef2e3fcf409ba010f9f08497a12cb9798f.png" alt="network_icon"> ${network}</span>`
+}
+
 module.exports.wm = wm;
 //sequoya account for testing purposes
 // module.exports.TEMPLATES =  {

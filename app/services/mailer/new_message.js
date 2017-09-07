@@ -4,6 +4,7 @@ const { db, TABLES } = require('../../models/index');
 const h = require('../../models/helper');
 const _ = require('lodash');
 
+
 const new_message = () => {
 	let mail = new helper.Mail();
 
@@ -20,17 +21,20 @@ const new_message = () => {
 			console.log('no new message');
 			return null;
 		}
+
 		data.forEach((e, i) => {
 			e.members.forEach(member => {
 				let pers = new helper.Personalization();
-				let subject = '*|FFNAME|* *|FLNAME|* just sent you a new message';
+				let subject = '*|UF_NAME|* *|UL_NAME|* just sent you a new message';
 				let sub = {
-					'*|FNAME|*': member.firstName,
-					'*|FFNAME|*': e.first_name,
-					'*|FLNAME|*': e.last_name,
-					'*|FIMG|*': wm.transform(e.picture),
-					'*|FDESC|*': wm.truncate(e.message),
-					'*|FLOC|*': wm.location(e),
+					'*|PF_NAME|*' 		: member.firstName,
+					'*|UF_NAME|*' 		: e.first_name,
+					'*|UL_NAME|*' 		: e.last_name,
+					'*|U_PICTURE|*' 	: wm.transform(e.picture),
+					'*|U_DESC|*' 		: wm.truncate(e.description) || '',
+					'*|NETWORK_BLOC|*'	: wm.network_bloc(e.network),
+					'*|LOCATION_BLOC|*'	: wm.location_bloc(wm.location(e)),
+					'*|SKILL_BLOC|*' 	: wm.skills_bloc(e.skills),
 					email: member.email
 				};
 				// console.log('\n-------------------------------------------------\n');
@@ -49,6 +53,8 @@ const new_message = () => {
 		'u.id as uid',
 		'p.first_name',
 		'p.last_name',
+		'p.description',
+		'nl.name as network',
 		db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
 		'p.picture',
 		h.format_location
@@ -59,7 +65,17 @@ const new_message = () => {
 		.from(TABLES.PROFILES + ' as p')
 		.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
 		.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+		.join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
 		.as('s');
+
+	const user_skills = db
+		.select(
+			'us.user_id as usid',
+			db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`))
+		.from((TABLES.USER_SKILLS) + ' as us')
+		.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
+		.groupBy('us.user_id')
+		.as('usk')
 
 	let last_message = db.raw(
 		`SUBSTRING_INDEX(GROUP_CONCAT(message ORDER BY m.creation_date desc), ',', 1) as message`
@@ -96,15 +112,18 @@ const new_message = () => {
 		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
 		.where('rs.read', 0)
 		.andWhere('rs.mail_sent', 0)
-		.whereRaw('rs.creation_date <= DATE_SUB(NOW(),INTERVAL 2 HOUR)')
+		// .whereRaw('rs.creation_date <= DATE_SUB(NOW(),INTERVAL 2 HOUR)')
 		.groupBy('r.id')
 		.limit(5)
 		.as('enroule');
 	//
-	const qq = db(q).join(sender, 's.uid', 'enroule.sender').select('*');
+	const qq = db(q)
+		.join(sender, 's.uid', 'enroule.sender')
+		.leftJoin(user_skills, 'usk.usid', 's.uid')
+		.select('*')
 
 	qq.then(r => {
-		r.forEach(e => {
+		r.forEach((e, i) => {
 			e.members = e.members
 				.split('|')
 				.map(JSON.parse)

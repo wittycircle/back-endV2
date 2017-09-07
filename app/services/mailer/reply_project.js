@@ -10,7 +10,7 @@ const _ = require('lodash');
 // 	message: 'The reply is non sense!'
 // };
 
-const send_mail = (message, discussion, sender) => {
+const send_mail = (message, discussion, sender, u_skills) => {
 	if (!message || !discussion || !discussion.length || !sender) return null;
 	let mail = new helper.Mail();
 	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
@@ -20,17 +20,21 @@ const send_mail = (message, discussion, sender) => {
 	const category = new helper.Category('reply_project');
 	mail.addCategory(category);
 	mail.setTemplateId(TEMPLATES.reply_project);
+
 	discussion.forEach((e, i) => {
 		let pers = new helper.Personalization();
 		let subject = `${sender.fullName} commented on ${e.title} discussion !`;
 		let sub = {
-			'*|FNAME|*': sender.first_name,
-			'*|FDESC|*': wm.truncate(message),
-			'*|FIMG|*': wm.transform(sender.picture),
-			'*|FURL|*': wm.url(`/project/${e.public_id}/${e.title}/feedback`),
-			'*|FUNAME|*': sender.fullName,
-			'*|FPROJECT|*': e.title,
-			'*|MAIL|*': e.email
+			'*|UF_NAME|*' 		: sender.first_name,
+			'*|U_DESC|*' 		: wm.truncate(e.description) || '',
+			'*|U_PICTURE|*' 	: wm.transform(sender.picture),
+			'*|PR_URL|*' 		: wm.url(`/project/${e.public_id}/${e.title}`),
+			'*|UFU_NAME|*' 		: sender.fullName,
+			'*|PR_TITLE|*' 		: e.title,
+			'*|LOCATION_BLOC|*' : wm.location_bloc(wm.location(u_skills[0])),
+			'*|NETWORK_BLOC|*'	: wm.network_bloc(u_skills[0].network),
+			'*|SKILL_BLOC|*' 	: wm.skills_bloc(u_skills[0].skills),
+			'*|MAIL|*' 	 		: e.email
 		};
 		// console.log(sub)
 		// console.log("\n-------------------------------------------------\n")
@@ -68,8 +72,21 @@ const reply_project = args => {
 		.whereRaw(`u.id <> ${args.from}`)
 		.andWhere('d.id', args.id);
 
-	return Promise.all([discussion, sender])
-		.then(([d, [s]]) => send_mail(args.message, d, s))
+	const user_skills = db
+		.select(
+			'p.user_id as user_id',
+			'nl.name as network',
+			h.format_location,
+			db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`))
+		.from(TABLES.PROFILES + ' as p')
+		.join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.user_id')
+		.join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+		.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+		.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
+		.where('us.user_id', args.from);
+
+	return Promise.all([discussion, sender, user_skills])
+		.then(([d, [s], u]) => send_mail(args.message, d, s, u))
 		.catch(console.error);
 }; //exports
 
