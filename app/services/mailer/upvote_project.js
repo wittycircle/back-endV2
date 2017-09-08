@@ -12,10 +12,18 @@ args: {
 */
 
 const upvote_project = args => {
-    const userLocation = db
-	.select('city', 'state', 'country')
-	.from('location')
-	.where('id', db.select('loc_id').from('profiles').where('id', args.user_id))
+    const user_skills = db
+		.select(
+			'p.user_id as user_id',
+			'nl.name as network',
+			h.format_location,
+			db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`))
+		.from(TABLES.PROFILES + ' as p')
+		.join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.user_id')
+		.join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+		.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+		.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
+		.where('us.user_id', args.user_id);
     
 	const fromUser = h.spe_profile({ 'u.id': args.user_id });
 	const fromProject = db(TABLES.PROJECTS)
@@ -32,11 +40,11 @@ const upvote_project = args => {
 		.leftJoin(wm.notif('follow_project'), 'n.user_id', 'u.id')
 		.where('pr.id', args.project_id);
 
-    return Promise.all([fromUser, fromProject, toUsers, userLocation])
-		.then(([[f], p, [t], [l]]) => {
-			console.log('F ', f);
-			console.log('P ', p);
-			console.log('T ', t);
+    return Promise.all([fromUser, fromProject, toUsers, user_skills])
+		.then(([[f], p, [t], us]) => {
+			// console.log('F ', f);
+			// console.log('P ', p);
+			// console.log('T ', t);
 			let mail = new helper.Mail(),
 				pers = new helper.Personalization();
 
@@ -49,14 +57,17 @@ const upvote_project = args => {
 			// t.forEach(t => {
 			let subject = '*|UF_NAME|* *|UL_NAME|* upvoted *|PR_TITLE|*';
 			let sub = {
-				'*|PF_NAME|*': t.first_name,
-				'*|UF_NAME|*': f.first_name,
-				'*|UL_NAME|*': f.last_name,
-				'*|U_PICTURE|*': wm.transform(f.picture),
-				'*|U_DESC|*': wm.truncate(f.description),
-				'*|U_LOC|*': wm.location(l),
-				'*|U_URL|*': wm.url(f.username),
-				'*|PR_TITLE|*': p.title
+				'*|PF_NAME|*' 	 	: t.first_name,
+				'*|UF_NAME|*' 	 	: f.first_name,
+				'*|UL_NAME|*' 	 	: f.last_name,
+				'*|U_PICTURE|*'  	: wm.transform(f.picture),
+				'*|U_DESC|*' 	 	: wm.truncate(f.description),
+				// '*|U_LOC|*' 	 	: wm.location(l),
+				'*|U_URL|*' 	 	: wm.url(f.username),
+				'*|PR_TITLE|*' 		: p.title,
+				'*|LOCATION_BLOC|*' : wm.location_bloc(wm.location(us[0])),
+				'*|NETWORK_BLOC|*' 	: wm.network_bloc(us[0].network),
+				'*|SKILL_BLOC|*'	: wm.skills_bloc(us[0].skills),
 			};
 			// console.log(sub)
 			// console.log("\n*|-------------------------------\n")

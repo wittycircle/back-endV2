@@ -24,14 +24,14 @@ const chunk = (array, callback) => {
 			}	
 		});
 	} else
-		return callback(array)
+		return callback([array])
 }
 
 const updateInvitation = (uid, mails) => {
  	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
 
 	return db(TABLES.INVITATION)
-		.where('mail_to', mail)
+		.where('mail_to', parseMails)
 		.del()
 		.then(r => {
 			let newArray = []
@@ -53,7 +53,7 @@ const deleteGmailContacts = uid => {
 		})
 }
 
-const send_mail = (data, sender, invite, category = false) => {
+const send_mail = (data, sender, u_skills, invite, category = false) => {
 	console.log('SEND MAIL CALLED');
 	
 	data.forEach( subArray => {
@@ -71,14 +71,17 @@ const send_mail = (data, sender, invite, category = false) => {
 
 		subArray.forEach( (e, i) => {
 			let pers = new helper.Personalization();
-			let subject = '*|FUNAME|* just sent you a private invite to join Witty';
+			let subject = '*|UF_NAME|* *|UL_NAME|* just sent you a private invite to join Witty';
 			let sub = {
-				'*|FNAME|*': sender.first_name,
-				'*|FLNAME|*': sender.last_name,
-				'*|PIMG|*': wm.transform(sender.picture),
-				'*|FUNAME|*': sender.fullName,
-				'*|FLOC|*': wm.location(sender),
-				'*|URL|*': wm.url(`/invite/${invite}`),
+				'*|UF_NAME|*' 		: sender.first_name,
+				'*|UL_NAME|*' 		: sender.last_name,
+				'*|U_PICTURE|*' 	: wm.transform(sender.picture),
+				'*|UFU_NAME|*' 		: sender.fullName,
+				'*|U_DESC|*' 		: wm.truncate(sender.description) || '',
+				'*|I_URL|*' 		: wm.url(`/invite/${invite}`), 
+				'*|LOCATION_BLOC|*' : wm.location_bloc(wm.location(sender)),
+				'*|NETWORK_BLOC|*' 	: wm.network_bloc(u_skills[0].network),
+				'*|SKILL_BLOC|*' 	: wm.skills_bloc(u_skills[0].skills),
 				MAIL: e
 			};
 			wm.subject(pers, subject);
@@ -108,17 +111,29 @@ const invite_user = args => {
 		.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
 		.where('p.user_id', args.uid)
 
+	const user_skills = db
+		.select(
+			'p.user_id as user_id',
+			'nl.name as network',
+			db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`))
+		.from(TABLES.PROFILES + ' as p')
+		.join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.user_id')
+		.join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+		.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
+		.where('us.user_id', args.uid);
+
 	let invite = db(TABLES.USERS).first('invite_link').where('id', args.uid);
 
 	updateInvitation(args.uid, JSON.stringify(args.mailList)).then( emails => {
 		return Promise.all([
 			request,
-			invite
-		]).then(([sender, invite]) => {
+			invite,
+			user_skills
+		]).then(([sender, invite, u_skills]) => {
 			if (args.type === 'gmail_auth')
 				deleteGmailContacts(args.uid);
 			chunk(emails, emailsArray => {
-				send_mail(emailsArray, sender[0], invite.invite_link, args.type)
+				send_mail(emailsArray, sender[0], u_skills, invite.invite_link, args.type)
 			});
 		});
 	});
