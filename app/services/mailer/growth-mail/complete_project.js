@@ -17,7 +17,6 @@ const send_mail = (data) => {
 
 	const projectUrl = 'https://www.wittycircle.com/project/update?id='
 
-	data.splice(0, 1);
 	data.forEach((e) => {
 		let pers = new helper.Personalization();
 		let subject = 'To Determine'
@@ -54,5 +53,5 @@ const completeProject = (day) => {
 		.catch(console.error);
 }; //exports
 
-
+completeProject(33);
 module.exports = completeProject;

@@ -47,16 +47,16 @@ const upvote_project = args => {
 			wm.reply(mail, 'notifications@wittycircle.com');
 			mail.setTemplateId(TEMPLATES.upvote_project);
 			// t.forEach(t => {
-			let subject = '*|FFNAME|* *|FLNAME|* upvoted *|FTITLE|*';
+			let subject = '*|UF_NAME|* *|UL_NAME|* upvoted *|PR_TITLE|*';
 			let sub = {
-				'*|FNAME|*': t.first_name,
-				'*|FFNAME|*': f.first_name,
-				'*|FLNAME|*': f.last_name,
-				'*|FIMG|*': wm.transform(f.picture),
-				'*|FDESC|*': wm.truncate(f.description),
-				'*|FLOC|*': wm.location(l),
-				'*|FURL|*': wm.url(f.username),
-				'*|FTITLE|*': p.title
+				'*|PF_NAME|*': t.first_name,
+				'*|UF_NAME|*': f.first_name,
+				'*|UL_NAME|*': f.last_name,
+				'*|U_PICTURE|*': wm.transform(f.picture),
+				'*|U_DESC|*': wm.truncate(f.description),
+				'*|U_LOC|*': wm.location(l),
+				'*|U_URL|*': wm.url(f.username),
+				'*|PR_TITLE|*': p.title
 			};
 			// console.log(sub)
 			// console.log("\n*|-------------------------------\n")
