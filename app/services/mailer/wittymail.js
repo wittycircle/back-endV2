@@ -126,7 +126,7 @@ wm.location_bloc = (location) => {
 }
 
 wm.network_bloc = (network) => {
-	if (!network)
+	if (!network || network === 'Unknown')
 		return ''
 	return `<span style="font-family: OpenSans; font-weight: semibold; font-size: 14px; color: #bec1c3;"><img style="position: relative; top: 4px; width: 18px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/1aec59a57dbb4e1b0a44fc9e86cac3df64e6efd7e10ee4da72028febbfd1c0e45014bee1d9fbd12ac1e68ea485a50bef2e3fcf409ba010f9f08497a12cb9798f.png" alt="network_icon"> ${network}</span>`
 }
