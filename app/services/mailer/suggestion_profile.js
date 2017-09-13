@@ -1,152 +1,131 @@
 const { wm, TEMPLATES } = require('./wittymail');
 const helper = require('sendgrid').mail;
-const h = require('./app/models/helper');
+const h = require('../../models/helper'); //NIK
+const suggestions = require('../../models/suggestions');
 const { db, TABLES } = require('../../models/index');
-const _ = require('lodash');
 
-let testJsonTwo = o => {
-	let ret = '"{",';
-	for (k in o) {
-		ret += ` '"',   "${k}" , '":"',  ${o[k]},  '",'`;
-	}
-	ret = ret.substr(0, ret.length - 2) + `'"}"`;
-	console.log('ret', ret);
-	return ret;
+const profile_bloc = (name, picture, description, location, network, skills, username) => {
+	return `
+	<div class="main-class">
+		<div class="first-container">
+			<img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture">
+		</div>
+
+		<div class="second-container">
+			<h2 style="margin: 0; font-family: Arial, Tahoma, Vernada; font-weight: bold; font-size: 14px; color: #323232; margin-bottom: 5px;">${name}</h2>
+			<h3 style="margin: 0; font-family: Tahoma; font-weight: normal; font-size: 12px; color: #697178; margin-bottom: 5px; ">${description || ''}</h3>
+			<div class="location" style="margin-bottom: 10px;">
+				${wm.location_bloc(wm.location(location))}
+				${wm.network_bloc(network)}
+			</div>
+
+			<div class="skill-list" style="margin-top: 10px">
+				${ wm.skills_bloc2(skills)}
+			</div>
+		</div>
+
+		<div class="third-container">
+			<a href="https://www.wittycircle.com/${username}" style="margin: 0; text-decoration: none !important; text-decoration: none; margin-bottom: 10px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #fff; border: none; border-radius: 4px; background-color: #497faa; padding: 7px 23px;">View profile</a>
+		</div>
+
+		<div class="height" style="height: 20px; width: 100%;"></div>
+	</div>`
+
 };
 
-const whatIWant = {
-	username: 'u.username',
-	uid: 'u.id',
-	network: 'u.invite_link'
+const fillSub = (b) => {
+	return profile_bloc(
+		b.fullName,
+		b.picture,
+		b.date,
+		b,
+		b.network,
+		b.skills,
+		b.username
+	);
 };
-let test = db('project_members')
-	.distinct('user_id')
-	.union(db('projects').distinct('user_id'))
-	.then(r => {
-		const members = r.map(e => e.user_id);
-		return db
-			.distinct(
-				db.raw('GROUP_CONCAT(DISTINCT s.name) as skills'),
-				'pr.id',
-				'pr.user_id as creator',
-				db.raw(
-					'GROUP_CONCAT(DISTINCT pm.user_id order by pm.user_id) as members'
-				),
-				db.raw(
-					`GROUP_CONCAT(DISTINCT ${testJsonTwo(
-						whatIWant
-					)} SEPARATOR "∆∆∆") as lesBails`
-				)
-			)
-			.from('openings as o')
-			.join('projects as pr', 'pr.id', 'o.project_id')
-			.join('opening_tags as ot', 'ot.opening_id', 'o.id')
-			.join('skills as s', 's.id', 'ot.skill_id')
-			.join('user_skills as us', 's.id', 'us.skill_id')
-			.join('users as u', 'u.id', 'us.user_id')
-			.leftJoin('project_members as pm', 'pm.project_id', 'pr.id')
-			.where('pr.project_visibility', 1)
-			.where('u.fake', 0)
-			.whereNotIn('u.id', members)
-			.havingRaw('members IS NOT NULL')
-			.limit(1)
-			.groupBy('pr.id');
+
+const send_mail = (project, profiles) => {
+	console.log('SEND MAIL CALLED');
+	
+	let mail = new helper.Mail();
+	wm.from(mail, 'notifications@wittycircle.com', 'Wittycircle');
+	wm.content(mail);
+	wm.reply(mail, 'notifications@wittycircle.com');
+	mail.setTemplateId(TEMPLATES.suggestions_profile);
+
+
+	const category = new helper.Category('suggestion_profiles');
+	mail.addCategory(category);
+
+	let laString = '';
+	let pers = new helper.Personalization();
+	let subject = 'Some profiles and opportunities you might need';
+	let sub = {
+		'*|PF_NAME|*' 		: project.first_name,
+		'*|PR_TITLE|*' 		: project.title,
+		MAIL: 'lionfiercely_force@hotmail.fr'
+	};
+	profiles.forEach((b, i) => {
+		if (i < 3) laString += fillSub(b);
+	});
+	sub['*|PROFILES_BLOC|*'] = laString;
+
+	wm.subject(pers, subject);
+	wm.to(pers, 'jayho@wittycircle.com');
+
+	wm.substitutions(pers, sub);
+	mail.addPersonalization(pers);
+	wm.send(mail, 'suggestion_profiles');
+
+	return null
+
+};
+
+
+const saveSentData = (project, profiles) => {
+	let data = [];
+
+	profiles.forEach(e => {
+		data.push({ user_id: e.uid, project_id: project.id })
 	});
 
-// NEW STUFF ABOVE
-// old stuff below
-const send_mail = (data, token) => {
-	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Wittycircle');
-	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
-	mail.setTemplateId(TEMPLATES.suggestion_profile);
+	console.log(data);
+	db(TABLES.SUG_PROFILES)
+		.insert(data)
+		.then(r => {
+			console.log(r);
+		})
+}
 
-	data.forEach((e, i) => {
-		let pers = new helper.Personalization();
-		let subject = 'Reset password';
-		let sub = {
-			// "*|UNAME|*": ,
-			// "*|SKILLS|*": ,
-			//
-			// "*|PIMG1|*": ,
-			// "*|PNAME1|*": ,
-			// "*|PLOC1|*": ,
-			// "*|PURL1|*": ,
-			// from 1 to 5
-		};
-		// x.forEach(b => {
-		// 	sub.push({
+const suggestionProfileToProject = () => {
+	let count = 0;
 
-		// 	})
-		// })
-		console.log(sub);
-		console.log('\n-------------------------------------------------\n');
-		wm.subject(pers, subject);
-		wm.to(pers, /*e.email*/ 'sequoya@wittycircle.com');
-		wm.substitutions(pers, sub);
-		mail.addPersonalization(pers);
-	}); //foreach
-	wm.send(mail);
-	return null;
-};
-
-const suggestion_profile = args => {
-	let user_profile = h.sub_profile.select(
-		'u.fake',
-		'p.city',
-		'p.country',
-		'p.state',
-		'u.email'
-	);
-
-	let selection = [
+	db
+	.select(
 		'pr.id',
 		'pr.title',
-		'pr.user_id as creator_id',
-		'pr.city',
-		'pr.country',
-		'p.email',
-		'p.uid'
-		// 's.skill_name', 'o.skill', 'ot.tag'
-		// db.raw('GROUP_CONCAT(DISTINCT  p.email) as tabuid'),
-		// db.raw('GROUP_CONCAT (DISTINCT p.fullName) as fullName'),
-		// db.raw('GROUP_CONCAT (DISTINCT s.skill_name ) as skills'),
-		// 's.skill_name','ot.tag', 'o.skill'
-	];
+		'u.email',
+		'p.first_name',
+		'p.last_name'
+	)
+	.from(TABLES.PROJECTS + ' as pr')
+	.join(TABLES.USERS + ' as u', 'u.id', 'pr.user_id')
+	.join(TABLES.PROFILES + ' as p', 'p.user_id', 'pr.user_id')
+	.whereRaw('pr.picture is not null && pr.picture != "" && pr.description is not null && pr.description != ""')
+	.then(r => {
+		r.forEach((e, i) => {
+			if (e.email.indexOf('witty') < 0 && count === 0) {
+				count = 1;
+				suggestions.matchProfilesToProject(e.id)
+					.then(profiles => {	
+						let profilesSent = profiles.splice(0, 3)
+						// send_mail(e, profilesSent);
+						saveSentData(e, profilesSent);
+					});
+			}
+		});
+	})
+};
 
-	let location = '';
-	location += `WHEN pr.city LIKE p.city THEN 1 `;
-	location += `WHEN pr.state LIKE p.state THEN 2 `;
-	location += `WHEN pr.country LIKE p.country THEN 3 `;
-
-	let project = db(TABLES.PROJECTS + ' as pr')
-		.distinct(selection)
-		.join(TABLES.PROJECT_OPENINGS + ' as o', 'o.project_id', 'pr.id')
-		.join(TABLES.OPENING_TAGS + ' as ot', 'ot.opening_id', 'o.id')
-		.join(TABLES.USER_SKILLS + ' as s', function() {
-			this.on('s.skill_name', 'ot.tag');
-			this.orOn('s.skill_name', 'o.skill');
-		})
-		.join(user_profile, function() {
-			this.on('p.uid', 's.user_id');
-		})
-		.where('project_visibility', 1)
-		.where('u.fake', 0)
-		// .where('p.about', 'join projects')
-		.orderByRaw('CASE ' + location + ' else 100 END')
-		// .limit(10)
-		.orderBy('p.uid');
-	// .groupBy('p.uid')
-
-	console.log(project.toString());
-	return (
-		project //.then((data) => send_mail(data, args.token))
-			// .then((data) => console.log(data.map(e => [e.skill, e.skill_name, e.tag])))
-			// .then((data) => console.log(data.map(e => [e.skill_name, e.uid])))
-			.then(console.log)
-	);
-}; //exports
-
-suggestion_profile(args);
-//module.exports = suggestion_profile
+suggestionProfileToProject();

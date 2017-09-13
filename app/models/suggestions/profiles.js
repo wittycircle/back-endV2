@@ -41,7 +41,7 @@ const getMatchingProfiles = (neededSkills, alreadySugested = []) => {
     .join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
     .leftJoin(user_skills, 'usk.usid', 'p.uid')
     .whereIn('skill_id', neededSkills)
-    .whereNotIn('p.user_id', alreadySugested)
+    .whereNotIn('p.uid', alreadySugested)
     .groupBy('p.id')
     .orderByRaw('RAND()');
 
