@@ -5,39 +5,17 @@ const suggestions = require('../../models/suggestions');
 const { db, TABLES } = require('../../models/index');
 
 const profile_bloc = (name, picture, description, location, network, skills, username) => {
-	return `
-	<div class="main-class">
-		<div class="first-container">
-			<img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture">
-		</div>
-
-		<div class="second-container">
-			<h2 style="margin: 0; font-family: Arial, Tahoma, Vernada; font-weight: bold; font-size: 14px; color: #323232; margin-bottom: 5px;">${name}</h2>
-			<h3 style="margin: 0; font-family: Tahoma; font-weight: normal; font-size: 12px; color: #697178; margin-bottom: 5px; ">${description || ''}</h3>
-			<div class="location" style="margin-bottom: 10px;">
-				${wm.location_bloc(wm.location(location))}
-				${wm.network_bloc(network)}
-			</div>
-
-			<div class="skill-list" style="margin-top: 10px">
-				${ wm.skills_bloc2(skills)}
-			</div>
-		</div>
-
-		<div class="third-container">
-			<a href="https://www.wittycircle.com/${username}" style="margin: 0; text-decoration: none !important; text-decoration: none; margin-bottom: 10px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #fff; border: none; border-radius: 4px; background-color: #497faa; padding: 7px 23px;">View profile</a>
-		</div>
-
-		<div class="height" style="height: 20px; width: 100%;"></div>
-	</div>`
-
+	return `<div class="main-class"><div class="bloc1" style="display: inline-block;"><div class="first-container" style="margin-bottom: 10px;"><img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture"></div>
+<div class="second-container" style="margin: 0 10px 10px 10px;"><h2 style="margin: 0; font-family: Arial, Tahoma, Vernada; font-weight: bold; font-size: 14px; color: #323232; margin-bottom: 5px;">${name}</h2><h3 class="space-normal" style="margin: 0; font-family: Tahoma; font-weight: normal; font-size: 12px; color: #697178; margin-bottom: 5px; ">${vm.shortenerText(description, true, 76, ' ...')}</h3>
+<div class="location" style="margin-bottom: 10px;">${wm.location_bloc(wm.location(location))}${wm.network_bloc(network)}</div><div class="skill-list space-normal" style="margin-top: 10px"><ul class="noPadding">${wm.skills_bloc2(skills)}
+</ul></div></div></div><div class="third-container"><a href="https://www.wittycircle.com/${username}" class="button">View profile</a></div></div>`
 };
 
 const fillSub = (b) => {
 	return profile_bloc(
 		b.fullName,
 		b.picture,
-		b.date,
+		b.description,
 		b,
 		b.network,
 		b.skills,
@@ -60,7 +38,7 @@ const send_mail = (project, profiles) => {
 
 	let laString = '';
 	let pers = new helper.Personalization();
-	let subject = 'Some profiles and opportunities you might need';
+	let subject = 'Those people could help you with *|PR_TITLE|*';
 	let sub = {
 		'*|PF_NAME|*' 		: project.first_name,
 		'*|PR_TITLE|*' 		: project.title,
@@ -72,12 +50,12 @@ const send_mail = (project, profiles) => {
 	sub['*|PROFILES_BLOC|*'] = laString;
 
 	wm.subject(pers, subject);
-	wm.to(pers, 'jayho@wittycircle.com');
+	wm.to(pers, 'friends@wittycircle.com');
 
 	wm.substitutions(pers, sub);
 	mail.addPersonalization(pers);
 	wm.send(mail, 'suggestion_profiles');
-
+	console.log('GOOD!');
 	return null
 
 };
@@ -90,12 +68,7 @@ const saveSentData = (project, profiles) => {
 		data.push({ user_id: e.uid, project_id: project.id })
 	});
 
-	console.log(data);
-	db(TABLES.SUG_PROFILES)
-		.insert(data)
-		.then(r => {
-			console.log(r);
-		})
+	db(TABLES.SUG_PROFILES).insert(data).then(r => { return null })
 }
 
 const suggestionProfileToProject = () => {
@@ -120,7 +93,7 @@ const suggestionProfileToProject = () => {
 				suggestions.matchProfilesToProject(e.id)
 					.then(profiles => {	
 						let profilesSent = profiles.splice(0, 3)
-						// send_mail(e, profilesSent);
+						send_mail(e, profilesSent);
 						saveSentData(e, profilesSent);
 					});
 			}

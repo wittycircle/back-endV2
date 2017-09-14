@@ -4,26 +4,47 @@ const h = require('../../models/helper');
 const { db, TABLES } = require('../../models/index');
 const _ = require('lodash');
 
-let toInsertToo = (name, location, date, picture, url) => {
-	return `
-	<table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto" width="350px">
-<tbody> <tr> <td><span class="sg-image" data-imagelibrary="%7B%22width%22%3A%2240%22%2C%22height%22%3A%2240%22%2C%22alt_text%22%3A%22profile_picture%22%2C%22alignment%22%3A%22%22%2C%22border%22%3A0%2C%22src%22%3A%22https%3A//res.cloudinary.com/dqpkpmrgk/image/upload/w_40%2Ch_40%2Cc_fill%2Cg_face/v1493332197/rzxugrlqswu6veak8gqe.jpg%22%2C%22classes%22%3A%7B%22sg-image%22%3A1%7D%2C%22link%22%3A%22%22%7D"><img height="40"
-	 src=${picture} style="width: 40px; height: 40px; border-radius: 50%; margin-left: 50px; margin-right: 25px" width="40" /></span></td>
-	<td> <div style="width: 250px; margin: 0 auto; text-align: left"> <div><span style="font-family: Helvetica; word-break: break-word;">${name}</span><br />
-	<span style="color:#545454;"><span style="font-size:12px; font-family: Helvetica; position: relative; bottom: 2px;">
-	<img style="width: 10px; margin-right: 5px" src="http://res.cloudinary.com/dqpkpmrgk/image/upload/v1458222562/Witty-icon/Signup/location-icon-gray.png" />${location}</span></span>&nbsp;</div> <div><span style="color:#a0a0a0;"><span style="font-size:10px; font-family: Helvetica; position: relative; bottom: 4px;">
-	${date}</span></span></div> </div> </td>
-</tr> </tbody> </table> <br></br>
-	`;
+let toInsertToo = (picture, name, date, description, location, network, skills, username) => {
+
+	return `<div class="main-class">
+		<div class="bloc1" style="display: inline-block;">
+			<div class="first-container" style="margin-bottom: 10px;">
+				<img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture">
+			</div>
+
+			<div class="second-container" style="margin: 0 10px 10px 10px;">
+				<h2 class="sc-1">${name} <span class="date">${date}</span></h2>
+				<h3 class="space-normal sc-2">${description}</h3>
+				<div class="location" style="margin-bottom: 10px;">
+					<span class="sc-3"><img style="width: 7px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/8b5975218013c94ed4ab5a52303771966218a241dca84fc6a49b3c7423e73222ae645cd8ea518428a0f316877b1d8b4f673a267aa85099a8bd1ba106c55a5e11.png" alt="location_icon"> ${location}</span>
+					${wm.network_bloc(network)}
+				</div>
+
+				<div class="skill-list space-normal">
+					<ul class="noPadding noMargin">
+						${wm.skills_bloc2(skills)}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="third-container">
+			<a href="https://www.wittycircle.com/${username}" class="button">View profile</a>
+		</div>
+	</div>`
+
 };
 
 const fillSub = (d, sub, i) => {
 	return toInsertToo(
-		`${d.first_name} ${d.last_name}`,
-		d.location,
-		d.date,
 		wm.transform(d.picture),
-		wm.url(d.username)
+		`${d.first_name} ${d.last_name}`,
+		d.date,
+		wm.shortenerText(d.description, true, 76, ' ...'),
+		d.location,
+		d.network_name,
+		d.skills,
+		d.username
 	);
 };
 // ---------------------- old stuff ----------------------
@@ -37,6 +58,7 @@ const send_mail = (data, bail) => {
 	const category = new helper.Category('profile_views');
 	mail.addCategory(category);
 
+	data = data.slice(0, 1);
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
 		let notif = e.notif.split(',');
@@ -48,7 +70,7 @@ const send_mail = (data, bail) => {
 			? 1
 			: e.rank < 10 ? e.rank - 1 : e.rank - Math.random() * 10;
 		let sub = {
-			'*|FNAME|*': e.first_name,
+			'*|PF_NAME|*': e.first_name,
 			'*|RANK|*': `${e.rank}`,
 			'*|NEW_RANK|*': `${Math.floor(newRank)}`,
 			'*|FURL2|*': wm.url('statistics'),
@@ -58,11 +80,11 @@ const send_mail = (data, bail) => {
 		bail[i].forEach((b, j) => {
 			if (j < 3) laString += fillSub(b, sub, j + 1);
 		});
-		sub['*|TOUSLESBAILS|*'] = laString;
+		sub['*|PROFILES_BLOC|*'] = laString;
 		// console.log('\n-------------------------------------------------\n');
 		// console.log(sub);
 		wm.subject(pers, subject);
-		wm.to(pers, e.email /*e.email*/);
+		wm.to(pers, 'friends@wittycircle.com' /*e.email*/);
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 
@@ -92,6 +114,7 @@ const profile_views = args => {
 		// .andWhere('mail_sent', 0)
 		.andWhere('u.fake', 0)
 		.groupBy('v.viewed');
+
 	const lesDates = notif =>
 		db('views')
 			.select(['user_id', 'viewed', db.raw('max(creation_date) as date')])
@@ -104,17 +127,33 @@ const profile_views = args => {
 			.distinct(
 				h.p_uarray.concat([
 					h.format_location,
-					db.raw('DATE_FORMAT(v.date, "%W %d %M %r") as date'),
-					db.raw('CONCAT(loc.city, ", ", loc.country) as location')
+					'nl.name as network_name',
+					db.raw('DATE_FORMAT(v.date, "%W %M %D") as date'),
+					db.raw('CONCAT(loc.city, ", ", loc.country) as location'),
+					db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`)
 				])
 			)
 			.from(TABLES.PROFILES + ' as p')
 			.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
 			.join(TABLES.USERS + ' as u', 'u.id', 'p.user_id')
+			.join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.user_id')
+			.join(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+			.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
 			.leftJoin(lesDates(notif), 'v.user_id', 'u.id')
 			.whereIn('u.id', notif)
 			.andWhere('u.id', '<>', viewed)
 			.groupBy('u.id');
+
+
+	// const user_skills = db
+	// 	.select(
+	// 		'us.user_id as usid',
+	// 		db.raw(`GROUP_CONCAT(DISTINCT sk.name) as skills`))
+	// 	.from((TABLES.USER_SKILLS) + ' as us')
+	// 	.leftJoin(TABLES.SKILLS + ' as sk', 'sk.id', 'us.skill_id')
+	// 	.groupBy('us.user_id')
+	// 	.as('usk')
+
 	const setToOne = ids =>
 		db('views').update('mail_sent', 1).whereIn('viewed', ids);
 
@@ -141,4 +180,6 @@ const profile_views = args => {
 	});
 }; //exports
 // profile_views();
-module.exports = profile_views;
+// module.exports = profile_views;
+
+profile_views();

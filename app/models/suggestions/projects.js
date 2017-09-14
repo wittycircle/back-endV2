@@ -19,9 +19,15 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
     .distinct(
       'p.id',
       'p.title',
+      'p.status as project_status',
       'p.user_id as creatorId',
       'p.picture',
+      'p.public_id',
       'p.description as projectDescription',
+      'o.status as need_status',
+      'loc.city',
+      'loc.state',
+      'loc.country',
       db.raw('GROUP_CONCAT(DISTINCT ot.skill_id) as skillId'),
       db.raw('GROUP_CONCAT(DISTINCT s.name) as skillName'),
       'o.description as openingDescription'
@@ -30,6 +36,7 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
     .join(TABLES.PROJECT_OPENINGS + ' as o', 'o.project_id', 'p.id')
     .join(TABLES.OPENING_TAGS + ' as ot', 'ot.opening_id', 'o.id')
     .join(TABLES.SKILLS + ' as s', 's.id', 'ot.skill_id')
+    .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
     .whereIn('ot.skill_id', neededSkills)
     .whereNotIn('p.id', alreadySugested)
     .orderByRaw('LENGTH(o.description) desc')
