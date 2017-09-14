@@ -78,6 +78,20 @@ wm.transform = url => {
 		return url_ret;
 	} else return url;
 };
+
+wm.shortenerText = (value, wordwise, max, tail) => {
+	if (!value) return '';
+	if (!max) return value;
+	if (value.length <= max) return value;
+	value = value.substr(0, max);
+	if (wordwise) {
+		var lastspace = value.lastIndexOf(' ');
+		if (lastspace != -1) {
+			value = value.substr(0, lastspace);
+		}
+	}
+	return value + (tail || ' ...');
+}
 /*
 | profile_view   |
 | user_follow    |
@@ -87,6 +101,9 @@ wm.transform = url => {
 | reply_project  |
 | new_message	 |
 */
+
+
+/* MAIL TEMPLATES BLOC */
 
 wm.skills_bloc = (skills) => {
 	
@@ -135,17 +152,17 @@ wm.skills_bloc2 = (skills) => {
 		// fifth 	: skillArray[4], 
 		more 	: skillArray[3] ? ('+' + (skillArray.length - 3) + ' more') : '' } 
 
-	let bloc = `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #bec1c3;">${skillObject.first}</li>`;
+	let bloc = `<li class="sl">${skillObject.first}</li>`;
 	if (skillObject.second)
-		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #bec1c3;">${skillObject.second}</li>`
+		bloc += `<li class="sl">${skillObject.second}</li>`
 	if (skillObject.third)
-		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #bec1c3;">${skillObject.third}</li>`
+		bloc += `<li class="sl">${skillObject.third}</li>`
 	// if (skillObject.fourth)
-	// 	bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #bec1c3;">${skillObject.fourth}</li>`
+	// 	bloc += `<li class="sl">${skillObject.fourth}</li>`
 	// if (skillObject.fifth)
-	// 	bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #bec1c3;">${skillObject.fifth}</li>`
+	// 	bloc += `<li class="sl">${skillObject.fifth}</li>`
 	if (skillObject.more)
-		bloc += `<li style="display: inline-block; margin: 0 5px 5px 0; list-style-type: none; padding: 4px 14px; border: 1px solid #bec1c3; border-radius: 20px; font-family: Vernada, Tahoma, Arial; font-size: 12px; color: #bec1c3;">${skillObject.more}</li>`
+		bloc += `<li class="sl">${skillObject.more}</li>`
 	
 	return bloc
 }
@@ -153,13 +170,13 @@ wm.skills_bloc2 = (skills) => {
 wm.location_bloc = (location) => {
 	if (!location)
 		return ''
-	return `<span style=" margin-right: 20px; font-family: Vernada, Tahoma, Arial; font-weight: semibold; font-size: 14px; color: #bec1c3;"><img style="width: 9px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/8b5975218013c94ed4ab5a52303771966218a241dca84fc6a49b3c7423e73222ae645cd8ea518428a0f316877b1d8b4f673a267aa85099a8bd1ba106c55a5e11.png" alt="location_icon"> ${location}</span>`
+	return `<span style=" margin-right: 10px; font-family: Vernada, Tahoma, Arial; font-weight: semibold; font-size: 12px; color: #bec1c3;"><img style="width: 9px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/8b5975218013c94ed4ab5a52303771966218a241dca84fc6a49b3c7423e73222ae645cd8ea518428a0f316877b1d8b4f673a267aa85099a8bd1ba106c55a5e11.png" alt="location_icon"> ${location}</span>`
 }
 
 wm.network_bloc = (network) => {
 	if (!network || network === 'Unknown')
 		return ''
-	return `<span style="font-family: Vernada, Tahoma, Arial; font-weight: semibold; font-size: 14px; color: #bec1c3;"><img style="position: relative; top: 4px; width: 18px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/1aec59a57dbb4e1b0a44fc9e86cac3df64e6efd7e10ee4da72028febbfd1c0e45014bee1d9fbd12ac1e68ea485a50bef2e3fcf409ba010f9f08497a12cb9798f.png" alt="network_icon"> ${network}</span>`
+	return `<span style="font-family: Vernada, Tahoma, Arial; font-weight: semibold; font-size: 12px; color: #bec1c3;"><img style="position: relative; top: 4px; width: 18px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/1aec59a57dbb4e1b0a44fc9e86cac3df64e6efd7e10ee4da72028febbfd1c0e45014bee1d9fbd12ac1e68ea485a50bef2e3fcf409ba010f9f08497a12cb9798f.png" alt="network_icon"> ${network}</span>`
 }
 
 // vm.project_status_bloc = (status) => {
@@ -206,14 +223,15 @@ module.exports.TEMPLATES = {
   validate_account: '61e506e0-18b4-4bae-825c-33c2aa3bf450',
   // validation-network: ,
   verification_network: '9cd590a5-7482-4f28-9fdb-2e509e57ca3a',
-  profile_views: '0280cdc2-c528-4bdc-ba3e-3b19a7a0f00d',
+  profile_views: 'b551e48f-af9e-492e-968e-aa54ab482c1d',
   welcome: 'f98676a1-51f8-4164-91fe-9e4178d46553',
   welcomeGmail: 'db22f7ec-1af2-4bc9-b700-03f8ac068861',
   feedback: '36efd503-da42-40ab-9479-3fbe53846feb',
   complete_profile: '05bdf2fe-b899-4ec5-8f0e-1940668e5939',
   complete_project: '7e6f6273-8b39-41bc-8972-7ee76d7e23fd',
   //suggestions: ,
-  suggestions_profile: '7b504b58-2781-4b99-9f44-35a6d508221c'
+  suggestions_profile: '7b504b58-2781-4b99-9f44-35a6d508221c',
+  suggestions_project: '376e4724-8abe-4f17-b609-1e1104f58729'
 };
 
 /*
