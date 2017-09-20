@@ -6,33 +6,10 @@ const _ = require('lodash');
 
 let toInsertToo = (picture, name, date, description, location, network, skills, username) => {
 
-	return `<div class="main-class">
-		<div class="bloc1" style="display: inline-block;">
-			<div class="first-container" style="margin-bottom: 10px;">
-				<img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture">
-			</div>
-
-			<div class="second-container" style="margin: 0 10px 10px 10px;">
-				<h2 class="sc-1">${name} <span class="date">${date}</span></h2>
-				<h3 class="space-normal sc-2">${description}</h3>
-				<div class="location" style="margin-bottom: 10px;">
-					<span class="sc-3"><img style="width: 7px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/8b5975218013c94ed4ab5a52303771966218a241dca84fc6a49b3c7423e73222ae645cd8ea518428a0f316877b1d8b4f673a267aa85099a8bd1ba106c55a5e11.png" alt="location_icon"> ${location}</span>
-					${wm.network_bloc(network)}
-				</div>
-
-				<div class="skill-list space-normal">
-					<ul class="noPadding noMargin">
-						${wm.skills_bloc2(skills)}
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<div class="third-container">
-			<a href="https://www.wittycircle.com/${username}" class="button">View profile</a>
-		</div>
-	</div>`
-
+	return `<div class="main-class"><div class="bloc1" style="display: inline-block;"><div class="first-container" style="margin-bottom: 10px;"><img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture"></div>
+<div class="second-container" style="margin: 0 10px 10px 10px;"><h2 class="sc-1">${name} <span class="date">${date}</span></h2><h3 class="space-normal sc-2">${description}</h3><div class="location" style="margin-bottom: 10px;"><span class="sc-3"><img style="width: 7px; margin-right: 3px;" src="https://marketing-image-production.s3.amazonaws.com/uploads/8b5975218013c94ed4ab5a52303771966218a241dca84fc6a49b3c7423e73222ae645cd8ea518428a0f316877b1d8b4f673a267aa85099a8bd1ba106c55a5e11.png" alt="location_icon"> ${location}</span>${wm.network_bloc(network)}</div>
+<div class="skill-list space-normal"><ul class="noPadding noMargin">${wm.skills_bloc2(skills)}</ul></div></div></div>
+<div class="third-container"><a href="https://www.wittycircle.com/${username}" class="button">View profile</a></div></div>`
 };
 
 const fillSub = (d, sub, i) => {
@@ -84,7 +61,7 @@ const send_mail = (data, bail) => {
 		// console.log('\n-------------------------------------------------\n');
 		// console.log(sub);
 		wm.subject(pers, subject);
-		wm.to(pers, 'friends@wittycircle.com' /*e.email*/);
+		wm.to(pers, e.email);
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 
@@ -144,7 +121,6 @@ const profile_views = args => {
 			.andWhere('u.id', '<>', viewed)
 			.groupBy('u.id');
 
-
 	// const user_skills = db
 	// 	.select(
 	// 		'us.user_id as usid',
@@ -180,6 +156,6 @@ const profile_views = args => {
 	});
 }; //exports
 // profile_views();
-// module.exports = profile_views;
+module.exports = profile_views;
 
-profile_views();
+// profile_views();

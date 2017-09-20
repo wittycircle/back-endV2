@@ -92,7 +92,7 @@ const suggestionProjectToProfile = () => {
 	.where('u.email', 'not like', '%witty%')
 	.then(r => {
 		r.forEach((e, i)=> {
-			if (!i) { 
+			if (e.email.indexOf('witty')) {
 				suggestions.matchProjectsToProfile(e.id)
 					.then(projects => {
 						let projectsSent = projects.splice(0, 3);
@@ -104,5 +104,5 @@ const suggestionProjectToProfile = () => {
 	})
 };
 
-suggestionProjectToProfile();
+// suggestionProjectToProfile();
 
