@@ -26,7 +26,7 @@ Todo: Find better solution*/
 const {db, TABLES} = require('../models/index');
 
 const ugly_mod = (id) => {
-	 return db(TABLES.USERS).first('moderator').where('id', id)
+	 return db(TABLES.USERS).first('moderator', 'ambassador').where('id', id)
 }
 /*end of ugliness*/
 exports.generateToken = (req, res, next) => {
@@ -42,10 +42,11 @@ exports.generateToken = (req, res, next) => {
 										auth: token,
 										ttl: 3600 * 24 * 365,
 										user: {
-												id: req.user.id,
-												moderator: mod.moderator,
-												profile_id: req.user.profile_id,
-												email: req.user.email
+												id 			: req.user.id,
+												moderator 	: mod.moderator,
+												ambassador 	: mod.ambassador,
+												profile_id 	: req.user.profile_id,
+												email 		: req.user.email
 										}
 								};
 								next();

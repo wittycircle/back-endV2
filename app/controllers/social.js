@@ -13,14 +13,15 @@ const { addSkill } = require('../models/skills');
 const _ = require('lodash');
 
 const addExperienceToUser = id => experiences =>
-experiences.map(([experience, location]) =>
-	users.addExperience(id, experience, location)
+	experiences.map(([experience, location]) =>
+		users.addExperience(id, experience, location)
 	);
+
 const addSkillsToUser = id => skills =>
-Promise.all(skills.map(skill => addSkill(_.lowerCase(skill))))
-.then(skills => _.flattenDeep(skills))
-.then(skills => skills.map(skill => users.addUserSkill(skill, id)))
-.then(skillPromise => Promise.all(skillPromise));
+	Promise.all(skills.map(skill => addSkill(_.lowerCase(skill))))
+		.then(skills => _.flattenDeep(skills))
+		.then(skills => skills.map(skill => users.addUserSkill(skill, id)))
+		.then(skillPromise => Promise.all(skillPromise));
 
 //Differences
 // '-' standard ascii
