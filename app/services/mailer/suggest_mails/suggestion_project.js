@@ -1,8 +1,8 @@
-const { wm, TEMPLATES } = require('./wittymail');
+const { wm, TEMPLATES } = require('../wittymail');
 const helper = require('sendgrid').mail;
-const h = require('../../models/helper'); //NIK
-const suggestions = require('../../models/suggestions');
-const { db, TABLES } = require('../../models/index');
+const h = require('../../../models/helper'); //NIK
+const suggestions = require('../../../models/suggestions');
+const { db, TABLES } = require('../../../models/index');
 
 const transformStatus = (status) => {
 	if (status === 'Mentor' || status === 'Teammate')
@@ -52,7 +52,7 @@ const send_mail = (projects, profile) => {
 	let subject = 'Looking for new opportunities, *|PF_NAME|*?';
 	let sub = {
 		'*|PF_NAME|*' 		: profile.first_name,
-		MAIL: 'jayho@wittycircle.com'
+		MAIL: profile.email
 	};
 	projects.forEach((b, i) => {
 		if (i < 3) laString += fillSub(b);
@@ -60,7 +60,7 @@ const send_mail = (projects, profile) => {
 	sub['*|PROJECTS_BLOC|*'] = laString;
 
 	wm.subject(pers, subject);
-	wm.to(pers, 'friends@wittycircle.com');
+	wm.to(pers, profile.email);
 
 	wm.substitutions(pers, sub);
 	mail.addPersonalization(pers);

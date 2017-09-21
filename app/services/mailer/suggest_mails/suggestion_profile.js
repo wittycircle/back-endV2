@@ -1,8 +1,8 @@
-const { wm, TEMPLATES } = require('./wittymail');
+const { wm, TEMPLATES } = require('../wittymail');
 const helper = require('sendgrid').mail;
-const h = require('../../models/helper'); //NIK
-const suggestions = require('../../models/suggestions');
-const { db, TABLES } = require('../../models/index');
+const h = require('../../../models/helper'); //NIK
+const suggestions = require('../../../models/suggestions');
+const { db, TABLES } = require('../../../models/index');
 
 const profile_bloc = (name, picture, description, location, network, skills, username) => {
 	return `<div class="main-class"><div class="bloc1" style="display: inline-block;"><div class="first-container" style="margin-bottom: 10px;"><img style="border-radius: 50%; width: 50px;" src="${picture}" alt="profile_picture"></div>
@@ -71,7 +71,7 @@ const saveSentData = (project, profiles) => {
 }
 
 const suggestionProfileToProject = () => {
-	// let count = 0;
+
 	db
 	.select(
 		'pr.id',
@@ -87,7 +87,6 @@ const suggestionProfileToProject = () => {
 	.then(r => {
 		r.forEach((e, i) => {
 			if (e.email.indexOf('witty') < 0) {
-				// count = 1;
 				suggestions.matchProfilesToProject(e.id)
 					.then(profiles => {	
 						let profilesSent = profiles.splice(0, 3)
