@@ -9,6 +9,7 @@ ONE_DAY = ONE_HOUR * 24,
 ONE_WEEK = ONE_DAY * 7;
 
 const runTime = () => {
+	console.log("RUNTIME !")
 	setInterval(suggestion_profile, ONE_WEEK);
 	setInterval(suggestion_project, ONE_WEEK)
 };
