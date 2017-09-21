@@ -96,8 +96,9 @@ const suggestionProfileToProject = () => {
 					});
 			}
 		});
+		console.log("PROFILE DONE!");
 	})
 };
 
 // suggestionProfileToProject();
-
+module.exports = suggestionProfileToProject;

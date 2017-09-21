@@ -100,9 +100,11 @@ const suggestionProjectToProfile = () => {
 						saveSentData(projectsSent, e);
 					});
 			}
-		})
+		});
+		console.log("PROJECT DONE!");
 	})
 };
 
 // suggestionProjectToProfile();
+module.exports = suggestionProjectToProfile;
 
