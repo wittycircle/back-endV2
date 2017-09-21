@@ -10,8 +10,10 @@ ONE_WEEK = ONE_DAY * 7;
 
 const runTime = () => {
 	console.log("RUNTIME !")
+	suggestion_profile();
+	suggestion_project();
 	setInterval(suggestion_profile, ONE_WEEK);
-	setInterval(suggestion_project, ONE_WEEK)
+	setInterval(suggestion_project, ONE_WEEK);
 };
 
 runTime();
