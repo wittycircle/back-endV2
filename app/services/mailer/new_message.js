@@ -42,7 +42,7 @@ const new_message = () => {
 				// console.log('\n-------------------------------------------------\n');
 				// console.log(sub);
 				wm.subject(pers, subject);
-				wm.to(pers, 'jayho@wittycircle.com', /* member.email */);
+				wm.to(pers, 'jayho@wittycircle.com' /* member.email */);
 				wm.substitutions(pers, sub);
 				mail.addPersonalization(pers);
 			});
