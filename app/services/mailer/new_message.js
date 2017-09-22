@@ -22,8 +22,8 @@ const new_message = () => {
 			return null;
 		}
 
-		if (data.length > 1)
-			data = data.slice(0, 1);
+		// if (data.length > 1)
+		// 	data = data.slice(0, 1);
 		data.forEach((e, i) => {
 			e.members.forEach(member => {
 				let pers = new helper.Personalization();
@@ -42,7 +42,7 @@ const new_message = () => {
 				// console.log('\n-------------------------------------------------\n');
 				// console.log(sub);
 				wm.subject(pers, subject);
-				wm.to(pers, 'jayho@wittycircle.com' /* member.email */);
+				wm.to(pers, member.email);
 				wm.substitutions(pers, sub);
 				mail.addPersonalization(pers);
 			});
@@ -114,7 +114,7 @@ const new_message = () => {
 		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
 		.where('rs.read', 0)
 		.andWhere('rs.mail_sent', 0)
-		// .whereRaw('rs.creation_date <= DATE_SUB(NOW(),INTERVAL 2 HOUR)')
+		.whereRaw('rs.creation_date <= DATE_SUB(NOW(),INTERVAL 1 HOUR)')
 		.groupBy('r.id')
 		.limit(5)
 		.as('enroule');
