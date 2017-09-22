@@ -22,6 +22,8 @@ const new_message = () => {
 			return null;
 		}
 
+		if (data.length > 1)
+			data = data.slice(0, 1);
 		data.forEach((e, i) => {
 			e.members.forEach(member => {
 				let pers = new helper.Personalization();
@@ -40,7 +42,7 @@ const new_message = () => {
 				// console.log('\n-------------------------------------------------\n');
 				// console.log(sub);
 				wm.subject(pers, subject);
-				wm.to(pers, member.email);
+				wm.to(pers, 'jayho@wittycircle.com', /* member.email */);
 				wm.substitutions(pers, sub);
 				mail.addPersonalization(pers);
 			});
