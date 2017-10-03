@@ -50,11 +50,12 @@ const send_mail = (project, profiles) => {
 	sub['*|PROFILES_BLOC|*'] = laString;
 
 	wm.subject(pers, subject);
-	wm.to(pers, project.email);
+	wm.to(pers,  project.email);
 
 	wm.substitutions(pers, sub);
 	mail.addPersonalization(pers);
 	wm.send(mail, 'suggestion_profiles');
+
 	return null
 
 };
