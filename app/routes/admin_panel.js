@@ -18,4 +18,10 @@ router
 	.route('/admin_panel/projects/:token')
 	.post(auth(AUTH.PRIVATE), panel.updateCreator);
 
+router
+	.route('/admin_panel/uc/ambassadors')
+	.get(auth(AUTH.PRIVATE), panel.getAmbassadors)
+	.post(auth(AUTH.PRIVATE), panel.setAmbassador)
+	.put(auth(AUTH.PRIVATE), panel.removeAmbassador)
+
 module.exports = router;

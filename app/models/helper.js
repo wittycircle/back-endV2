@@ -70,7 +70,8 @@ const h = {
       'p.picture',
       'p.about',
       'p.cover_picture',
-      'p.description'
+      'p.description',
+      'u.ambassador'
     ]
   },
   admin = (table, id, uid) => {

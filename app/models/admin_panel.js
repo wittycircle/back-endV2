@@ -49,3 +49,29 @@ exports.updateCreator = (uid, token) => {
 			]);
 		});
 };
+
+// *** University Campaign ***
+exports.getAmbassadors = () => {
+	return db.select(
+			'u.id',
+			'p.picture',
+			h.fullname)
+		.from(TABLES.USERS + ' as u')
+		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
+		.where('u.ambassador', 1)
+		.then(r => {
+			return r;
+		})
+}
+
+exports.setAmbassador = (uid) => {
+	return db(TABLES.USERS)
+		.where('id', uid)
+		.update('ambassador', 1)
+}
+
+exports.removeAmbassador = (uid) => {
+	return db(TABLES.USERS)
+		.where('id', uid)
+		.update('ambassador', 0)
+}

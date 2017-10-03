@@ -41,3 +41,27 @@ exports.updateCreator = (req, res, next) => {
 	})
 	.catch(err => next([err, 'Unable to set as creator']));
 };
+
+exports.getAmbassadors = (req, res, next) => {
+	panel
+		.getAmbassadors()
+		.then(r => {
+			res.send({ profiles: r });
+		});
+};
+
+exports.setAmbassador = (req, res, next) => {
+	panel
+		.setAmbassador(req.body.id)
+		.then(r => {
+			res.send({ success: true });
+		})
+};
+
+exports.removeAmbassador = (req, res, next) => {
+	panel
+		.removeAmbassador(req.body.id)
+		.then(r => {
+			res.send({ success: true });
+		})
+};
