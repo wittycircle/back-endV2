@@ -11,7 +11,7 @@ router.route('/social/linkedin')
 		.post(auth(AUTH.PRIVATE), social.updateProfileFromLinkedin);
 
 router.route('/social/google')
-		.post(auth(AUTH.PRIVATE), social.InviteFriendsFromGoogle);
+		.post(auth(AUTH.PRIVATE), social.getGoogleContactsByToken);
 
 
 module.exports = router;
