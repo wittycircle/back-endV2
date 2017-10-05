@@ -15,11 +15,19 @@ exports.saveGoogleContacts = (uid, mails) => {
 	const getEmails = db(TABLES.GAC)
 		.distinct('email')
 		.select('name')
+		.orderBy('name', 'desc')
 
 	const saveEmails = db(TABLES.GAC)
 		.insert(data)
 
 	return saveEmails.then((e) => {
-		return getEmails;
+		return getEmails.then(r => {
+			r.forEach((e, i) => {
+				e[i] 				= i
+				e['select'] 		= true
+				e['searchField'] 	= e.name + ' ' + e.email
+			});
+			return r;
+		});
 	})
 };

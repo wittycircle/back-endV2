@@ -28,10 +28,13 @@ const chunk = (array, callback) => {
 }
 
 const updateInvitation = (uid, mails) => {
- 	const parseMails = typeof mails === 'string' ? JSON.parse(mails) : mails;
+ 	const parseMails = (typeof mails === 'string' || typeof mails === 'object') ? JSON.parse(mails) : mails;
+
+ 	console.log('TYPE OF MAILSSSSS ======> ', typeof mails)
+ 	console.log('TYPE OF PARSEMAILSSS ======>', typeof parseMails);
 
 	return db(TABLES.INVITATION)
-		.where('mail_to', parseMails)
+		.whereIn('mail_to', parseMails)
 		.del()
 		.then(r => {
 			let newArray = []
@@ -42,16 +45,16 @@ const updateInvitation = (uid, mails) => {
 				return db.batchInsert('invitations', newArray)
 					.then(r => parseMails);
 		})
-}
+};
 
-const deleteGmailContacts = uid => {
-	db(TABLES.GMAILCONTACTS)
-		.where('user_id', uid)
-		.del()
-		.then( r => {
-			console.log('All mails have been deleted !');
-		})
-}
+// const deleteGmailContacts = uid => {
+// 	db(TABLES.GMAILCONTACTS)
+// 		.where('user_id', uid)
+// 		.del()
+// 		.then( r => {
+// 			console.log('All mails have been deleted !');
+// 		})
+// }
 
 const send_mail = (data, sender, u_skills, invite, category = false) => {
 	console.log('SEND MAIL CALLED');
@@ -130,9 +133,10 @@ const invite_user = args => {
 			invite,
 			user_skills
 		]).then(([sender, invite, u_skills]) => {
-			if (args.type === 'gmail_auth')
-				deleteGmailContacts(args.uid);
+			// if (args.type === 'gmail_auth')
+			// 	deleteGmailContacts(args.uid);
 			chunk(emails, emailsArray => {
+				console.log(emailsArray);
 				send_mail(emailsArray, sender[0], u_skills, invite.invite_link, args.type)
 			});
 		});

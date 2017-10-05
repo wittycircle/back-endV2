@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'development') {
 	});
 }
 
-// mails['new_message'] = args => require('./new_message')(args);
+// mails['invite_user'] = args => require('./invite_user')(args);
 
 // ------------------ DEV ENVIRONMENT ------------------
 
