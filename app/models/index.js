@@ -67,6 +67,7 @@ exports.TABLES = {
   INVITATION: 'invitations',
   LOCATION: 'location',
   GMAILCONTACTS: 'gmail_auth_contacts',
+  GAC: 'google_api_contacts',
   //            ***    SKILL    ***
   SKILLS: 'skills',
   SUB_SKILLS: 'sub_skills',

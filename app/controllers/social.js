@@ -213,8 +213,12 @@ exports.getGoogleContactsByToken = (req, res, next) => {
 	social
 		.gmailContactsCampaign(token)
 		.then(mailList => {
-			check.verifyUsers(mailList).then( checkMails => {
-				_social.saveGoogleContacts(checkMails)
-			});
+			_social.saveGoogleContacts(req.user.id, mailList).then(r => {
+				r.forEach((e, i) => {
+					e[i] 		= i
+					e['select'] = true
+				});
+				res.send({ contacts: r });
+			})
 		})
 }

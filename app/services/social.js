@@ -80,7 +80,9 @@ exports.gmailContactsCampaign = token =>
 			if (body.feed.entry) 
 				return body.feed.entry
 					.filter(e => typeof e['gd$email'] !== 'undefined')
-					.map(e => e['gd$email'][0].address)
+					.map(e => 
+						({ email: e['gd$email'][0].address, name: e['title']['$t'] })
+					)
 			else
 				return [];
 		});
