@@ -3,6 +3,7 @@
 */
 
 const social 	= require('../services/social');
+const _social 	= require('../models/social');
 const check 	= require('../models/invitation');
 const mailer 	= require('../services/mailer');
 const profiles 	= require('../models/profiles');
@@ -172,34 +173,52 @@ exports.updateProfileFromLinkedin = (req, res, next) => {
 	})
 };
 
-exports.InviteFriendsFromGoogle = (req, res, next) => {
-	// let inviteOnlyOnce = db('user_socials').select('invite_google');
+// exports.InviteFriendsFromGoogle = (req, res, next) => {
+// 	// let inviteOnlyOnce = db('user_socials').select('invite_google');
 
-	const { token } = req.body;
+// 	const { token } = req.body;
+
+// 	social
+// 	.gmailContactsCampaign(token)
+// 	.then(mailList => {
+// 		check.verifyUsers(mailList).then( checkMails => {
+// 			mailer.invite_user({ uid: req.user.id, mailList, type: 'gmail' })
+// 		});
+// 	})
+// 	.then(() => {
+// 		return db('user_socials')
+// 		.first('invite_google')
+// 		.where('user_id', req.user.id)
+// 		.then(invited => {
+// 			if (invited.invite_google === 1) return;
+// 			else {
+// 				req.broadcastEvent('add_points', {
+// 					user_id: req.user.id,
+// 					points: 500
+// 				});
+// 				return db('user_socials')
+// 				.update('invite_google', 1)
+// 				.where('user_id', req.user.id);
+// 			}
+// 		});
+// 	})
+// 	.then(() => res.send({ success: true }));
+// };
+
+exports.getGoogleContactsByToken = (req, res, next) => {
+	let inviteOnlyOnce = db('user_socials').select('invite_google');
+
+	const { token } = req.body
 
 	social
-	.gmailContactsCampaign(token)
-	.then(mailList => {
-		check.verifyUsers(mailList).then( checkMails => {
-			mailer.invite_user({ uid: req.user.id, mailList, type: 'gmail' })
-		});
-	})
-	.then(() => {
-		return db('user_socials')
-		.first('invite_google')
-		.where('user_id', req.user.id)
-		.then(invited => {
-			if (invited.invite_google === 1) return;
-			else {
-				req.broadcastEvent('add_points', {
-					user_id: req.user.id,
-					points: 500
+		.gmailContactsCampaign(token)
+		.then(mailList => {
+			_social.saveGoogleContacts(req.user.id, mailList).then(r => {
+				r.forEach((e, i) => {
+					e[i] 		= i
+					e['select'] = true
 				});
-				return db('user_socials')
-				.update('invite_google', 1)
-				.where('user_id', req.user.id);
-			}
-		});
-	})
-	.then(() => res.send({ success: true }));
-};
+				res.send({ contacts: r });
+			})
+		})
+}
