@@ -2,7 +2,7 @@ const fs = require('fs');
 const csv = require("fast-csv");
 const { db, TABLES } = require('../models/index');
 
-let stream = fs.createReadStream('/Users/JayHo/Webs/WittyCircle/back-endV2/Bulk_Invitation_Csv/Founders_Space_out.csv');
+let stream = fs.createReadStream('/home/ubuntu/WittycircleV2/Bulk_Invitation_Csv/Global_Cultural_Entrepreneurship_FG_out.csv');
 let array = [];
 
 const saveEmail = (emails) => {
