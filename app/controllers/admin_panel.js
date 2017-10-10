@@ -65,3 +65,19 @@ exports.removeAmbassador = (req, res, next) => {
 			res.send({ success: true });
 		})
 };
+
+exports.getProjects = (req, res, next) => {
+	panel
+		.getProjects()
+		.then(r => {
+			res.send({ projects: r });
+		})
+};
+
+exports.getUsers = (req, res, next) => {
+	panel
+		.getUsers()
+		.then(r => {
+			res.send({ users: r });
+		})
+};

@@ -75,3 +75,35 @@ exports.removeAmbassador = (uid) => {
 		.where('id', uid)
 		.update('ambassador', 0)
 }
+
+// *** Statistics ***
+exports.getProjects = () => {
+	return db.select(
+			'title',
+			'public_id',
+			'creation_date')
+		.from(TABLES.PROJECTS)
+		.orderBy('creation_date', 'desc')
+		.then(r => { return r })
+}
+
+exports.getUsers = () => {
+	return db.select(
+			'p.first_name',
+			'p.last_name',
+			'u.username',
+			'u.creation_date'
+		)
+		.from(TABLES.USERS + ' as u')
+		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
+		.whereRaw('u.creation_date BETWEEN (CURDATE() - INTERVAL 30 DAY) AND CURDATE()')
+		.orderBy('u.creation_date', 'desc')
+		.then(r => {
+			console.log(r);
+			return r 
+		});
+} 
+
+
+
+

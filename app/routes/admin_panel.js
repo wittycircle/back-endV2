@@ -24,4 +24,12 @@ router
 	.post(auth(AUTH.PRIVATE), panel.setAmbassador)
 	.put(auth(AUTH.PRIVATE), panel.removeAmbassador)
 
+router
+	.route('/admin_panel/statistics/projects')
+	.get(auth(AUTH.PRIVATE), panel.getProjects)
+
+router
+	.route('/admin_panel/statistics/users')
+	.get(auth(AUTH.PRIVATE), panel.getUsers)
+
 module.exports = router;
