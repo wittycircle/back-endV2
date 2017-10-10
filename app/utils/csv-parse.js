@@ -10,9 +10,11 @@ const saveEmail = (emails) => {
 	.then(r => { console.log(r) });
 };
 
+const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
 let csvStream = csv()
     .on("data", function(data){
-    	if (data[5])
+    	if (data[5] && reg.test(data[5]))
           array.push({ email: data[5] });
     })
     .on("end", function(){
