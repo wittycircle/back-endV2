@@ -231,7 +231,9 @@ module.exports.TEMPLATES = {
   complete_project: '7e6f6273-8b39-41bc-8972-7ee76d7e23fd',
   //suggestions: ,
   suggestions_profile: '7b504b58-2781-4b99-9f44-35a6d508221c',
-  suggestions_project: '376e4724-8abe-4f17-b609-1e1104f58729'
+  suggestions_project: '376e4724-8abe-4f17-b609-1e1104f58729',
+  //Bulk invitation
+  invite_bulk: '8b72ee2a-820f-495a-8bf6-96758e1ec427'
 };
 
 /*
