@@ -11,7 +11,7 @@ const send_mail = (data) => {
 	wm.content(mail);
 	wm.reply(mail, 'noreply@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.invite_bulk);
-	const category = new helper.Category('bulk_facebook_group');
+	const category = new helper.Category('bulk_facebook_group_emails');
 	mail.addCategory(category);
 
 	data.forEach((e, i) => {
@@ -29,7 +29,7 @@ const send_mail = (data) => {
 		console.log(sub);
 		console.log('\n-------------------------------------------------\n');
 		wm.subject(pers, subject);
-		wm.to(pers, 'jayho@wittycircle.com');
+		wm.to(pers, e);
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 	}); //foreach
