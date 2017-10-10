@@ -49,7 +49,7 @@ const update_bulk_facebook = (emails) => {
 };
 
 const bulk_facebook = (number) => {
-	const mail = db.select('email')
+	const mail = db.distinct('email')
 		.from('facebook_group_emails')
 		.where('sent', '0')
 		.limit(number)
