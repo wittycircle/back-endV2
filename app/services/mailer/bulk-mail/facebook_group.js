@@ -63,4 +63,4 @@ const bulk_facebook = (number) => {
 	});
 };
 
-bulk_facebook(300);
+bulk_facebook(1000);
