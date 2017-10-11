@@ -39,7 +39,7 @@ const send_mail = (data) => {
 
 const update_bulk_gmail = (emails) => {
 	const query = db('gmail_auth_contacts')
-		.whereIn('email', emails)
+		.whereIn('mail_to', emails)
 		.update({ 
 			sent : 1,
 			sent_date : new Date()
