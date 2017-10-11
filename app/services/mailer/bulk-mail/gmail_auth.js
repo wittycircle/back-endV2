@@ -11,7 +11,7 @@ const send_mail = (data) => {
 	wm.content(mail);
 	wm.reply(mail, 'noreply@wittycircle.com');
 	mail.setTemplateId(TEMPLATES.invite_bulk);
-	const category = new helper.Category('bulk_facebook_group_emails');
+	const category = new helper.Category('bulk_gmail_emails');
 	mail.addCategory(category);
 
 	data.forEach((e, i) => {
@@ -33,12 +33,12 @@ const send_mail = (data) => {
 		wm.substitutions(pers, sub);
 		mail.addPersonalization(pers);
 	}); //foreach
-	wm.send(mail, 'bulk_facebook_group');
+	wm.send(mail, 'bulk_gmail_emails');
 	return null;
 };
 
-const update_bulk_facebook = (emails) => {
-	const query = db('facebook_group_emails')
+const update_bulk_gmail = (emails) => {
+	const query = db('gmail_auth_contacts')
 		.whereIn('email', emails)
 		.update({ 
 			sent : 1,
@@ -48,19 +48,19 @@ const update_bulk_facebook = (emails) => {
 	Promise.all([query]);
 };
 
-const bulk_facebook = (number) => {
-	const mail = db.distinct('email')
-		.from('facebook_group_emails')
+const bulk_gmail = (number) => {
+	const mail = db.distinct('mail_to')
+		.from('gmail_auth_contacts')
 		.where('sent', '0')
 		.limit(number)
 
 	Promise.all([mail]).then(r => {
-		invitation.verifyUsers(r[0].map(e => e.email))
+		invitation.verifyUsers(r[0].map(e => e.mail_to))
 			.then(emails => {
 				send_mail(emails);
-				update_bulk_facebook(emails);
+				update_bulk_gmail(emails);
 			});
 	});
 };
 
-bulk_facebook(300);
+bulk_gmail(300);
