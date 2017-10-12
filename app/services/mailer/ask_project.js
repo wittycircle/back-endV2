@@ -45,6 +45,7 @@ const ask_project = args => {
 		})
 		.leftJoin(wm.notif('ask_project'), 'n.user_id', 'u.id')
 		.where('pr.id', args.project_id)
+		.andWhere('u.id', '!=', args.user_id)
 		.union(function() {
 			this.select(common_array)
 				.from(TABLES.USERS + ' as u')
@@ -86,7 +87,7 @@ const ask_project = args => {
 				wm.subject(pers, subject);
 				mail.addPersonalization(pers);
 			}); //foreach
-			wm.send(mail, 'ask_project');
+			// wm.send(mail, 'ask_project');
 			return null;
 		})
 		.catch(console.error); //then
