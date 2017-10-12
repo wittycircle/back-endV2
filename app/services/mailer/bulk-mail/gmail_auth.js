@@ -39,7 +39,7 @@ const send_mail = (data) => {
 
 const update_bulk_gmail = (emails) => {
 	const query = db('gmail_auth_contacts')
-		.whereIn('email', emails)
+		.whereIn('mail_to', emails)
 		.update({ 
 			sent : 1,
 			sent_date : new Date()
@@ -57,7 +57,7 @@ const bulk_gmail = (number) => {
 	Promise.all([mail]).then(r => {
 		invitation.verifyUsers(r[0].map(e => e.mail_to))
 			.then(emails => {
-				send_mail(emails);
+				// send_mail(emails);
 				update_bulk_gmail(emails);
 			});
 	});
