@@ -18,7 +18,7 @@ const send = (channel, payload) => {
 };
 
 exports.mount = (req, res, next) => {
-		if (process.env.NO_SOCKET === true) {
+    if (process.env.NO_SOCKET === true) {
 				console.error('req.broadcastEvent set to stdout');
 				req.broadcastEvent = (channel, payload) => console.log(`Event: ${channel}`, payload);
 		} else {
