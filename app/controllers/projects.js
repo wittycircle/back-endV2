@@ -57,7 +57,6 @@ const data = req => {
 		'2nd_description'	: req.body.desc_2,
 		'public_id' 		: Math.floor(Math.random() * 90000 + 10000)
 	};
-	console.log(r);
 	return redis.smembers('project_public_id').then(public => {
 		while (1) {
 			let x = public.filter(e => e == r.public_id);
@@ -220,6 +219,7 @@ exports.createOpening = (req, res, next) => {
 	const data = {
 		project_id: req.params.id,
 		status: req.body.status,
+		position: req.body.position,
 		description: req.body.description
 	};
 	project

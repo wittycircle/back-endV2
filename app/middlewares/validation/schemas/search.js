@@ -3,7 +3,8 @@
 const Joi = require('joi'),
 	common = require('./common'),
  	p_empty = ['', null],
-		p_field = ['status', 'category', 'skills', 'network', 'location', 'opening'];
+	p_field = ['status', 'category', 'skills', 'network', 'location', 'opening'],
+	p_field2 = ['status', 'category', 'skills', 'network', 'location', 'about'];
 
 const sort = Joi.object().keys({
 	field: Joi.string().trim().allow(p_empty).required(),
@@ -12,6 +13,11 @@ const sort = Joi.object().keys({
 
 const member = Joi.object().keys({
 	field: Joi.string().trim().only(p_field).required(),
+	value: Joi.any().allow([(Joi.string().trim().allow(p_empty).required(), Joi.array().items(Joi.string().trim().allow(p_empty).required()))])
+});
+
+const member2 = Joi.object().keys({
+	field: Joi.string().trim().only(p_field2).required(),
 	value: Joi.any().allow([(Joi.string().trim().allow(p_empty).required(), Joi.array().items(Joi.string().trim().allow(p_empty).required()))])
 });
 
@@ -25,6 +31,11 @@ const query = Joi.object().keys({
 	members: Joi.array().items(member)
 });
 
+const query2 = Joi.object().keys({
+	sort: sort,
+	members: Joi.array().items(member2)
+});
+
 module.exports.project = Joi.object().keys({
 	query: query,
 	paginate: paginate
@@ -32,6 +43,6 @@ module.exports.project = Joi.object().keys({
 
 // ------------------ Profile ------------------
 module.exports.profile = Joi.object().keys({
-	query: query,
+	query: query2,
 	paginate: paginate
 });

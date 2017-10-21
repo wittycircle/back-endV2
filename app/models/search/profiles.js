@@ -63,7 +63,6 @@ const ifo = db
 module.exports = selector => {
 
   // ---------  Main query -------
-
   const skills = db
     .select('user_id', 's.*')
     .from(TABLES.USER_SKILLS + ' as us')

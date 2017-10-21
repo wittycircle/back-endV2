@@ -3,6 +3,7 @@ const opening = require('../models/openings');
 exports.updateOpening = (req, res, next) => {
 	const data = {
 		status: req.body.status,
+		position: req.body.position,
 		description: req.body.description
 	};
 	opening

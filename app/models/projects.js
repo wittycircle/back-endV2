@@ -255,6 +255,7 @@ exports.getProjectOpenings = id => {
 			'o.id',
 			'o.creation_date',
 			'o.status',
+			'o.position',
 			'o.description',
 			db.raw('GROUP_CONCAT(s.name) as tags')
 		)
