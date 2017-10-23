@@ -39,9 +39,20 @@ module.exports = selector => {
     'nl.name as network',
     'p.picture as profile_picture',
     'p.uid as user_id',
+    'o.status as openingStat',
     db.raw('CONCAT (p.first_name, " ", p.last_name) as username'),
     h.format_location
   ];
+
+  // const getProjectOpenings = db
+  //   .select(
+  //     'group_concat(o.status)',
+  //     'o.project_id as project_id'
+  //   )
+  //   .count('o.status as statNumber')
+  //   .from(TABLES.PROJECT_OPENINGS + ' as o')
+  //   .groupBy('o.id')
+  //   .as('ol')
 
   const query = db
     .distinct(pr_array)
@@ -56,7 +67,7 @@ module.exports = selector => {
     .leftJoin(sub_members, 'm.project_id', 'pr.id')
     .where('pr.project_visibility', 1)
     .whereRaw('pr.picture <> ""')
-    .groupBy('pr.id');
+    .groupBy('pr.id')
 
   //SELECTOR
   if (selector.uid) {
@@ -83,10 +94,12 @@ module.exports = selector => {
 
   h.addLocation('loc', selector.location, query);
 
-  if (selector.opening)
+  if (selector.opening) {
     query.orderByRaw(
       'CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END'
     );
+
+  }
 
   if (selector.category)
     query.orderByRaw('(c.name = "' + selector.category + '") DESC');
@@ -96,5 +109,6 @@ module.exports = selector => {
       'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
     );
 
+  console.log(query.toString());
   return query;
 };
