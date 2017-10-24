@@ -109,6 +109,5 @@ module.exports = selector => {
       'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
     );
 
-  console.log(query.toString());
   return query;
 };
