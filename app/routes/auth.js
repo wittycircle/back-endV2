@@ -25,7 +25,7 @@ router.use('/local', validate(schemas.auth.local));
 router.route('/local')
 		.post(auth.localLogin, auth.generateToken, redirect);
 
-router.route('/google')
+router.route('/google/callback')
 		.get(auth.socialLogin('google', {scope: ['profile', 'email', 'https://www.google.com/m8/feeds/contacts/default/full']}));
 
 router.route('/google/callback')
