@@ -49,6 +49,7 @@ module.exports = function(passport) {
 	const oauth_helper = {
 		logon: (req, user, profile, origin, contacts) => {
 			if (user.length) {
+				console.log(user.length);
 				user = user[0];
 				return {
 					id: user.id,
@@ -116,6 +117,7 @@ module.exports = function(passport) {
 
 			social.gmailContactsCampaign(accessToken)
 				.then(contacts => {
+					console.log(contacts);
 					profile.contacts = contacts;
 					users
 						.getUserBySocialId(profile.id, 'google')

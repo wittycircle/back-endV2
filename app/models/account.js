@@ -176,7 +176,9 @@ const newUser = (req, data, helper, origin) => { // Add data to autofollow frien
 		picture 	: helper.profile.picture,
 		network_id	: 1
 	},
-	socialInsert 		= chooseOrigin(origin, helper);
+	socialInsert 				= chooseOrigin(origin, helper);
+	helper.user.password 		= ''
+	profileInsert.cover_picture = ''
 
 	return db(TABLES.USERS).insert(helper.user).then(([id]) => {
 		socialInsert.user_id = id;
