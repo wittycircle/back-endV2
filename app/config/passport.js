@@ -117,7 +117,7 @@ module.exports = function(passport) {
 
 			social.gmailContactsCampaign(accessToken)
 				.then(contacts => {
-					console.log(contacts);
+
 					profile.contacts = contacts;
 					users
 						.getUserBySocialId(profile.id, 'google')

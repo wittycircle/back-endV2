@@ -184,6 +184,7 @@ const newUser = (req, data, helper, origin) => { // Add data to autofollow frien
 		socialInsert.user_id = id;
 		profileInsert.user_id = id;
 
+		console.log('NEW checkpoint A');
 		return Promise.all([
 			db(TABLES.USER_SOCIALS).insert(socialInsert),
 			db(TABLES.PROFILES).insert(profileInsert),
@@ -203,6 +204,7 @@ const newUser = (req, data, helper, origin) => { // Add data to autofollow frien
 const modifyUser = (helper, origin, user) => {
 	let u_obj = chooseOrigin(origin, helper);
 	//  console.log('user', user);
+	console.log('MODIFY checkpoint A')
 	return db(TABLES.USER_SOCIALS)
 		.update(u_obj)
 		.where({ user_id: user.id })
