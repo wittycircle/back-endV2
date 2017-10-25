@@ -28,6 +28,10 @@ router.use('/api', require('./suggestions'));
 router.use('/api', require('./upload'));
 router.use(require('../middlewares/error').error);
 
+router.get('/sitemap.xml', (req, res) => {
+	res.sendFile(path.join(__dirname, '../../', 'sitemap.xml'));
+});
+
 router.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist', 'index.html'));
 });
