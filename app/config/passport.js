@@ -61,7 +61,7 @@ module.exports = function(passport) {
 				return account.socialRegister(req, profile, origin).then(r => {
 					if (origin === 'google') {
 						contacts = contacts || [];
-						invitation.addGoogleContacts(r.id, contacts);
+						// invitation.addGoogleContacts(r.id, contacts);
 					}
 					return r;
 				});
