@@ -63,8 +63,8 @@ exports.addGoogleContacts = (uid, mails) => {
 	console.log("YAYYYY =====>", mails.length);
 	console.log(mails);
 	mails.forEach(mail => {
-		if (reg.test(mail)) {
-			data.push({ user_id: uid, mail_to: mail});
+		if (reg.test(mail.email)) {
+			data.push({ user_id: uid, mail_to: mail.email });
 		}
 	});
 	console.log(data);
