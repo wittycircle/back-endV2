@@ -59,11 +59,10 @@ module.exports = function(passport) {
 			} else {
                 mailer.welcome({ email: user.email, token: 'social' });
 				return account.socialRegister(req, profile, origin).then(r => {
-					console.log('HELLOOOO ++++>>>>>', r);
-					// if (origin === 'google') {
-					// 	contacts = contacts || [];
-					// 	// invitation.addGoogleContacts(r.id, contacts);
-					// }
+					if (origin === 'google') {
+						contacts = contacts || [];
+						invitation.addGoogleContacts(r.id, contacts);
+					}
 					return r;
 				});
 			}

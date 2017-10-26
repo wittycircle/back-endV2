@@ -58,9 +58,10 @@ exports.fromUser = (id, mails) => {
 
 
 exports.addGoogleContacts = (uid, mails) => {
-	let data = []
+	let data 	= [];
+	const reg 	= /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	console.log("YAYYYY =====>", mails.length);
 	mails.forEach(mail => {
-		const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		if (reg.test(mail)) {
 			data.push({ user_id: uid, mail_to: mail});
 		}
@@ -68,7 +69,7 @@ exports.addGoogleContacts = (uid, mails) => {
 	if (data.length) {
 		db(TABLES.GMAILCONTACTS)
 			.insert(data)
-			.then(r => console.log(r));
+			.then(r => { console.log(r) });
 	}
 }
 
