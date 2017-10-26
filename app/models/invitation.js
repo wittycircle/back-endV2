@@ -61,6 +61,7 @@ exports.addGoogleContacts = (uid, mails) => {
 	let data 	= [];
 	const reg 	= /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	console.log("YAYYYY =====>", mails.length);
+	console.log(mails);
 	mails.forEach(mail => {
 		if (reg.test(mail)) {
 			data.push({ user_id: uid, mail_to: mail});
