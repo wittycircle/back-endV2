@@ -66,6 +66,7 @@ exports.addGoogleContacts = (uid, mails) => {
 			data.push({ user_id: uid, mail_to: mail});
 		}
 	});
+	console.log(data);
 	if (data.length) {
 		db(TABLES.GMAILCONTACTS)
 			.insert(data)
