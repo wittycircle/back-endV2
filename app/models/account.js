@@ -191,9 +191,9 @@ const newUser = (req, data, helper, origin) => { // Add data to autofollow frien
 			verifyUser(helper.user.email),
 			db(TABLES.RANK).insert({ user_id: id, rank: id }),
 			db(TABLES.RANK_POINTS).insert({ user_id: id, points: 300 }),
-			// socialServices.autoFollowSocials(req, id, data, origin)
+			socialServices.autoFollowSocials(req, id, data, origin)
 		]).then(r => {
-			console.log(r);
+			// console.log(r);
 			return {
 				id: id,
 				email: helper.user.email
