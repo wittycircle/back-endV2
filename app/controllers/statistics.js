@@ -151,3 +151,15 @@ exports.infoProfiles = (req, res, next) => {
 		})
 		.catch(err => next(err));
 };
+
+
+// ------------------ All Stats for analytics ------------------
+
+exports.allStats = (req, res, next) => {
+	statistics
+		.getAllStatsAnalytic()
+		.then(r => {
+			res.send({ stats: r });
+		})
+		.catch(err => next(err));
+};

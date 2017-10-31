@@ -46,11 +46,16 @@ router.route('/statistics/network/:name/projects/follow') // most upvoted
 
 // recent activity: socket
 
+// ---- ALL STAT FOR ANALYTICS BY DAYS 10/31/2017 ----- //
+
+router.route('/statistics/backoffice/all')
+		.get(auth(AUTH.ADMIN), statistics.allStats);
+
 
 // ------------------ PROFILES STATS ------------------
 
 router.route('/statistics/profiles/:profile_id')
-		.get(statistics.infoProfiles)
+		.get(statistics.infoProfiles);
 
 
 module.exports = router;

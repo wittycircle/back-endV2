@@ -42,7 +42,6 @@ exports.updateCreator = (uid, token) => {
 		.where('token', token)
 		.then(r => {
 			if (!r) throw 'Invalid token';
-			console.log(r);
 			return Promise.all([
 				db(TABLES.PROJECTS).update('user_id', uid).where('id', r.project_id),
 				db(TABLES.PROJECT_INVITE).update('accepted', 1).where('token', token)
@@ -99,7 +98,6 @@ exports.getUsers = () => {
 		.whereRaw('u.creation_date BETWEEN (CURDATE() - INTERVAL 30 DAY) AND CURDATE()')
 		.orderBy('u.creation_date', 'desc')
 		.then(r => {
-			console.log(r);
 			return r 
 		});
 } 

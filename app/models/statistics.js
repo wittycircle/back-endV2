@@ -263,3 +263,165 @@ exports.infoProfiles = id => {
 		.where('id', id)
 		.then(r => subInfoProfiles(id));
 };
+
+exports.getAllStatsAnalytic = () => {
+
+	const count 		= db.raw('count(*) as number'),
+		date 			= db.raw('DATE(creation_date) as date'),
+		month 			= db.raw('MONTH(creation_date) as month'),
+		interval4month 	= 'DATE(creation_date) >= curdate() - INTERVAL 4 MONTH GROUP BY MONTH(creation_date)',
+		interval7day 	= 'DATE(creation_date) >= curdate() - INTERVAL 7 DAY GROUP BY DATE(creation_date)';
+
+	// Users 
+	const countUsers = db('users')
+		.count('* as users'),
+
+		countUsersByMonth = db('users')
+		.select(
+			month,
+			count)
+		.whereRaw(interval4month),
+		
+		countUsersByDay = db('users') // Last 7 days;
+		.select(
+			date,
+			count)
+		.whereRaw(interval7day),
+
+		countUsersByAbout = db('profiles')
+		.select(
+			'about',
+			count)
+		.groupBy('about'),
+
+	// Projects
+		countProjects = db('projects')
+			.count('* as projects'),
+
+		countProjectsByMonth = db('projects')
+		.select(
+			month,
+			count)
+		.whereRaw(interval4month),
+
+		countProjectsByDay = db('projects') // Last 7 days;
+		.select(
+			date,
+			count)
+		.whereRaw(interval7day),
+	
+		countProjectsByStatus = db('projects')
+		.select(
+			'status',
+			count)
+		.groupBy('status'),
+
+		countProjectsWithNeed = db()
+			.select(db.raw('count(distinct(p.title)) as number'))
+			.from('openings as o')
+			.leftJoin('projects as p', 'p.id', 'o.project_id'),
+
+	// Needs
+		countNeeds = db('openings')
+			.count('* as needs'),
+
+		countNeedByStatus = db('openings')
+			.select(
+				'status',
+				count)
+			.groupBy('status'),
+	
+	// Messages
+		countMessages = db('messages')
+			.count('* as messages'),
+
+		countConversations = db('rooms')
+			.count('* as rooms'),
+
+		countMessagesByDay = db('messages')
+			.select(
+				date,
+				count)
+			.whereRaw(interval7day),
+
+		countMessagesByMonth = db('messages')
+			.select(
+				date,
+				count)
+			.whereRaw(interval4month),
+
+		countConversationsByDay = db('rooms')
+			.select(
+				date,
+				count)
+			.whereRaw(interval7day),
+
+		countConversationsByMonth = db('rooms')
+			.select(
+				date,
+				count)
+			.whereRaw(interval4month);
+	
+
+	return Promise.all([
+		// USERS
+		countUsers,
+		countUsersByMonth,
+		countUsersByDay,
+		countUsersByAbout,
+
+		// PROJECTS
+		countProjects,
+		countProjectsByMonth,
+		countProjectsByDay,
+		countProjectsByStatus,
+		countProjectsWithNeed,
+
+		// NEEDS
+		countNeeds,
+		countNeedByStatus,
+
+		// MESSAGES
+		countMessages,
+		countConversations,
+		countMessagesByDay,
+		countMessagesByMonth,
+		countConversationsByDay,
+		countConversationsByMonth
+	]).then(r => {
+		let object = {
+			users 		: {
+				allTime 	: r[0],
+				lastMonth 	: r[1],
+				lastDay 	: r[2],
+				byAbout 	: r[3]
+			},
+
+			projects 	: {
+				allTime 	: r[4],
+				lastMonth 	: r[5],
+				lastDay 	: r[6],
+				byStatus 	: r[7],
+				withNeed 	: r[8]
+			},
+
+			needs 		: {
+				allTime 	: r[9],
+				byStatus 	: r[10]
+			},
+
+			messages 	: {
+				allTimeM 	: r[11],
+				allTimeC 	: r[12],
+				byDayM 		: r[13],
+				byMonthM 	: r[14],
+				byDayC 		: r[15],
+				byMonthC 	: r[16]
+			}
+		};
+
+		return object; 
+	});
+};
+
+
