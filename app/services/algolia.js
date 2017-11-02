@@ -25,7 +25,6 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 			.then(profiles => {
 				storage.profiles = profiles;
 			    client.deleteIndex('Users', err => {
-				console.log(err);
 					people.addObjects(profiles.filter(p => p.fullName && p.picture));
 				});
 			}),
@@ -46,3 +45,4 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 		);
 });
 init();
+
