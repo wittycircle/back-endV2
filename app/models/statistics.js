@@ -291,8 +291,9 @@ exports.getAllStatsAnalytic = () => {
 		countUsersByAbout = db('profiles')
 		.select(
 			'about',
+			date,
 			count)
-		.groupBy('about'),
+		.whereRaw(interval7day + ', about'),
 
 	// Projects
 		countProjects = db('projects')
@@ -313,10 +314,11 @@ exports.getAllStatsAnalytic = () => {
 		countProjectsByStatus = db('projects')
 		.select(
 			'status',
+			date,
 			count)
-		.groupBy('status'),
+		.whereRaw(interval7day + ', status'),
 
-		countProjectsWithNeed = db()
+		countProjectsWithNeed = db
 			.select(db.raw('count(distinct(p.title)) as number'))
 			.from('openings as o')
 			.leftJoin('projects as p', 'p.id', 'o.project_id'),
@@ -328,8 +330,9 @@ exports.getAllStatsAnalytic = () => {
 		countNeedByStatus = db('openings')
 			.select(
 				'status',
+				date,
 				count)
-			.groupBy('status'),
+			.whereRaw(interval7day + ', status'),
 	
 	// Messages
 		countMessages = db('messages')
@@ -360,8 +363,7 @@ exports.getAllStatsAnalytic = () => {
 			.select(
 				date,
 				count)
-			.whereRaw(interval4month);
-	
+			.whereRaw(interval4month);	
 
 	return Promise.all([
 		// USERS
