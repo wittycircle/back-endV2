@@ -46,4 +46,3 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 		);
 });
 init();
-setInterval(init, 3600 * 6);
