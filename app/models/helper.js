@@ -5,7 +5,9 @@ const setLocation = data => {
     return new Promise((ok, ko) => ok(['nolocation']));
   }
 
-  const query = db(TABLES.LOCATION).first('id').where({ city: data.city });
+  const query = db(TABLES.LOCATION)
+    .first('id')
+    .where({ city: data.city });
 
   return query.then(r => {
     if (r && r.id) {
@@ -77,7 +79,11 @@ const h = {
   admin = (table, id, uid) => {
     const x = [];
     x.push(h.exist(table, id));
-    x.push(db(TABLES.USERS).select('id').where({ id: uid, moderator: 1 }));
+    x.push(
+      db(TABLES.USERS)
+        .select('id')
+        .where({ id: uid, moderator: 1 })
+    );
     return Promise.all(x);
   };
 
@@ -87,10 +93,19 @@ h.sub_profile = db
   .from(`${TABLES.PROFILES} as p`)
   .join(`${TABLES.USERS} as u`, 'u.id', 'p.user_id')
   .as('p');
-h.u_profile = db.select(h.p_uarray).from(h.sub_profile).groupBy('p.id').as('p');
+h.u_profile = db
+  .select(h.p_uarray)
+  .from(h.sub_profile)
+  .groupBy('p.id')
+  .as('p');
 h.exist = (table, value, name) =>
-  db(table).select('id').whereRaw(`${name || 'id'} LIKE "%${value}%"`);
-h.owner = (table, id, uid) => db(table).select('id').where({ id, user_id: uid });
+  db(table)
+    .select('id')
+    .whereRaw(`${name || 'id'} LIKE "%${value}%"`);
+h.owner = (table, id, uid) =>
+  db(table)
+    .select('id')
+    .where({ id, user_id: uid });
 h.admin = admin;
 h.format_location = format_location;
 h.getLocationId = getLocationId;
@@ -104,6 +119,13 @@ h.spe_profile = cond =>
     .from(`${TABLES.PROFILES} as p`)
     .join(`${TABLES.USERS} as u`, 'u.id', 'p.user_id')
     .where(cond)
+    .as('p');
+
+h.crea_profile = () =>
+  db
+    .select(h.p_uarray.concat('u.creation_date'))
+    .from(`${TABLES.PROFILES} as p`)
+    .join(`${TABLES.USERS} as u`, 'u.id', 'p.user_id')
     .as('p');
 
 h.loc_profile = db

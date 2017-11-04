@@ -65,7 +65,7 @@ const getMatchingProfiles = (
       // db.raw('GROUP_CONCAT(distinct us.skill_id) as skillId'),
       // db.raw('GROUP_CONCAT(DISTINCT s.name) as skillName')
     )
-    .from(h.spe_profile({}))
+    .from(h.crea_profile())
     .join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'p.uid')
     .join(TABLES.SKILLS + ' as s', 's.id', 'us.skill_id')
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
@@ -74,10 +74,13 @@ const getMatchingProfiles = (
     .whereIn('skill_id', neededSkills)
     .whereIn('p.about', status)
     .whereNotIn('p.uid', alreadySugested)
-    .groupBy('p.id').orderByRaw(`field(loc.city, '${projectLocation[0]
-    .city}') desc,
+    .groupBy('p.id')
+    .orderByRaw(
+      `field(loc.city, '${projectLocation[0].city}') desc,
 		field(loc.state, '${projectLocation[0].state}') desc,
-		field(loc.country, '${projectLocation[0].country}') desc`);
+		field(loc.country, '${projectLocation[0].country}') desc`
+    )
+    .orderBy('p.creation_date');
 
   return query;
 };

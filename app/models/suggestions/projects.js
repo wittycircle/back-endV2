@@ -54,8 +54,6 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
   return query;
 };
 
-// module.exports.getMatchingProjects = getMatchingProjects;
-
 module.exports.matchProjectsToProfile = (userId, about) => {
   return Promise.all([
     sh.skillsFromUserId(userId),
@@ -64,7 +62,7 @@ module.exports.matchProjectsToProfile = (userId, about) => {
     return getMatchingProjects(neededSkills, about, alreadySugested).then(r => {
       if (!r.length || r.length < 3) {
         return sh.expandedSkills(neededSkills).then(expandedNeeds => {
-          return getMatchingProjects(expandedNeeds, alreadySugested);
+          return getMatchingProjects(expandedNeeds, about, alreadySugested);
         });
       } else {
         return r;

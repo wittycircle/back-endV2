@@ -42,7 +42,10 @@ const ret_array = [
   'skills'
 ];
 
-const exp = db.select('user_id').from(TABLES.USER_EXPERIENCES).as('e');
+const exp = db
+  .select('user_id')
+  .from(TABLES.USER_EXPERIENCES)
+  .as('e');
 
 const following = db
   .select('user_id')
@@ -63,7 +66,6 @@ const ifo = db
 
 // ------------------ Profile ------------------
 module.exports = selector => {
-
   // ---------  Main query -------
   const skills = db
     .select('user_id', 's.*')
@@ -118,20 +120,42 @@ module.exports = selector => {
   h.addLocation('p', selector.location, q);
 
   // ----------------------- SELECTORS -------------------------
-  if (selector.skills) {
-    q.whereRaw('weight IS NOT NULL');
-    q.orderByRaw('sort.weight');
-  }
+  // ******** ********  TRYING  ******** ********
+  let associated = {
+    skills: q => q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight'),
+    network: q =>
+      q.orderByRaw(
+        `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
+      ),
+    about: q =>
+      q.orderByRaw(
+        'CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about'
+      )
+  };
 
-  if (selector.network) {
-    q.orderByRaw(
-      `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
-    );
-  }
-  if (selector.about)
-    q.orderByRaw(
-      'CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about'
-    );
+  Object.keys(associated).forEach(e => {
+    if (e in selector) {
+      q = associated[e](q);
+    }
+  });
+  // ******** ********  TRYING  ******** ********
+
+  // if (selector.priority) {
+  // }
+  // if (selector.skills) {
+  //   q.whereRaw('weight IS NOT NULL');
+  //   q.orderByRaw('sort.weight');
+  // }
+  //
+  // if (selector.network) {
+  //   q.orderByRaw(
+  //     `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
+  //   );
+  // }
+  // if (selector.about)
+  //   q.orderByRaw(
+  //     'CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about'
+  //   );
 
   return q;
 };
