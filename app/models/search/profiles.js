@@ -116,6 +116,7 @@ module.exports = selector => {
     .where('sort.rank', '>', '0'); //todo remove
 
   // ******** ********  TRYING  ******** ********
+
   let associated = {
     location: () => h.addLocation('p', selector.location, q),
     skills: () => q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight'),
@@ -131,12 +132,12 @@ module.exports = selector => {
 
   let mh = Object.keys(associated);
   if (selector.priority) {
-    mh = mh.filter(e => e !== selector.priority);
+    mh = mh.filter(e => e == selector.priority);
     mh.unshift(selector.priority);
   }
   mh.forEach(e => {
     if (e in selector) {
-      ssociated[e]();
+      associated[e]();
     }
   });
 
