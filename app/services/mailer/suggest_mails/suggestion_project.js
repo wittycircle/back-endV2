@@ -101,7 +101,7 @@ const saveSentData = (projects, profile) => {
 
 const suggestionProjectToProfile = () => {
   db
-    .select('u.id', 'u.email', 'p.first_name')
+    .select('u.id', 'u.email', 'p.first_name', 'p.about')
     .from(TABLES.USERS + ' as u')
     .join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
     .join(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'u.id')
@@ -110,11 +110,11 @@ const suggestionProjectToProfile = () => {
     .then(r => {
       r.forEach((e, i) => {
         console.log('profiles', e);
-        suggestions.matchProjectsToProfile(e.id).then(projects => {
+        suggestions.matchProjectsToProfile(e.id, e.about).then(projects => {
           let projectsSent = projects.splice(0, 3);
           console.log('projects', projects);
-          // send_mail(projectsSent, e);
-          // saveSentData(projectsSent, e);
+          send_mail(projectsSent, e);
+          saveSentData(projectsSent, e);
         });
         console.log('PROJECT DONE!');
       });
