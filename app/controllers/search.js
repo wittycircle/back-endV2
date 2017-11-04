@@ -114,6 +114,9 @@ exports.searchProject = (req, res, next) => {
     selector = _.fromPairs(
       query.members.map(member => [project_lookup[member.field], member.value])
     );
+  if (priority) {
+    selector.priority = priority;
+  }
   if (req.user && req.user.id) selector.uid = req.user.id;
   let order_by = !project_lookup[query.sort.field]
     ? project_lookup['magic']
