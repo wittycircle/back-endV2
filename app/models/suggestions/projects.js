@@ -48,7 +48,8 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
     .whereIn('ot.skill_id', neededSkills)
     .whereIn('o.status', profileToProject[about])
     .whereNotIn('p.id', alreadySugested)
-    .orderByRaw('LENGTH(o.description) desc')
+    .orderByRaw('p.id', 'desc')
+    .orderByRaw('o.creation_date', 'desc')
     .groupBy('p.id');
 
   return query;

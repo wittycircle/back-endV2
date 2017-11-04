@@ -68,44 +68,90 @@ module.exports = selector => {
     .groupBy('pr.id', 'nl.id', 'p.id');
 
   //SELECTOR
-
-  if (selector.uid) {
-    pr_array.push(
-      db.raw(
-        `GROUP_CONCAT(DISTINCT IF(pl.user_id = ${selector.uid}, true, null)) as follow`
+  [network, skills, opening, category, status];
+  // ******** ********  TRING  ******** ********
+  let associated = {
+    uid: () =>
+      pr_array.push(
+        db.raw(
+          `GROUP_CONCAT(DISTINCT IF(pl.user_id = ${selector.uid}, true, null)) as follow`
+        )
+      ),
+    network: () =>
+      query.orderByRaw(
+        `CASE WHEN nl.name like "%${selector.network}%" THEN 1 else 2 END`
+      ),
+    skills: () => {
+      query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+      pr_array.push('weight');
+      query.whereRaw('weight IS NOT NULL');
+      query.orderByRaw('weight');
+    },
+    location: () => h.addLocation('loc', selector.location, query),
+    opening: () => {
+      query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+      query.orderByRaw(
+        'CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END'
+      );
+    },
+    category: () =>
+      query.orderByRaw('(c.name = "' + selector.category + '") DESC'),
+    status: () =>
+      query.orderByRaw(
+        'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
       )
-    );
+  };
+
+  let mh = Object.keys(associated);
+  if (selector.priority) {
+    mh = mh.filter(e => e !== selector.priority);
+    mh.unshift(selector.priority);
   }
-  if (selector.network) {
-    query.orderByRaw(
-      `CASE WHEN nl.name like "%${selector.network}%" THEN 1 else 2 END`
-    );
-    // query.whereRaw(`p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%"`)
-  }
-  if (selector.opening || selector.skills)
-    query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+  mh.forEach(e => {
+    if (e in selector) {
+      associated[e]();
+    }
+  });
 
-  if (selector.skills) {
-    pr_array.push('weight');
-    query.whereRaw('weight IS NOT NULL');
-    query.orderByRaw('weight');
-  }
-
-  h.addLocation('loc', selector.location, query);
-
-  if (selector.opening) {
-    query.orderByRaw(
-      'CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END'
-    );
-  }
-
-  if (selector.category)
-    query.orderByRaw('(c.name = "' + selector.category + '") DESC');
-
-  if (selector.status)
-    query.orderByRaw(
-      'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
-    );
+  // ******** ********  TRING  ******** ********
+  // if (selector.uid) {
+  //   pr_array.push(
+  //     db.raw(
+  //       `GROUP_CONCAT(DISTINCT IF(pl.user_id = ${selector.uid}, true, null)) as follow`
+  //     )
+  //   );
+  // }
+  //
+  // if (selector.network) {
+  //   query.orderByRaw(
+  //     `CASE WHEN nl.name like "%${selector.network}%" THEN 1 else 2 END`
+  //   );
+  //   // query.whereRaw(`p.network like "%${selector.network}%" OR pr.network like "%${selector.network}%"`)
+  // }
+  // if (selector.opening || selector.skills)
+  //   query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+  //
+  // if (selector.skills) {
+  //   pr_array.push('weight');
+  //   query.whereRaw('weight IS NOT NULL');
+  //   query.orderByRaw('weight');
+  // }
+  //
+  // h.addLocation('loc', selector.location, query);
+  //
+  // if (selector.opening) {
+  //   query.orderByRaw(
+  //     'CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END'
+  //   );
+  // }
+  //
+  // if (selector.category)
+  //   query.orderByRaw('(c.name = "' + selector.category + '") DESC');
+  //
+  // if (selector.status)
+  //   query.orderByRaw(
+  //     'CASE WHEN pr.status LIKE "%' + selector.status + '%" THEN 1 else 2 END'
+  //   );
 
   return query;
 };

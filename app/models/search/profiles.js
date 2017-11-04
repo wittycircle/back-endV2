@@ -143,24 +143,6 @@ module.exports = selector => {
       q = associated[e](q);
     }
   });
-  // ******** ********  TRYING  ******** ********
-
-  // if (selector.priority) {
-  // }
-  // if (selector.skills) {
-  //   q.whereRaw('weight IS NOT NULL');
-  //   q.orderByRaw('sort.weight');
-  // }
-  //
-  // if (selector.network) {
-  //   q.orderByRaw(
-  //     `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
-  //   );
-  // }
-  // if (selector.about)
-  //   q.orderByRaw(
-  //     'CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about'
-  //   );
 
   return q;
 };
