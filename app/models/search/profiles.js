@@ -107,8 +107,6 @@ module.exports = selector => {
       .as('p');
   };
 
-  // ---- Constructing full query -------
-
   let q = db
     .select(ret_array)
     .from(sortCardProfile)
@@ -117,17 +115,15 @@ module.exports = selector => {
     .groupBy('sort.id')
     .where('sort.rank', '>', '0'); //todo remove
 
-  h.addLocation('p', selector.location, q);
-
-  // ----------------------- SELECTORS -------------------------
   // ******** ********  TRYING  ******** ********
   let associated = {
-    skills: q => q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight'),
-    network: q =>
+    location: () => h.addLocation('p', selector.location, q),
+    skills: () => q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight'),
+    network: () =>
       q.orderByRaw(
         `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
       ),
-    about: q =>
+    about: () =>
       q.orderByRaw(
         'CASE WHEN about = "' + selector.about + '" THEN 1 else 2 END, about'
       )
@@ -140,7 +136,7 @@ module.exports = selector => {
   }
   mh.forEach(e => {
     if (e in selector) {
-      q = associated[e](q);
+      ssociated[e]();
     }
   });
 
