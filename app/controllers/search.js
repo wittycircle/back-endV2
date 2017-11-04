@@ -61,6 +61,9 @@ exports.searchProfile = (req, res, next) => {
     );
     if (query.sort && profile_lookup[query.sort.field])
       order_by = profile_lookup[query.sort.field];
+    if ('priority' in query && query.priority !== null) {
+      selector.priority = query.priority;
+    }
   }
 
   if (selector.skills && typeof selector.skills === 'string') {
@@ -110,12 +113,12 @@ exports.searchProfile = (req, res, next) => {
 
 // ------------------ Search project ------------------
 exports.searchProject = (req, res, next) => {
-  const { paginate, query, priority } = req.body,
+  const { paginate, query } = req.body,
     selector = _.fromPairs(
       query.members.map(member => [project_lookup[member.field], member.value])
     );
-  if (priority) {
-    selector.priority = priority;
+  if ('priority' in query && query.priority !== null) {
+    selector.priority = query.priority;
   }
   if (req.user && req.user.id) selector.uid = req.user.id;
   let order_by = !project_lookup[query.sort.field]
