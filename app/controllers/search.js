@@ -29,7 +29,7 @@ const profile_lookup = {
     network: 'network'
   };
 
-const profile_order = ['skills', 'network', 'about'];
+const profile_order = ['skills', 'network', 'about', 'location'];
 const project_order = [
   'network',
   'openings',
