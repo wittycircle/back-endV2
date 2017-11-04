@@ -96,7 +96,7 @@ module.exports = selector => {
 
   const profileStuff = location => {
     return db
-      .select(profile_array)
+      .select(profile_array.concat('p.creation_date'))
       .from(TABLES.PROFILES + ' as p')
       .join(TABLES.USERS + ' as u', 'p.user_id', 'u.id')
       .join(TABLES.NETWORKS_LIST + ' as nl', 'p.network_id', 'nl.id')
