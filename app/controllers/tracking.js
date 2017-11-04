@@ -9,7 +9,10 @@ exports.updateTrackingPageClick = (req, res, next) => {
 	};
 
 	tracking
-		.updateTrackingPageClick(req, params);
+		.updateTrackingPageClick(req, params)
+		.then(r => {
+			res.send({success: true});
+		});
 };
 
 
@@ -20,5 +23,8 @@ exports.updateTrackingPageView = (req, res, next) => {
 	};
 
 	tracking
-		.updateTrackingPageView(req, params);
+		.updateTrackingPageView(req, params)
+		.then(r => {
+			res.send({success: true});
+		});
 };
