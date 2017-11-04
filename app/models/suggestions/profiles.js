@@ -80,7 +80,7 @@ const getMatchingProfiles = (
 		field(loc.state, '${projectLocation[0].state}') desc,
 		field(loc.country, '${projectLocation[0].country}') desc`
     )
-    .orderBy('p.creation_date');
+    .orderBy('p.creation_date', 'desc');
 
   return query;
 };

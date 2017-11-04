@@ -46,7 +46,7 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
     .join(TABLES.SKILLS + ' as s', 's.id', 'ot.skill_id')
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
     .whereIn('ot.skill_id', neededSkills)
-    .whereIn('need_status', profileToProject[about])
+    .whereIn('o.status', profileToProject[about])
     .whereNotIn('p.id', alreadySugested)
     .orderByRaw('LENGTH(o.description) desc')
     .groupBy('p.id');

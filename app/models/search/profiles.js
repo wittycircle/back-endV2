@@ -133,7 +133,12 @@ module.exports = selector => {
       )
   };
 
-  Object.keys(associated).forEach(e => {
+  let mh = Object.keys(associated);
+  if (selector.priority) {
+    mh = mh.filter(e => e !== selector.priority);
+    mh.unshift(selector.priority);
+  }
+  mh.forEach(e => {
     if (e in selector) {
       q = associated[e](q);
     }

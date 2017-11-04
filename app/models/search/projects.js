@@ -69,15 +69,6 @@ module.exports = selector => {
 
   //SELECTOR
 
-  // o: {
-  //   toto: "gogo",
-  //   tata: "gaga"
-  // }
-  // x = Object.keys(o) = [toto, tata]
-  // selector.toto
-  // selector[x[0]]
-  // o[1]
-
   if (selector.uid) {
     pr_array.push(
       db.raw(
