@@ -14,7 +14,15 @@ module.exports.suggestProjects = (userId, projects) => {
   return db(TABLES.SUG_PROJECTS).insert(o);
 };
 
-const getMatchingProjects = (neededSkills, alreadySugested = []) => {
+const profileToProject = {
+  'to meet smart people': ['for help', 'for feedback', 'for a cofounder'],
+  'for a full time position': ['for feedback', 'to hire someone'],
+  'for an internship': ['for feedback', 'to hire an intern'],
+  'for part time collaboration': ['for help', 'for feedback', 'to hire someone'],
+  "to share what I'm working on": ['for feedback']
+};
+
+const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
   let query = db
     .distinct(
       'p.id',
@@ -38,6 +46,7 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
     .join(TABLES.SKILLS + ' as s', 's.id', 'ot.skill_id')
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
     .whereIn('ot.skill_id', neededSkills)
+    .whereIn('need_status', profileToProject[about])
     .whereNotIn('p.id', alreadySugested)
     .orderByRaw('LENGTH(o.description) desc')
     .groupBy('p.id');
@@ -47,21 +56,15 @@ const getMatchingProjects = (neededSkills, alreadySugested = []) => {
 
 // module.exports.getMatchingProjects = getMatchingProjects;
 
-module.exports.matchProjectsToProfile = userId => {
+module.exports.matchProjectsToProfile = (userId, about) => {
   return Promise.all([
     sh.skillsFromUserId(userId),
     alreadySuggestedProjects(userId)
   ]).then(([neededSkills, alreadySugested]) => {
-    if (!neededSkills.length) {
-      throw 'User has no registered skills';
-    }
-    return getMatchingProjects(neededSkills, alreadySugested).then(r => {
+    return getMatchingProjects(neededSkills, about, alreadySugested).then(r => {
       if (!r.length || r.length < 3) {
         return sh.expandedSkills(neededSkills).then(expandedNeeds => {
           return getMatchingProjects(expandedNeeds, alreadySugested);
-          // .then(rr => {
-          // return ([r, ])
-          // })
         });
       } else {
         return r;
