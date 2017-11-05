@@ -57,7 +57,9 @@ exports.searchProfile = (req, res, next) => {
 
   if (query) {
     selector = _.fromPairs(
-      query.members.map(member => [profile_lookup[member.field], member.value])
+      query.members
+        .filter(member => member.value.length >= 1)
+        .map(member => [profile_lookup[member.field], member.value])
     );
     if (query.sort && profile_lookup[query.sort.field])
       order_by = profile_lookup[query.sort.field];
