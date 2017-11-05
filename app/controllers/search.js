@@ -117,7 +117,9 @@ exports.searchProfile = (req, res, next) => {
 exports.searchProject = (req, res, next) => {
   const { paginate, query } = req.body,
     selector = _.fromPairs(
-      query.members.map(member => [project_lookup[member.field], member.value])
+      query.members
+        .filter(member => member.value.length >= 1)
+        .map(member => [project_lookup[member.field], member.value])
     );
   if ('priority' in query && query.priority !== null) {
     selector.priority = query.priority;
