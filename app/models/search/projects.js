@@ -29,6 +29,7 @@ module.exports = selector => {
 
   let pr_array = [
     'pr.id',
+    'pr.creation_date',
     'pr.title',
     'pr.description',
     'pr.picture as picture',
@@ -68,6 +69,9 @@ module.exports = selector => {
     .groupBy('pr.id', 'nl.id', 'p.id');
 
   // ******** ********  TRING  ******** ********
+  if (selector.skills || selector.opening) {
+    query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+  }
   let associated = {
     uid: () =>
       pr_array.push(
@@ -80,14 +84,12 @@ module.exports = selector => {
         `CASE WHEN nl.name like "%${selector.network}%" THEN 1 else 2 END`
       ),
     skills: () => {
-      query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
       pr_array.push('weight');
       query.whereRaw('weight IS NOT NULL');
       query.orderByRaw('weight');
     },
     location: () => h.addLocation('loc', selector.location, query),
     opening: () => {
-      query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
       query.orderByRaw(
         'CASE WHEN  o.status = "' + selector.opening + '" THEN 1 ELSE 2 END'
       );
