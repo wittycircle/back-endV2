@@ -70,7 +70,9 @@ module.exports = selector => {
     const skills = db
         .distinct(
             'user_id',
-            's.name',
+            db.raw('GROUP_CONCAT(DISTINCT s.name order by weight desc) as name'),
+
+            // 's.name',
             's.Catname',
             db.raw('SUM(DISTINCT s.weight) as weight')
         )
@@ -86,10 +88,11 @@ module.exports = selector => {
             's.weight',
             'u.id',
             'r.rank as rank',
+            'name as skills',
             db.raw('GROUP_CONCAT(ifo.user_id) as foli'),
             db.raw('IFNULL(total, 0) as following'),
             db.raw('IFNULL (MA, 0) as follower'),
-            db.raw('GROUP_CONCAT(DISTINCT s.name) as skills'),
+            // db.raw('GROUP_CONCAT(DISTINCT s.name) as skills'),
             db.raw('GROUP_CONCAT(DISTINCT s.catName) as catNames')
         ])
         .from(TABLES.USERS + ' as u')
