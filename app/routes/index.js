@@ -26,6 +26,7 @@ router.use('/api', require('./admin_panel'));
 router.use('/api', require('./social'));
 router.use('/api', require('./suggestions'));
 router.use('/api', require('./upload'));
+router.use('/api/tracking', require('./tracking'));
 router.use(require('../middlewares/error').error);
 
 router.get('/sitemap.xml', (req, res) => {
