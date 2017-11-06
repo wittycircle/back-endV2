@@ -71,8 +71,6 @@ module.exports = selector => {
         .distinct(
             'user_id',
             db.raw('GROUP_CONCAT(DISTINCT s.name order by weight desc) as name'),
-
-            // 's.name',
             's.Catname',
             db.raw('SUM(DISTINCT s.weight) as weight')
         )
@@ -131,8 +129,7 @@ module.exports = selector => {
 
     let associated = {
         location: () => h.addLocation('p', selector.location, q),
-        skills: () =>
-            q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight DESC'),
+        skills: () => q.orderByRaw('sort.weight DESC'),
         network: () =>
             q.orderByRaw(
                 `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`
@@ -147,8 +144,9 @@ module.exports = selector => {
 
     let mh = Object.keys(associated);
     if (selector.priority) {
-        mh = mh.filter(e => e == selector.priority);
+        mh = mh.filter(e => e != selector.priority);
         mh.unshift(selector.priority);
+        console.log('mh', mh);
     }
     mh.forEach(e => {
         if (e in selector) {
