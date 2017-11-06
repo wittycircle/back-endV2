@@ -102,7 +102,6 @@ module.exports = selector => {
         .leftJoin(follower, 'su.followed', 'u.id')
         .leftJoin(ifo, 'ifo.followed', 'u.id')
         .groupBy('u.id')
-        .orderBy('weight', 'desc')
         .as('sort');
 
     //  Profile stuff [hydrate with infos, join on q below]
