@@ -316,7 +316,7 @@ exports.getAllStatsAnalytic = () => {
 			count)
 		.groupBy('status'),
 
-		countProjectsWithNeed = db()
+		countProjectsWithNeed = db
 			.select(db.raw('count(distinct(p.title)) as number'))
 			.from('openings as o')
 			.leftJoin('projects as p', 'p.id', 'o.project_id'),
