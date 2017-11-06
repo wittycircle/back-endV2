@@ -102,6 +102,7 @@ module.exports = selector => {
         .leftJoin(follower, 'su.followed', 'u.id')
         .leftJoin(ifo, 'ifo.followed', 'u.id')
         .groupBy('u.id')
+        .orderBy('weight', 'desc')
         .as('sort');
 
     //  Profile stuff [hydrate with infos, join on q below]
@@ -131,7 +132,8 @@ module.exports = selector => {
 
     let associated = {
         location: () => h.addLocation('p', selector.location, q),
-        skills: () => q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight'),
+        skills: () =>
+            q.whereRaw('weight IS NOT NULL').orderByRaw('sort.weight DESC'),
         network: () =>
             q.orderByRaw(
                 `CASE WHEN network like "%${selector.network}%" THEN 1 else 2 END, network`

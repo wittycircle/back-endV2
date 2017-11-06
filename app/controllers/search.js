@@ -75,7 +75,7 @@ exports.searchProfile = (req, res, next) => {
     const getRealCats = (skills, cats) => {
         let laString = '';
         skills.map((el, i) => {
-            laString += ` WHEN s.name = "${el}" THEN ${(i + 1) * 100} `;
+            laString += ` WHEN s.name = "${el}" THEN ${(i + 1) * 1000} `;
         });
         cats.map((e, i) => {
             laString += `WHEN c.name = "${e.name}" THEN ${(i + 1) * 10} `;
