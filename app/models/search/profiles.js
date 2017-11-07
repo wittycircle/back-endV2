@@ -78,7 +78,6 @@ module.exports = selector => {
         .join(h.magicSkills(selector.cats), 'us.skill_id', 's.id')
         .groupBy('user_id')
         .orderBy('weight', 'desc')
-        .limit(10)
         .as('s');
 
     const sortCardProfile = db
@@ -90,12 +89,12 @@ module.exports = selector => {
             db.raw('GROUP_CONCAT(ifo.user_id) as foli'),
             db.raw('IFNULL(total, 0) as following'),
             db.raw('IFNULL (MA, 0) as follower'),
-            // db.raw('GROUP_CONCAT(DISTINCT s.name) as skills'),
             db.raw('GROUP_CONCAT(DISTINCT s.catName) as catNames')
         ])
         .from(TABLES.USERS + ' as u')
-        .leftJoin(skills, 'u.id', 's.user_id')
-        .leftJoin(TABLES.RANK + ' as r', 'u.id', 'r.user_id') //leftJoin to get those without rank [All users will have a rank?]
+        .join(skills, 'u.id', 's.user_id')
+        .leftJoin(TABLES.RANK + ' as r', 'u.id', 'r.user_id')
+        //leftJoin to get those without rank [All users will have a rank?]
         .leftJoin(following, 'ssu.user_id', 'u.id')
         .leftJoin(follower, 'su.followed', 'u.id')
         .leftJoin(ifo, 'ifo.followed', 'u.id')
@@ -146,7 +145,6 @@ module.exports = selector => {
     if (selector.priority) {
         mh = mh.filter(e => e != selector.priority);
         mh.unshift(selector.priority);
-        console.log('mh', mh);
     }
     mh.forEach(e => {
         if (e in selector) {
