@@ -39,12 +39,17 @@ const getLocationId = data =>
 
 const addLocation = (table, location, query) => {
     if (!_.isEmpty(location)) {
-        const _location = location.split(',');
         let selected = '';
-        selected += `WHEN ${table}.city LIKE "%${_location[0]}%" THEN 1 `;
-        selected += `WHEN ${table}.state LIKE "%${_location[1]}%" THEN 2 `;
-        selected += `WHEN ${table}.country LIKE "%${_location[1]}%" THEN 3 `;
-        query.orderByRaw('CASE ' + selected + ' else 100 END');
+        let _location = location
+            .split(',')
+            .filter(e => e != '')
+            .map(e => e.trim());
+        _location.forEach((e, i) => {
+            selected += `WHEN ${table}.city LIKE "${e}" THEN ${(i + 1) * 1000} `;
+            selected += `WHEN ${table}.state LIKE "${e}" THEN ${(i + 1) * 100} `;
+            selected += `WHEN ${table}.country LIKE "${e}" THEN ${(i + 1) * 10} `;
+        });
+        query.orderByRaw('CASE ' + selected + ' else 1 END DESC');
     }
 };
 
