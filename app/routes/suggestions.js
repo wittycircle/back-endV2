@@ -13,7 +13,7 @@ Get matching profiles from projectId
 */
 router
   .route('/suggestions/profiles')
-  .post(/*auth(AUTH.PUBLIC),*/ suggestions.matchProfilesToProject);
+  .post(auth(AUTH.PRIVATE), suggestions.matchProfilesToProject);
 
 /*
 Get matching projects from user

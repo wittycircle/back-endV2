@@ -20,8 +20,21 @@ exports.getProfileBy = by => {
 		.from(TABLES.USER_FOLLOWERS)
 		.as('ifo');
 
+	const user_skills = db
+		.select(
+			'user_id', 
+			'uss.*',
+			db.raw('GROUP_CONCAT(uss.name SEPARATOR ",") as skills')
+		)
+		.from(TABLES.USER_SKILLS + ' as us')
+		.leftJoin(TABLES.SKILLS + ' as uss', 'us.skill_id', 'uss.id')
+		.as('s')
+		.groupBy('user_id');
+
+
 	let query = db(h.spe_profile(by), 'user_id')
 		.join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+		.leftJoin(user_skills, 's.user_id', 'p.uid')
 		.leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'p.uid')
 		.leftJoin(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
 		.leftJoin(ifo, 'ifo.followed', 'p.uid')
@@ -29,6 +42,7 @@ exports.getProfileBy = by => {
 			'rank',
 			'p.*',
 			'nl.name',
+			's.skills',
 			db.raw('GROUP_CONCAT(ifo.user_id) as foli'),
 			h.format_location
 		);
