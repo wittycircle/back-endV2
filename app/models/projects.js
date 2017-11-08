@@ -123,7 +123,6 @@ exports.getProject = (id, uid) => {
 		'pr.about',
 		'pr.video',
 		'pr.status',
-		'c.name as category',
 		'p.uid as profile_id',
 		'pr.public_id',
 		'pr.project_visibility',
@@ -138,12 +137,14 @@ exports.getProject = (id, uid) => {
 	/* Relate to models/admin_panel.js */
 	if (typeof id === 'object') {
 		pr_array.push(
+			'c.name as category_name',
 			'o.status as openingStat',
 			'o.no as numberOpenings',
 			'p.picture as profile_picture',
 			db.raw('CONCAT (p.first_name, " ", p.last_name) as username')
-		)
-	}
+		);
+	} else
+	 	pr_array.push('c.name as category');
 
 	if (uid) {
 		pr_array.push(db.raw('GROUP_CONCAT(l.user_id) as hasLiked'));
