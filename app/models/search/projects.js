@@ -34,6 +34,7 @@ module.exports = selector => {
     'pr.picture as picture',
     'pr.status',
     'pr.public_id',
+    'pr.video',
     'c.id as category_id',
     'c.name as category_name',
     'nl.name as network',

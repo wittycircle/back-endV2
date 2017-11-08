@@ -16,6 +16,30 @@ const udpateProjectPictures = (project_id, pictures) => {
 		})
 }
 
+/* Relate to models/admin_panel.js */
+const getMultipleProjects = (ids, query) => {
+	const sub_openings = db(TABLES.PROJECT_OPENINGS + ' as o')
+	    .select([
+	      'o.status',
+	      'o.project_id',
+	    ])
+	    .count('o.status as no')
+	    .groupBy('o.project_id')
+	    .as('o');
+
+	const profile = db(TABLES.PROFILES + ' as p')
+		.select([
+			'p.picture as profile_picture',
+			db.raw('CONCAT (p.first_name, " ", p.last_name) as username')
+		])
+		.as('p')
+
+	// query.leftJoin(profile, 'p.user_id', 'pr.user_id');
+	query.leftJoin(sub_openings, 'o.project_id', 'pr.id');
+
+	return query;
+}
+
 exports.createProject = (project_data, location) => {
 	console.log('CREATING');
 	return h.setLocation(location).then(r => {
@@ -90,7 +114,7 @@ const getFollowerCount = id => {
 };
 
 exports.getProject = (id, uid) => {
-	const pr_array = [
+	let pr_array = [
 		'pr.id',
 		'pr.title',
 		'pr.picture',
@@ -98,6 +122,7 @@ exports.getProject = (id, uid) => {
 		h.format_location,
 		'pr.about',
 		'pr.video',
+		'pr.status',
 		'c.name as category',
 		'p.uid as profile_id',
 		'pr.public_id',
@@ -109,9 +134,21 @@ exports.getProject = (id, uid) => {
 		'pr.2nd_description'
 	],
 		x = [];
+
+	/* Relate to models/admin_panel.js */
+	if (typeof id === 'object') {
+		pr_array.push(
+			'o.status as openingStat',
+			'o.no as numberOpenings',
+			'p.picture as profile_picture',
+			db.raw('CONCAT (p.first_name, " ", p.last_name) as username')
+		)
+	}
+
 	if (uid) {
 		pr_array.push(db.raw('GROUP_CONCAT(l.user_id) as hasLiked'));
 	}
+
 	const req = db
 		.distinct(pr_array)
 		.from(TABLES.PROJECTS + ' as pr')
@@ -119,10 +156,16 @@ exports.getProject = (id, uid) => {
 		.join(TABLES.CATEGORIES + ' as c', 'c.id', 'pr.category_id')
 		.join(h.sub_profile, 'p.uid', 'pr.user_id')
 		.leftJoin(TABLES.PROJECT_LIKES + ' as l', 'l.project_id', 'pr.id');
-	req.where('pr.public_id', id);
+
+	/* Relate to models/admin_panel.js */
+	if (typeof id === 'object') {
+		req.whereIn('pr.public_id', id);
+		return getMultipleProjects(id, req);
+	} else
+		req.where('pr.public_id', id);
+	/* --- */
 
 	return req.then(r => {
-		console.log(r);
 		r.forEach(el => {
 			x.push(
 				exports.getProjectDiscussion(el.id).then(rr => {

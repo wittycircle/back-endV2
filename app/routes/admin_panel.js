@@ -12,6 +12,18 @@ router
 	.get(auth(AUTH.PRIVATE), panel.projectsInvite)
 	.post(auth(AUTH.PRIVATE), panel.inviteProjects);
 
+router
+	.route('/admin_panel/selected/projects/profiles/:type')
+	.get(panel.getPPAddByAdmin)
+	.post(auth(AUTH.ADMIN), panel.addPPByAdmin)
+	.delete(auth(AUTH.ADMIN), panel.removePPAddByAdmin);
+
+// router
+// 	.route('/admin_panel/admin/add/profiles/:username')
+// 	.get(auth(AUTH.ADMIN), panel.getProfilesAddByAdmin)
+// 	.post(auth(AUTH.ADMIN), panel.addProfilesByAdmin)
+// 	.delete(auth(AUTH.ADMIN), panel.removeProfilesAddByAdmin);
+
 router.param('token', validateParam(schemas.params.name));
 
 router
@@ -31,5 +43,6 @@ router
 router
 	.route('/admin_panel/statistics/users')
 	.get(auth(AUTH.PRIVATE), panel.getUsers)
+
 
 module.exports = router;

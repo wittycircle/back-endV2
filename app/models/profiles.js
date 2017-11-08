@@ -14,6 +14,62 @@ TODO :
 Do the thing to get description and stuff and if empty, add points to rank
 
 */
+
+exports.getProfilesBy = by => {
+
+	let p_uarray = [
+		'p.id',
+		'p.loc_id',
+		'p.user_id as uid',
+		'p.network_id',
+		'p.first_name',
+		'p.last_name',
+		'u.username',
+		db.raw('CONCAT (p.first_name, " ", p.last_name) as fullName'),
+		'p.picture',
+		'p.about',
+		'p.cover_picture',
+		'p.description',
+		'rank',
+		'p.*',
+		'nl.name',
+		db.raw('GROUP_CONCAT(s.name SEPARATOR ", ") as skills'),
+		h.format_location
+    ];
+
+	// const user_skills = db
+	// 	.select(
+	// 		'user_id', 
+	// 		'uss.name as skillName',
+	// 		db.raw('GROUP_CONCAT(uss.name SEPARATOR ",") as skills')
+	// 	)
+	// 	.from(TABLES.USER_SKILLS + ' as us')
+	// 	.leftJoin(TABLES.SKILLS + ' as uss', 'us.skill_id', 'uss.id')
+	// 	.as('s')
+	// 	.whereIn('us.user_id', by)
+		// .groupBy('user_id');
+
+
+	let query = db.from(TABLES.USERS + ' as u')
+		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
+		.leftJoin(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
+		.leftJoin(TABLES.USER_SKILLS + ' as us', 'us.user_id', 'u.id')
+		.leftJoin(TABLES.SKILLS + ' as s', 's.id', 'us.skill_id')
+		.leftJoin(TABLES.RANK + ' as r', 'r.user_id', 'u.id')
+		.leftJoin(TABLES.NETWORKS_LIST + ' as nl', 'nl.id', 'p.network_id')
+		.select(p_uarray)
+		.whereIn('u.id', by)
+		.groupBy('u.id');
+
+	return query.then(r => {
+		r.forEach(e => {
+			e.skills = e.skills.split(', ');
+		})
+
+		return r;
+	});
+}
+
 exports.getProfileBy = by => {
 	const ifo = db
 		.distinct('followed', 'user_id')

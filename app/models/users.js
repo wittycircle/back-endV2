@@ -5,7 +5,7 @@ const { db, TABLES } = require('./index'),
 
 exports.fromUsername = username => {
 	return h.exist(TABLES.USERS, username, 'username').then(r => {
-		if (!r.length) throw 'Unknown username';
+		if (!r.length) return r[0] // throw 'Unknown username';
 		return db(TABLES.USERS).first('id').where('username', username);
 	});
 };

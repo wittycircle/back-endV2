@@ -1,6 +1,10 @@
 const { db, TABLES } = require('./index'),
 	_ = require('lodash'),
-	h = require('./helper');
+	h = require('./helper'),
+	user = require('./users'),
+	projects = require('./projects'),
+	profiles = require('./profiles');
+
 
 exports.projectsInvite = uid => {
 	return h.admin(TABLES.USERS, uid, uid).then(r => {
@@ -61,19 +65,19 @@ exports.getAmbassadors = () => {
 		.then(r => {
 			return r;
 		})
-}
+};
 
 exports.setAmbassador = (uid) => {
 	return db(TABLES.USERS)
 		.where('id', uid)
 		.update('ambassador', 1)
-}
+};
 
 exports.removeAmbassador = (uid) => {
 	return db(TABLES.USERS)
 		.where('id', uid)
 		.update('ambassador', 0)
-}
+};
 
 // *** Statistics ***
 exports.getProjects = () => {
@@ -84,7 +88,7 @@ exports.getProjects = () => {
 		.from(TABLES.PROJECTS)
 		.orderBy('creation_date', 'desc')
 		.then(r => { return r })
-}
+};
 
 exports.getUsers = () => {
 	return db.select(
@@ -100,7 +104,63 @@ exports.getUsers = () => {
 		.then(r => {
 			return r 
 		});
-} 
+};
+
+
+//PROJECTS && PROFILES ADDED BY ADMIN
+
+/* Type = ['new_projects', 'hand_picked_projects', 'featured_projects', 'top_ranked_people', 'great_people', 'suggest_people'] */
+exports.getPPAddByAdmin = (type) => {
+	const types = ['new_projects', 'recently_projects', 'featured_projects', 'top_ranked_people', 'great_people'];
+
+	return db(TABLES.SELECT_PP)
+			.select('id', 'user_id', 'public_id')
+			.where('type', type)
+			.then(r => {
+				if (types.indexOf(type) < 3 && types.indexOf(type) > -1) {
+					r = r.map(el => { return el.public_id; });
+
+					return projects.getProject(r)
+				} else if (types.indexOf(type) >= 3) {
+					r = r.map(el => { return el.user_id });
+
+					return profiles.getProfilesBy(r)
+				}
+			});
+};
+
+exports.addPPByAdmin = (data, username) => {
+	return user.fromUsername(username)
+			.then(r => {
+				if (r) {
+					data.user_id 	= r.id;
+					data.public_id 	= null;
+				}
+
+				return db.batchInsert(TABLES.SELECT_PP, [data])
+					.then(r => r);
+			});
+};
+
+exports.removePPAddByAdmin = (data, username) => {
+	return 	user.fromUsername(username)
+			.then(r => {
+				if (r) {
+					data.user_id	= r.id;
+					data.public_id	= null;
+				}  
+				return db(TABLES.SELECT_PP)
+					.where('user_id', data.user_id)
+					.andWhere('public_id', data.public_id)
+					.andWhere('type', data.type)
+					.del();
+			});
+};
+
+
+
+
+
 
 
 

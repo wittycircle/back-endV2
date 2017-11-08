@@ -81,3 +81,33 @@ exports.getUsers = (req, res, next) => {
 			res.send({ users: r });
 		})
 };
+
+
+//PROJECTS && PROFILES ADDED BY ADMIN
+
+exports.getPPAddByAdmin = (req, res, next) => {
+	panel.getPPAddByAdmin(req.params.type)
+		.then(r => {
+			res.send({ results: r })
+		});
+} 
+
+exports.addPPByAdmin = (req, res, next) => {
+	let data = { type: req.params.type, public_id: req.body.public_id, user_id: null },
+		username = req.body.username;
+
+	panel.addPPByAdmin(data, username)
+		.then(r => {
+			res.send({ success: true });
+		});
+}
+
+exports.removePPAddByAdmin = (req, res, next) => {
+	const data = { type: req.params.type, public_id: req.body.public_id, user_id: null },
+		username = req.body.username;
+
+	panel.removePPAddByAdmin(data, username)
+		.then(r => {
+			res.send({ success: true });
+		});
+}

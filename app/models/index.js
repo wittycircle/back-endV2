@@ -80,6 +80,10 @@ exports.TABLES = {
   //            ***   Suggestions    ***
   SUG_PROFILES: 'suggested_profiles',
   SUG_PROJECTS: 'suggested_projects',
+
+  //            *** ADMIN TABLES ***
+  SELECT_PP: 'selected_projects_profiles',
+
   //            *** FORGOTTEN TABLES ***
   INVITE_UNIVERSITY: 'invite_university',
   VIEWS: 'views',
