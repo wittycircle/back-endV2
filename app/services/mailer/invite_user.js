@@ -74,7 +74,7 @@ const send_mail = (data, sender, u_skills, invite, category = false) => {
 
 		subArray.forEach( (e, i) => {
 			let pers = new helper.Personalization();
-			let subject = '*|UF_NAME|* *|UL_NAME|* just sent you a private invite to join Witty';
+			let subject = "*|UF_NAME|* *|UL_NAME|*'s invitation to get a premium account is still waiting for you";
 			let sub = {
 				'*|UF_NAME|*' 		: sender.first_name,
 				'*|UL_NAME|*' 		: sender.last_name,
