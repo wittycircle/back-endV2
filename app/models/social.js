@@ -15,6 +15,7 @@ exports.saveGoogleContacts = (uid, mails) => {
 	const getEmails = db(TABLES.GAC)
 		.distinct('email')
 		.select('name')
+		.where('user_id', uid)
 		.orderBy('name', 'desc')
 
 	const saveEmails = db(TABLES.GAC)
@@ -27,6 +28,7 @@ exports.saveGoogleContacts = (uid, mails) => {
 				e['select'] 		= true
 				e['searchField'] 	= e.name + ' ' + e.email
 			});
+			console.log(r.length);
 			return r;
 		});
 	})
