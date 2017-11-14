@@ -113,4 +113,4 @@ const suggestionProfileToProject = () => {
 };
 
 // suggestionProfileToProject();
-module.exports = suggestionProfileToProject();
+module.exports = suggestionProfileToProject;

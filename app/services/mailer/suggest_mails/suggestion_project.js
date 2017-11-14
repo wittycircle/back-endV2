@@ -119,4 +119,4 @@ const suggestionProjectToProfile = () => {
     });
 };
 
-module.exports = suggestionProjectToProfile();
+module.exports = suggestionProjectToProfile;
