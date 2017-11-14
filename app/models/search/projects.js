@@ -20,7 +20,7 @@ module.exports = selector => {
             db.raw('GROUP_CONCAT(s.name) as tags'),
             'o.project_id',
             'status',
-            'weight'
+            db.raw('SUM(`weight`) as sumWeight')
         ])
         .leftJoin(TABLES.OPENING_TAGS + ' as ot', 'o.id', 'ot.opening_id')
         .leftJoin(h.magicSkills(selector.cats), 'ot.skill_id', 's.id')
@@ -85,9 +85,9 @@ module.exports = selector => {
                 `CASE WHEN nl.name like "%${selector.network}%" THEN 1 else 2 END`
             ),
         skills: () => {
-            pr_array.push('weight');
-            query.whereRaw('weight IS NOT NULL');
-            query.orderByRaw('weight');
+            pr_array.push('sumWeight');
+            query.whereRaw('sumWeight IS NOT NULL');
+            query.orderByRaw('sumWeight DESC');
         },
         location: () => h.addLocation('loc', selector.location, query),
         opening: () => {

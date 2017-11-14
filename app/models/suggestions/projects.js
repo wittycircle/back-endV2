@@ -55,15 +55,20 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
   return query;
 };
 
-module.exports.matchProjectsToProfile = (userId, about) => {
+module.exports.matchProjectsToProfile = (userId) => {
+  const userAbout = db(TABLES.PROFILES)
+    .select('about')
+    .where('user_id', userId);
+
   return Promise.all([
+    userAbout,
     sh.skillsFromUserId(userId),
     alreadySuggestedProjects(userId)
-  ]).then(([neededSkills, alreadySugested]) => {
-    return getMatchingProjects(neededSkills, about, alreadySugested).then(r => {
+  ]).then(([about, neededSkills, alreadySugested]) => {
+    return getMatchingProjects(neededSkills, about[0].about, alreadySugested).then(r => {
       if (!r.length || r.length < 3) {
         return sh.expandedSkills(neededSkills).then(expandedNeeds => {
-          return getMatchingProjects(expandedNeeds, about, alreadySugested);
+          return getMatchingProjects(expandedNeeds, about[0].about, alreadySugested);
         });
       } else {
         return r;

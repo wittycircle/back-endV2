@@ -157,8 +157,8 @@ exports.searchProject = (req, res, next) => {
                     .concat(cats.map(e => e.name))
                     .map(
                         (el, i) =>
-                            ` WHEN s.name = "${el}" THEN ${i +
-                                1} WHEN c.name = "${el}" THEN ${i + 10} `
+                            ` WHEN s.name = "${el}" THEN ${100 -
+                                i} WHEN c.name = "${el}" THEN ${50 - i} `
                     )
                     .join(' ');
             } else {

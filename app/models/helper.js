@@ -155,7 +155,7 @@ h.magicSkills = selected =>
             's.id as id',
             's.name as name',
             'c.name as catName',
-            db.raw(` (CASE ${selected}  else 1 END) as weight`)
+            db.raw(` (CASE ${selected} else 0 END) as weight`)
         ])
         // .count('c.name as count')
         .from(TABLES.SKILLS + ' as s')

@@ -108,17 +108,15 @@ const suggestionProjectToProfile = () => {
     .where('u.email', 'not like', '%witty%')
     .groupBy('u.id')
     .then(r => {
+      console.log(r);
       r.forEach((e, i) => {
-        console.log('profiles', e);
-        suggestions.matchProjectsToProfile(e.id, e.about).then(projects => {
+        suggestions.matchProjectsToProfile(e.id).then(projects => {
           let projectsSent = projects.splice(0, 3);
-          console.log('projects', projects);
           send_mail(projectsSent, e);
           saveSentData(projectsSent, e);
         });
-        console.log('PROJECT DONE!');
       });
     });
 };
 
-module.exports = suggestionProjectToProfile;
+module.exports = suggestionProjectToProfile();
