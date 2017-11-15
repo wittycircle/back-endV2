@@ -52,6 +52,12 @@ const has_liked = (foli, id) => {
 
 exports.searchProfile = (req, res, next) => {
     const { paginate, query } = req.body;
+    let myId
+    if (req.user)
+        myId = req.user.id
+    else
+        myId = null
+
     let selector = {},
         order_by = profile_lookup['magic'];
 
@@ -80,7 +86,7 @@ exports.searchProfile = (req, res, next) => {
         cats.map((e, i) => {
             laString += `WHEN c.name = "${e.name}" THEN ${(i + 1) * 10} `;
         });
-        console.log('laString', laString);
+        // console.log('laString', laString);
         return laString;
     };
 
@@ -102,7 +108,7 @@ exports.searchProfile = (req, res, next) => {
                 selector.cats = `WHEN s.name like "noNeedSkill" THEN 1 `;
             }
             let q = search
-                .cardProfile(selector)
+                .cardProfile(selector, myId)
                 .orderByRaw(
                     `${order_by} ${query && query.sort && query.sort.reverse
                         ? 'desc'
@@ -110,7 +116,7 @@ exports.searchProfile = (req, res, next) => {
                 )
                 .offset(paginate.offset)
                 .limit(paginate.limit);
-            console.log('q', q.toString());
+            // console.log('q', q.toString());
             return q.then(results => {
                 if (!_.isEmpty(results))
                     res.send({

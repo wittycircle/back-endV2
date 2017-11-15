@@ -65,7 +65,7 @@ const ifo = db
     .as('ifo');
 
 // ------------------ Profile ------------------
-module.exports = selector => {
+module.exports = (selector, myId) => {
     // ---------  Main query -------
     const skills = db
         .distinct(
@@ -101,10 +101,12 @@ module.exports = selector => {
         .groupBy('u.id')
         .as('sort');
 
+    // if (myId)
+    //     sortCardProfile.
     //  Profile stuff [hydrate with infos, join on q below]
 
     const profileStuff = location => {
-        return db
+        const myDb = db
             .select(profile_array.concat('p.creation_date'))
             .from(TABLES.PROFILES + ' as p')
             .join(TABLES.USERS + ' as u', 'p.user_id', 'u.id')
@@ -114,6 +116,11 @@ module.exports = selector => {
             .andWhere('p.picture', '!=', 'NULL')
             .andWhere('u.fake', '=', '0')
             .as('p');
+
+        if (myId)
+            myDb.whereRaw('u.id != ?', myId);
+
+        return myDb
     };
 
     let q = db
