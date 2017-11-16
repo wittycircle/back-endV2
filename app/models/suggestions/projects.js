@@ -30,6 +30,7 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = [], index) =
       'p.status as project_status',
       'p.user_id as creatorId',
       'p.picture',
+      'p.logo',
       'p.public_id',
       'p.description as projectDescription',
       'o.status as need_status',
