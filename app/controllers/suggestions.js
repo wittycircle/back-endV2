@@ -2,14 +2,14 @@ const suggestions = require('../models/suggestions');
 
 exports.matchProfilesToProject = (req, res, next) => {
   suggestions
-    .matchProfilesToProject(req.body.projectId)
+    .matchProfilesToProject(req.body.projectId, 0)
     .then(r => res.send(r))
     .catch(err => next([err, 'matchProfilesToProject']));
 };
 
 exports.matchProjectsToProfile = (req, res, next) => {
   suggestions
-    .matchProjectsToProfile(req.body.userId)
+    .matchProjectsToProfile(req.body.userId, 0)
     .then(r => {
       res.send(r);
     })

@@ -110,7 +110,7 @@ const suggestionProjectToProfile = () => {
     .then(r => {
       console.log(r);
       r.forEach((e, i) => {
-        suggestions.matchProjectsToProfile(e.id).then(projects => {
+        suggestions.matchProjectsToProfile(e.id, 1).then(projects => {
           let projectsSent = projects.splice(0, 3);
           send_mail(projectsSent, e);
           saveSentData(projectsSent, e);
