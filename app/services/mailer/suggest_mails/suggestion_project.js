@@ -76,7 +76,7 @@ const send_mail = (projects, profile) => {
   sub['*|PROJECTS_BLOC|*'] = laString;
 
   wm.subject(pers, subject);
-  wm.to(pers, profile.email);
+  wm.to(pers, 'jayho@wittycircle.com' /*profile.email*/);
 
   wm.substitutions(pers, sub);
   mail.addPersonalization(pers);
@@ -108,15 +108,17 @@ const suggestionProjectToProfile = () => {
     .where('u.email', 'not like', '%witty%')
     .groupBy('u.id')
     .then(r => {
-      console.log(r);
       r.forEach((e, i) => {
+	  if (!i) {
         suggestions.matchProjectsToProfile(e.id, 1).then(projects => {
           let projectsSent = projects.splice(0, 3);
-          send_mail(projectsSent, e);
-          saveSentData(projectsSent, e);
+	    console.log(projectsSent);
+            send_mail(projectsSent, e);
+//          saveSentData(projectsSent, e);
         });
+	  }
       });
     });
 };
 
-module.exports = suggestionProjectToProfile;
+module.exports = suggestionProjectToProfile();
