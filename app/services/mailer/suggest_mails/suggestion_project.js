@@ -13,6 +13,7 @@ const transformStatus = status => {
 const project_bloc = (
   picture,
   title,
+  logo,
   description,
   location,
   project_status,
@@ -23,7 +24,7 @@ const project_bloc = (
   const noLogo =
     'https://res.cloudinary.com/dqpkpmrgk/image/upload/v1501823817/Witty-icon/Icon_NoLogo_Project.png';
 
-  return `<div class="main-class"><div class="bloc1" style="display: inline-block;"><div class="first-container" style="margin-bottom: 10px;"><img style="border-radius: 4px; width: 50px; height: 50px;" src="${picture ||
+  return `<div class="main-class"><div class="bloc1" style="display: inline-block;"><div class="first-container" style="margin-bottom: 10px;"><img style="border-radius: 4px; width: 50px; height: 50px;" src="${logo || picture ||
     noLogo}" alt="project_picture">
 </div><div class="second-container" style="margin: 0 10px 10px 10px;"><h2 class="sc-1">${title}</h2><h3 class="space-normal sc-2">${description ||
     ''}</h3><div class="location" style="margin-bottom: 10px;">${wm.location_bloc(
@@ -42,6 +43,7 @@ const fillSub = b => {
   return project_bloc(
     b.picture,
     b.title,
+    b.logo,
     b.projectDescription,
     b,
     b.project_status,
@@ -81,7 +83,6 @@ const send_mail = (projects, profile) => {
   wm.substitutions(pers, sub);
   mail.addPersonalization(pers);
   wm.send(mail, 'suggestion_projects');
-  console.log('GOOD!');
   return null;
 };
 
@@ -108,12 +109,11 @@ const suggestionProjectToProfile = () => {
     .where('u.email', 'not like', '%witty%')
     .groupBy('u.id')
     .then(r => {
-      console.log(r);
       r.forEach((e, i) => {
-        suggestions.matchProjectsToProfile(e.id).then(projects => {
+        suggestions.matchProjectsToProfile(e.id, 1).then(projects => {
           let projectsSent = projects.splice(0, 3);
-          send_mail(projectsSent, e);
-          saveSentData(projectsSent, e);
+            send_mail(projectsSent, e);
+            saveSentData(projectsSent, e);
         });
       });
     });

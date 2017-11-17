@@ -46,8 +46,8 @@ const new_message = () => {
 				wm.substitutions(pers, sub);
 				mail.addPersonalization(pers);
 			});
+			wm.send(mail, 'new_message');
 		});
-		wm.send(mail, 'new_message');
 		return null;
 	}; //sendmail
 

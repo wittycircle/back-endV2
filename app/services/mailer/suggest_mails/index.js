@@ -12,8 +12,16 @@ const runTime = () => {
 	console.log("RUNTIME !")
 	suggestion_profile();
 	suggestion_project();
-	setInterval(suggestion_profile, ONE_WEEK);
-	setInterval(suggestion_project, ONE_WEEK);
+	runTime2();
+	setInterval(suggestion_profile, (ONE_WEEK - (ONE_HOUR * 6)));
+	setInterval(suggestion_project, (ONE_WEEK - (ONE_HOUR * 6)));
+	console.log("RUNTIME SUCCESS!");
+};
+
+const runTime2 = () => {
+	console.log("RUNTIME 2 CHECK!");
+	setInterval(suggestion_profile, ((ONE_WEEK - (ONE_DAY * 3)) - (ONE_HOUR * 6)) );
+	setInterval(suggestion_project, ((ONE_WEEK - (ONE_DAY * 3)) - (ONE_HOUR * 6)) );
 };
 
 runTime();

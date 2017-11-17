@@ -22,7 +22,7 @@ const profileToProject = {
   "to share what I'm working on": ['for feedback']
 };
 
-const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
+const getMatchingProjects = (neededSkills, about, alreadySugested = [], index) => {
   let query = db
     .distinct(
       'p.id',
@@ -30,6 +30,7 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
       'p.status as project_status',
       'p.user_id as creatorId',
       'p.picture',
+      'p.logo',
       'p.public_id',
       'p.description as projectDescription',
       'o.status as need_status',
@@ -47,15 +48,17 @@ const getMatchingProjects = (neededSkills, about, alreadySugested = []) => {
     .join(TABLES.LOCATION + ' as loc', 'loc.id', 'p.loc_id')
     .whereIn('ot.skill_id', neededSkills)
     .whereIn('o.status', profileToProject[about])
-    .whereNotIn('p.id', alreadySugested)
     .orderBy('p.id', 'desc')
     .orderBy('o.creation_date', 'desc')
     .groupBy('p.id');
 
+  if (index)
+    query.whereNotIn('p.id', alreadySugested);
+
   return query;
 };
 
-module.exports.matchProjectsToProfile = (userId) => {
+module.exports.matchProjectsToProfile = (userId, index) => {
   const userAbout = db(TABLES.PROFILES)
     .select('about')
     .where('user_id', userId);
@@ -64,7 +67,7 @@ module.exports.matchProjectsToProfile = (userId) => {
     userAbout,
     sh.skillsFromUserId(userId),
     alreadySuggestedProjects(userId)
-  ]).then(([about, neededSkills, alreadySugested]) => {
+  ]).then(([about, neededSkills, alreadySugested, index]) => {
     return getMatchingProjects(neededSkills, about[0].about, alreadySugested).then(r => {
       if (!r.length || r.length < 3) {
         return sh.expandedSkills(neededSkills).then(expandedNeeds => {

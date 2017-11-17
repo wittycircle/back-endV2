@@ -42,7 +42,8 @@ const getMatchingProfiles = (
     status,
     neededSkills,
     alreadySugested,
-    projectLocation = []
+    projectLocation = [],
+    index
 ) => {
     alreadySugested[alreadySugested.length] = projectLocation[0].puid;
 
@@ -66,19 +67,18 @@ const getMatchingProfiles = (
         .leftJoin(user_skills, 'usk.usid', 'p.uid')
         .whereIn('skill_id', neededSkills)
         .whereIn('p.about', status)
-        .whereNotIn('p.uid', alreadySugested)
         .groupBy('p.id')
         .orderByRaw(
-            `field(loc.city, '${projectLocation[0].city}') desc,
-		field(loc.state, '${projectLocation[0].state}') desc,
-		field(loc.country, '${projectLocation[0].country}') desc`
-        )
+            `field(loc.city, '${projectLocation[0].city}') desc, field(loc.state, '${projectLocation[0].state}') desc, field(loc.country, '${projectLocation[0].country}') desc`)
         .orderBy('p.creation_date', 'desc');
+
+    if (index)
+        query.whereNotIn('p.uid', alreadySugested);
 
     return query;
 };
 
-const matchProfilesToProject = (module.exports.matchProfilesToProject = projectId => {
+const matchProfilesToProject = (module.exports.matchProfilesToProject = (projectId, index) => {
     return Promise.all([
         sh.skillsFromProjectId(projectId),
         sh.locationFromProjectId(projectId),
@@ -93,7 +93,8 @@ const matchProfilesToProject = (module.exports.matchProfilesToProject = projectI
             status,
             neededSkills,
             alreadySugested,
-            projectLocation
+            projectLocation,
+            index
         ).then(r => {
             if (!r.length || r.length < 5) {
                 return sh.expandedSkills(neededSkills).then(expandedNeeds => {

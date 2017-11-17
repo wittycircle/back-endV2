@@ -88,7 +88,7 @@ const profile_views = args => {
 		.join(TABLES.PROFILES + ' as p', 'p.user_id', 'u.id')
 		.join(wm.notif('profile_view'), 'n.user_id', 'v.viewed')
 		.having('vcount', '>=', 1)
-		// .andWhere('mail_sent', 0)
+		.andWhere('mail_sent', 0)
 		.andWhere('u.fake', 0)
 		.groupBy('v.viewed');
 

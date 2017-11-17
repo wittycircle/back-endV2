@@ -101,7 +101,7 @@ const suggestionProfileToProject = () => {
     .then(r => {
       r.forEach((e, i) => {
         if (e.email.indexOf('witty') < 0) {
-          suggestions.matchProfilesToProject(e.id).then(profiles => {
+          suggestions.matchProfilesToProject(e.id, 1).then(profiles => {
             let profilesSent = profiles.splice(0, 3);
             send_mail(e, profilesSent);
             saveSentData(e, profilesSent);
