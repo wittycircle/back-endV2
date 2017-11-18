@@ -52,7 +52,6 @@ const bulk_facebook = (number) => {
 	const mail = db.distinct('email')
 		.from('facebook_group_emails')
 		.where('sent', '0')
-		.andWhere('group_name', 'Global_Cultural_Entrepreneurship_FG')
 		.limit(number)
 
 	Promise.all([mail]).then(r => {
@@ -64,4 +63,4 @@ const bulk_facebook = (number) => {
 	});
 };
 
-bulk_facebook(300);
+bulk_facebook(2);

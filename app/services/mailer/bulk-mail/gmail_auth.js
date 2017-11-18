@@ -57,10 +57,10 @@ const bulk_gmail = (number) => {
 	Promise.all([mail]).then(r => {
 		invitation.verifyUsers(r[0].map(e => e.mail_to))
 			.then(emails => {
-				// send_mail(emails);
+				send_mail(emails);
 				update_bulk_gmail(emails);
 			});
 	});
 };
 
-bulk_gmail(300);
+bulk_gmail(1000);
