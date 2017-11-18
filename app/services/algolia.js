@@ -52,7 +52,7 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 			'pr.logo',
 			'pr.project_visibility',
 			'pr.1st_description',
-			'pr.2nd_description',
+			'pr.2nd_description'
 		)
 		.from(TABLES.PROJECTS + ' as pr')
 		.join(TABLES.CATEGORIES + ' as ct', 'ct.id', 'pr.category_id')
