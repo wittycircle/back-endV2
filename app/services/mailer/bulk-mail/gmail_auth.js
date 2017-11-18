@@ -63,4 +63,4 @@ const bulk_gmail = (number) => {
 	});
 };
 
-bulk_gmail(300);
+bulk_gmail(1000);
