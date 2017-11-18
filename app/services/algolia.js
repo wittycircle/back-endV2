@@ -76,5 +76,11 @@ const init = (module.exports.initPeopleAndProjectIndex = () => {
 		})
 });
 
-init();
+const runTime = () => {
+    init();
+    setInterval(init, 1000 * 3600 * 12);
+    console.log('Running runTime !');
+};
+
+runTime();
 
