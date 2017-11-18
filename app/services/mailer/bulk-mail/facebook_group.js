@@ -16,7 +16,7 @@ const send_mail = (data) => {
 
 	data.forEach((e, i) => {
 		let pers = new helper.Personalization();
-		let subject = '5 people from your network recently joined us';
+		let subject = '38 people from your network recently joined us / Your premium invite';
 		let sub = {
 			// '*|MESSAGE|*': u.message,
 			// '*|FNAME|*': s.first_name,
