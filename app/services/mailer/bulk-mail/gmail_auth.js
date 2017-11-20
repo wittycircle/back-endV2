@@ -4,47 +4,65 @@ const h = require('../../../models/helper'); //NIK
 const { db, TABLES } = require('../../../models/index');
 const invitation = require('../../../models/invitation');
 
+const chunk = (array, callback) => {
+	let chunks 		= [],
+		tempArray 	= [];
+
+	const length 	= array.length
+
+	if (length > 1000) {
+		array.forEach( (e, i) => {
+			tempArray.push(e)
+			if (tempArray.length >= 1000) {
+				chunks.push(tempArray)
+				tempArray = []
+			}
+			if (i === length - 1) {
+				chunks.push(tempArray)
+				return callback(chunks);
+			}	
+		});
+	} else
+		return callback([array])
+}
 
 const send_mail = (data) => {
-	let mail = new helper.Mail();
-	wm.from(mail, 'noreply@wittycircle.com', 'Witty');
-	wm.content(mail);
-	wm.reply(mail, 'noreply@wittycircle.com');
-	mail.setTemplateId(TEMPLATES.invite_bulk);
-	const category = new helper.Category('bulk_gmail_emails');
-	mail.addCategory(category);
 
-	let r = 1;
-	const length = data.length
+	chunk(data, dataArray => {
 
-	data.forEach((e, i) => {
-		let pers = new helper.Personalization();
-		let subject = '38 people from your network recently joined us / Your premium invite';
-		let sub = {
-			// '*|MESSAGE|*': u.message,
-			// '*|FNAME|*': s.first_name,
-			// '*|PIMG|*': wm.transform(s.picture),
-			// '*|FUNAME|*': s.fullName,
-			// '*|FDESC|*': s.description,
-			// '*|URL|*': wm.url(`welcome/${u.url}/${u.token}`),
-			// '*|FNETWORK|*': u.url
-		};
-		// console.log(sub);
-		// console.log('\n-------------------------------------------------\n');
-		wm.subject(pers, subject);
-		wm.to(pers, e);
-		wm.substitutions(pers, sub);
-		mail.addPersonalization(pers);
+		dataArray.forEach(subArray => {
+			let mail = new helper.Mail();
+			wm.from(mail, 'noreply@wittycircle.com', 'Witty');
+			wm.content(mail);
+			wm.reply(mail, 'noreply@wittycircle.com');
+			mail.setTemplateId(TEMPLATES.invite_bulk);
+			const category = new helper.Category('bulk_gmail_emails');
+			mail.addCategory(category);
 
-		if (i === (r * 1000)) {
-			console.log('SENT' + r * 1000 + ' MAILS');
-			r += 1
-			wm.send(mail, 'bulk_gmail_emails');
-		} else if (i === length - 1) {
-			console.log('ALL MAIL SENT');
-			wm.send(mail, 'bulk_gmail_emails');
-		}
-	}); //foreach
+			subArray.forEach((e, i) => {
+				let pers = new helper.Personalization();
+				let subject = '38 people from your network recently joined us / Your premium invite';
+				let sub = {
+					// '*|MESSAGE|*': u.message,
+					// '*|FNAME|*': s.first_name,
+					// '*|PIMG|*': wm.transform(s.picture),
+					// '*|FUNAME|*': s.fullName,
+					// '*|FDESC|*': s.description,
+					// '*|URL|*': wm.url(`welcome/${u.url}/${u.token}`),
+					// '*|FNETWORK|*': u.url
+				};
+				// console.log(sub);
+				// console.log('\n-------------------------------------------------\n');
+				wm.subject(pers, subject);
+				wm.to(pers, e);
+				wm.substitutions(pers, sub);
+				mail.addPersonalization(pers);
+			}); //foreach
+
+			console.log('Sent');
+			wm.send(mail, 'invite_user');
+		});
+	});
 	return null;
 };
 
