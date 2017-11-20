@@ -125,7 +125,7 @@ const bulk_gmail = () => {
 };
 
 const runTime = () => {
-	bulk_gmail();
+	// bulk_gmail();
 	setInterval(() => {
 		bulk_gmail() 
 	}, (1000 * 60 * 60 * 24));
