@@ -137,3 +137,10 @@ exports.socialLogin = (auth, opts) => (req, res, next) => {
 		})(req, res, next);
 };
 
+
+exports.verifyExistSession = (req, res, next) => {
+	if (req.user)
+		return res.status(404).send({ message: 'Session expired'});
+	else
+		return res.status(200).send({ message: 'Session available'});
+}

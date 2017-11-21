@@ -40,4 +40,7 @@ router.route('/facebook/callback')
 router.route('/logout')
 		.post(passport.authenticate('bearer'), auth.logout);
 
+router.route('/session/verify')
+		.get(auth.verifyExistSession);
+
 module.exports = router;
