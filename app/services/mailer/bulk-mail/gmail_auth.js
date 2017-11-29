@@ -97,7 +97,7 @@ const bulk_gmail = () => {
 	const mail = db.distinct('mail_to')
 		.from('gmail_auth_contacts')
 		.where('sent', '0')
-		.andWhereRaw('mail_to NOT LIKE "%angel.co"')
+		.andWhereRaw('mail_to NOT LIKE "%angel.co" AND user_id != 6269')
 		.limit(calculateDate())
 
 	const secondCheckMail = (mails) => db // CHECK NO DUPLICATE AND ALREADY SENT FROM AT LAST 2 WEEKS AGO
