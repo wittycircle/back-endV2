@@ -70,7 +70,7 @@ const calculateDate = () => {
 	const ONE_DAY = 1000 * 60 * 60 * 24
 	let refDate, dateNow, difference_ms, dateFlow, numberInvite;
 
-	refDate 		= new Date('2017-11-20T19:26:54.066Z').getTime();
+	refDate 		= new Date('2018-02-01T19:26:54.066Z').getTime();
 	dateNow 		= (new Date).getTime();
 
 	difference_ms 	= Math.abs(dateNow - refDate);
