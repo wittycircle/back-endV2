@@ -1,0 +1,6 @@
+# robotstxt.org
+
+User-agent: *
+Disallow:
+
+Sitemap: https://www.wittycircle.com/sitemap.xml
